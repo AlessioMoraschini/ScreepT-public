@@ -1,10 +1,23 @@
 package plugin.api;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
-import plugin.external.IPlugin;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
+
+import plugin.external.arch.IPlugin;
+import plugin.external.arch.IPluginCrypter;
+import plugin.external.arch.IPluginTextEditor;
+import utility.log.SafeLogger;
 
 /**
  *
@@ -20,7 +33,79 @@ import plugin.external.IPlugin;
  */
 public abstract class AbstractApplicationApi {
 
+	private static final SafeLogger LOGGER = new SafeLogger(AbstractApplicationApi.class);
+
+	public static final String PACKAGE_PLUGINS_ROOT = "plugin.external.root";
+	public static final String PACKAGE_PLUGINS_ROOT_EMBEDDED = "plugin.external.root.embedded";
+	public static final String PACKAGE_PLUGINS_TEXT_EDITOR = "plugin.external.root.texteditor";
+	public static final String PACKAGE_PLUGINS_CRYPTER = "plugin.external.root.crypter";
+
 	private static Vector<AbstractApplicationApi> availableProviders = new Vector<>(4);
+
+	@SuppressWarnings("unchecked")
+	public static Set<IPlugin> getAvailablePlugins(PluginType typeFilter, boolean initialize) {
+		try {
+			//			Reflections reflect = Reflections.collect(typeFilter.packagePath, (str)->{return false;}, new JavaCodeSerializer());
+			Reflections reflect = initReflections(typeFilter.packagePath);
+			Set<?> plugins = reflect.getSubTypesOf(typeFilter.pluginClasstype);
+
+			return filterPlugins(
+					instantiatePlugins((Set<Class<IPlugin>>) plugins, initialize),
+					typeFilter.classFilters);
+		} catch (Exception e) {
+			LOGGER.error("Cannot load plugins", e);
+			throw e;
+		}
+	};
+
+	public static <T extends IPlugin> Set<IPlugin> filterPlugins(Set<IPlugin> plugins, Class<T>[] classFilters ){
+
+		Set<IPlugin> pluginsFiltered = new HashSet<>();
+
+		for(IPlugin plugin : plugins) {
+			for (int i = 0; i < classFilters.length; i++) {
+				if (classFilters[i] != null && classFilters[i].isAssignableFrom(plugin.getClass())) {
+					pluginsFiltered.add(plugin);
+					break;
+				}
+			}
+		}
+
+		return pluginsFiltered;
+	}
+
+	private static Reflections initReflections(String packagePath) {
+		List<ClassLoader> classLoadersList = new LinkedList<ClassLoader>();
+		classLoadersList.add(ClasspathHelper.contextClassLoader());
+		classLoadersList.add(ClasspathHelper.staticClassLoader());
+
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+				.setScanners(new SubTypesScanner(false), new ResourcesScanner())
+				.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
+				.filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(PACKAGE_PLUGINS_ROOT))));
+
+		return reflections;
+	}
+
+	private static Set<IPlugin> instantiatePlugins(Set<Class<IPlugin>> plugins, boolean initialize){
+
+		Set<IPlugin> pluginSet = new HashSet<>();
+
+		if(plugins != null) {
+			for(Class<IPlugin> clazz : plugins) {
+				try {
+					IPlugin plugin = clazz.newInstance();
+					if(initialize)
+						plugin.initialize();
+					pluginSet.add(plugin);
+				} catch (InstantiationException | IllegalAccessException e) {
+					LOGGER.error("Cannot load plugin of type: " + clazz, e);
+				}
+			}
+		}
+
+		return pluginSet;
+	};
 
 	public static final Vector<AbstractApplicationApi> getAvailableProviders() {
 		synchronized (availableProviders) {
@@ -71,4 +156,23 @@ public abstract class AbstractApplicationApi {
 	 * @return Return plugin folder path
 	 */
 	public abstract String getPluginFolderPath(Class<? extends IPlugin> plugin);
+
+	@SuppressWarnings("unchecked")
+	public enum PluginType {
+		ROOT(PACKAGE_PLUGINS_ROOT, IPlugin.class, new Class[]{IPlugin.class}),
+		EMBEDDED(PACKAGE_PLUGINS_ROOT_EMBEDDED, IPlugin.class, new Class[]{IPlugin.class}),
+		TEXT_EDITOR(PACKAGE_PLUGINS_TEXT_EDITOR, IPluginTextEditor.class, new Class[]{IPluginTextEditor.class}),
+		CRYPTER(PACKAGE_PLUGINS_CRYPTER, IPluginCrypter.class, new Class[]{IPluginCrypter.class});
+
+		public String packagePath;
+		public Class<? extends IPlugin> pluginClasstype;
+		public Class<? extends IPlugin>[] classFilters;
+
+		private PluginType(String packagePath, Class<? extends IPlugin> pluginClasstype, Class<? extends IPlugin>... classFilters) {
+			this.packagePath = packagePath;
+			this.pluginClasstype = pluginClasstype;
+			this.classFilters = classFilters == null ? new Class[]{pluginClasstype} : classFilters;
+		}
+
+	}
 }

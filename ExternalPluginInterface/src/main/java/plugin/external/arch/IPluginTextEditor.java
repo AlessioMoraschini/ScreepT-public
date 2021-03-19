@@ -1,4 +1,4 @@
-package plugin.external;
+package plugin.external.arch;
 
 import java.io.File;
 import java.util.List;

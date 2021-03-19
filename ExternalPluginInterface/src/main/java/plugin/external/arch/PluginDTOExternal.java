@@ -1,4 +1,4 @@
-package plugin.external;
+package plugin.external.arch;
 
 public class PluginDTOExternal {
 
