@@ -1,0 +1,147 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>VariousCommonsLight</groupId>
+	<artifactId>VariousCommonsLight</artifactId>
+	<version>1.0</version>
+
+	<packaging>jar</packaging>
+	
+	<properties>
+	<!-- #################### LICENSE COMMON DATA ################# -->
+		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+		<developer.mail>info@am-design-development.com</developer.mail>
+		<inception.year>2019</inception.year>
+		<current.year>2021</current.year>
+		<project.license.name>Apache 2.0</project.license.name>
+		<project.main.url>https://www.am-design-development.com</project.main.url>
+		<!-- <project.license.url>../License_ScreepT.html</project.license.url> -->
+	</properties>
+	
+	<name>VariousCommonsLight</name>
+	  <description>
+	  	This module is made to provide a common set of useful minimal operations, with the intent to minimize the use of thirdy-part dependencies, making it a reusable module for future other projects other to ScreepT.
+	  </description>
+	  <url>${project.main.url}</url>
+	  <inceptionYear>${inception.year}</inceptionYear>
+	  <licenses>
+	    <license>
+	      <name>${project.license.name}</name>
+	      <!-- <url>${project.license.url}</url> -->
+	    </license>
+	  </licenses>
+	  <developers>
+	    <developer>
+	      <name>${developer.name}</name>
+	    </developer>
+	  </developers>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<resources>
+	    	<resource>
+	            <directory>res</directory>
+	            <includes>
+	                <include>*</include>
+	            </includes>
+	        </resource>
+	        <resource>
+				<directory>src</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+	    </resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+			
+					<!-- (1) FATJAR BUILD AND EXPORT -->
+					<execution>
+						<id>make-assembly - main fatjar folder</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<skipAssembly>true</skipAssembly>
+							<overwrite>true</overwrite>
+							<outputDirectory>
+								${project.build.directory}/CENTRALIZED
+							</outputDirectory>
+							<archive>
+								<manifest>
+								</manifest>
+								<manifestEntries>
+									<Created-by>${developer.name}</Created-by>
+									<Built-By>${developer.name}</Built-By>
+									<Build-number>${buildNumber}</Build-number>
+									<Build-git-hash>${git.commit.id}</Build-git-hash>
+								</manifestEntries>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<appendAssemblyId>false</appendAssemblyId>
+							<exclude>/**/*humbs.db</exclude>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+	
+	  	<!-- Exclude test only dependencies from build -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>testUtils</groupId>
+			<artifactId>testUtils</artifactId>
+			<version>1.0</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.6</version>
+		</dependency>
+			
+		<dependency>
+		    <groupId>commons-net</groupId>
+		    <artifactId>commons-net</artifactId>
+		    <version>3.6</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.miglayout</groupId>
+		    <artifactId>miglayout</artifactId>
+		    <version>3.7.4</version>
+		</dependency>
+	
+		<dependency>
+		    <groupId>com.rover12421.opensource</groupId>
+		    <artifactId>JFontChooser</artifactId>
+		    <version>1.0.5-3</version>
+		</dependency>
+		
+	</dependencies>
+</project>
