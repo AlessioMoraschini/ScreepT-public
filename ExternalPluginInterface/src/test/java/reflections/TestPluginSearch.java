@@ -21,7 +21,7 @@ public class TestPluginSearch {
 	}
 
 	@Test
-	public void testSearchTextEditor() {
+	public void testSearchFiltered() {
 		Set<IPlugin> plugins = AbstractApplicationApi.getAvailablePlugins(PluginType.EMBEDDED, true);
 		assertFalse(plugins == null || plugins.isEmpty());
 		assertTrue(plugins.size() == 2);

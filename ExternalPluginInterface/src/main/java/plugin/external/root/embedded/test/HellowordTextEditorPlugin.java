@@ -82,4 +82,9 @@ public class HellowordTextEditorPlugin implements IPluginTextEditor {
 		return false;
 	}
 
+	@Override
+	public String getPluginName() {
+		return "Test Plugin - HellowordTextEditor";
+	}
+
 }

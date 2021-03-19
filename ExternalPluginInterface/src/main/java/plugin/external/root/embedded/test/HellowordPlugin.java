@@ -39,4 +39,9 @@ public class HellowordPlugin implements IPlugin {
 		System.out.println("INITIALIZED!");
 	}
 
+	@Override
+	public String getPluginName() {
+		return "Test Plugin - Helloword";
+	}
+
 }

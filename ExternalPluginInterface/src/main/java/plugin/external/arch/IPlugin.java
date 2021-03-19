@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface IPlugin {
 
+	public String getPluginName();
+
 	public default boolean launchMain(String args[]) {return true;};
 
 	public void initialize();
