@@ -35,31 +35,31 @@ import utility.string.StringWorker.EOL;
 
 /**
  * This class contains a mix of useful methods forked from various classes made by me, to avoid including big dependencies only
- * to use a little of given functions, that would have made the updater module very heavy, so I decided to create this utils class. 
- * 
+ * to use a little of given functions, that would have made the updater module very heavy, so I decided to create this utils class.
+ *
  * @author Alessio Moraschini
  */
 public class FileVarious {
-	
+
 	private static SafeLogger logger = new SafeLogger(FileVarious.class);
-	
+
 	private static final String END_ARGS_SECTION = "###_END_SECTION";
-	
+
 	/**JFRAME - only directories src
 	 * this method select a directory from the user (only directories),if nothing is selected returns null
 	 */
 	public static File directoRead(JFrame parent, String title, File initialDir) {
-		
+
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle(title);
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileChooser.setCurrentDirectory(initialDir);		
+		fileChooser.setCurrentDirectory(initialDir);
 		fileChooser.setPreferredSize(new Dimension(800, 450));
 		File correctFile = null;
-		
+
 		int returnVal = fileChooser.showOpenDialog(parent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			
+
 			File selectedFile = fileChooser.getSelectedFile();
 			if(selectedFile==null||!selectedFile.isDirectory()) {
 				new JOptionHelper(parent).error("Select a directory!", "Select a directory");
@@ -69,7 +69,7 @@ public class FileVarious {
 		}
 		return correctFile;
 	}
-	
+
 	public static File getParent(File currentFile) {
 		if(currentFile != null) {
 			return currentFile;
@@ -77,12 +77,12 @@ public class FileVarious {
 			return null;
 		}
 	}
-	
+
 	public static String getParentPath(File currentFile) {
 		File parent = getParent(currentFile);
 		return parent == null ? null : parent.getAbsolutePath();
 	}
-	
+
 	public static String getCanonicalPathSafe(File file) {
 		try {
 			return file.getCanonicalPath();
@@ -106,27 +106,27 @@ public class FileVarious {
 		String raw = null;
 		try {
 			raw = file.getCanonicalPath();
-			
+
 		} catch (Exception e) {
 			if(file != null)
 				raw = file.getAbsolutePath();
 			else
 				return null;
 		}
-		
+
 		raw = raw.replaceAll("/", "\\\\");
 		raw = raw.replaceAll("\\\\", separatorNormalized);
-		
+
 		return raw;
 	}
 
 	public static boolean checkIfSameFile(File fileA, File fileB) {
 		 String pathA = StringWorker.trimToEmpty(getCanonicalPathSafeNormalized(fileA, "/"));
 		 String pathB = StringWorker.trimToEmpty(getCanonicalPathSafeNormalized(fileB, "/"));
-		 
+
 		 return pathA.equals(pathB);
 	}
-	
+
 	public static boolean validateFileOrDir(File fileOrDir) {
 		return fileOrDir != null && fileOrDir.exists();
 	}
@@ -136,60 +136,60 @@ public class FileVarious {
 	public static boolean validateFile(File file) {
 		return validateFileOrDir(file) && file.isFile();
 	}
-	
+
 	/**
 	 * Get relative path from a reference file path:
-	 * 
+	 *
 	 * first = a/bcd/e/fg
 	 * other = a/bcd
-	 * 
+	 *
 	 * return: ./e/fg
-	 * 
+	 *
 	 * @param first
 	 * @param other
 	 * @return
 	 * @throws IOException
 	 */
 	public static String getPathRelativeToOtherFile(File first, File other) throws IOException {
-		
+
 		if(first == null || other == null) {
 			return null;
 		}
-		
+
 		return other.toURI().relativize(first.toURI()).getPath();
 	}
-	
+
 	public static List<File> addWithoutRepetitions(List<File> toAdd, List<File> originalList){
 		if(originalList == null)
 			originalList = new ArrayList<>();
-		
+
 		if(toAdd != null && !toAdd.isEmpty()) {
 			for(File currentNew : toAdd) {
 				boolean currentAlreadyPresent = originalList.isEmpty() ? false : true;
 				int i = 0;
 				for(File file : originalList) {
 					try {
-						if(file.getCanonicalPath().equals(currentNew.getCanonicalPath())) 
+						if(file.getCanonicalPath().equals(currentNew.getCanonicalPath()))
 							break;
-						
+
 						if(i == originalList.size() - 1)
 							currentAlreadyPresent = false;
-						
+
 					} catch (IOException e) {
 						logger.error("", e);
 					}
-					
+
 					i++;
 				}
-				
+
 				if(!currentAlreadyPresent)
 					originalList.add(currentNew);
 			}
 		}
-		
+
 		return originalList;
 	}
-	
+
 	public static boolean isBinaryFile(File fileToCheck) throws IOException {
         String type = Files.probeContentType(fileToCheck.toPath());
         if (type == null) {
@@ -202,32 +202,32 @@ public class FileVarious {
             return true;
         }
     }
-	
+
 	public static ArrayList<String> getPathsRelativeToOtherFile(ArrayList<File> toRelativize, File reference) throws Exception{
 		ArrayList<String> relativePaths = new ArrayList<>();
-		
+
 		if(toRelativize == null || toRelativize.isEmpty() || reference == null || !reference.exists()) {
 			return relativePaths;
 		}
-		
+
 		for(File currToRelativize : toRelativize) {
 			if (currToRelativize != null && currToRelativize.exists()) {
 				String relative = getPathRelativeToOtherFile(currToRelativize, reference);
 				relativePaths.add(relative);
 			}
 		}
-		
+
 		return relativePaths;
 	}
-	
+
 	/**
 	 * Get all files contained in a directory, and also in his sublfolders. NB only files will be returned!
-	 * 
+	 *
 	 * @param ArrayList<File> foundFiles use an initialized or empty or null array list, to which found files will be added
 	 * @param directoryName
 	 */
 	public static ArrayList<File> listFiles(File directory, ArrayList<File> foundFiles) {
-		
+
 		if(foundFiles == null) {
 			foundFiles = new ArrayList<>();
 		}
@@ -235,7 +235,7 @@ public class FileVarious {
 	    // Get all files from a directory.
 	    File[] thisLevelFiles = directory.listFiles();
 	    if(thisLevelFiles != null) {
-	        for (File current : thisLevelFiles) {      
+	        for (File current : thisLevelFiles) {
 	            if (current.isFile()) {
 	            	foundFiles.add(current);
 	            } else if (current.isDirectory()) {
@@ -243,10 +243,10 @@ public class FileVarious {
 	            }
 	        }
 	    }
-	
+
 		return foundFiles;
 	}
-	
+
 	// PRINT UTILS METHODS
 	/**
 	 * Retrieve a String separator n-times character
@@ -258,10 +258,10 @@ public class FileVarious {
 			output = output.concat(String.valueOf(character));
 			curr++;
 		}
-		
+
 		return output;
 	}
-	
+
 	/**
 	 * Create a string of n spaces
 	 * @param n
@@ -271,83 +271,83 @@ public class FileVarious {
 		for(int i = 0; i<n; i++) {
 			result = result.concat(" ");
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Retrieve a header String specifying character separator (may be null), header width in characters, and title
 	 */
 	public static String getHeaderString(String character, int n, String title){
 		String result = "";
-		
+
 		int newN = (n >= title.length()+4)? n : title.length()+4;
 		newN = newN*character.length();
 		String leftSpaces = getNspacesString((newN - title.length() -2)/2);
 		boolean hasToPad = (leftSpaces.length()*2 + 2 + title.length()) < newN;
 		String rightPadding = (hasToPad)? " " : "";
 		String rightSpaces = leftSpaces + rightPadding;
-		
+
 		result += getSeparator(character, newN);
 		result += EOL.defaultEol.eol + "  " + character + leftSpaces + title + rightSpaces + character ;
 		result += getSeparator(character, newN);
 		result += EOL.defaultEol.eol;
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Inserts a number like file(1).txt from the original file.txt
 	 * @param fileName
 	 * @return
 	 */
 	public static String insertNumberBeforeExtension(String fileName, int n) {
-	
+
 		String extension = "";
 		String name = "";
-	
+
 		int idxOfDot = fileName.lastIndexOf('.');   //Get the last index of . to separate extension
 		if(idxOfDot>=0) {
 			extension = fileName.substring(idxOfDot + 1);
 			name = fileName.substring(0, idxOfDot);
 		}else {
 			name = fileName;
-		}		
-		
+		}
+
 		// if already with parentesis number
 		if(name.substring(name.length()-1, name.length()).equals(")")) {
 			idxOfDot = fileName.lastIndexOf('(');
 			name = fileName.substring(0, idxOfDot);
 		}
 	    fileName = name+"("+n+")."+extension;
-		
+
 		return fileName;
 	}
 
 	/**
 	 * this method change name of java File variable until the result is a non existent file
 	 * It do that adding (i) numbers at the end of the file name, just before the start of the
-	 * extension . THIS DOES NOT ACTUALLY CHANGE PHYSIC FILE'S NAME! (it changes only java object 
+	 * extension . THIS DOES NOT ACTUALLY CHANGE PHYSIC FILE'S NAME! (it changes only java object
 	 * until it represents a non-existing file in the same parent directory as the given one.
-	 * 
+	 *
 	 * @param file
 	 * @return the new variable representing non existing file, useful to call before create a new file
 	 * 	to ensure that it is a not existing one.
 	 */
 	public static File uniqueJavaObjFile(File file) {
 		String fileName=file.getPath();
-	
+
 		String extension = "";
 		String name = "";
-	
+
 		int idxOfDot = fileName.lastIndexOf('.');   //Get the last index of . to separate extension
 		if(idxOfDot>=0) {
 			extension = fileName.substring(idxOfDot + 1);
 			name = fileName.substring(0, idxOfDot);
 		}else {
 			name = fileName;
-		}		
-	
+		}
+
 		Path path = Paths.get(fileName);
 		int counter = 1;
 		File f = null;
@@ -362,7 +362,7 @@ public class FileVarious {
 		    counter++;
 		}
 		f = new File(fileName);
-		
+
 		return f;
 	}
 
@@ -417,7 +417,7 @@ public class FileVarious {
 					if (esit == false)
 						total++;
 				}
-			} 
+			}
 		}
 		return total;
 	}
@@ -473,10 +473,10 @@ public class FileVarious {
 	public static int countFilesUntilLimit(File directory, boolean countDirectories, long maxAdmitted) {
 		int count = 0;
 		for (File file : directory.listFiles()) {
-			
+
 			if (file.isFile()) {
 				count++;
-			
+
 			} else if (file.isDirectory()) {
 				if(countDirectories) {
 					count++;
@@ -495,12 +495,28 @@ public class FileVarious {
 
 	public static File[] getFileArrayFromStrings(String[] filePaths){
 		logger.debug("ARGUMENT FILES:" + Arrays.toString(filePaths));
-		
+
 		File[] argumentsFiles = new File[filePaths.length];
 		int j = 0;
 		for(String s : filePaths) {
 			if (!END_ARGS_SECTION.equals(s)) {
 				argumentsFiles[j] = new File(s);
+			}else {
+				break;
+			}
+			j++;
+		}
+		return argumentsFiles;
+	}
+
+	public static List<String> getStringListFromFiles(List<File> filePaths){
+		logger.debug("ARGUMENT FILES:" + filePaths);
+
+		List<String> argumentsFiles = new ArrayList<>();
+		int j = 0;
+		for(File s : filePaths) {
+			if (!END_ARGS_SECTION.equals(s)) {
+				argumentsFiles.add(getCanonicalPathSafe(s));
 			}else {
 				break;
 			}
@@ -522,7 +538,7 @@ public class FileVarious {
 			writer.print("");
 			esit = true;
 			writer.close();
-			
+
 		} catch (FileNotFoundException e) {
 			esit = false;
 			logger.error("FILE NOT CLEARED!", e);
@@ -532,17 +548,17 @@ public class FileVarious {
 
 	/**
 	 * This method ensures that the given String name is not null or made by only dots, and then checks if it has an extension.
-	 * 
+	 *
 	 * If no extension is found, then the fallback one will be used creating a valid fileName.
-	 * 
+	 *
 	 * If an invalid extension is provided, "txt" will be used as default one.
-	 * 
+	 *
 	 */
 	public static String ensureValidExtension(String name, String extensionFallback) {
 		if(name == null) {
 			return "";
 		} else {
-			
+
 			if (extensionFallback != null) {
 				extensionFallback.replaceAll("[.]", "");
 				if("".equals(extensionFallback.trim())) {
@@ -552,14 +568,14 @@ public class FileVarious {
 				extensionFallback = "txt";
 			}
 		}
-		
+
 		String newNameClearedDots = name.replaceAll("[.]", "").trim();
 		String correctFallbackExtension = extensionFallback.toLowerCase();
 		name = (!newNameClearedDots.equals(""))? name : "NewFile." + correctFallbackExtension;
 		String ext = FilenameUtils.getExtension(name);
 		name = (ext != null && !"".equals(ext.trim())) ? name : name.endsWith(".") ? name + correctFallbackExtension : name + "." + correctFallbackExtension;
-	
-		return name;		
+
+		return name;
 	}
 
 	/**
@@ -574,25 +590,25 @@ public class FileVarious {
 		}else {
 			noExt = file.getAbsolutePath().substring(0, file.getAbsolutePath().length()-(extensionLenght+1));
 		}
-		
+
 		file= new File(noExt + newExtension);
 		logger.debug("NEW NAME: "+file.getAbsolutePath());
 		return file;
 	}
-	
+
 	/**
 	 * Get a renamed file in same directory, without creating real file but creating only a java object
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static File getRenamed(File toRename, String newName, boolean unique) throws Exception {
 		File parent = toRename.getParentFile();
 		File renamed = new File(parent.getCanonicalPath() + File.separator + newName);
-		
+
 		return unique ? uniqueJavaObjFile(renamed) : renamed;
 	}
-	
+
 	public File replaceDirOccurrencesInPath(File toCheck, File dirToReplace, String newDirName) throws Exception {
-		
+
 		if (toCheck != null && dirToReplace != null && dirToReplace.isDirectory()) {
 			File parent = toCheck;
 			String endTemp = File.separator + toCheck.getName();
@@ -603,9 +619,9 @@ public class FileVarious {
 				}
 
 				endTemp = parent.getName() + File.separator + endTemp;
-			} 
+			}
 		}
-		
+
 		return toCheck;
 	}
 
@@ -615,13 +631,13 @@ public class FileVarious {
 	 * NB defaultExtension not must be preceeded by a dot
 	 */
 	public static File changeExtensionForceDot(File file, String newExtension) {
-		
+
 		if(newExtension == null || file == null) {
 			return file;
 		}
-		
+
 		String adapted = newExtension.replaceAll("[.]", "");
-		
+
 		return changeExtension(file, "." + adapted);
 	}
 
@@ -637,7 +653,7 @@ public class FileVarious {
 				result = father.concat(separator).concat(result);
 				clone = clone.getParentFile();
 				nLevels--;
-			} 
+			}
 		}
 		return result;
 	}
@@ -657,44 +673,44 @@ public class FileVarious {
 		}
 	    return areRelated;
 	}
-	
+
 	public static File searchUntilAncestorMatch(File son, String wantedParentMatch, boolean exactNameMatch) {
 		File scanner = son;
 		while(scanner != null && scanner.getParentFile() != null) {
 			scanner = scanner.getParentFile();
-			boolean found = 
+			boolean found =
 					(exactNameMatch && scanner.getName().equals(wantedParentMatch)) ||
 					(!exactNameMatch && scanner.getName().contains(wantedParentMatch));
 			if(found) {
 				return scanner;
 			}
 		}
-		
+
 		return son;
 	}
-	
+
 	public static boolean hasParent(File son, String parentName, boolean exactNameMatch) {
 		File scanner = son;
 		while(scanner != null && scanner.getParentFile() != null) {
 			scanner = scanner.getParentFile();
-			boolean found = 
+			boolean found =
 					(exactNameMatch && scanner.getName().equals(parentName)) ||
 					(!exactNameMatch && scanner.getName().contains(parentName));
 			if(found) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	public static File getNlevelsAncestor(File son, int levelsUp) {
-		
+
 		if(son ==  null || son.getParentFile() == null) {
-			logger.warn("\n\n=> Parent file search result FAILED! [son:"+son); 
+			logger.warn("\n\n=> Parent file search result FAILED! [son:"+son);
 			return son;
 		}
-		
+
 		int originalLevels = levelsUp;
 		try {
 			File result = null;
@@ -704,7 +720,7 @@ public class FileVarious {
 					if (levelsUp == 0) {
 						levelsUp = 1;
 					}
-	
+
 					while (levelsUp > 1) {
 						if (result.getParentFile() == null || !result.getParentFile().getAbsoluteFile().exists()) {
 							break;
@@ -712,13 +728,13 @@ public class FileVarious {
 						result = result.getParentFile().getAbsoluteFile();
 						levelsUp--;
 					}
-				} 
-				
+				}
+
 				logger.debug("\n\n=> Parent file search result [son:"+son.getCanonicalPath()
 					+", levelsUp:"+originalLevels+"]: "+result.getCanonicalPath()+"\n");
-				
+
 			}
-			
+
 			return result;
 		} catch (Exception e) {
 			logger.error("Error finding parent file, returning given son", e);
@@ -728,7 +744,7 @@ public class FileVarious {
 
 	public static boolean doesAncestorNlevelsExist(File currentFile, int ancestorLevel) {
 		if(currentFile == null || !currentFile.exists()) {return false;}
-		
+
 		File ancestor = getNlevelsAncestor(currentFile, ancestorLevel);
 		return (ancestor != null && ancestor.exists() && !ancestor.equals(currentFile));
 	}
@@ -743,7 +759,7 @@ public class FileVarious {
 					if (levelsUp == 0) {
 						levelsUp = 1;
 					}
-	
+
 					while (levelsUp > 0) {
 						result = temp.getName() + File.separator + result;
 						if (temp.getParentFile() == null || !temp.getParentFile().exists()) {
@@ -768,26 +784,26 @@ public class FileVarious {
 	/**
 	 * this method change name from the given file absolute path, until the result is a non existent file
 	 * It do that adding (i) numbers at the end of the file name, just before the start of the
-	 * extension . 
+	 * extension .
 	 * <Strong>Note that the given File variable won't change</Strong>
-	 * 
+	 *
 	 * @param file
 	 * @return the new unique path name in String format
 	 */
 	public static String getUniqueNameFile(File file) {
 		String fileName=file.getPath();
-	
+
 		String extension = "";
 		String name = "";
-	
+
 		int idxOfDot = fileName.lastIndexOf('.');   //Get the last index of . to separate extension
 		if(idxOfDot>=0) {
 			extension = fileName.substring(idxOfDot + 1);
 			name = fileName.substring(0, idxOfDot);
 		}else {
 			name = fileName;
-		}	
-		
+		}
+
 		Path path = Paths.get(fileName);
 		int counter = 1;
 		while(Files.exists(path)){
@@ -804,18 +820,18 @@ public class FileVarious {
 	}
 
 	/**
-	 * this function rename a file until it has a unique name not existing yet, putting incrementally 
+	 * this function rename a file until it has a unique name not existing yet, putting incrementally
 	 * an integer value starting to 0 (even if the file does not exist but have no index at the beginning )
 	 * at the start of the fileName, placing a string separator between it and the original fileName
-	 * 
+	 *
 	 * @param file the source file to check for unique name
 	 * @param separator the string separator to put after file incremental number
 	 * @return the file renamed - NB the original File parameter will not be renamed !
 	 */
 	public static File renameJavaObjFileAtStart(File file, String separator) {
-	
+
 		String fileName=file.getPath();
-		
+
 		String first = fileName.split(separator)[0];
 		try {
 			Integer.parseInt(first);
@@ -823,18 +839,18 @@ public class FileVarious {
 			first = "0";
 			FileWorker.logger.error("Exception happened!", e);
 		}
-		
+
 		int counter = 1;
-		
+
 		File f = null;
-		
+
 		while(file.exists()){
-			
+
 			counter++;
 		}
-		
+
 		f = new File(counter+separator+fileName);
-		
+
 		return f;
 	}
 
@@ -855,7 +871,7 @@ public class FileVarious {
 		}
 		extensionIncipit = extension.substring(0, dotIndex);
 		extensionAfterDot = extension.substring(dotIndex).replaceAll("[^a-zA-Z0-9]", "");
-		
+
 		return extensionIncipit.concat(dot).concat(extensionAfterDot);
 	}
 
@@ -872,16 +888,16 @@ public class FileVarious {
 			if (path.startsWith(curr.getAbsolutePath())) {
 				rootOK = true;
 				break;
-			} 
+			}
 		}
-		
+
 		return rootOK;
 	}
 
 	public static boolean isFileSonOfDir(File file, File dir) {
-		
+
 		if(file == null || dir == null) return false;
-		
+
 		File tempUpperDir;
 		try {
 			tempUpperDir = file.getCanonicalFile().getParentFile();
@@ -889,16 +905,16 @@ public class FileVarious {
 		} catch (IOException e) {
 			tempUpperDir = file.getParentFile();
 		}
-	
+
 		while(tempUpperDir != null) {
-		    
+
 			if(dir.equals(tempUpperDir)) {
 		    	return true;
 		    }
-	
+
 		    tempUpperDir = tempUpperDir.getParentFile();
 		}
-	
+
 		return false;
 	}
 }

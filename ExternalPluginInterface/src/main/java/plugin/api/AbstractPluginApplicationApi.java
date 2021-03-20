@@ -42,6 +42,18 @@ public abstract class AbstractPluginApplicationApi {
 
 	private static Vector<AbstractPluginApplicationApi> availableProviders = new Vector<>(4);
 
+	private static Set<IPlugin> availablePlugins = getAvailablePlugins(PluginType.ROOT, false);
+
+	private static boolean acceptTestPlugins = false;
+
+	public static Set<IPlugin> getAvailablePlugins(PluginType typeFilter, boolean initialize, boolean lazy) {
+		if(!lazy || availablePlugins == null) {
+			availablePlugins = getAvailablePlugins(PluginType.ROOT, false);
+		}
+
+		return filterPlugins(availablePlugins, typeFilter.classFilters);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static Set<IPlugin> getAvailablePlugins(PluginType typeFilter, boolean initialize) {
 		try {
@@ -64,7 +76,8 @@ public abstract class AbstractPluginApplicationApi {
 
 		for(IPlugin plugin : plugins) {
 			for (int i = 0; i < classFilters.length; i++) {
-				if (classFilters[i] != null && classFilters[i].isAssignableFrom(plugin.getClass())) {
+				boolean excludeTest = !acceptTestPlugins && plugin.isTestPlugin();
+				if (!excludeTest && classFilters[i] != null && classFilters[i].isAssignableFrom(plugin.getClass())) {
 					pluginsFiltered.add(plugin);
 					break;
 				}
@@ -98,8 +111,9 @@ public abstract class AbstractPluginApplicationApi {
 					if(initialize)
 						plugin.initialize();
 					pluginSet.add(plugin);
+					LOGGER.debug("Plugin loaded: " + clazz);
 				} catch (InstantiationException | IllegalAccessException e) {
-					LOGGER.error("Cannot load plugin of type: " + clazz, e);
+					LOGGER.error("Cannot load plugin of type: " + clazz);
 				}
 			}
 		}
@@ -144,6 +158,13 @@ public abstract class AbstractPluginApplicationApi {
 	 * @return Return message
 	 */
 	public abstract String loadText(String text);
+
+	/**
+	 * @param text
+	 *            the text to load
+	 * @return Return message
+	 */
+	public abstract String[] getFilesToLoad(IPlugin plugin);
 
 	/**
 	 * @param files

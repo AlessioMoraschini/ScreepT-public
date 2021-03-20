@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import plugin.api.AbstractPluginApplicationApi;
@@ -12,6 +13,7 @@ import plugin.api.AbstractPluginApplicationApi.PluginType;
 import plugin.external.arch.IPlugin;
 import plugin.external.root.embedded.test.HellowordPlugin;
 
+@Ignore
 public class TestPluginSearch {
 
 	@Test

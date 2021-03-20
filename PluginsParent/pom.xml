@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>PluginsParent</groupId>
+	<artifactId>PluginsParent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>PluginsParent</name>
+
+	<properties>
+		<parent.version.plugins>1.0.0-SNAPSHOT</parent.version.plugins>
+		
+		<plugin.common.root.dir>EXTERNAL_PLUGINS</plugin.common.root.dir>
+	
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<root.directory>C:/Users/xx/Desktop/Documenti&amp;Utili/Informatica varie/</root.directory>
+		<export.plugins.folder>
+			${root.directory}ScreepT_Build/LATEST_PLUGINS_DATA/EXTERNAL_PLUGINS
+		</export.plugins.folder>
+		<jmeld.jar.location>
+			${root.directory}ScreepT-Common-Repository/CodeComparator/jmeld-3.4.jar
+		</jmeld.jar.location>
+		
+		<!-- Modules data -->
+		<code.compare.export.name>CODE_COMPARE</code.compare.export.name>
+		<code.compare.export.destination>${export.plugins.folder}/${code.compare.export.name}/${plugin.common.root.dir}/${code.compare.export.name}</code.compare.export.destination>
+	</properties>
+
+	<modules>
+		<module>../CodeComparator</module>
+	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<id>createThriftDir</id>
+						<phase>validate</phase>
+						<configuration>
+							<tasks>
+								<delete dir="${export.plugins.folder}" />
+								<mkdir dir="${export.plugins.folder}" />
+								<mkdir dir="${code.compare.export.destination}" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
