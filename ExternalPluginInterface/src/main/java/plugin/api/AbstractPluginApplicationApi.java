@@ -31,16 +31,16 @@ import utility.log.SafeLogger;
  *
  * @author Alessio Moraschini
  */
-public abstract class AbstractApplicationApi {
+public abstract class AbstractPluginApplicationApi {
 
-	private static final SafeLogger LOGGER = new SafeLogger(AbstractApplicationApi.class);
+	private static final SafeLogger LOGGER = new SafeLogger(AbstractPluginApplicationApi.class);
 
 	public static final String PACKAGE_PLUGINS_ROOT = "plugin.external.root";
 	public static final String PACKAGE_PLUGINS_ROOT_EMBEDDED = "plugin.external.root.embedded";
 	public static final String PACKAGE_PLUGINS_TEXT_EDITOR = "plugin.external.root.texteditor";
 	public static final String PACKAGE_PLUGINS_CRYPTER = "plugin.external.root.crypter";
 
-	private static Vector<AbstractApplicationApi> availableProviders = new Vector<>(4);
+	private static Vector<AbstractPluginApplicationApi> availableProviders = new Vector<>(4);
 
 	@SuppressWarnings("unchecked")
 	public static Set<IPlugin> getAvailablePlugins(PluginType typeFilter, boolean initialize) {
@@ -58,7 +58,7 @@ public abstract class AbstractApplicationApi {
 		}
 	};
 
-	public static <T extends IPlugin> Set<IPlugin> filterPlugins(Set<IPlugin> plugins, Class<T>[] classFilters ){
+	public static Set<IPlugin> filterPlugins(Set<IPlugin> plugins, Class<? extends IPlugin>[] classFilters ){
 
 		Set<IPlugin> pluginsFiltered = new HashSet<>();
 
@@ -107,25 +107,27 @@ public abstract class AbstractApplicationApi {
 		return pluginSet;
 	};
 
-	public static final Vector<AbstractApplicationApi> getAvailableProviders() {
+	public static final Vector<AbstractPluginApplicationApi> getAvailableProviders() {
 		synchronized (availableProviders) {
-			return new Vector<AbstractApplicationApi>(availableProviders);
+			return new Vector<AbstractPluginApplicationApi>(availableProviders);
 		}
 	}
 
-	public static final AbstractApplicationApi getProviderByClassName(String classPathComplete) throws ClassNotFoundException {
-		return AbstractApplicationApi.class.cast(Class.forName(classPathComplete));
+	public static final AbstractPluginApplicationApi getProviderByClassName(String classPathComplete) throws ClassNotFoundException {
+		return AbstractPluginApplicationApi.class.cast(Class.forName(classPathComplete));
 	}
 
-	public static final void registerProvider(AbstractApplicationApi provider) {
+	public static final AbstractPluginApplicationApi registerProvider(AbstractPluginApplicationApi provider) {
 		synchronized (availableProviders) {
 			if (!availableProviders.contains(provider)) {
 				availableProviders.add(provider);
 			}
 		}
+
+		return provider;
 	}
 
-	public static final boolean removeProvider(AbstractApplicationApi provider) {
+	public static final boolean removeProvider(AbstractPluginApplicationApi provider) {
 		synchronized (availableProviders) {
 			if (availableProviders.contains(provider))
 				return availableProviders.remove(provider);
