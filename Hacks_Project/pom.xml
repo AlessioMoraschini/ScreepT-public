@@ -1,0 +1,153 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>Hacks</groupId>
+	<artifactId>Hacks</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<parent>
+		<groupId>PluginsParent</groupId>
+		<artifactId>PluginsParent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../PluginsParent</relativePath>
+	</parent>
+
+	<name>HacksProject</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<outdir>${hacks.project.export.destination}</outdir>
+	</properties>
+
+	<build>
+		<finalName>TricksProject</finalName>
+		<sourceDirectory>src</sourceDirectory>
+
+		<plugins>
+			<!-- COMPILER -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<header>license-header.txt</header>
+					<properties>
+						<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+						<developer.mail>info@am-design-development.com</developer.mail>
+						<inception.year>2019</inception.year>
+						<current.year>2021</current.year>
+						<project.main.url>https://www.am-design-development.com/</project.main.url>
+					</properties>
+					<includes>
+						<include>src/**/*.java</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>first</id>
+						<goals>
+							<goal>format</goal>
+							<!-- <goal>remove</goal> -->
+						</goals>
+						<phase>clean</phase>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+
+					<!-- FATJAR BUILD -->
+					<execution>
+						<id>make-assembly - main fatjar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<skipAssembly>${hacks.project.export.skip}</skipAssembly>
+							<overwrite>true</overwrite>
+							<outputDirectory>${outdir}</outputDirectory>
+							<archive>
+								<manifest>
+									<mainClass>antilocker.AntilockerGui</mainClass>
+								</manifest>
+							</archive>
+							<appendAssemblyId>false</appendAssemblyId>
+							<exclude>/**/*humbs.db</exclude>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+			
+			<plugin>
+	        <groupId>org.codehaus.mojo</groupId>
+			<artifactId>license-maven-plugin</artifactId>
+			<version>2.0.0</version>
+			<executions>
+				<execution>
+					<phase>install</phase>
+					<configuration>
+						<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+						<generateBundle>true</generateBundle>
+						<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
+						<excludedScopes>provided,test</excludedScopes>
+					</configuration>
+					<goals>
+					<goal>third-party-report</goal>
+					</goals>
+				</execution>
+			</executions>
+			<configuration>
+				<skipThirdPartyReport>false</skipThirdPartyReport>
+			</configuration>
+      	</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>testUtils</groupId>
+			<artifactId>testUtils</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.1stleg</groupId>
+			<artifactId>jnativehook</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ExternalPluginInterface</groupId>
+			<artifactId>external.plugin.interface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>

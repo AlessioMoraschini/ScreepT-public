@@ -5,9 +5,11 @@ import java.util.List;
 
 public interface IPlugin {
 
-	public default String getTooltip() {return "";};
+	public String getPluginZipName();
 
 	public String getPluginName();
+
+	public default String getTooltip() {return "";};
 
 	public default boolean launchMain(String args[]) {return true;};
 

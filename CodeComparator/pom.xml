@@ -35,13 +35,10 @@
 			<artifactId>jmeld</artifactId>
 			<version>3.4</version>
 			<scope>compile</scope>
-			<!--  install with codeCompare.bat -->
-			<!-- <systemPath>${jmeld.jar.location}</systemPath> -->
 		</dependency>
 	</dependencies>
 
 	<properties> 
-		<!-- <module.export.name>CODE_COMPARE</module.export.name>  -->
 		<outdir>${code.compare.export.destination}</outdir>
 	</properties>
 
@@ -73,7 +70,7 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
-							<skipAssembly>false</skipAssembly>
+							<skipAssembly>${code.compare.export.skip}</skipAssembly>
 							<overwrite>true</overwrite>
 							<outputDirectory>${outdir}</outputDirectory>
 							<appendAssemblyId>false</appendAssemblyId>

@@ -1,0 +1,9 @@
+
+=========================================================================================
+ Copyright (C) ${inception.year}-${current.year}
+  
+ ${developer.name} - All Rights Reserved
+=========================================================================================
+
+You should have received a copy of the license with this file. 
+If not, please write to: ${developer.mail}, or visit : ${project.main.url}

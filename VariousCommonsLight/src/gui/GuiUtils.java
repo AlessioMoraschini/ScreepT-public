@@ -100,7 +100,7 @@ public class GuiUtils {
 	/**
 	 * Retrieve selected text from JTextaea if something is selected, else retrieve
 	 * all text
-	 * 
+	 *
 	 * @param source
 	 * @return
 	 */
@@ -111,7 +111,7 @@ public class GuiUtils {
 
 		return result;
 	}
-	
+
 	public static boolean checkIfComponentContains(Container container, Component toSearch) {
 		List<Component> componentList = Arrays.asList(container.getComponents());
 		return componentList.contains(toSearch);
@@ -123,6 +123,7 @@ public class GuiUtils {
 			@Override
 			public void mouseReleased(final MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						if (target != null) {
 							if (!target.getBounds().contains(e.getPoint())) {
@@ -153,6 +154,7 @@ public class GuiUtils {
 			@Override
 			public void focusLost(FocusEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						if (target != null) {
 							target.dispatchEvent(new WindowEvent(target, WindowEvent.WINDOW_CLOSING));
@@ -169,15 +171,15 @@ public class GuiUtils {
 			}
 		};
 	}
-	
+
 	public static void giveFocusToComponent(Component component) {
 		if(component == null)
 			return;
-		
+
 		SwingUtilities.invokeLater(()-> {
 			if(component instanceof JTextComponent)
 				((JTextComponent)component).setRequestFocusEnabled(true);
-			
+
 			component.requestFocus();
 			component.requestFocusInWindow();
 		});
@@ -191,6 +193,7 @@ public class GuiUtils {
 			@Override
 			public void mouseMoved(final MouseEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						if (!target.getBounds().contains(e.getPoint()) && mouseEntered) {
 							target.dispatchEvent(new WindowEvent(target, WindowEvent.WINDOW_CLOSING));
@@ -242,7 +245,7 @@ public class GuiUtils {
 			}
 		});
 	}
-	
+
 	public static void launchThreadSafeSwingV2(Runnable threadAction) {
 		new Thread(() -> {
 			SwingUtilities.invokeLater(() -> {
@@ -277,6 +280,7 @@ public class GuiUtils {
 
 	public static <E, T> void refreshCombo(final JComboBox<E> target, final Collection<E> values) {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				target.removeAllItems();
 				Object[] array = values.toArray();
@@ -302,7 +306,7 @@ public class GuiUtils {
 
 	/**
 	 * Calculates current GUI width / screen width ratio (1 => full screen).
-	 * 
+	 *
 	 * Returns 0 in case of error, else the ratio guiWidth/screenWidth
 	 */
 	public static float getGuiToScreenWidthRatio(Window mainGui) {
@@ -313,12 +317,12 @@ public class GuiUtils {
 
 		int width = (mainGui.getWidth() != 0) ? mainGui.getWidth() : 1;
 
-		return (float) (width / getScreenSize().width);
+		return width / getScreenSize().width;
 	}
 
 	/**
 	 * Calculates current GUI heigth / screen height ratio (1 => full screen).
-	 * 
+	 *
 	 * Returns 0 in case of error, else the ratio guiHeigth/screenHeigth
 	 */
 	public static float getGuiToScreenHeitghtRatio(JComponent mainGui) {
@@ -329,7 +333,7 @@ public class GuiUtils {
 
 		int height = (mainGui.getHeight() != 0) ? mainGui.getHeight() : 1;
 
-		return (float) (height / getScreenSize().height);
+		return height / getScreenSize().height;
 	}
 
 	/**
@@ -422,7 +426,7 @@ public class GuiUtils {
 	/**
 	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with
 	 * invokeLater built in. Prevent maximize if before was not maxified
-	 * 
+	 *
 	 * <b>if toFront is not null it will be take to front last</b>
 	 */
 	public static void changeFrameStateLater(JFrame frame, JFrame toFront, int finalState) {
@@ -435,7 +439,7 @@ public class GuiUtils {
 	/**
 	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with
 	 * invokeLater built in. Prevent maximize if before was not maxified
-	 * 
+	 *
 	 * <b>if toFront is not null it will be take to front last</b>
 	 */
 	public static void changeFrameStateLater(JFrame frame, JDialog toFront, int finalState) {
@@ -448,7 +452,7 @@ public class GuiUtils {
 	/**
 	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with
 	 * invokeLater built in. Prevent maximize if before was not maxified
-	 * 
+	 *
 	 * <b>if toFront is not null it will be take to front last</b>
 	 */
 	public static void changeFrameStateLaterUnchecked(JFrame frame, JFrame toFront, int finalState) {
@@ -459,6 +463,7 @@ public class GuiUtils {
 
 		toFront.setLocationRelativeTo(frame);
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				frame.setExtendedState(finalState);
 				if (toFront != null) {
@@ -471,11 +476,12 @@ public class GuiUtils {
 	/**
 	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with
 	 * invokeLater built in. Prevent maximize if before was not maxified
-	 * 
+	 *
 	 * <b>if toFront is not null it will be take to front last</b>
 	 */
 	public static void changeFrameStateLaterUnchecked(JFrame frame, JDialog toFront, int finalState) {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				frame.setExtendedState(finalState);
 				if (toFront != null) {
@@ -527,7 +533,7 @@ public class GuiUtils {
 	/**
 	 * this method makes the current frame that's invoking this method to move on
 	 * same monitor as the given frame
-	 * 
+	 *
 	 * @param frame
 	 *            his monitor will be the target for the current window
 	 * @return the found graphicsDevice obj of target frame
@@ -542,7 +548,7 @@ public class GuiUtils {
 	/**
 	 * Use JFrame states as state to modify a frame (icon, maximized, etc,...) with
 	 * invokeLater built in. Prevent maximize if before was not maxified
-	 * 
+	 *
 	 * <b>if toFront is not null it will be take to front last</b>
 	 */
 	public static void extendFramesAndMoveToTop(JFrame frame, JFrame toFront, int finalState) {
@@ -612,7 +618,7 @@ public class GuiUtils {
 	public static void centerComponent(Component targetComponent, int percentSize) {
 		if (targetComponent != null) {
 			float percent = (float) percentSize / 100;
-			Dimension screenSize = (targetComponent instanceof JFrame) ? getScreenSize((JFrame) targetComponent) : getScreenSize();
+			Dimension screenSize = (targetComponent instanceof JFrame) ? getScreenSize(targetComponent) : getScreenSize();
 			int W = (int) (screenSize.width * percent);
 			int H = (int) (screenSize.height * percent);
 			targetComponent.setSize(W, H);
@@ -622,7 +628,7 @@ public class GuiUtils {
 
 	public static void centerComponent(Component targetFrame, int W, int H) {
 		if (targetFrame != null) {
-			Dimension screenSize = (targetFrame instanceof JFrame) ? getScreenSize((JFrame) targetFrame) : getScreenSize();
+			Dimension screenSize = (targetFrame instanceof JFrame) ? getScreenSize(targetFrame) : getScreenSize();
 			targetFrame.setSize(W, H);
 			targetFrame.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
 		}
@@ -632,7 +638,7 @@ public class GuiUtils {
 		if (targetFrame == null) {
 			return;
 		}
-		Dimension screenSize = (targetFrame instanceof JFrame) ? getScreenSize((JFrame) targetFrame) : getScreenSize();
+		Dimension screenSize = (targetFrame instanceof JFrame) ? getScreenSize(targetFrame) : getScreenSize();
 		Dimension frameSize = null;
 		frameSize = targetFrame.getSize();
 		int W = frameSize.width;
@@ -666,7 +672,7 @@ public class GuiUtils {
 			int totY = (element.getY() + yDiff);
 			int newX = (totX < 0) ? 0 : totX;
 			int newY = (totY < 0) ? 0 : totY;
-			Dimension screenSize = (element instanceof JFrame) ? getScreenSize((JFrame) element) : getScreenSize();
+			Dimension screenSize = (element instanceof JFrame) ? getScreenSize(element) : getScreenSize();
 			int maxDeltaX = screenSize.width - newX - element.getWidth();
 			int maxDeltaY = screenSize.height - newY - element.getHeight();
 			newX = (maxDeltaX < 0) ? screenSize.width - element.getWidth() : newX;
@@ -692,12 +698,12 @@ public class GuiUtils {
 			}
 		}
 	}
-	
+
 	private static boolean isWindows() {
 		String osNameShort = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
 		return osNameShort.indexOf("win") >= 0;
 	}
-	
+
 	/**
 	 * View the file with windows explorer, selecting the given file
 	 */
@@ -717,7 +723,7 @@ public class GuiUtils {
 			try {
 				Desktop.getDesktop().open(destination);
 				logger.debug(destination.getAbsolutePath() + " Opened with default application");
-				
+
 			} catch (IOException e1) {
 				logger.error("Error opening folder in system explorer !", e1);
 			}
@@ -762,7 +768,7 @@ public class GuiUtils {
 			root.getGlassPane().setCursor(CURSOR_DEFAULT);
 		}
 	}
-	
+
 	public static void clickAndTriggerButton(JButton button) {
 		if(button != null) {
 			button.doClick();
@@ -806,9 +812,9 @@ public class GuiUtils {
 	/**
 	 * Create a copy of the current line denoted by current caret position, and
 	 * insert it before or after the current line
-	 * 
+	 *
 	 * If more lines are selected, then all of them will be duplicated
-	 * 
+	 *
 	 * @param textArea
 	 * @param upDirection
 	 * @return
@@ -877,14 +883,14 @@ public class GuiUtils {
 
 	/**
 	 * Insert a the given string at the given caret position offset.
-	 * 
+	 *
 	 * @param caretPosStart
 	 *            the caret start position
 	 * @param newLine
 	 *            the string to insert
 	 * @param textArea
 	 *            the target textarea to insert into
-	 * 
+	 *
 	 * @return true if line has been inserted, false if not
 	 */
 	public static boolean insertLineIntoTextArea(int caretPosStart, String newLine, JTextArea textArea) {
@@ -1014,14 +1020,14 @@ public class GuiUtils {
 	public static String getAsHtmlList(List<String> originals) {
 		StringBuilder builder = new StringBuilder();
 		if(originals != null) {
-			
+
 			for(String original : originals) {
 				builder.append("<li>")
 					.append(original)
 					.append("</li>");
 			}
 		}
-			
+
 		return "<ul>" + builder.toString() + "</ul>";
 	}
 
@@ -1043,7 +1049,7 @@ public class GuiUtils {
 	/**
 	 * Use this to disable or enable default system shortcuts for a given key,
 	 * identified by its keyCode
-	 * 
+	 *
 	 * @param keyCode
 	 */
 	public static void setKeySystemActionEnabled(int keyCode, boolean enable) {
@@ -1068,23 +1074,25 @@ public class GuiUtils {
 
 		return currentLine.length() - nOfTabs + tabsTotalLength;
 	}
-	
+
 	public static void setDialogModalType(Dialog target, ModalityType type) {
 		setDialogModalType(target, type, false);
 	}
 
 	public static void setDialogModalType(Dialog target, ModalityType type, boolean switchVisible) {
-		
-		boolean wasVisible = target.isVisible();
-		
-		if(switchVisible)
-			target.setVisible(!wasVisible);
-		
-		target.setModalityType(type);
-		target.setModal(!ModalityType.MODELESS.equals(type));
-	
-		if(switchVisible)
-			target.setVisible(wasVisible);
+
+		launchThreadSafeSwing(()->{
+			boolean wasVisible = target.isVisible();
+
+			if(switchVisible)
+				target.setVisible(!wasVisible);
+
+			target.setModalityType(type);
+			target.setModal(!ModalityType.MODELESS.equals(type));
+
+			if(switchVisible)
+				target.setVisible(wasVisible);
+		});
 	}
 
 }

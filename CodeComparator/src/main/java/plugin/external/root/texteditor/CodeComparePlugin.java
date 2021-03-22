@@ -17,6 +17,11 @@ public class CodeComparePlugin implements IPluginTextEditor {
 	}
 
 	@Override
+	public String getPluginZipName() {
+		return "CODE_COMPARE.zip";
+	}
+
+	@Override
 	public String getPluginName() {
 		return "Code Compare Plugin";
 	}
@@ -36,14 +41,8 @@ public class CodeComparePlugin implements IPluginTextEditor {
 
 	@Override
 	public boolean openFrame(List<File> files) {
-		String[] filePaths = new String[files != null ? files.size() : 0];
-		if(files != null) {
-			for(int i = 0; i < files.size(); i++) {
-				filePaths[i] = FileVarious.getCanonicalPathSafe(files.get(i));
-			}
-		}
 
-		jMeld = new JMeldFork(filePaths);
+		jMeld = new JMeldFork(FileVarious.filesToPaths(files));
 		jMeld.run();
 
 		return true;

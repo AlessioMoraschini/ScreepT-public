@@ -19,16 +19,24 @@
 		<export.plugins.folder>
 			${root.directory}ScreepT_Build/LATEST_PLUGINS_DATA/EXTERNAL_PLUGINS
 		</export.plugins.folder>
+		
+		<!-- Modules dependencies -->
 		<jmeld.jar.location>
 			${root.directory}ScreepT-Common-Repository/CodeComparator/jmeld-3.4.jar
 		</jmeld.jar.location>
 		
 		<!-- Modules data -->
+		<code.compare.export.skip>false</code.compare.export.skip>
 		<code.compare.export.name>CODE_COMPARE</code.compare.export.name>
-		<code.compare.export.destination>${export.plugins.folder}/${code.compare.export.name}/${plugin.common.root.dir}/${code.compare.export.name}</code.compare.export.destination>
+		<code.compare.export.destination>${export.plugins.folder}/${code.compare.export.name}/${plugin.common.root.dir}</code.compare.export.destination>
+
+		<hacks.project.export.skip>false</hacks.project.export.skip>
+		<hacks.project.export.name>Tricks_Project</hacks.project.export.name>
+		<hacks.project.export.destination>${export.plugins.folder}/${hacks.project.export.name}/${plugin.common.root.dir}</hacks.project.export.destination>
 	</properties>
 
 	<modules>
+		<module>../Hacks_Project</module>
 		<module>../CodeComparator</module>
 	</modules>
 
@@ -47,6 +55,7 @@
 								<delete dir="${export.plugins.folder}" />
 								<mkdir dir="${export.plugins.folder}" />
 								<mkdir dir="${code.compare.export.destination}" />
+								<mkdir dir="${hacks.project.export.destination}" />
 							</tasks>
 						</configuration>
 						<goals>

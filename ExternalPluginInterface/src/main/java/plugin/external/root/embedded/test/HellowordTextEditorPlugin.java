@@ -16,7 +16,10 @@ public class HellowordTextEditorPlugin implements IPluginTextEditor {
 		return true;
 	}
 
-
+	@Override
+	public String getPluginZipName() {
+		return null;
+	}
 
 	@Override
 	public boolean launchMain(String[] args) {

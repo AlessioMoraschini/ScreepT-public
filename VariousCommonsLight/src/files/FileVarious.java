@@ -493,6 +493,17 @@ public class FileVarious {
 		return countFilesUntilLimit(directory, countDirectories, maxAdmitted + 1) > maxAdmitted;
 	}
 
+	public static String[] filesToPaths(List<File> files) {
+		String[] filePaths = new String[files != null ? files.size() : 0];
+		if(files != null) {
+			for(int i = 0; i < files.size(); i++) {
+				filePaths[i] = FileVarious.getCanonicalPathSafe(files.get(i));
+			}
+		}
+
+		return filePaths;
+	}
+
 	public static File[] getFileArrayFromStrings(String[] filePaths){
 		logger.debug("ARGUMENT FILES:" + Arrays.toString(filePaths));
 
