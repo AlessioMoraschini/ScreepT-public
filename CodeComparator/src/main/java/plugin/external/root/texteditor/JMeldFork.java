@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import org.jmeld.settings.JMeldSettings;
+import org.jmeld.ui.AbstractContentPanel;
 import org.jmeld.ui.JMeldContentPanelIF;
 import org.jmeld.ui.JMeldPanel;
 import org.jmeld.ui.util.ImageUtil;
@@ -19,11 +20,11 @@ import org.jmeld.util.prefs.WindowPreference;
 
 public class JMeldFork implements Runnable {
 
-	private List fileNameList;
+	private List<String> fileNameList;
 	private static JMeldPanel jmeldPanel;
 
 	public JMeldFork(String args[]) {
-		fileNameList = new ArrayList();
+		fileNameList = new ArrayList<>();
 		String as[] = args;
 		int i = as.length;
 		for (int j = 0; j < i; j++) {
@@ -38,9 +39,9 @@ public class JMeldFork implements Runnable {
 
 			@Override
 			public void windowClosing(WindowEvent we) {
-				for (Iterator iterator = JMeldPanel.getContentPanelList(getJMeldPanel().getTabbedPane()).iterator(); iterator
+				for (Iterator<AbstractContentPanel> iterator = JMeldPanel.getContentPanelList(getJMeldPanel().getTabbedPane()).iterator(); iterator
 						.hasNext();) {
-					JMeldContentPanelIF contentPanel = (JMeldContentPanelIF) iterator.next();
+					JMeldContentPanelIF contentPanel = iterator.next();
 					if (!contentPanel.checkSave())
 						return;
 				}

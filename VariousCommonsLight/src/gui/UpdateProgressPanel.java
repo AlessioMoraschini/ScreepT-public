@@ -90,7 +90,7 @@ public class UpdateProgressPanel {
 
         	}
         }).start();
-		GuiUtils.setDialogModalType(dialog,  ModalityType.APPLICATION_MODAL, true);
+//		GuiUtils.setDialogModalType(dialog,  ModalityType.APPLICATION_MODAL, true);
     }
 
     public UpdateProgressPanel(boolean secondBar, boolean undefinedDuration) {

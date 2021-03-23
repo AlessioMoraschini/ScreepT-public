@@ -23,28 +23,28 @@ import files.om.FileNamed;
 
 
 public class LimitedConcurrentList <T>{
-	
+
 	private Vector<T> list;
 	private int maxSize;
-	
+
 	// constructor
-	
+
 	public LimitedConcurrentList(int maxSize){
 		this.maxSize = maxSize;
 		list = new Vector<T>();
 	}
-	
+
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 
-	// methods 
-	
+	// methods
+
 	public int getSize() {
 		return list.size();
 	}
-	
+
 	public boolean isFull() {
 		return list.size() == maxSize;
 	}
@@ -52,14 +52,14 @@ public class LimitedConcurrentList <T>{
 	public boolean isEmpty() {
 		return list.isEmpty();
 	}
-	
+
 	/**
 	 * Add an element at the end of the list. If max is reached first element will be cleaned out before to insert
 	 * @param element
 	 * @return
 	 */
 	public boolean add(T element) {
-		
+
 		synchronized (list) {
 			if (isFull() && !list.isEmpty()) {
 				list.remove(0);
@@ -75,7 +75,7 @@ public class LimitedConcurrentList <T>{
 	 * @return
 	 */
 	public boolean addAll(Collection<T> elements) {
-		
+
 		synchronized (list) {
 			for (T element : elements) {
 				if (isFull() && !list.isEmpty()) {
@@ -94,7 +94,7 @@ public class LimitedConcurrentList <T>{
 	 */
 	public boolean addIfNotPresent(Collection<T> elements) {
 		boolean added = false;
-		
+
 		synchronized (list) {
 			for (T element : elements) {
 				if (!list.contains(element)) {
@@ -107,7 +107,7 @@ public class LimitedConcurrentList <T>{
 		}
 		return added;
 	}
-	
+
 	public void addIfNotPresent(T element) {
 		if(!list.contains(element)) {
 			addUniqueToTop(element);
@@ -115,50 +115,50 @@ public class LimitedConcurrentList <T>{
 	}
 
 	/**
-	 * Add elements at the end of the list(if an element is already present it will be cleaned out and then re-added). 
+	 * Add elements at the end of the list(if an element is already present it will be cleaned out and then re-added).
 	 * If max is reached first element will be cleaned out before to insert
 	 * @param element
 	 * @return
 	 */
 	public void addUniquesToTop(Collection<T> elements) {
-		
+
 		if(elements == null)
 			return;
-		
+
 		synchronized (list) {
 			for (T element : elements) {
-				
+
 				if (isFull() && !list.isEmpty()) {
 					list.remove(0);
 				}
-				
+
 				if (list.contains(element)) {
 					list.remove(element);
 					list.add(element);
 				} else {
 					list.add(element);
 				}
-					
+
 			}
 		}
 	}
 
 	/**
-	 * Add an element at the end of the list(if an element is already present it will be cleaned out and then re-added). 
+	 * Add an element at the end of the list(if an element is already present it will be cleaned out and then re-added).
 	 * If max is reached first element will be cleaned out before to insert
 	 * @param element
 	 * @return
 	 */
 	public void addUniqueToTop(T element) {
-		
+
 		if(element == null)
 			return;
-		
+
 		synchronized (list) {
 			if (isFull() && !list.isEmpty()) {
 				list.remove(0);
 			}
-			
+
 			if (list.contains(element)) {
 				list.remove(element);
 				list.add(element);
@@ -168,15 +168,15 @@ public class LimitedConcurrentList <T>{
 		}
 	}
 	public void addUniqueToTopByEquals(T element) {
-		
+
 		if(element == null)
 			return;
-		
+
 		synchronized (list) {
 			if (isFull() && !list.isEmpty()) {
 				list.remove(0);
 			}
-			
+
 			for(T el : list) {
 				if(element.equals(el)) {
 					list.remove(el);
@@ -185,14 +185,14 @@ public class LimitedConcurrentList <T>{
 			list.add(0, element);
 		}
 	}
-	
+
 	/**
 	 * Basically same as add()
 	 * @param element
 	 * @return
 	 */
 	public boolean addLast(T element) {
-		
+
 		synchronized (list) {
 			if (isFull() && !list.isEmpty()) {
 				list.remove(0);
@@ -201,7 +201,7 @@ public class LimitedConcurrentList <T>{
 		}
 		return isFull();
 	}
-	
+
 	public boolean removeLast() {
 		if(list != null && !list.isEmpty()) {
 			int size = list.size();
@@ -209,14 +209,14 @@ public class LimitedConcurrentList <T>{
 			return true;
 		}else return false;
 	}
-	
+
 	/** removes all occurrences returning new size after deleting
-	 * 
+	 *
 	 * @param target the element to remove
 	 * @return the size after removal
 	 */
 	public int removeAllOccurrences(T target) {
-		
+
 		synchronized (list) {
 			while (list.contains(target)) {
 				if (list != null && !list.isEmpty()) {
@@ -228,7 +228,7 @@ public class LimitedConcurrentList <T>{
 	}
 
 	/** removes all occurrences returning new size after deleting
-	 * 
+	 *
 	 * @param target the element to remove
 	 * @return the size after removal
 	 */
@@ -240,7 +240,7 @@ public class LimitedConcurrentList <T>{
 					toRemove.add(current);
 				}
 			}
-			
+
 			for(T rmi : toRemove) {
 				list.remove(rmi);
 			}
@@ -249,7 +249,7 @@ public class LimitedConcurrentList <T>{
 	}
 
 	/** Last index of with search based on equals method to find last match
-	 * 
+	 *
 	 * @param target the element to remove
 	 * @return -1 if not found, last index in the other case
 	 */
@@ -264,18 +264,18 @@ public class LimitedConcurrentList <T>{
 			}
 			i++;
 		}
-		
+
 		return lastIndex;
 	}
-	
+
 	public T getLast() {
 		if (list != null && !list.isEmpty()) {
 			int size = list.size();
 			return list.get(size-1);
-		
+
 		} else return null;
 	}
-	
+
 	/**
 	 * Returns list of strings separated by separator. Incase of file list it uses absolutePath
 	 * @param separator
@@ -296,7 +296,7 @@ public class LimitedConcurrentList <T>{
 					builder.append(((FileNamed) curr).mFile.getAbsolutePath()).append(separator);
 				} else {
 					builder.append(curr).append(separator);
-				} 
+				}
 			} catch (Exception e) {
 			}
 		}
@@ -310,13 +310,14 @@ public class LimitedConcurrentList <T>{
 	 * @param innerSeparator
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public String toCharSeparatedStringMatrix(String separator, String innerSeparator) {
 		if(list == null) {return "";}
-		
+
 		StringBuilder builder = new StringBuilder();
 		for(T curr : list) {
 			int j = 0;
-			
+
 			try {
 				if (curr instanceof String[]) {
 					String[] array = (String[]) curr;
@@ -325,10 +326,10 @@ public class LimitedConcurrentList <T>{
 						builder.append(s);
 						if(i < array.length - 1)
 							builder.append(innerSeparator);
-							
+
 						i++;
 					}
-				
+
 				} else if (curr instanceof List<?>) {
 					List<String> array = (List<String>) curr;
 					int i = 0;
@@ -336,10 +337,10 @@ public class LimitedConcurrentList <T>{
 						builder.append(s);
 						if(i < array.size() - 1)
 							builder.append(innerSeparator);
-							
+
 						i++;
 					}
-				
+
 				} else if (curr instanceof Vector){
 					Vector<String> array = (Vector<String>) curr;
 					int i = 0;
@@ -347,35 +348,35 @@ public class LimitedConcurrentList <T>{
 						builder.append(s);
 						if(i < array.size() - 1)
 							builder.append(innerSeparator);
-							
+
 						i++;
 					}
-				
+
 				} else {
 					throw new BadAttributeValueExpException(curr + " -  was expected to be one of [String[] or List<String> or Vector<String>], but it's a " + curr.getClass().getCanonicalName());
 				}
-				
+
 			} catch (Exception e) {
 			}
-			
+
 			if(j < list.size() - 1)
 				builder.append(separator);
-			
+
 			j++;
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	public void reset() {
 		if(list == null)
 			list = new Vector<T>();
-		
+
 		list.clear();
 	}
 
 	// getters & setters
-	
+
 	public Vector<T> getList() {
 		return list;
 	}
@@ -386,7 +387,7 @@ public class LimitedConcurrentList <T>{
 
 	public void setListFromList(List<T> list, boolean uniqueOnly) {
 		reset();
-		
+
 		for(T t : list) {
 			if(uniqueOnly)
 				addUniqueToTopByEquals(t);
@@ -407,5 +408,5 @@ public class LimitedConcurrentList <T>{
 	public String toString() {
 		return "LimitedVector [list=" + list + ", maxSize=" + maxSize + "]";
 	}
-	
+
 }

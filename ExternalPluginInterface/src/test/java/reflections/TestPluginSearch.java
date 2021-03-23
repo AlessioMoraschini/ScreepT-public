@@ -22,6 +22,7 @@ public class TestPluginSearch {
 		assertFalse(plugins == null || plugins.isEmpty());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testSearchFiltered() {
 		Set<IPlugin> plugins = AbstractPluginApplicationApi.getAvailablePlugins(PluginType.EMBEDDED, true);

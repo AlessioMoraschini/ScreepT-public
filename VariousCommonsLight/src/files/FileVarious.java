@@ -521,19 +521,29 @@ public class FileVarious {
 	}
 
 	public static List<String> getStringListFromFiles(List<File> filePaths){
-		logger.debug("ARGUMENT FILES:" + filePaths);
 
 		List<String> argumentsFiles = new ArrayList<>();
-		int j = 0;
 		for(File s : filePaths) {
 			if (!END_ARGS_SECTION.equals(s)) {
 				argumentsFiles.add(getCanonicalPathSafe(s));
 			}else {
 				break;
 			}
-			j++;
 		}
 		return argumentsFiles;
+	}
+
+	public static String getStringFromFiles(List<File> filePaths, String separator){
+
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < filePaths.size(); i++) {
+			File s = filePaths.get(i);
+			builder.append(FileVarious.getCanonicalPathSafe(s));
+			if (i < filePaths.size() - 1)
+				builder.append(separator);
+		}
+
+		return builder.toString();
 	}
 
 	/**
@@ -683,6 +693,21 @@ public class FileVarious {
 			logger.error("", e);
 		}
 	    return areRelated;
+	}
+
+	public static boolean containedInList(List<File> files, File match) {
+		if(files != null) {
+			for(File file : files) {
+				try {
+					if(getCanonicalPathSafe(file).equals(match))
+						return true;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public static File searchUntilAncestorMatch(File son, String wantedParentMatch, boolean exactNameMatch) {
