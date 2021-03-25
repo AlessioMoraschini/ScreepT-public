@@ -12,13 +12,13 @@
   <inceptionYear>${inception.year}</inceptionYear>
   <licenses>
     <license>
-      <name>${project.license.name}</name>
-      <url>${project.license.url}</url>
+      <name>MIT</name>
+      <url>License-MIT.txt</url>
     </license>
   </licenses>
   <developers>
     <developer>
-      <name>${developer.name}</name>
+      <name>Alessio Moraschini</name>
     </developer>
   </developers>
   
