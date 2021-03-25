@@ -1,0 +1,128 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>MultimediaConversion</groupId>
+	<artifactId>MultimediaConversion</artifactId>
+	<version>1.0</version>
+
+	<packaging>jar</packaging>
+
+	<properties>
+		<!-- #################### LICENSE COMMON DATA ################# -->
+		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+		<developer.mail>info@am-design-development.com</developer.mail>
+		<inception.year>2019</inception.year>
+		<current.year>2021</current.year>
+		<project.license.name>MIT</project.license.name>
+		<project.main.url>https://www.am-design-development.com</project.main.url>
+	</properties>
+
+	<name>MultimediaConversion</name>
+	<description>Common classes used to convert media in different formats, along with some gui classes.</description>
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<!-- LICENSE REPORT GENERATOR -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+							<generateBundle>true</generateBundle>
+							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
+							<excludedScopes>provided,test</excludedScopes>
+						</configuration>
+						<goals>
+							<goal>third-party-report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<skipThirdPartyReport>false</skipThirdPartyReport>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.sourceforge.tess4j</groupId>
+			<artifactId>tess4j</artifactId>
+			<version>4.3.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.sociaal</groupId>
+			<artifactId>freetts</artifactId>
+			<version>1.2.2</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.icepdf.os</groupId>
+			<artifactId>icepdf-core</artifactId>
+			<version>6.2.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.media</groupId>
+					<artifactId>jai_core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.icepdf.os</groupId>
+			<artifactId>icepdf-viewer</artifactId>
+			<version>6.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ExternalPluginInterface</groupId>
+			<artifactId>external.plugin.interface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Modules dependencies -->
+
+		<dependency>
+			<groupId>GuiCommons</groupId>
+			<artifactId>GuiCommons</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>mygrid-repository</id>
+			<name>myGrid Repository</name>
+			<url>http://www.mygrid.org.uk/maven/repository</url>
+		</repository>
+	</repositories>
+</project>

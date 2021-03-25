@@ -64,6 +64,34 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-resources -> ${export.plugins.folder}</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<overwrite>true</overwrite>
+							<outputDirectory>${export.plugins.folder}</outputDirectory>
+							<resources>
+								<resource>
+									<filtering>false</filtering>
+									<directory>./resources</directory>
+									<includes>
+										<include>*</include>
+									</includes>
+									<excludes>/**/*humbs.db</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

@@ -1,0 +1,6 @@
+*0  /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java   auto mode
+1  /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java   manual mode
+2  /usr/lib/jvm/jdk1.7.0/bin/java                   manual mode
+3  /usr/lib/jvm/jre1.7.0/bin/java                   manual mode
+3  \usr/lib/jvm\jre9/bin/java                   manual mode
+3  /usr/lib\jvm/jre9/bin/java                   manual mode

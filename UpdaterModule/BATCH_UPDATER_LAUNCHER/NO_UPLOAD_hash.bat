@@ -1,0 +1,1 @@
+java -jar updater.jar -generateHashes false manifest.properties

@@ -1,0 +1,149 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>GuiCommons</groupId>
+  <artifactId>GuiCommons</artifactId>
+  <version>1.0</version>
+  
+  <packaging>jar</packaging>
+  
+  <properties>
+  	<!-- #################### LICENSE COMMON DATA ################# -->
+	<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+	<developer.mail>info@am-design-development.com</developer.mail>
+	<inception.year>2019</inception.year>
+	<current.year>2020</current.year>
+	<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
+	<project.main.url>https://www.am-design-development.com</project.main.url>
+	<project.license.url>../License_ScreepT.html</project.license.url>
+  </properties>
+  
+  <name>GuiCommons</name>
+  <description>
+  	This module is Specific for all the graphics functions needed by ScreepT project, in order to make them reusable in a future release.
+  </description>
+  <url>${project.main.url}</url>
+  <inceptionYear>${inception.year}</inceptionYear>
+  <licenses>
+    <license>
+      <name>${project.license.name}</name>
+      <url>${project.license.url}</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>${developer.name}</name>
+    </developer>
+  </developers>
+  
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <repositories>
+    <repository>
+      <id>spring.io</id>
+      <name>spring.io_REPO</name>
+      <url>http://repo.spring.io/plugins-release/</url>
+    </repository>
+  </repositories>
+  <dependencies> 
+  
+	<!-- https://mvnrepository.com/artifact/com.jgoodies/looks -->
+	<dependency>
+	    <groupId>com.jgoodies</groupId>
+	    <artifactId>looks</artifactId>
+	    <version>2.2.2</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>com.miglayout</groupId>
+	    <artifactId>miglayout</artifactId>
+	    <version>3.7.4</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>com.github.depsypher</groupId>
+	    <artifactId>pngtastic</artifactId>
+	    <version>1.5</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-lang3</artifactId>
+	    <version>3.9</version>
+	    <exclusions>
+		    <exclusion>
+		    	<groupId>org.easymock</groupId>
+   			 	<artifactId>easymock</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.junit-pioneer</groupId>
+    			<artifactId>junit-pioneer</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.junit.jupiter</groupId>
+    			<artifactId>junit-jupiter</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.openjdk.jmh</groupId>
+    			<artifactId>jmh-core</artifactId>
+		    </exclusion>
+		    <exclusion>
+	    	 	<groupId>org.openjdk.jmh</groupId>
+    			<artifactId>jmh-generator-annprocess</artifactId>
+		    </exclusion>
+	    </exclusions>
+	</dependency>
+
+	<dependency>
+		<groupId>Resources</groupId>
+		<artifactId>Resources</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+	  <groupId>OsCommons</groupId>
+	  <artifactId>OsCommons</artifactId>
+	  <version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>Initializer_Configs</groupId>
+	    <artifactId>Initializer_Configs</artifactId>
+	    <version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>UpdaterModule</groupId>
+		<artifactId>UpdaterModule</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+		<exclusions>
+			<exclusion>
+				<groupId>commons-net</groupId>
+		    	<artifactId>commons-net</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+	
+  </dependencies>
+</project>

@@ -13,7 +13,7 @@
 		<developer.mail>info@am-design-development.com</developer.mail>
 		<inception.year>2019</inception.year>
 		<current.year>2021</current.year>
-		<project.license.name>Apache 2.0</project.license.name>
+		<project.license.name>MIT</project.license.name>
 		<project.main.url>https://www.am-design-development.com</project.main.url>
 		<!-- <project.license.url>../License_ScreepT.html</project.license.url> -->
 	</properties>

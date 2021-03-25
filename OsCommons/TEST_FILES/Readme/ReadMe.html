@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+	<!--  HEAD SECTION  -->
+	<head>
+	<meta charset="utf-8">
+	<title>ScreepT - Tutorial</title>
+	<link rel="stylesheet" href="ReadMe_Style.css">
+	<script src="script.js"></script>
+	</head>
+	
+	<!--  START BODY  -->
+	<body>
+
+		<div id="titleBlock">
+			<div id="titleImage">
+				<image src="./Images/icon.jpg" height="100px" width="auto"></image>
+			</div>
+			<!--  TITLE SECTION  -->
+			<div id="mainTitle" class="center">
+				<h1>ScreepT</h1>
+			</div>
+			<div id="titleImage">
+				<image src="./Images/icon.jpg" height="100px" width="auto"></image>
+			</div>
+			<br>
+		</div>
+		
+		<div id="subTitleBlock"class="centerColoredSub2">A smart crypter... and much more!
+			<div id="subTitle" class="centerColoredSub1">
+				<span>By A.M. Design and Development - 2019 - Version ${project.version}</span>
+			</div>
+			<p style="font-size:12px; color:#444444"><b>(This version was built on: ${maven.build.timestamp})</b></p>
+		</div>
+		
+		<!--  MAIN SECTION  -->
+		<div class="mainBlock">
+					
+			<!--  DESCTIPTION  -->
+			<div id="desSrcYpTion" align="center"><hr>
+				<p>Welcome to <b><span class="subIndex2">ScreepT</span></b> tutorial! Here you can find all informations about how to use it properly.</p>
+				<p>ScreepT was born as a crypter...	but it became a multi-platform tool written for fun, and to help me during my own programming tasks. 
+					<br>
+					If you find something you'll like to improve, or you want to signal a bug you can write to <i>${developer.bugs.mail}</i>. Enjoy!
+				</p>
+				<p><b>NB: </b>you should take care of buttons tooltips and keyboard shortcuts, they can be <u>very helpful</u>!</p>
+				<hr>
+			</div>
+	
+			<br>
+			
+			<!--  INDEX  -->
+			<a id="indexAnchor" href="#indexList"></a>
+			<div id="indexList">
+				<h1 id="indexTitle" class="sectionTitle">INDEX</h1> 
+				<ol>
+					<li>
+						<div id="InstallationNusage_index" class="subIndex1">		
+							<a href="#InstallationNusage">Installation and First launch</a>
+						</div>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#subLauncherCompatibility">Launcher and compatibility</a>
+							</div></li>
+						</ul>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#subSettings">Launcher settings</a>
+							</div></li>
+						</ul>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#subOSdepLauncher">OS dependency</a>
+							</div></li>
+						</ul>
+					</li>
+					
+					<li>
+						<div id="FunctionsDescNtips_index" class="subIndex1">		
+							<a href="#FunctionsDescNtips">Functions description and tips</a>
+						</div>
+						<div>
+							<ul>
+								<li><div class="subIndex2">		
+									<a href="#funcFileSubMenu">File</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleConfigManager">CONFIGURATION MANAGER</a></li>
+										<li><a class="subIndex3" href="#subSectTitleReload">RELOAD CONFIGURATION</a></li>
+										<li><a class="subIndex3" href="#subSectTitleLoad">LOAD CONFIGURATION</a></li>
+										<li><a class="subIndex3" href="#subSectTitleExp">EXPORT CONFIGURATION</a></li>
+										<li><a class="subIndex3" href="#subSectTitleCurrAsDef">SAVE CURRENT AS DEFAULT</a></li>
+										<li><a class="subIndex3" href="#subSectTitleResetOrig">RESET ORIGINAL CONFIG</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcPreferencesSubMenu">Preferences</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleGraphOpt">GRAPHIC OPTIONS</a></li>
+										<li><a class="subIndex3" href="#subSectTitleGenOpt">GENERAL OPTIONS</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcScreeptSubMenu">ScreepT</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleCrypter">SCREEPT</a></li>
+										<li><a class="subIndex3" href="#subSectTitleKeyGenImg">KEY IMAGE GENERATOR</a></li>
+										<li><a class="subIndex3" href="#subSectTitlePswGenImg">PASSWORD GENERATOR</a></li>
+										<li><a class="subIndex3" href="#subSectTitleKeyDict">KEY DICTIONARY</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcTextEditorSubMenu">Text Editor</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleTxtEditor">TEXT EDITOR</a></li>
+										<li><a class="subIndex3" href="#subSectTextTransformation">TEXT TRANSFORMATIONS</a></li>
+										<li><a class="subIndex3" href="#subSectTxtEditorRightClick">RIGHT CLICK MENU</a></li>
+										<li><a class="subIndex3" href="#subSectTitleImpExpCrypted">IMPORT/EXPORT CRYPTED WORKSPACE</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcVariousSubMenu">Various</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleSysInfo">SYSTEM INFORMATIONS</a></li>
+										<li><a class="subIndex3" href="#subSectTitleNetInfo">NETWORK INFORMATIONS</a></li>
+										<li><a class="subIndex3" href="#subSectFileHasher">FILE HASHER</a></li>
+										<li><a class="subIndex3" href="#subSectColorPicker">COLOR PICKER</a></li>
+										<li><a class="subIndex3" href="#subSectClipboardPanel">CLIPBOARD PANEL</a></li>
+										<li><a class="subIndex3" href="#subSectTitleImgConverter">IMAGE CONVERTER</a></li>
+										<li><a class="subIndex3" href="#subSectTitleFilesNFolders">FILES AND FOLDERS</a></li>
+									<ul>
+								</div></li>
+								
+								<li><div class="subIndex2">		
+									<a href="#funcHelpSubMenu">Help</a>
+									<ul>
+										<li><a class="subIndex3" href="#subSectTitleExit">EXIT</a></li>
+									</ul>
+								</div></li>
+							</ul>
+								
+						</div>
+					</li>
+					
+					<li>
+						<div id="ShortcutsKeyboard_index" class="subIndex1">		
+							<a href="#ShortcutsKeyboard">Keyboard shortcuts list</a>
+						</div>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#shctsMainGui">General Purpose shortcuts</a>
+							</div></li>
+						</ul>
+						<ul>
+							<li><div class="subIndex2">		
+								<a href="#shctsTextEditor">Text Editor shortcuts</a>
+							</div></li>
+						</ul>
+					</li>
+					
+					<li>
+						<div id="CreditsNLinks_index" class="subIndex1">		
+							<a href="#CreditsNLinks">Credits and links</a>
+						</div>
+					</li>
+				</ol>
+				
+			</div>
+			
+			<br><hr>
+			
+			<!--  INSTALLATION AND USAGE  -->
+			<div id="InstallationNusage">
+				<h1 class="sectionTitle">1 - INSTALLATION AND FIRST LAUNCH</h1>
+				<h2 id="subLauncherCompatibility" class="sectionSubTitle"> 1.1 - LAUNCHER/COMPATIBILITY</h2>
+				<li><span class="highlightBoldedGrey">ScreepT is a ready to launch software</span> written in java. It should be started using the provided launcher, in order to customize parameters (if needed), and check the state of dependencies on your computer before to launch. Everytime something is missing or misconfigured, you'll be warned. 
+				<p> 
+					<li><span class="highlightBoldedGrey">You can find the launcher</span> inside main folder once it's extracted from 
+					the given .zip archive, just use the correct one for your OS (.exe on windows, .sh on linux/mac).
+					The only thing you need is a Java interpreter installed, AKA JVM/JRE/JDK.<br><br>
+					<span class="highlightBolded">Notice</span>: it's still possible to just launch the "ScreepT_Vxx.jar" that you find inside the "/application" folder, but remember: it's not designed to render and work the best this way... so you might have a non-optimal experience.
+					<br><br>
+					
+					<span class="highlightBolded">Notice</span>: full support is granted for java versions series 1.8.XX - 11.X.X : previous version will not work at all, while on newer versions some functions can be disabled or limited for compatibility reasons. 
+					You can either download Oracle's main version (<a class="dependencyLink" target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">JVM download page</a>) or openJdk version (<a class="dependencyLink" target="_blank" href="https://adoptopenjdk.net/releases.html">openJdk download page</a>), or download it from another source.
+					<br>At the end of the process just refresh and/or restart ScreepT. During the launch process JVM will be searched automatically, but if it's not found you can specify manually the path of you JVM /bin folder ;).
+					<br><br>
+					
+					After you run ScreepT_launcher executable you'll be lead to a basic panel where you can choose to start the software, select specific settings to run the software, or check the dependency.<br>
+					If something is missing you'll be asked to update/download it. Once the required dependencies are installed, you can start the software, or if still having problems, try to restart the launcher.
+					
+					<p> You don't need to pass through the launcher panel each time... if you want, after the first launch is gone, you
+						can disable launcher panel in the "general options" tab in ScreepT menu bar under the voice "preferences".
+					</p>
+				</p>
+				
+				<h2 id="subSettings" class="sectionSubTitle"> 1.2 - LAUNCHER SETTINGS</h2>
+				<image src="Images/Launcher.jpg"/>
+				<p>
+					As sayd before, you can customize settings of your launcher, by clicking "Customize launch parameters".
+					A new window will be opened: here you can set max and min ram memory allocated when using ScreepT. Also the stack size and LOGGING LEVEL can be adjusted in this section.
+					<p><strong>IMPORTANT: </strong> The built in values are tested and setted to be the best trade-off between performance and resources usage.
+					You are advised to use default values if you don't have any particular need.
+					</p>
+				</p>
+				
+				<h2 id="subOSdepLauncher" class="sectionSubTitle"> 1.3 - OS DEPENDENT LAUNCHER</h2>
+				<p> ScYpT is written in java language, that can run almost everyehere. Just launch the right launcher for your OS:
+				<ul>
+					<li><p><span class="subMenuthirdLevel"><strong>Windows: </span></strong>double click on .exe launcher</p>
+						<p><b>NB: </b>On some Windows versions (for example, on Windows 10), application could fail to start when shell is disabled. To solve this issue, just go on "Customize launch parameters" in launcher main panel, and check the option "Display shell". Now ScreepT should start correctly.</p>
+						<p><b>NB: </b>If you launch ScreepT as administrator, drag 'n drop features can be disabled. This behaviour is caused by a Windows security option, and probably cannot be avoided when launching as administrator.</p>
+					</li>
+					
+					<li><p><span class="subMenuthirdLevel"><strong>Linux: </span></strong>double click on <i>ScreepT_Launcher.sh</i> launcher (remember to give it execute permissions with <i>"sudo chmod 755 ScreepT_Launcher.sh"</i>)</p>
+						<span><b>NB: </b></span>in some linux distros the launcher has some troubles launching the generated .sh native launcher. 
+						If you run in this issue when you press start button and the software does not start, you can launch manually the generated .sh launcher:
+						Just go inside the /Application folder and double click on <u>LauncherBash.sh</u>, or launch it from the shell <br>(in alternative, you can try disabling shell in launcher settings).<br>
+						<span><b>NB: </b></span>if you have problems downloading updates, you can try to update your java certificates with the following command:
+						<code>sudo apt-get install ca-certificates-java</code>
+					</li>
+					<li><p><span class="subMenuthirdLevel"><strong>Mac-OS: </span></strong>double click on .dpkg launcher <i class="subIndex1"> - Coming soon!</i></p></li>
+				</ul>
+				
+				</p>
+			
+			</div>
+			
+			<br><hr>
+			
+			<!--  FUNCTIONS-DESCRIPTION AND TIPS  -->
+			<div id="FunctionsDescNtips">
+				<h1 class="sectionTitle">2 - FUNCTIONS DESCRIPTION AND TIPS</h1>
+				
+				<h2 id="funcFileSubMenu" class="sectionSubTitle"> 2.1 - FILE SUBMENU</h2>
+				<p><ul>
+					In this section you can find all the functions to save/load configurations, or open the more detailed configuration manager view. You can save, export, load, reset, reload your favourite configuration, or even use the default one.<br>
+					In the tree view on the left you can find your saved configurations. You can save your configurations by clicking on export configuration and use default directory "INI_FILES", or even with right click on file tree and selecting "import configuration file or folder".
+					Remember that newer version of ScreepT can have some differences or not load some values, when loading configurations exported/saved in previous versions (in this case default ones will be used). 
+					Also notice that if you have Autosave option active, current configuration will be automatically saved every N seconds (see <u><a href="#subSectTitleGenOpt">general options</a></u>), or when the program exits.<br><br>
+				
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/manager.png"/> <span id="subSectTitleConfigManager" class="subMenuthirdLevel">CONFIGURATION MANAGER</span></li>
+						<p>
+						This contains a view of the loaded configuration, a text print with the values contained in the current one, and different functions that are basically the same you can find in the main menu bar items under the "File" element.
+						In this view you can also visualize the loaded settings (either in memory or in current/selected .ini file). <strong>By right clicking</strong> an element in the list, you can choose between different actions on the selected configuration from the loaded ones, such as select, delete, delete all or refresh.<br>
+						The actions that fire when clicking the action buttons are described in the next points.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/reload.png"/> <span id="subSectTitleReload" class="subMenuthirdLevel">RELOAD CONFIGURATION</span></li>
+						<p>
+						By clicking on this element you can reload the current loaded configuration. Remember that unsaved values will be lost when reloading.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/loadConfig.png"/> <span id="subSectTitleLoad" class="subMenuthirdLevel">LOAD CUSTOM CONFIGURATION</span></li>
+						<p>
+						This function allows you to load previously saved/exported configuration by selecting them from your file System.
+						If for some reason any value is not found in the given configuration file, a default one will be loaded.
+						You need to use a valid .ini configuration file saved from ScreepT software.<br>
+						After configuration file load, a new copy can be found in the configuration manager inside the tree view of the user loaded files (/Application/INI_FILES).
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/export.png"/> <span id="subSectTitleExp" class="subMenuthirdLevel">EXPORT CURRENT CONFIGURATION</span></li>
+						<p>
+						This function allows you to export a backup of the current configuration values of the running ScreepT's instance.
+						Exported configuration files can later be imported using the load function.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/save.png"/> <span id="subSectTitleCurrSave" class="subMenuthirdLevel">SAVE CURRENT CONFIGURATION</span></li>
+						<p>
+						This function will save the configuration in the current loaded file, overwriting it. To save as default use the dedicated function.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/saveAsDefault.png"/> <span id="subSectTitleCurrAsDef" class="subMenuthirdLevel">SAVE CURRENT AS DEFAULT</span></li>
+						<p>
+						When clicking this button, your configuration will be saved as default one, and the current loaded will be also default one. This permits you to load this configuration even after restarting ScreepT, without having to manually reload them each time.
+						</p>
+						
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/reset.png"/> <span id="subSectTitleResetOrig" class="subMenuthirdLevel">RESET ORIGINAL</span></li>
+						<p>
+						After you click this you will be asked to confirm: if you'll accept the default configuration values will be used as default configuration.
+						</p>
+						
+				</p></ul>
+				
+				<h2 id="funcPreferencesSubMenu" class="sectionSubTitle"> 2.2 - PREFERENCES SUBMENU</h2>
+				<p><ul>
+				
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/graphics.png"/> <span id="subSectTitleGraphOpt" class="subMenuthirdLevel">GRAPHICS OPTIONS</span></li>
+						<p>
+						In this section you can choose between some graphic settings that will be mapped into configuration file currently loaded, such as:
+						</p>
+						<ul class="subList2">
+						
+							<li><b>Graphic User Interface style:</b> choose between different available look and feel options. If supported, you can choose between different themes for a single style;</li>
+							<li><b>Menu And log text size:</b> these will modify the size of menu bar text, and some of the log text used in crypter and other modules(you have to restart ScreepT before to see changes);</li>
+							<li><b>Text editor settings:</b> here there are different configurations you can set to customize text editor behaviour;</li>
+							<li><b>Locale:</b> select the preferred language(this function is not yet implemented);</li>
+							<li><b>Spellchecker dictionary:</b> choose between different languages available. This will be used in text editor when spell checker is active (remember that spell checker can cause software to slow down, so it's better to turn it off unless you're using it);</li>
+						
+						</ul><br>
+				
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/options.png"/> <span id="subSectTitleGenOpt" class="subMenuthirdLevel">GENERAL OPTIONS</span></li>
+						<p>
+						Here you can change your general preferences that are contained in the loaded configuration. You can choose to save, discard, use them, or return to the settings read when opening this section.
+						In this panel you can configure things like: 
+						</p>
+						<ul class="subList2">
+							
+							<li><b>Autosave configuration:</b> when active, current configuration file will be automatically saved using the chosen timeout;</li>
+							<li><b>General Volume:</b> used as default for sounds;</li>
+							<li><b>Password security:</b> this will be used when a password field is used (crypt/decrypt text, Creepter module): according to level selected, the password will be checked for security level requested, and you will be advised if the security best practices are not met;</li>
+							<li><b>Auto-check updates:</b> if active, ScreepT will automatically check for new version during the startup. If a new version is available you will be asked if you want to download and install it;</li>
+							<li><b>Default charset:</b> this will be used when reading text from file or during text save to file.</li>
+							<li><b>Username:</b> this will be displayed in the main title and in some other places to customize your experience</li>
+							<li><b>Hide launcher at start:</b> if selected launcher will not be shown during startup (unless some blocking problems are detected);</li>
+						
+						</ul><br>
+										
+				</p></ul>
+				
+				<h2 id="funcScreeptSubMenu" class="sectionSubTitle"> 2.3 - SCREEPT SUBMENU</h2>
+				<p><ul>
+				
+					<p>
+						This is the core function of this software, and implements a multi crypter/decrypter for files and folders, with key generators and a custom key dictionary manager.
+						<br>In this section you can find all the stuff you need to encrypt and decrypt a copy of your files, using different algorithms combinations.
+						<br><br>
+						ScreepT uses AES-128 bit and STEG_CRYPT algorithm, that can be combined togheter in order to encrypt/decrypt a copy of your data, with different options.
+						You can find information about how it works in the ScreepT section below :)
+					</p>
+					<span class="highlightBolded">IMPORTANT: </span>your source files will NOT be deleted or modified. Instead, a unique named folder will be created in the destination folder you choose, and result files will be created in this folder.<br><br>
+					
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/crypter.png"/> <span id="subSectTitleCrypter" class="subMenuthirdLevel">SCREEPT - CRYPT AND DECRIPT FILES</span></li><br>
+						When opening this module, you'll find:
+						<ul class="subList2">
+						
+							<br><li><span class="highlightBolded">On the left side</span> you have informations about key Image-dictionary, a log for current operations, and a button to select a one-use key image importing it from your file system.</li>
+							<br><li><span class="highlightBolded">On the right side</span> you have a drag 'n drop panel on which you can drag the files you want to code/decode, or select them using the given button "add source file or folder". After you load them you can add more content simply repeating this operation. The added files will appear in the "Selected files pool", in which you can see the files waiting to be crypted/decrypted.<br>
+							<span class="highlightBoldedGrey">Notice</span> that until you crypt/decrypt them no file will be created.<br>
+							By right clicking on this panel you can see a pop up with useful operations on the loaded files. Also this operations will not modify you source file, but only the link created to them (E.G. when removing files you only remove files reference from this view).</li>
+							<br><li><span class="highlightBolded">On the Top</span> you will find all informations about keys and files loaded, with a useful feedback message giving you information about missing keys or errors.<br>
+							In this panel you can also provide the AES text key used to crypt/decrypt, and specify which type of coder you want to use. Please be sure to use the right mode for your needs, and remember that you need to use the same mode if you want to decrypt the crypted result!<br>
+							<span class="highlightBoldedGrey">When you load a folder</span> the result will contain all his files, mantaining the directory structure.<br>
+							<span class="highlightBoldedGrey">When using STEG/COMPLETE mode</span> each file coded will be a folder, for this reason when using this modes you can only decrypt folders. Be sure to import all the result folder when decrypting this kind of files!<br>
+							<span class="highlightBoldedGrey">When decrypting files</span> you'll be asked to choose between putting them in a temporary folder on your desktop (<u>this will be automatically deleted when you close the software</u>), or use a custom directory you choose.</li>
+							<br><li><span class="highlightBolded">In the central section</span> you'll find a text area that will print all informations about current process, and files/folders being crypted/decrypted.</li>
+						
+						</ul><br>
+						
+					<h2 class="subList2">CRYPTER MODES: Description</h2>
+					<p>
+						<ul>
+							<li><span class="highlightBolded">AES_ONLY</span>
+							This mode will use only the AES encryption algorithm, given a text key that you have to write in the password box on top panel. For top security, you should use a 16 characters-long password. (look at the password field color, it gives you a feedback about your password strength).<br>
+							<span class="highlightBoldedGrey">IMPORTANT: </span> you will need text password to decrypt the result crypted files, be sure to remember it!<br></li>
+							
+							<br><li><span class="highlightBolded">STEG_ONLY</span>
+							This mode will use only the STEG encryption algorithm, given a PNG image key, that you have to specify in the left panel, either choosin' it from dictionary (or load it for one use only, and then ScreepT will forget about it after usage). For top security, you should use a random pixels image that you can generate with the given "Image Key Generator", that you find in ScreepT subMenu.
+							<br>When using this mode, your files will be encoded one by one, using the value of each pixel from key image to produce an ecrypted result that can be decrypted only with the original key image.<br>
+							<span class="highlightBoldedGrey">IMPORTANT: </span> you will need the key image to decrypt the result crypted files, be sure to keep it in a safe place (USD stick or HD, but remember: never keep the keys under the doormat!).<br>
+							The number of images created depends on the size of source file and size of key image: <br>
+							 <ol><li>If you have to encode a large number of small files use a small image key, or the result will waste space.
+							 <li>If you have to encode big files use a medium-big image, in order to have a faster encoding.
+							</ol>
+							
+							<br><li><span class="highlightBolded">COMPLETE</span>
+							This mode will combine AES and STEG mode this way: first the source bytes from each file will be coded with AES encryption standard, and then they will be encrypted with STEG mode explained before.
+							<br> When used with "Ultra secure" option, this grant a very secure encription by increasing exponentially the entrophy and the number of possible combination... making it very hard to decrypt them without both text key and Image key.<br>
+							<span class="highlightBoldedGrey">IMPORTANT: </span> you will need both text password and key image to decrypt the result crypted files, be sure to keep them in a safe place (USD stick or HD, but remember: never keep the keys under the doormat!).
+							<br> The number of images created depends on the size of source file and size of image: <br>
+							 <ol><li>If you have to encode a large number of small files use a small image key, or the result will waste space.</li>
+							 <li>If you have to encode big files use a medium-big image, resulting in a faster encoding process.</li>
+							</ol>
+						</ul>
+
+						<br>
+						<u>Now, lets take a closer look to the available options to combine with the chosen algorithm:</u>
+						<br>
+						<ol>	
+							<br><li><span class="highlightBolded">ULTRA SECURE OPTION</span>
+							<p>When this checkbox is selected, files will have an extra phase in which AES bytes (or result bytes, in case of ONLY_STEG) will be reordered accorging to values contained in the Key used: ScreepT will use theese values as "reorderKey index" to change the order of source bytes before/after to crypt or decrypt them. <br>
+							<span class="highlightBoldedGrey">IMPORTANT: </span>if you cript files with this mode, you won't have to select this option also when decrypting result later. ScreepT will keep memory of the selected option by saving an added bit into the result file.</p>
+							
+							<br><li><span class="highlightBolded">HASH KEY OPTION</span>
+							<p>When this checkbox is selected, you text password (the AES one) will be hashed using a secure algorithm (<u>pbkdf2 with hmac sha512</u>). This means that even if your encripted file will be broken, the attacker won't discover your actual password, but an irreversible String sequence calculated from it.<br>
+								<span class="highlightBoldedGrey">IMPORTANT: </span>if you cript files with this mode, you won't have to select this option also when decrypting result later. ScreepT will keep memory of the selected option by saving an added bit into the result file.
+								<br><b>NB:</b> <i>this mode is't available when using STEG_ONLY mode</i>.
+							</p>
+						</ol>
+					</p>
+				
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/imageWriter.png"/> <span id="subSectTitleKeyGenImg" class="subMenuthirdLevel">KEY IMAGE GENERATOR</span></li>
+						<p>
+						In this panel you can generate your own random .png key image... But remember where you put it: ScreepT is so secure that losing this key will result in the impossibility to recover your crypted files!
+						<br>I suggest to keep the keys in a pen drive or a portable HD, keeping it in a safe place (maybe right next to your heart :D).
+						<p>
+						You can choose different options when generating a key image, and you can use it to crypt files or folder with STEG or COMPLETE mode. When generating a key you can specify:
+						<ol>
+							<li class="highLineHeigthList"><span class="highlightBolded">Width and Height</span> of image key: remember to choose dimension according to the size of the files you want to crypt. As said before, you can incurr in slow encoding or, worst, in a waste of disk space if selecting it in the wrong way. A fast rule to follow can be: 
+								<br>=> Optimize space = small image.
+								<br>=> Optimize speed = size similar to source files size.
+							</li>
+							
+							<li class="highLineHeigthList"><span class="highlightBolded">Type of key Image</span>: choose between number of bytes for each pixel of generated image.
+							Higher value = more security.
+							</li>
+							
+							<li class="highLineHeigthList"><span class="highlightBolded">"Generate key"</span> button: click this button to generate a new key image with chosen parameters... Just wait for the process to finish :)</li>
+							
+							<li class="highLineHeigthList"><span class="highlightBolded">"Export"</span> button: click this to save the generated image into a folder on your file System</li>
+
+							<li class="highLineHeigthList"><span class="highlightBolded">"Add to Dictionary"</span> button: click this to add the generated key to the dictionary. This way it will be saved in a directory inside ScreepT main directory, and will be accessible either from dictionary function and ScreepT function seen before.
+
+						</ol></p>
+						</p>
+
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/keyGenPsw.png"/> <span id="subSectTitlePswGenImg" class="subMenuthirdLevel">PASSWORD GENERATOR</span></li>
+					<p>
+						This is useful when you want to generate a strong random password. Just customize options and click on "Generate" button to generate a new password.<br>
+						When you open this section, a pop up window allows you to customize settings for generating the wanted password, such as:
+						<ul>
+							<li><b>USE NUMBERS</b></li>
+							<li><b>USE SPECIALS</b></li>
+							<li><b>USE SYMBOLS</b></li>
+							<li><b>PASSWORD LENGTH</b></li>
+							<li><b>FROM WORD</b> - with this you can generate a string sequence from a chosen word. In the opening dialog, you can choose either to reach requested length with random words or deterministic words (this mode will always generate same key if the source is the same)</li>
+						</ul>
+					</p>
+
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/keyDictionary.png"/> <span id="subSectTitleKeyDict" class="subMenuthirdLevel">KEY DICTIONARY</span></li>
+						<p>
+						This is a function similar to the one you can find embedded on left panel in cripter, but with some extra option.
+						Using this functionality you can have a specific view on which PNG images you have loaded in your personal library, that is saved inside current SScreepTsource launch folder.<br>
+						The tree view of files is updated in real time, and by right click on it you can view different actions, such as delete all/selected files from dictionary, manual refresh and viewing informations about selected file.
+						In this panel you can also open the dictionary in system explorer to manage manually the files contained in it.</p>
+						<p><span class="highlightBoldedGrey">IMPORTANT: </span>always remember to do not delete ScreepT folders when you view in system explorer: the software may not work as expected or run into unexpected crashes.
+						However, if you experience any problem, you can run a new instance of ScreepT and reimport keys manually. Always remember to backup in a safe place your encryption key images!! ;)
+						</p>
+				</p></ul>
+				
+				<h2 id="funcTextEditorSubMenu" class="sectionSubTitle"> 2.4 - TEXT EDITOR SUBMENU</h2>
+				<image src="Images/TextEditor.jpg"/>
+				<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/textEditor.png"/> <span id="subSectTitleTxtEditor" class="subMenuthirdLevel">TEXT EDITOR</span></li>
+					<p>This is a built-in text editor with basic functions, and either some extra functionality such as:
+					<ul>
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT SPEAKER </span>- you can use this by clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/Speaker.png"/> or using the shortcut [Ctrl+spacebar]. This way you will hear the text visible in text-area with english pronunciation. You can also choose the voice speed rate, dragging the selector over the speaker button. (<u>this function is enabled only if the relative plugin is installed on ScreepT</u>)</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT CRYPT/DECRYPT </span>- with a non-empty password specified in the password-field on top, you can encrypt/decrypt with AES (128bit) the text loaded in text-area, just by clicking on crypt <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/Crypt.png"/> or decrypt <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/Decrypt.png"/> (or using the shortcut [Ctrl+shift+C / Ctrl+shift+D]).</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">TEXT MANIPULATION </span>- You can find this functions under the menu "Text-Editor -> text transformation" or with right click on text area -> "text transformation".
+By clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/uppercase.png"/> you can make all selected text uppercase, clicking <strong>[.Tt]</strong> can make all text after dots or separators be uppercase, while a click on <strong>[Tt Tt]</strong> make text separed by a space starting words with uppercase.</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">TEMPLATES INJECTION </span>- clicking on <strong>[Templates]</strong> button, a new dialog will open staying on top till close, and in which you can select an existing template, create one from your currently selected text, or even define your own template using current file.
+						<span class="highlightBoldedGrey">To use a template</span> just select it from the list and click on "Inject Template".</li>
+
+						<li class="highLineHeigthList"><span class="highlightBolded">BASE 64 CONVERTER </span>- with this function you can encode selected text (or all text, if nothing is selected) using base64 encoding. If Ctrl key is pressed, text will be decoded using base64. Just click on  <image class="iconImg" src="../Application/Resources_ScreepT/Icons/General/64_Purple.png"/> button to trigger this function.
+
+						<li class="highLineHeigthList"><span class="highlightBolded">EOL ANALYZER </span>- you can see which end of line terminators are used wither in loaded text, or in current file. Just right click on text area and choose "View line feeds" to open a pop-up tooltip and see the line terminators (CR/LF A.K.A. "\n" "\r"). This is useful when checking compatibility of a file for different operating systems. If you need to convert current text/file EOL, just right click on textArea and select the wanted option from "Normalize End Of Line" subMenu.
+
+						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE THEME </span>- you can choose between different built-in color themes just chosing the wanted one from the given style combo box. It's possible to define your own theme using xml configuration: in order to have this in the combo box options, you have to add an xml with a valid scheme (take inspiration from the existing ones, you can copy one of them modifying the color hexadecimal values) into folder <b>Application\Resources_ScreepT\themes\custom</b>. To load your scheme you'll have to restart ScreepT. A built-in style scheme editor is scheduled for the next versions of ScreepT. Keep following the <u><a href="https://www.am-design-development.it">ScreepT website</a></u> or update your software regularly to have it when available ;)</li>
+						
+						<li class="highLineHeigthList"><span class="highlightBolded">CUSTOMIZE COLORS/FONT </span>- (<u>works only when no theme is selected</u>) you can customize color of background <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/BackgroundColor.png"/> and text <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/TextColor_2.png"/> just by clicking on the relative button: a chooser dialog will appear and you'll be able to choose and preview the selected colors on the loaded text.<br>
+						With the same process is possible to select your preferred font, just by clicking on <image class="iconImg" src="../Application/Resources_ScreepT/Icons/Text_Editor/Font_2.png"/>.<br>
+						If you'll press OK the selected colors/font will be added to current volatile configuration (theese will not be written to configuration file until you explicitly save them, or until autosave will occur, if selected).</li>
+						
+					</ul>
+
+					<b>NB:</b> not all available functions may be descripted here: hover on buttons to discover all of them, and learn more about related shortcut keys! :)
+					</p>
+	
+				<h2 id="funcVariousSubMenu" class="sectionSubTitle"> 2.5 - VARIOUS SUBMENU</h2>
+				<p><ul>
+						
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/hardware.png"/> <span id="subSectTitleSysInfo" class="subMenuthirdLevel">SYSTEM INFORMATIONS</span></li>
+					<p><span class="highlightBoldedGrey">IMPORTANT: </span> <u>Download "hardwareInfo" plugin to use this function</u>.</p>
+					<p>
+						In this section you can find many informations about you system, the java version in use, and current usage of CPU and RAM by ScreepT, but not only.
+						In fact, here you can find informations about your currently linked displays, HD, RAM, CPU. <br>
+						In next versions of ScreepT many more options could appear, stay tuned!
+					</p>
+				
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/network.png"/> <span id="subSectTitleNetInfo" class="subMenuthirdLevel">NETWORK INFORMATIONS</span></li>
+					<p>
+						In this section you can find many informations about your network cards, and their main connection informations, such as 
+						local IP, public IP(only if connected to internet), MAC address, gateway, DNS, MTU, and delay.
+						<span class="highlightBolded">Just choose your network card </span>from the list on the top center area :)
+					</p>
+					<p>On the right you can find a panel with information about you connection speed, related to the selected network adapter from the list above. To discover up/down speed and delay of your network card, select one with an active internet connection, press on "Calculate connection speed", and wait for the test to finish to read results. According to the test type selected (Short/medium/large) this can require up to some minutes.
+					<br><span class="highlightBoldedGrey">This button </span>will become clickable only when there is an active connection from the current selected network card.</p>
+					
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/imageConverter.png"/> <span id="subSectTitleImgConverter" class="subMenuthirdLevel">IMAGE CONVERTER</span></li>
+					<p>Here you can find a selection of useful conversion tools for image conversion. <span class="highlightBoldedGrey">Notice </span> that this is a beta version yet, it still has to improve in next versions of ScreepT ;)
+					</p>
+					<p>
+						Let's see a list of some things this converter can do (for now):
+						<ul>
+							<li class="highLineHeigthList"><span class="highlightBolded">Change size </span>- Just change size of the ones you like. If you want to keep proportions between height and width, be sure "original ratio" is selected.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Change extension </span>- Just select the output extension you want to have after conversion. If you want to keep the original one, be sure "original format" is selected.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Choose resize algorithm </span>- An image can be resized in different ways, each one with different load on CPU (and this can have a big impact on time for conversion and final quality): you can select your preferred from the given list on the left.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Choose conversion quality </span>- Especially when using lossy output formats like "JPEG/JPG", changing the quality (from 1 to 100) you can choose the quality of the compression with selected algorithm.	<span class="highlightBoldedGrey">Notice </span> that with loseless types this will result in a small optimization or none. For example, PNG format is loseless, but it allows to have a little improvement in terms of disk space, optimizing pixel rapresentation.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Export/Add to dictionary </span>- when you have chosen image source (clicking the button on the right) and output parameters, you can either export to a external directory, or add it to key dictionary, to use it later in crypter section (notice that this way the image will be saved in PNG format in dictionary, cause screept handles only this exention).<br>
+							<strong>Just click</strong> on the relative button you can find on the right side of the panel.</li>
+							<li class="highLineHeigthList"><span class="highlightBolded">Reset original size </span>- click on the <strong>reset size</strong> button to reset the output size to the original one.
+							</li>
+						</ul>
+					</p>
+					
+					<li><image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/folderActions.png"/> <span id="subSectTitleFilesNFolders" class="subMenuthirdLevel">FILES AND FOLDERS ACTIONS</span></li>
+					<p>
+						In this sub-menu you can find some useful functions to manage files and folders located on your File System.
+						<p><b>NB: </b>all delete actions used here are not reversible, cause the don't use any "recycle bin" or similar. Be careful before to delete a file/folder!</p>
+						<p>
+						You can choose between:
+						<ul>
+							<li class="highLineHeigthList"><image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/uppercase.png"/> <span class="highlightBolded">UpperCase files and folders </span>- when using this, you can choose a file or a folder, and after confirming, all files contained will be renamed to make them start with an uppercase letter.
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/createFolder.png"/> <span class="highlightBolded">Create directories from string path </span>- you will be asked to specify a valid path of the folder you want to create. ScreepT will create all necessaries missing folders. 
+							<br> (Ex. "C:/folderA/folderB/folderC/newFolder" -> creates all folders until newFolder in C drive. On linux obviously there's no need to specify disk such as in Windows).
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/cloneDirectory.png"/> <span class="highlightBolded">Copy directory structure </span>- click on this if you want to recreate the structure of a directory without copying the contained files.
+							<strong>You can select only folders in this function.</strong>
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/targetedDelete.png"/> <span class="highlightBolded">Delete files by extension </span>click this if you want to delete all files that end with specified extension, which can include the end charachters of filename. If no extension is provided, all contained files will be deleted.
+							<strong>You can select only files in this function.</strong>
+							</li>
+							
+							<li class="highLineHeigthList"><image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/deleteFolder.png"/> <span class="highlightBolded">Delete all directory's content (all except selected) </span>click this if you want to delete all content (both files and folders) in a given root directory. You will be asked to confirm before to delete directory's content.
+							<strong>You can select only folders in this function.</strong>
+							</li>
+
+							<li class="highLineHeigthList"><image class="iconImg" src="../Application/Resources_ScreepT/Icons/Menu_Icons/emptyDirectory.png"/> <span class="highlightBolded">Delete all directory's content </span>- this function will delete all files contained in a root directory you have to specify, without deleting folders contained.
+							<strong>You can select only folders in this function.</strong>
+							</li>
+							
+						</ul></p>
+						</p>
+					
+				</p></ul>
+				
+				<h2 id="funcHelpSubMenu" class="sectionSubTitle"> 2.5 - HELP SUBMENU</h2>
+				<p><ul>
+				<li>Visit this section if you want to know more about ScreepT fuctions, about A.M. Design 'N Development, visit A.M. Official Website, or simply return to start page. </li>
+				<br><span class="highlightBoldedGrey">IMPORTANT: </span>Always remember that changing section you won't lose any progress of your current opened work, just go back with shortcuts or with the main menu to retrieve the stuff you were doing :)
+				<p><span class="highlightBoldedGrey">!!! IN CASE OF ANY PROBLEM </span> you can export the log with the special function "Export event log", that may contain useful information about the problem itself, and can help solving the bug if there is one, or understand more of what happened during execution. <u><a href="mailto:bugs@am-design-development.com">Send it to me</a></u> for further bug examination! If you have problems launching the application and cannot extract this way the log, send me "/application/LOG" and "/application/LAUNCHER/LOG" folders in zip format :)</p>
+				To be sure of logging the problem, <u>try to replicate the problem with logLevel setted to <b>DEBUG</b></u>. In order to do this, select Debug level in launcher settings before to restart ScreepT.
+					<li>
+						<image class="iconImgTitleSect" src="../Application/Resources_ScreepT/Icons/Menu_Icons/turnOff.png"/> <span id="subSectTitleExit" class="subMenuthirdLevel">EXIT</span></li>
+						<p>
+						This closes the software, deleting temporary files if present, and saving current configuration if autosave option is ON.
+						</p>
+					<li class="highLineHeigthList"><span class="highlightBolded">Check for Software Updates </span>- this function is self explanatory: just be sure to have a working internet connection to update the software. NB: you can have some problems updating the software while using a proxy.
+					<li class="highLineHeigthList"><span class="highlightBolded">Install plugins </span>- this function is self explanatory: it opens a new pop up window when you can choose and install plugins for ScreepT. For the early ScreepT versions, this is made mainly to reduce the basic application size, because of some libraries that were very heavy to install as default choice, so I decided to make them installable as plugins. NB: you can have some problems installing plugins on the software while using a proxy.
+				</ul></p>
+			
+			</div>
+			
+			<br><hr>
+			
+			<!--  SHORTCUTS  -->
+			<div id="ShortcutsKeyboard">
+				<h1 class="sectionTitle">3 - KEYBOARD SHORTCUTS LIST</h1>
+				
+				<h2 id="shctsMainGui" class="sectionSubTitle"> 3.1 - GENERAL PURPOSE SHORTCUTS</h2>
+				<p><ul class="shorctutsList">
+				
+					<h4> 0 - Emergency shortcuts (active everywhere):</h4>
+					<li> <span class="SHCT_TEXT">FORCE CLOSE APPLICATION</span> - [Esc x 4 times] or [Alt + F4 x 4 times]</li>
+					<li> <span class="SHCT_TEXT">RESTART APPLICATION</span> - [Alt + F5]</li>
+					
+					<h4> 1 - File submenu:</h4>
+					<li> <span class="SHCT_TEXT">OPEN CONFIGURATION MANAGER</span> - [Alt + Shift + 1]</li>
+					<li> <span class="SHCT_TEXT">EXPORT CURRENT CONFIGURATION</span> - [Ctrl + Alt + Shift + E}</li>
+					<li> <span class="SHCT_TEXT">LOAD CURRENT CONFIGURATION</span> - [Ctrl + Alt + Shift + O}</li>
+					<li> <span class="SHCT_TEXT">RELOAD CURRENT CONFIGURATION</span> - [Ctrl + Alt + Shift + R}</li>
+					<li> <span class="SHCT_TEXT">SAVE CURRENT CONFIGURATION</span> - [Ctrl + Alt + Shift + S]</li>
+					<li> <span class="SHCT_TEXT">SAVE CURRENT CONFIGURATION AS DEFAULT ONE</span> - [Ctrl + Alt + Shift + W]</li>
+					<li> <span class="SHCT_TEXT">LOAD SCREEPT BUILT IN DEFAULTS</span> - [Ctrl + Alt + Shift + D]</li>
+					<li> <span class="SHCT_TEXT">EXIT APPLICATION</span> - [Alt + F4]</li>
+					<hr>
+					<h4> 2 - Preferences submenu:</h4>
+					<li> <span class="SHCT_TEXT">OPEN GENERAL OPTIONS</span> - [Alt + Shift + 2]</li>
+					<li> <span class="SHCT_TEXT">OPEN GRAPHICS OPTIONS</span> - [Alt + Shift + 3]</li>
+					<li> <span class="SHCT_TEXT">TOGGLE FULL SCREEN MODE</span> - [Alt + Shift + Enter]</li>
+					<li> <span class="SHCT_TEXT">IMMERSIVE MODE ON/OFF</span> - [Alt + Shift + M]</li>
+					<li> <span class="SHCT_TEXT">EXIT IMMERSIVE MODE</span> - [ESC]</li>
+					<hr>
+					<h4> 3 - Screept submenu:</h4>
+					<li> <span class="SHCT_TEXT">OPEN SCREEPT</span> - [Alt + Shift + S]</li>
+					<li> <span class="SHCT_TEXT">OPEN PASSWORD KEYGEN</span> - [Ctrl + Alt + Shift + K]</li>
+					<li> <span class="SHCT_TEXT">OPEN IMAGE KEYGEN</span> - [Alt + Shift + K]</li>
+					<li> <span class="SHCT_TEXT">OPEN KEY DICTIONARY</span> - [Alt + Shift + D]</li>
+					<hr>
+					<h4> 4 - Text editor submenu:</h4>
+					<li> <span class="SHCT_TEXT">OPEN TEXT EDITOR</span> - [Alt + Shift + T]</li>
+					<li> <span class="SHCT_TEXT">IMPORT/EXPORT CRYPTED WORKSPACE</span> - [Ctrl + Alt + Shift + I]</li>
+					<hr>
+					<h4> 5 - Various submenu:</h4>
+					<li> <span class="SHCT_TEXT">OPEN SYSTEM INFO</span> - [Alt + Shift + Y]</li>
+					<li> <span class="SHCT_TEXT">OPEN NETWORK INFO</span> - [Alt + Shift + N]</li>
+					<li> <span class="SHCT_TEXT">OPEN HASH CHECKER PANEL</span> - [Alt + Shift + U]</li>
+					<li> <span class="SHCT_TEXT">OPEN COLOR PICKER PANEL</span> - [Ctrl + Alt + Shift + P]</li>
+					<li> <span class="SHCT_TEXT">OPEN CLIPBOARDS-MEMO PANEL</span> - [Alt + Shift + P]</li>
+					<hr>
+					<h4> 5.1 - Files and Folders actions submenu:</h4>
+					<li><span class="SHCT_TEXT">UPPERCASE ALL FOLDER CONTENT</span> - [Alt + Shift + 0]</li>
+					<li><span class="SHCT_TEXT">CREATE FOLDERS FROM STRING PATH</span> - [Alt + Shift + 9]</li>
+					<li><span class="SHCT_TEXT">COPY DIRECTORY STRUCTURE</span> - [Alt + Shift + 8]</li>
+					<li><span class="SHCT_TEXT">DELETE FOLDER CONTENT BY EXTENSION</span> - [Alt + Shift + 7]</li>
+					<li><span class="SHCT_TEXT">DELETE ALL CONTENT FROM DIRECTORY (RECURSIVE)</span> - [Alt + Shift + 6]</li>
+					<li><span class="SHCT_TEXT">DELETE ONLY FILES CONTAINED IN DIRECTORY (RECURSIVE)</span> - [Alt + Shift + 5]</li>
+					<hr>
+					<h4> 5.2 - Converters and Media:</h4>
+					<li> <span class="SHCT_TEXT">OPEN IMAGE VIEWER</span> - [Alt + Shift + O]</li>
+					<li> <span class="SHCT_TEXT">OPEN IMAGE CONVERTER</span> - [Alt + Shift + I]</li>
+					<hr>
+					<h4> 6 - Help submenu:</h4>
+					<li> <span class="SHCT_TEXT">OPEN ABOUT-INFO PANEL</span> - [Alt + Shift + .]</li>
+					<li> <span class="SHCT_TEXT">EXPORT LOGS</span> - [Alt + E + .]</li>
+					<li> <span class="SHCT_TEXT">ERASE LOGS</span> - [Alt + Canc + .]</li>
+					<li> <span class="SHCT_TEXT">OPEN TUTORIAL PANEL</span> - [Alt + Shift + Q]</li>
+					<li> <span class="SHCT_TEXT">RETURN TO HOMEPAGE</span> - [Alt + Shift + H]</li>
+					<hr>
+					<h4> 6.1 - RESET PANELS:</h4>
+					<li> <span class="SHCT_TEXT">RESET ALL PANELS</span> - [Ctrl + Alt + Shift + 0]</li>
+					<li> <span class="SHCT_TEXT">RESET TEXT EDITOR</span> - [Ctrl + Alt + Shift + 9]</li>
+					<li> <span class="SHCT_TEXT">RESET CRYPTER</span> - [Ctrl + Alt + Shift + 8]</li>
+					<li> <span class="SHCT_TEXT">RESET CONFIGURATION MANAGER</span> - [Ctrl + Alt + Shift + 7]</li>
+				</ul></p>				
+				
+				<h2 id="shctsTextEditor" class="sectionSubTitle"> 3.2 - TEXT EDITOR SHORTCUTS</h2>
+				<p><ul class="shorctutsList">
+					
+					<hr>
+					<h4> On-the-fly view change:</h4>
+					<li> <span class="SHCT_TEXT">MAXIMIZE TEXT AREA</span> - [Ctrl + M]</li>
+					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT TEXT EDITOR'S HEADER</span> - [Ctrl + Shift + Alt + H]</li>
+					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT TEXT EDITOR'S SUB-HEADER</span> - [Ctrl + Shift + Alt + U]</li>
+					<li> <span class="SHCT_TEXT">SHOW/HIDE SCREEPT TEXT EDITOR'S FOOTER</span> - [Ctrl + Shift + Alt + L]</li>
+					<li> <span class="SHCT_TEXT">OPEN/CLOSE FILE TREE PANEL</span> - [Alt + Q]</li>
+					<li> <span class="SHCT_TEXT">OPEN/CLOSE CLIPBOARD PANEL</span> - [Alt + A]</li>
+					<li> <span class="SHCT_TEXT">OPEN/CLOSE DOCUMENT MAP PANEL</span> - [Alt + W]</li>
+					<li> <span class="SHCT_TEXT">SHOW AUTOCOMPLETE OPTIONS</span> - [Ctrl + Spacebar]</li>
+					<li> <span class="SHCT_TEXT">Open Current file into File System</span> - [Ctrl + Shift + Enter]</li>
+					<li> <span class="SHCT_TEXT">Open Current file into Shell/Cmd</span> - [Ctrl + Alt + Enter]</li>
+
+					<hr>
+					<h4> On-the-fly View settings:</h4>
+					<li> <span class="SHCT_TEXT">CHANGE FONT SIZE</span> - [Ctrl + Shift + MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">SHOW/HIDE TAB GRIDS</span> - [Ctrl + G]</li>
+					<li> <span class="SHCT_TEXT">AUTO SINCHRONIZATION FILE TREE PANEL and CURRENT FILE ON/OFF</span> - [Ctrl + Shift + U]</li>
+					<li> <span class="SHCT_TEXT">WORKSPACE SYNC ON/OFF</span> - [Ctrl + Shift + W]</li>
+					<li> <span class="SHCT_TEXT">FILE TYPE LANGUAGE AUTO SYNC</span> - [Ctrl + Shift + L]</li>
+					<li> <span class="SHCT_TEXT">SELECT NEW WORKSPACE</span> - [Alt + Shift + W]</li>
+					<li> <span class="SHCT_TEXT">NAVIGATE OUT ONE LEVEL IN FILE TREE</span> - [Ctrl + Alt + Shift + Arrow UP]</li>
+					<li> <span class="SHCT_TEXT">NAVIGATE IN ONE LEVEL IN FILE TREE</span> - [Ctrl + Alt + Shift + Arrow DOWN]</li>				
+					<li> <span class="SHCT_TEXT">INLINE TABS ON/OFF</span> - [Ctrl + Shift + I]</li>
+					<li> <span class="SHCT_TEXT">ADAPT WIDTH TO SCREEN SIZE</span> - [Ctrl + Shift + A]</li>
+					
+					<hr>
+					<h4> Various and text editor panels:</h4>
+					<li> <span class="SHCT_TEXT">OPEN SPECIAL/ESCAPES PANEL</span> - [Ctrl + E]</li>
+					<li> <span class="SHCT_TEXT">OPEN TEMPLATES PANEL</span> - [Ctrl + T]</li>
+					<li> <span class="SHCT_TEXT">OPEN CALCULATOR</span> - [Ctrl + Alt + C]</li>
+					<li> <span class="SHCT_TEXT">OPEN COLOR PICKER</span> - [Ctrl + Alt + Shift + P]</li>
+					<li> <span class="SHCT_TEXT">OPEN HASH CHECKER PANEL</span> - [ Alt + Shift + U]</li>
+					
+					<hr>
+					<h4> Text search panels:</h4>
+					<li> <span class="SHCT_TEXT">OPEN SEARCH PANEL</span> - [Ctrl + F]</li>
+					<li> <span class="SHCT_TEXT">OPEN REPLACE PANEL</span> - [Ctrl + R]</li>
+					<li> <span class="SHCT_TEXT">OPEN GOTO LINE PANEL</span> - [Ctrl + L]</li>
+					
+					<hr>
+					<h4> File actions:</h4>
+					<li> <span class="SHCT_TEXT">SEE CURRENT FILE PROPERTIES</span> - [Alt + Enter]</li>
+					<li> <span class="SHCT_TEXT">RELOAD FILE FROM DISK</span> - [Ctrl + Shift + R]</li>
+					<li> <span class="SHCT_TEXT">LOAD FILE</span> - [Ctrl + O]</li>
+					<li> <span class="SHCT_TEXT">SAVE FILE</span> - [Ctrl + S]</li>
+					<li> <span class="SHCT_TEXT">SAVE FILE AS</span> - [Ctrl + Shif + S]</li>
+					
+					<hr>
+					<h4> Text editing functions:</h4>
+					<li> <span class="SHCT_TEXT">UNDO</span> - [Ctrl + Z]</li>
+					<li> <span class="SHCT_TEXT">UNDO X5</span> - [Ctrl + Alt + Z]</li>
+					<li> <span class="SHCT_TEXT">REDO</span> - [Ctrl + Y]</li>
+					<li> <span class="SHCT_TEXT">REDO X 5</span> - [Ctrl + Alt + Y]</li>
+					<li> <span class="SHCT_TEXT">COLLAPSE CURRENT FOLD </span> - [Ctrl + (Numpad -)]</li>
+					<li> <span class="SHCT_TEXT">EXPAND CURRENT FOLD </span> - [Ctrl + (Numpad +)]</li>
+					<li> <span class="SHCT_TEXT">FONT SIZE ++ </span> - [Ctrl + Shift + (+)]</li>
+					<li> <span class="SHCT_TEXT">FONT SIZE --</span> - [Ctrl + Shift + (-)]</li>
+					<li> <span class="SHCT_TEXT">UPPERCASE ALL SELECTED</span> - [Ctrl + ArrowUp]</li>
+					<li> <span class="SHCT_TEXT">UPPERCASE AFTER DOTS/SEPARATORS</span> - [Ctrl + Shift + .]</li>
+					<li> <span class="SHCT_TEXT">DELETE LINE</span> - [Ctrl + D]</li>
+					<li> <span class="SHCT_TEXT">DUPLICATE LINE UP</span> - [Ctrl + Alt + Arrow up]</li>
+					<li> <span class="SHCT_TEXT">DUPLICATE LINE DOWN</span> - [Ctrl + Alt + Arrow down]</li>
+					<li> <span class="SHCT_TEXT">REMOVE SPACES IN SELECTION</span> - [Ctrl + (-)]</li>
+					<li> <span class="SHCT_TEXT">DELETE CURRENT LINE</span> - [Ctrl + D]</li>
+					<li> <span class="SHCT_TEXT">MOVE CURRENT LINE UP/DOWN</span> - [Alt + Up/Down]</li>
+					<li> <span class="SHCT_TEXT">RECTANGULAR SELECTION</span> - Keep pressed "Alt" while selecting text to select in rectangular mode</li>
+					<li> <span class="SHCT_TEXT">COPY TEXT TO SYSTEM CLIPBOARD (Keeping Style with copy/paste)</span> - [Alt + C]</li>
+					<li> <span class="SHCT_TEXT">FORMAT CURRENT SELECTED TEXT (if void selection all will be selected) </span> - [Ctrl+Shift+F]</li>
+					
+					<hr>
+					<h4> Specific Various functions:</h4>
+					<li> <span class="SHCT_TEXT">SPEAK TEXT / STOP SPEAKER</span> - [Ctrl + Alt + spacebar]</li>
+					<li> <span class="SHCT_TEXT">CRYPT TEXT</span> - [Ctrl + shift + C]</li>
+					<li> <span class="SHCT_TEXT">DECRYPT TEXT</span> - [Ctrl + shift + D]</li>
+					<li> <span class="SHCT_TEXT">BASE 64 ENCODE TEXT:</span> - [Alt + 4]</li>
+					<li> <span class="SHCT_TEXT">BASE 64 DECODE TEXT:</span> - [Ctrl + 4]</li>
+					
+					<hr>
+					<h4> Tabs, Text, and History navigation:</h4>
+					<li> <span class="SHCT_TEXT">NEW TAB</span> - [Ctrl + N]</li>
+					<li> <span class="SHCT_TEXT">CLOSE CURRENT TAB</span> - [Ctrl + W]</li>
+					<li> <span class="SHCT_TEXT">CLOSE ALL OPENED TABS</span> - [Ctrl + Alt + Shift + (-)]</li>
+					<li> <span class="SHCT_TEXT">NEXT TAB</span> - [Ctrl + TAB]</li>
+					<li> <span class="SHCT_TEXT">PREVIOUS TAB</span> - [Ctrl + Shift + TAB]</li>
+					<li> <span class="SHCT_TEXT">NEXT TAB IN HYSTORY</span> - [Alt + right Arrow]</li>
+					<li> <span class="SHCT_TEXT">PREVIOUS TAB IN HYSTORY</span> - [Alt + left Arrow]</li>
+					<li> <span class="SHCT_TEXT">REFRESH FILE LIST IF PRESENT</span> - [Ctrl + F5]</li>
+					<li> <span class="SHCT_TEXT">VERTICAL SCROLL UP</span> - [Ctrl + Arrow up]</li>
+					<li> <span class="SHCT_TEXT">VERTICAL SCROLL DOWN</span> - [Ctrl + Arrow down]</li>
+					<li> <span class="SHCT_TEXT">VERTICAL SCROLL SPEED +</span> - [Ctrl + MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">VERTICAL SCROLL SPEED ++</span> - [Ctrl + Alt + MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">HORIZONTAL SCROLL LEFT</span> - [Ctrl + Alt + Arrow left]</li>
+					<li> <span class="SHCT_TEXT">HORIZONTAL SCROLL RIGHT</span> - [Ctrl + Alt + Arrow right]</li>
+					<li> <span class="SHCT_TEXT">HORIZONTAL SCROLL</span> - [Shift + MouseWheel]</li>
+					<li> <span class="SHCT_TEXT">HORIZONTAL SCROLL SPEED +</span> - [Shift + Alt + MouseWheel]</li>
+					
+				</ul></p>
+			
+			</div>
+			
+			<br><hr>
+			
+			<!--  CREDITS AND LINKS  -->
+			<div id="CreditsNLinks">
+				<h1 class="sectionTitle">4 - CREDITS AND LINKS</h1>
+			
+				<p>
+					<span class="highlightBoldedGrey">ScreepT is a free software</span> created with passion during my free time and my busy nights :)
+					Nice to meet you, I'm Alessio Moraschini, and I am the creator of ScreepT!<br><br>
+					The <span class="highlightBoldedGrey">CryptoSTEG</span> (the brand new core crypter-algorithm), is the result of many crazy nights passed coding strange ideas born during university period. I've to thank google search: without it shouldn't have been possible to find all necessary informations about many functions implemented in this software :)<br><br>
+					<span class="highlightBolded">ScreepT was created mainly with the aim to implement a new generation of crypters</span>, more secure than existing algorithms (it improves AES-128 combining it with my algorithm called "Steg-Crypt", providing also some pluggable options such as Hash and Shuffle mode). 
+					<br>
+					To create this software, I used different opensource public libraries: without them this software maybe could have not seen daylight.<br>
+					<br><u>I really want give some special thanks to:</u>
+					
+					<ul>
+						<li><span class="highlightBolded">OSHI</span> is used to detect hardware and some network related informations. <a class="dependencyLink" target="_blank" href="https://github.com/oshi/oshi">[https://github.com/oshi/oshi]</a></li>
+												
+						<li><span class="highlightBolded">Ini4J.Org</span> is used to manage configuration ".INI" files. <a class="dependencyLink" target="_blank" href="http://ini4j.sourceforge.net">[http://ini4j.sourceforge.net]</a></li>
+						
+						<li><span class="highlightBolded">PngTastic</span> is used to manage PNG conversion. <a class="dependencyLink" target="_blank" href="https://github.com/depsypher/pngtastic">[https://github.com/depsypher/pngtastic]</a></li>
+						
+						<li><span class="highlightBolded">Apache commons</span> are widely used both for some network communication and for file related stuff. <a class="dependencyLink" target="_blank" href="https://commons.apache.org">[https://commons.apache.org]</a></li>
+						
+						<li><span class="highlightBolded">RsyntaxTextArea</span> Is widely used in text editor, ScreepT, and also configuration manager. <a class="dependencyLink" target="_blank" href="https://github.com/bobbylight/RSyntaxTextArea">[https://github.com/bobbylight/RSyntaxTextArea]</a></li>
+						
+						<li><span class="highlightBolded">Tesseract</span> Is used for image-pdf-text conversion and parsing <a class="dependencyLink" target="_blank" href="https://github.com/nguyenq/tess4j">[https://github.com/nguyenq/tess4j]</a></li>
+						
+						<li><span class="highlightBolded">FreeTTS</span> is used to implement text speaker. <a class="dependencyLink" target="_blank" href="https://freetts.sourceforge.io">[https://freetts.sourceforge.io]</a></li>
+
+						<li><span class="highlightBolded">Minhas Kamal - Ultimate calculator</span> is used in text editor. <a class="dependencyLink" target="_blank" href="http://minhaskamal.github.io/UltimateCalculator/">[http://minhaskamal.github.io/UltimateCalculator/]</a></li>
+
+						<li><span class="highlightBolded">Icons8</span> has been used to find ScreepT's most icons. <a class="dependencyLink" target="_blank" href="https://icons8.com">[https://icons8.com]</a></li>
+
+						<li><span class="highlightBolded">Smashicons</span> has been used to find some others ScreepT's icons. <a class="dependencyLink" target="_blank" href="https://www.flaticon.com">[https://www.flaticon.com/]</a></li>
+
+						<li><span class="highlightBolded">JsBeautifier</span> has been used to implement text editor code formatter, using external calls to a JS library. <a class="dependencyLink" target="_blank" href="https://jsbeautifier.org/">[https://jsbeautifier.org/]</a></li>
+
+						<li><span class="highlightBolded">RXTextUtilities</span> was very useful to do some text area related operations. Thanks to Rob Camick for this awesome code. <a class="dependencyLink" target="_blank" href="https://tips4java.wordpress.com/2008/10/26/text-utilities/">[https://tips4java.wordpress.com/2008/10/26/text-utilities/]</a></li>
+					</ul>
+				</p>
+				
+				<br><p align="center" style="font-size:0.8em;color:#000099; font-weight:bold">ScreepT&#9400; - Alessio Moraschini - A.M. Design &amp; Development - Dalmine(BG) - Italy - 2020 </p>
+			</div>
+			
+		</div>
+	</body>
+
+</html>

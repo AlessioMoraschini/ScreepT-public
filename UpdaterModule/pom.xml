@@ -1,0 +1,180 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>UpdaterModule</groupId>
+  <artifactId>UpdaterModule</artifactId>
+  <version>1.0</version>
+   
+  <parent>
+  	<groupId>ScreepT_Parent</groupId>
+  	<artifactId>ScreepT_Parent</artifactId>
+  	<version>${parent.build.version.screept}</version>
+  	<relativePath>../../ScreepT_Repository/ScreepT_Parent</relativePath>
+  </parent>
+  
+  <packaging>jar</packaging>
+
+	<name>UpdaterModule</name>
+	<description>
+  		This module is made mainly for ScreepT update process, and to provide a first way to include added plugins to the main software.
+  		This should be made more customizable in the future to easily adapt on new projects that need the same kind of operations.
+  	</description>
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+			<url>${project.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
+  
+  <scm>
+      <connection>scm:git:http://127.0.0.1/dummy</connection>
+      <developerConnection>scm:git:https://127.0.0.1/dummy</developerConnection>
+      <tag>HEAD</tag>
+      <url>http://127.0.0.1/dummy</url>
+  </scm>
+  
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+    	
+    	<!-- Properties inherited from parent -->
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>properties-maven-plugin</artifactId>
+			<executions>
+				<execution>
+					<phase>validate</phase>
+					<goals>
+						<goal>read-project-properties</goal>
+					</goals>
+					<configuration>
+						<files>
+							<file>${project.parent.relativePath}/${properties.location}</file>
+						</files>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+    
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-assembly-plugin</artifactId>
+	    <version>2.4.1</version>
+	    <executions>
+
+            <!-- UPDATER.JAR EXPORT TO UPDATES DIR -->
+	        <execution>
+	            <id>make-assembly</id>
+	            <phase>package</phase>
+	            <goals>
+	                <goal>single</goal>
+	            </goals>
+	            <configuration>
+	            	<outputDirectory>${export.updates.root}</outputDirectory>
+	           	 	<finalName>updater</finalName>
+	            	<skipAssembly>false</skipAssembly>
+	            	<overwrite>true</overwrite>
+                	<archive>
+		                <manifest>
+		                    <mainClass>
+		                        main.MainStandAloneUpdater
+		                    </mainClass>
+		                </manifest>
+		                <manifestEntries>
+			              	<Created-by>${developer.name}</Created-by>
+		                	<Built-By>${developer.name}</Built-By>
+			              	<Build-number>${buildNumber}</Build-number>
+			              	<Build-git-hash>${git.commit.id}</Build-git-hash>
+		                </manifestEntries>
+	                </archive>
+	                <descriptorRefs>
+	                    <descriptorRef>jar-with-dependencies</descriptorRef>
+	                </descriptorRefs>
+	                <appendAssemblyId>false</appendAssemblyId>
+	                
+	                <exclude>/**/*humbs.db</exclude>
+	            </configuration>
+	        </execution>
+	    </executions>
+	  </plugin>
+	  
+	  <!-- Add Build number into manifest -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+	       	<format>{0,number,integer}</format>
+		    <items>
+		        <item>buildNumber</item>
+		    </items>
+			<doCheck>false</doCheck>
+			<doUpdate>false</doUpdate>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <dependencies>
+  	<!-- Exclude test only dependencies -->
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.12</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>testUtils</groupId>
+		<artifactId>testUtils</artifactId>
+		<version>1.0</version>
+		<scope>provided</scope>
+	</dependency>
+  
+  	<dependency>
+	    <groupId>com.miglayout</groupId>
+	    <artifactId>miglayout</artifactId>
+	    <version>3.7.4</version>
+	</dependency>
+  
+	<dependency>
+	    <groupId>commons-net</groupId>
+	    <artifactId>commons-net</artifactId>
+	    <version>3.6</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.ini4j</groupId>
+		<artifactId>ini4j</artifactId>
+		<version>0.5.4</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>VariousCommonsLight</groupId>
+		<artifactId>VariousCommonsLight</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+  </dependencies>
+</project>

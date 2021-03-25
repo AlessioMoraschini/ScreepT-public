@@ -1,0 +1,173 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>HardwareCommons</groupId>
+	<artifactId>HardwareCommons</artifactId>
+	<version>1.0</version>
+
+	<parent>
+		<groupId>ScreepT_Parent</groupId>
+		<artifactId>ScreepT_Parent</artifactId>
+		<version>${parent.build.version.screept}</version>
+		<relativePath>../../ScreepT_Repository/ScreepT_Parent</relativePath>
+	</parent>
+
+	<packaging>jar</packaging>
+
+	<name>HardwareCommons</name>
+	<description>
+  	This module is made to gather informations about the underlying hardware, mainly with the use of Oshi project. Cointaning a standalone buidable GUI too.
+  </description>
+	<properties>
+		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+		<developer.mail>info@am-design-development.com</developer.mail>
+		<inception.year>2019</inception.year>
+		<current.year>2021</current.year>
+		<project.license.name>MIT</project.license.name>
+		<project.main.url>https://www.am-design-development.com</project.main.url>
+	</properties>
+
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
+
+	<build>
+		<finalName>HardwareInfoTool.jar</finalName>
+		<sourceDirectory>src</sourceDirectory>
+
+		<plugins>
+
+			<!-- Properties inherited from parent -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>${project.parent.relativePath}/${properties.location}</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+
+					<!-- FATJAR -->
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<skipAssembly>false</skipAssembly>
+							<overwrite>true</overwrite>
+							<archive>
+								<manifest>
+									<mainClass>
+										guiVersion.HardwareInfoFrameLauncher
+									</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<appendAssemblyId>false</appendAssemblyId>
+
+							<exclude>/**/*humbs.db</exclude>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- LICENSE REPORT GENERATOR -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+							<generateBundle>true</generateBundle>
+							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
+							<excludedScopes>provided,test</excludedScopes>
+						</configuration>
+						<goals>
+							<goal>third-party-report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<skipThirdPartyReport>false</skipThirdPartyReport>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/com.github.oshi/oshi-core -->
+		<dependency>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>3.13.0</version>
+			<scope>${plugins.export.scope}</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-parent</artifactId>
+			<version>3.13.0</version>
+			<!-- <scope>${plugins.export.scope}</scope> -->
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>GuiCommons</groupId>
+			<artifactId>GuiCommons</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>clojars</id>
+			<name>clojars_Repo</name>
+			<url>https://clojars.org/repo/</url>
+		</repository>
+	</repositories>
+</project>

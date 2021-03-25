@@ -710,7 +710,7 @@ public class FileVarious {
 		if(files != null) {
 			for(File file : files) {
 				try {
-					if(getCanonicalPathSafe(file).equals(match))
+					if(getCanonicalPathSafe(file).equals(getCanonicalPathSafe(match)))
 						return true;
 				} catch (Exception e) {
 					e.printStackTrace();
