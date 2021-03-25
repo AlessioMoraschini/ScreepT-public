@@ -17,17 +17,17 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.GuiUtils;
-import gui.dialogs.color.ColorDialogHelper;
 import mouseutils.MousePointerCaller;
 import mouseutils.MousePointerUtils;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.KeyListenerUtils;
-import utility.manipulation.ConversionUtils;
-import utility.manipulation.ImageWorker;
-import utility.reflection.ReflectionUtils;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.dialogs.color.ColorDialogHelper;
+import various.common.light.utility.KeyListenerUtils;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.manipulation.ImageWorker;
+import various.common.light.utility.reflection.ReflectionUtils;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

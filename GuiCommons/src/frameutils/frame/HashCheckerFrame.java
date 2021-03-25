@@ -22,14 +22,14 @@ import javax.swing.JFrame;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.UpdateProgressPanel;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import textarea.om.TxtFieldFileDragNDropManager;
-import utility.hash.ChecksumHasher;
-import utility.hash.HashingFunction;
+import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.utility.hash.ChecksumHasher;
+import various.common.light.utility.hash.HashingFunction;
 
 import javax.swing.JLabel;
 import java.awt.Font;

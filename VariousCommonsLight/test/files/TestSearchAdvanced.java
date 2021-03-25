@@ -7,8 +7,8 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import files.search.FileNameSearchAdvanced;
-import files.search.FileNameSearchAdvanced.SearchType;
+import various.common.light.files.search.FileNameSearchAdvanced;
+import various.common.light.files.search.FileNameSearchAdvanced.SearchType;
 
 public class TestSearchAdvanced {
 

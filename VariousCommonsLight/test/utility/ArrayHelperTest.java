@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import utility.manipulation.ArrayHelper;
+import various.common.light.utility.manipulation.ArrayHelper;
 
 public class ArrayHelperTest {
 

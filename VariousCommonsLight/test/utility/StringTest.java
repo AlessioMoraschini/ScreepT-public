@@ -12,12 +12,12 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import files.FileWorker;
-import gui.GuiUtils;
+import test.util.utils.TestUtils;
 import testconfig.TestConstants;
-import utility.string.StringWorker;
-import utility.string.StringWorker.EOL;
-import utils.TestUtils;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.GuiUtils;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class StringTest {
 	

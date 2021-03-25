@@ -24,8 +24,8 @@ import com.googlecode.pngtastic.core.PngChunk;
 import com.googlecode.pngtastic.core.PngImage;
 import com.googlecode.pngtastic.core.PngOptimizer;
 
-import utility.log.SafeLogger;
-import utility.manipulation.ImageWorker;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.manipulation.ImageWorker;
 
 public class ImageWorkerExtended extends ImageWorker {
 

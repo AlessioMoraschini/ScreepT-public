@@ -32,9 +32,9 @@ import org.apache.log4j.Logger;
 import dialogutils.JOptionHelperExtended;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import various.common.light.gui.MenuSetter;
 
 /**
  * This represents a basic extensible component, when each node is a File Object

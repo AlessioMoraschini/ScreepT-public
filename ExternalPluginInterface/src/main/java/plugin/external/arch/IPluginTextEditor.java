@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import om.SelectionDtoFull;
+import various.common.light.om.SelectionDtoFull;
 
 public interface IPluginTextEditor extends IPlugin {
 

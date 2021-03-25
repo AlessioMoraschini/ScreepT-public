@@ -5,9 +5,9 @@ import javax.swing.SwingUtilities;
 import org.junit.Before;
 import org.junit.Test;
 
-import gui.PluginManagerGUI;
-import plugins.PluginDTO;
-import plugins.PluginManager;
+import updater.module.gui.PluginManagerGUI;
+import updater.module.plugins.PluginDTO;
+import updater.module.plugins.PluginManager;
 
 public class TestPlugins {
 

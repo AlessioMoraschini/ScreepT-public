@@ -18,21 +18,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import utility.log.SafeLogger;
-import utility.manipulation.ConversionUtils;
-import utility.manipulation.ImageWorker;
-
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-import files.FileHistory;
 import frameutils.frame.om.ImageConverterOpener;
 import frameutils.frame.panels.FileSelectorDnD;
-import gui.GuiUtils;
 import resources.IconsPathConfigurator;
+import various.common.light.files.FileHistory;
+import various.common.light.gui.GuiUtils;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.manipulation.ImageWorker;
 
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;

@@ -2,6 +2,9 @@ package gui.config;
 
 import utils.config.GameConfigs;
 import utils.config.GeneralConfig;
+import various.common.light.gui.GuiUtils;
+import various.common.light.sounds.SoundsManager;
+
 import java.awt.GridBagLayout;
 import java.awt.Image;
 
@@ -17,13 +20,10 @@ import javax.swing.JSeparator;
 import javax.swing.JSlider;
 
 import om.Difficulty;
-import sounds.SoundsManager;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-
-import gui.GuiUtils;
 
 public class GeneralOptionPanel extends AbstractOptionPanel {
 	private static final long serialVersionUID = -8750945005935379183L;

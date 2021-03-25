@@ -3,7 +3,7 @@ package easteregg;
 import java.util.ArrayList;
 import java.util.Random;
 
-import om.TextRetriever;
+import various.common.light.om.TextRetriever;
 
 public class PhrasesCollection implements TextRetriever {
 

@@ -3,7 +3,7 @@ package easteregg;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
-import gui.listener.KeyListenerParent;
+import various.common.light.gui.listener.KeyListenerParent;
 
 public class EasterEggShortcutListener extends KeyListenerParent implements KeyEventDispatcher {
 

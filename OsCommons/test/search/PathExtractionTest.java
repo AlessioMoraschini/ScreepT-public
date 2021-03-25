@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import utils.linux.LinuxFindJvmVersions;
+import os.commons.utils.linux.LinuxFindJvmVersions;
 
 public class PathExtractionTest {
 

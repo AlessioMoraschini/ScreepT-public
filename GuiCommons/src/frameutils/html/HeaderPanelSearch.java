@@ -22,12 +22,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import ButtonUtils.ButtonDefaults;
-import gui.dialogs.msg.JOptionHelper;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

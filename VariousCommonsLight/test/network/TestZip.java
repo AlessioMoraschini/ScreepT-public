@@ -5,7 +5,7 @@ import static testconfig.TestConstants.*;
 
 import org.junit.Test;
 
-import files.ZipWorker;
+import various.common.light.files.ZipWorker;
 
 public class TestZip {
 

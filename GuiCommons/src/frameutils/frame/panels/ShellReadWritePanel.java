@@ -14,25 +14,25 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.commons.io.FileUtils;
 
-import files.FileVarious;
-import files.FileWorker;
 import frameutils.frame.om.ConsoleConcatenationMode;
 import frameutils.frame.om.ConsoleConcatenationModeWindows;
 import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.frame.panels.common.LoadNewSavePanel;
 import frameutils.frame.panels.common.PlayStopPausePanel;
 import frameutils.shortcuts.ShellShortcutsListener;
-import gui.GuiUtils;
-import gui.RXTextUtilities;
 import net.miginfocom.swing.MigLayout;
-import om.LimitedConcurrentList;
-import om.OSinfo;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import splitpanel.SplitPaneUtils;
-import utility.string.StringWorker;
-import utility.string.StringWorker.EOL;
-import utils.SysUtils;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.RXTextUtilities;
+import various.common.light.om.LimitedConcurrentList;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 import javax.swing.JSplitPane;
 

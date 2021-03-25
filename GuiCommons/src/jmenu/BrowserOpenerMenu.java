@@ -8,12 +8,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
-import gui.MenuSetter;
-import gui.dialogs.msg.JOptionHelper;
 import jmenu.om.UrlRetriever;
-import utility.log.SafeLogger;
-import utils.SysUtils;
-import utils.SysUtils.Browser;
+import os.commons.utils.SysUtils;
+import os.commons.utils.SysUtils.Browser;
+import various.common.light.gui.MenuSetter;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.utility.log.SafeLogger;
 
 public class BrowserOpenerMenu extends JMenu {
 	private static final long serialVersionUID = -4628690082885140560L;

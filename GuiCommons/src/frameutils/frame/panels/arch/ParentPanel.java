@@ -34,11 +34,11 @@ import javax.swing.border.EmptyBorder;
 
 import dialogutils.GenericFileChooserDialog;
 import dialogutils.JOptionHelperExtended;
-import gui.GuiUtils;
 import resources.IconsPathConfigurator;
 import textarea.om.SelectiveLineEnabledTextArea;
-import utility.log.SafeLogger;
-import utility.reflection.ReflectionUtils;
+import various.common.light.gui.GuiUtils;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.reflection.ReflectionUtils;
 
 public abstract class ParentPanel extends JPanel implements IParentPanel{
 	private static final long serialVersionUID = -5704690014209186123L;

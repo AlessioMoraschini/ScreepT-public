@@ -2,8 +2,8 @@ package utility;
 
 import org.junit.Test;
 
-import utility.bytes.BitWorker;
-import utils.TestUtils;
+import test.util.utils.TestUtils;
+import various.common.light.utility.bytes.BitWorker;
 
 public class BitWorkerTest {
 	

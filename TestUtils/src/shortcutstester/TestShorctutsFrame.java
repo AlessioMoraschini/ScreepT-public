@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import utils.TestUtils;
+import test.util.utils.TestUtils;
 
 public class TestShorctutsFrame {
 	

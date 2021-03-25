@@ -18,9 +18,9 @@ import java.awt.Color;
 import java.awt.Cursor;
 
 import net.miginfocom.swing.MigLayout;
-import om.SelectionDtoFull;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
+import various.common.light.om.SelectionDtoFull;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;

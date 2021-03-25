@@ -3,9 +3,9 @@ package easteregg;
 import java.awt.Dimension;
 import java.util.UUID;
 
-import gui.dialogs.msg.JOptionHelper;
-import om.ShortcutFilter;
-import om.TextRetriever;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.om.ShortcutFilter;
+import various.common.light.om.TextRetriever;
 
 public class PhraseEasterEgg extends EasterEgg {
 

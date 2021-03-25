@@ -19,9 +19,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
 import dialogutils.GenericFileChooserDialog;
-import gui.GuiUtils;
-import gui.dnd.FileDrop;
-import utility.manipulation.ArrayHelper;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.dnd.FileDrop;
+import various.common.light.utility.manipulation.ArrayHelper;
 
 public class FileSelectorDnD extends JPanel {
 	private static final long serialVersionUID = -7814910139806390419L;

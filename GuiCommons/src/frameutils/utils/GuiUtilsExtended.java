@@ -25,13 +25,13 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import gui.GuiUtils;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import utility.string.CustomCodeFormatter;
-import utility.string.StringWorker;
+import various.common.light.gui.GuiUtils;
+import various.common.light.utility.string.CustomCodeFormatter;
+import various.common.light.utility.string.StringWorker;
 
 public class GuiUtilsExtended extends GuiUtils {
 	

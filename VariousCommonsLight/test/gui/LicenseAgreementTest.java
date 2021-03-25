@@ -2,6 +2,8 @@ package gui;
 
 import java.io.File;
 
+import various.common.light.gui.LightLicenseViewer;
+
 public class LicenseAgreementTest {
 
 	public static void main(String args[]) {

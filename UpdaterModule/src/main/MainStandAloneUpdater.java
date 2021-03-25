@@ -20,22 +20,22 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.ini4j.Wini;
 
-import files.CustomFileFilters;
-import files.FileVarious;
-import files.FileWorker;
-import files.ZipWorker;
-import gui.UpdateProgressPanel;
-import gui.dialogs.msg.JOptionHelper;
 import main.om.PropertiesDTO;
-import network.ftp.FtpDumper;
-import network.progress.UploadAction;
-import network.utils.DownloadUtils;
-import utility.hash.ChecksumHasher;
-import utility.hash.HashingFunction;
-import utility.log.SafeLogger;
-import utility.properties.PropertiesManager;
-import utility.string.StringWorker;
-import utility.string.StringWorker.EOL;
+import various.common.light.files.CustomFileFilters;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.ZipWorker;
+import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.network.ftp.FtpDumper;
+import various.common.light.network.progress.UploadAction;
+import various.common.light.network.utils.DownloadUtils;
+import various.common.light.utility.hash.ChecksumHasher;
+import various.common.light.utility.hash.HashingFunction;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.properties.PropertiesManager;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class MainStandAloneUpdater {
 

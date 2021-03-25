@@ -26,9 +26,9 @@ import javax.swing.tree.TreeCellRenderer;
 
 import org.apache.log4j.Logger;
 
-import files.om.FileNamed;
 import general.MyFileView;
 import treeutils.TreeUtils;
+import various.common.light.files.om.FileNamed;
 
 public class FileNameCellRenderer implements TreeCellRenderer {
 	

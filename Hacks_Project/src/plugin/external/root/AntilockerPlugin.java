@@ -18,8 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import antilocker.AntilockerGui;
-import files.FileVarious;
 import plugin.external.arch.IPlugin;
+import various.common.light.files.FileVarious;
 
 public class AntilockerPlugin implements IPlugin {
 

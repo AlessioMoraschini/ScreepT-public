@@ -18,9 +18,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import gui.dialogs.msg.JOptionHelper;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 public class JOptionHelperExtended extends JOptionHelper {
 	

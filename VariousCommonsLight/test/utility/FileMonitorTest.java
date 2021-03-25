@@ -7,10 +7,10 @@ import java.util.Date;
 
 import org.junit.*;
 
-import files.watcher.ChangeDTO;
-import files.watcher.FileChangeMonitor;
+import test.util.utils.TestUtils;
 import testconfig.TestConstants;
-import utils.TestUtils;
+import various.common.light.files.watcher.ChangeDTO;
+import various.common.light.files.watcher.FileChangeMonitor;
 
 
 public class FileMonitorTest {

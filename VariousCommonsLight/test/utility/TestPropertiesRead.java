@@ -3,9 +3,9 @@ package utility;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gui.dialogs.msg.JOptionHelper;
 import testconfig.TestConstants;
-import utility.properties.PropertiesManager;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.utility.properties.PropertiesManager;
 
 public class TestPropertiesRead {
 	

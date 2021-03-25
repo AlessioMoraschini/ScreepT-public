@@ -6,8 +6,8 @@ import javax.swing.SwingUtilities;
 import frameutils.frame.ShellFrame;
 import frameutils.frame.panels.ShellReadWritePanel;
 import frameutils.frame.panels.arch.ParentPanel;
-import gui.GuiUtils;
 import resources.IconsPathConfigurator;
+import various.common.light.gui.GuiUtils;
 
 public class ShellFrameTest {
 

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import files.search.FileNameSearchLight;
 import testconfig.TestConstants;
+import various.common.light.files.search.FileNameSearchLight;
 
 public class SearchTest {
 

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker;
 
 public class VersionCompareTest {
 	

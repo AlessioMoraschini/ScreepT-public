@@ -9,9 +9,9 @@ import java.io.IOException;
 import org.junit.After;
 import org.junit.Test;
 
-import files.FileWorker;
-import utility.log.SafeLogger;
-import utility.string.StringWorker.EOL;
+import various.common.light.files.FileWorker;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class TestSafeLogger {
 	

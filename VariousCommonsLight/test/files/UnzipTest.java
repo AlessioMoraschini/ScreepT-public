@@ -7,6 +7,7 @@ import java.io.File;
 import org.junit.Test;
 
 import testconfig.TestConstants;
+import various.common.light.files.ZipWorker;
 
 
 public class UnzipTest {

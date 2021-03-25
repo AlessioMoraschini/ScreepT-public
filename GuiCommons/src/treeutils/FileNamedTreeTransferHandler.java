@@ -14,8 +14,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.tree.TreePath;
 
-import files.om.FileNamed;
-import gui.dialogs.msg.JOptionHelper;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 public class FileNamedTreeTransferHandler extends TransferHandler {
 

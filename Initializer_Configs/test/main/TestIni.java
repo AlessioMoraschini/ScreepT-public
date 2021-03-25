@@ -11,8 +11,8 @@ import org.ini4j.InvalidFileFormatException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import arch.INItializerParent;
-import utility.manipulation.ConversionUtils;
+import initializer.configs.arch.INItializerParent;
+import various.common.light.utility.manipulation.ConversionUtils;
 
 public class TestIni {
 

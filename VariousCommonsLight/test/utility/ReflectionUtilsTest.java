@@ -8,7 +8,7 @@ import javax.swing.JButton;
 
 import org.junit.Test;
 
-import utility.reflection.ReflectionUtils;
+import various.common.light.utility.reflection.ReflectionUtils;
 
 public class ReflectionUtilsTest {
 

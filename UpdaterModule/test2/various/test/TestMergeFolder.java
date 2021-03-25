@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import files.FileWorker;
+import various.common.light.files.FileWorker;
 
 public class TestMergeFolder {
 

@@ -19,9 +19,9 @@ import java.awt.Color;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
-import gui.dialogs.msg.JOptionHelper;
 import utils.config.AbstractConfig;
 import utils.config.GeneralConfig;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 import java.awt.Dimension;
 import java.awt.Font;

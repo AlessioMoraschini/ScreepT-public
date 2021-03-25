@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import om.SelectionDtoFull;
 import plugin.external.arch.IPluginTextEditor;
+import various.common.light.om.SelectionDtoFull;
 
 public class HellowordTextEditorPlugin implements IPluginTextEditor {
 

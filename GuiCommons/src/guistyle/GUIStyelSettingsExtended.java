@@ -30,11 +30,11 @@ import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticTheme;
 import com.jgoodies.looks.plastic.theme.LightGray;
 
-import gui.GUIStyelSettings;
-import impl.om.GuiOption;
+import initializer.configs.impl.om.GuiOption;
 import resources.GeneralConfig;
 import treeutils.TreeUtils;
 import utils.ImageWorkerExtended;
+import various.common.light.gui.GUIStyelSettings;
 
 public class GUIStyelSettingsExtended extends GUIStyelSettings {
 

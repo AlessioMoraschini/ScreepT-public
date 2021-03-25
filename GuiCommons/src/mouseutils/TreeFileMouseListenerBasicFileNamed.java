@@ -41,19 +41,19 @@ import javax.swing.tree.TreePath;
 import org.apache.log4j.Logger;
 
 import dialogutils.JOptionHelperExtended;
-import files.FileWorker;
-import files.FileVarious;
-import files.om.FileNamed;
 import frameutils.frame.FilePropertiesFrame;
 import frameutils.frame.HashCheckerFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.GuiUtils;
-import gui.MenuSetter;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.SystemClipboardUtils;
-import utility.string.StringWorker;
-import utility.string.StringWorker.EOL;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.om.FileNamed;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.MenuSetter;
+import various.common.light.utility.SystemClipboardUtils;
+import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 /**
  * This represents a basic extensible component, when each node is a File Object

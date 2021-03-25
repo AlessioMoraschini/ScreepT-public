@@ -6,8 +6,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JPanel;
 
-import gui.dialogs.msg.JOptionHelper;
 import utils.config.AbstractConfig;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 
 public abstract class AbstractOptionPanel extends JPanel {
 	private static final long serialVersionUID = 3303466739933233690L;

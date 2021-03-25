@@ -5,8 +5,8 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
-import files.FileVarious;
-import utility.string.StringWorker;
+import various.common.light.files.FileVarious;
+import various.common.light.utility.string.StringWorker;
 
 public class StringWorkerTest {
 

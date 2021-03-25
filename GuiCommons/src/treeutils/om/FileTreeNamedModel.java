@@ -16,7 +16,7 @@ import java.util.Arrays;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import files.om.FileNamed;
+import various.common.light.files.om.FileNamed;
 
 public class FileTreeNamedModel implements TreeModel {
 

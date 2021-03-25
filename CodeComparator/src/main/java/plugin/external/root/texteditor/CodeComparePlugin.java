@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import files.FileVarious;
-import om.SelectionDtoFull;
 import plugin.external.arch.IPluginTextEditor;
+import various.common.light.files.FileVarious;
+import various.common.light.om.SelectionDtoFull;
 
 public class CodeComparePlugin implements IPluginTextEditor {
 

@@ -24,6 +24,7 @@ import om.Difficulty;
 import utils.LevelLoader;
 import utils.config.GameConfigs;
 import utils.config.GeneralConfig;
+import various.common.light.gui.GUIStyelSettings;
 
 public class StartFrame extends JFrame {
 	private static final long serialVersionUID = -8026416994513756565L;

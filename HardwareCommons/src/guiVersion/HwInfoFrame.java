@@ -36,10 +36,8 @@ import org.apache.log4j.Logger;
 
 import frameutils.frame.arch.ParentFrame;
 import frameutils.utils.GuiUtilsExtended;
-import gui.GuiUtils;
 import net.miginfocom.swing.MigLayout;
 import om.HDinfo;
-import om.LimitedConcurrentList;
 import oshi.SystemInfo;
 import oshi.hardware.Baseboard;
 import oshi.hardware.CentralProcessor;
@@ -48,8 +46,10 @@ import oshi.hardware.GlobalMemory;
 import oshi.hardware.HWDiskStore;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import runtime.RuntimeUtil;
-import utility.manipulation.ConversionUtils;
+import various.common.light.gui.GuiUtils;
+import various.common.light.om.LimitedConcurrentList;
+import various.common.light.runtime.RuntimeUtil;
+import various.common.light.utility.manipulation.ConversionUtils;
 
 public class HwInfoFrame extends ParentFrame{
 	private static final long serialVersionUID = -2119678215026217031L;

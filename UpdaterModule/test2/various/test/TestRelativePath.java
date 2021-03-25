@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import files.FileVarious;
+import various.common.light.files.FileVarious;
 
 public class TestRelativePath {
 

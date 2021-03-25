@@ -5,9 +5,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
-import utility.log.SafeLogger;
-import utility.string.StringWorker;
-import utils.windows.WinRegistryV2;
+import os.commons.utils.windows.WinRegistryV2;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.string.StringWorker;
 
 public class WinRegistryTestV2 {
 

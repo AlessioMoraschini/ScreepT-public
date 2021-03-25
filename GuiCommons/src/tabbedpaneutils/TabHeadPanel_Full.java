@@ -27,7 +27,7 @@ import javax.swing.SwingConstants;
 
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker;
 import net.miginfocom.swing.MigLayout;
 import java.awt.Component;
 

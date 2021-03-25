@@ -6,10 +6,10 @@ import java.io.File;
 
 import org.junit.Test;
 
+import test.util.utils.TestUtils;
 import testconfig.TestConstants;
-import utility.hash.ChecksumHasher;
-import utility.hash.HashingFunction;
-import utils.TestUtils;
+import various.common.light.utility.hash.ChecksumHasher;
+import various.common.light.utility.hash.HashingFunction;
 
 public class HashTestCompare {
 

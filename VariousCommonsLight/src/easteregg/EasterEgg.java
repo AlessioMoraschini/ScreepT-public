@@ -1,6 +1,6 @@
 package easteregg;
 
-import om.ShortcutFilter;
+import various.common.light.om.ShortcutFilter;
 
 public class EasterEgg {
 

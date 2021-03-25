@@ -29,10 +29,10 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import net.miginfocom.swing.MigLayout;
+import os.commons.utils.SysUtils;
 import resources.GeneralConfig;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
-import utils.SysUtils;
 
 import java.awt.Color;
 

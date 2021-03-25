@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import utils.SysUtils;
+import os.commons.utils.SysUtils;
 
 public class TestShortcuts {
 

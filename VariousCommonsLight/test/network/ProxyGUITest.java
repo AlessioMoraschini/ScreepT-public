@@ -3,10 +3,10 @@ package network;
 import java.awt.Dialog.ModalityType;
 import java.net.URL;
 
-import network.http.HttpHelper;
-import network.http.HttpHelper.HttpRequestMetod;
-import network.proxy.ProxySettingsGUI;
-import utility.properties.PropertiesManager;
+import various.common.light.network.http.HttpHelper;
+import various.common.light.network.http.HttpHelper.HttpRequestMetod;
+import various.common.light.network.proxy.ProxySettingsGUI;
+import various.common.light.utility.properties.PropertiesManager;
 
 public class ProxyGUITest {
 

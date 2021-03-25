@@ -42,10 +42,10 @@ import om.GameObject;
 import om.Paddle;
 import om.ScoreBoard;
 import om.Shot;
-import sounds.SoundsManager;
 import utils.LevelLoader;
 import utils.config.GameConfigs;
 import utils.config.GeneralConfig;
+import various.common.light.sounds.SoundsManager;
 
 public class GameFrame extends JFrame implements KeyListener {
 

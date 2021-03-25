@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import utility.reflection.ReflectionLibChecker;
+import various.common.light.utility.reflection.ReflectionLibChecker;
 
 public class LibCheckerTest {
 	

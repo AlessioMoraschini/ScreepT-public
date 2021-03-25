@@ -25,11 +25,11 @@ import frameutils.utils.GuiUtilsExtended;
 
 import java.awt.SystemColor;
 import net.miginfocom.swing.MigLayout;
-import om.EscapeType;
-import om.SelectionDtoFull;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import utils.StringWorkerExtended;
+import various.common.light.om.EscapeType;
+import various.common.light.om.SelectionDtoFull;
 
 import javax.swing.JLabel;
 

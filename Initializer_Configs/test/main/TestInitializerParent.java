@@ -2,11 +2,11 @@ package main;
 
 import org.junit.Test;
 
-import arch.INItializerParent;
-import utility.string.StringWorker;
+import initializer.configs.arch.INItializerParent;
+import various.common.light.utility.string.StringWorker;
 
-import static arch.INItializerParent.SEPARATOR_DEFAULT;
-import static arch.INItializerParent.SEPARATOR_INNER_DEFAULT;
+import static initializer.configs.arch.INItializerParent.SEPARATOR_DEFAULT;
+import static initializer.configs.arch.INItializerParent.SEPARATOR_INNER_DEFAULT;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;

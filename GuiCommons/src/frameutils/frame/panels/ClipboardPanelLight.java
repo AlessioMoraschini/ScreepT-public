@@ -34,16 +34,16 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import combobox.TextPaneComboBoxEditor;
-import files.FileWorker;
-import files.FileVarious;
 import frameutils.frame.panels.arch.IParentPanel;
 import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
-import gui.GuiUtils;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.gui.GuiUtils;
 
 import java.awt.Dimension;
 import javax.swing.JLabel;

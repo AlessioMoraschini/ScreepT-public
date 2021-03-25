@@ -5,9 +5,9 @@ import java.awt.event.KeyEvent;
 import gui.GameFrame;
 import om.Bonus;
 import om.Shot;
-import sounds.SoundsManager;
 import utils.config.GameConfigs;
 import utils.config.GeneralConfig;
+import various.common.light.sounds.SoundsManager;
 
 public class ShotModifier extends AbstractModifier implements KeyEventModifier {
 	

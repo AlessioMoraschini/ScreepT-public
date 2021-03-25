@@ -3,10 +3,10 @@ package cache;
 import java.io.File;
 import java.util.List;
 
-import cache.impl.FileSearchResultCache;
-import files.om.FileSearchDTO;
-import files.search.FileNameSearchAdvanced;
-import files.search.FileNameSearchAdvanced.SearchType;
+import various.common.light.cache.impl.FileSearchResultCache;
+import various.common.light.files.om.FileSearchDTO;
+import various.common.light.files.search.FileNameSearchAdvanced;
+import various.common.light.files.search.FileNameSearchAdvanced.SearchType;
 
 public class CacheTest {
 	

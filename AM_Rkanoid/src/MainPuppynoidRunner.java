@@ -1,7 +1,7 @@
 import java.io.IOException;
 
 import gui.StartFrame;
-import utility.properties.PropertiesManager;
+import various.common.light.utility.properties.PropertiesManager;
 
 public class MainPuppynoidRunner {
 

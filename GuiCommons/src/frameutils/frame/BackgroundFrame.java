@@ -17,7 +17,7 @@ import java.awt.Image;
 
 import javax.swing.JPanel;
 
-import utility.manipulation.ImageWorker;
+import various.common.light.utility.manipulation.ImageWorker;
 
 public class BackgroundFrame extends JPanel{
 	private static final long serialVersionUID = -2332359202457198415L;

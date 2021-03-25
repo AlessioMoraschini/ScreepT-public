@@ -6,7 +6,7 @@ import java.util.Vector;
 
 import org.junit.Test;
 
-import arch.INItializerParent;
+import initializer.configs.arch.INItializerParent;
 
 public class UtilityTest {
 

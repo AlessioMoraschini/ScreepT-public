@@ -11,7 +11,7 @@
  */
 package resources;
 
-import sounds.SoundsManager;
+import various.common.light.sounds.SoundsManager;
 
 public class SoundsManagerExtended extends SoundsManager {
 	

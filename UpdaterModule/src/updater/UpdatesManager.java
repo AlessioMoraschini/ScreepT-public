@@ -22,21 +22,21 @@ import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import exception.UpdatesUnavailableException;
-import files.FileWorker;
-import files.FileVarious;
-import files.ZipWorker;
-import gui.UpdateProgressPanel;
 import main.MainStandAloneUpdater;
-import network.http.HttpHelper;
-import network.http.HttpHelper.HttpRequestMetod;
-import network.utils.DownloadUtils;
-import om.exception.ProgressBarInterruptedException;
-import utility.hash.ChecksumHasher;
-import utility.hash.HashingFunction;
-import utility.log.SafeLogger;
-import utility.manipulation.ConversionUtils;
-import utility.properties.PropertiesManager;
+import updater.module.exception.UpdatesUnavailableException;
+import various.common.light.files.FileVarious;
+import various.common.light.files.FileWorker;
+import various.common.light.files.ZipWorker;
+import various.common.light.gui.UpdateProgressPanel;
+import various.common.light.network.http.HttpHelper;
+import various.common.light.network.http.HttpHelper.HttpRequestMetod;
+import various.common.light.network.utils.DownloadUtils;
+import various.common.light.om.exception.ProgressBarInterruptedException;
+import various.common.light.utility.hash.ChecksumHasher;
+import various.common.light.utility.hash.HashingFunction;
+import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.properties.PropertiesManager;
 
 public class UpdatesManager {
 

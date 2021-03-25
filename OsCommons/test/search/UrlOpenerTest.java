@@ -6,8 +6,8 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import utils.SysUtils;
-import utils.SysUtils.Browser;
+import os.commons.utils.SysUtils;
+import os.commons.utils.SysUtils.Browser;
 
 public class UrlOpenerTest {
 

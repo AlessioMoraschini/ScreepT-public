@@ -1,7 +1,8 @@
 package gui;
 
 import org.junit.Test;
-import gui.UpdateProgressPanel;
+
+import various.common.light.gui.UpdateProgressPanel;
 
 public class TestProgressBar {
 	

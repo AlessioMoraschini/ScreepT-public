@@ -12,10 +12,10 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileSystemView;
 
-import gui.dnd.FileDropListener;
-import gui.dnd.FileDropListenerSingle;
 import net.miginfocom.swing.MigLayout;
-import utility.log.SafeLogger;
+import various.common.light.gui.dnd.FileDropListener;
+import various.common.light.gui.dnd.FileDropListenerSingle;
+import various.common.light.utility.log.SafeLogger;
 
 import java.io.*;
 import java.util.List;

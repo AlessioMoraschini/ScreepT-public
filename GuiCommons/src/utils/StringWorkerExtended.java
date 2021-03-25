@@ -14,9 +14,9 @@ package utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import om.EscapeType;
 import resources.GeneralConfig;
-import utility.string.StringWorker;
+import various.common.light.om.EscapeType;
+import various.common.light.utility.string.StringWorker;
 
 @SuppressWarnings("deprecation")
 public class StringWorkerExtended extends StringWorker {

@@ -26,9 +26,10 @@ import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
-import utility.hash.ChecksumHasher;
-import utility.hash.HashingFunction;
-import utility.manipulation.ConversionUtils;
+import various.common.light.gui.GuiUtils;
+import various.common.light.utility.hash.ChecksumHasher;
+import various.common.light.utility.hash.HashingFunction;
+import various.common.light.utility.manipulation.ConversionUtils;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -39,7 +40,6 @@ import javax.swing.border.LineBorder;
 import frameutils.frame.panels.arch.ParentPanel;
 import frameutils.utils.GuiUtilsExtended;
 import general.MyFileView;
-import gui.GuiUtils;
 
 import java.awt.Font;
 

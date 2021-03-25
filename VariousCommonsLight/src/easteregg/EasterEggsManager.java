@@ -3,7 +3,7 @@ package easteregg;
 import java.awt.KeyboardFocusManager;
 import java.util.ArrayList;
 
-import utility.log.SafeLogger;
+import various.common.light.utility.log.SafeLogger;
 
 public class EasterEggsManager {
 	

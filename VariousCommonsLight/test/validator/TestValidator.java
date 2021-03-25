@@ -6,9 +6,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import validation.arch.DynaObjectValidator;
-import validation.arch.DynaValidatorException;
-import validation.arch.model.DynaChecker;
+import various.common.light.validation.arch.DynaObjectValidator;
+import various.common.light.validation.arch.DynaValidatorException;
+import various.common.light.validation.arch.model.DynaChecker;
 
 public class TestValidator {
 	

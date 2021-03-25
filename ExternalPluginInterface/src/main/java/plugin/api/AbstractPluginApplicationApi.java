@@ -17,7 +17,7 @@ import org.reflections.util.FilterBuilder;
 import plugin.external.arch.IPlugin;
 import plugin.external.arch.IPluginCrypter;
 import plugin.external.arch.IPluginTextEditor;
-import utility.log.SafeLogger;
+import various.common.light.utility.log.SafeLogger;
 
 /**
  *

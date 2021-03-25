@@ -3,7 +3,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import testconfig.TestConstants;
-import utility.properties.PropertiesManager;
+import various.common.light.utility.properties.PropertiesManager;
 
 public class TestProps {
 

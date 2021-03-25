@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import files.CustomFileFilters;
-import files.FileWorker;
-import om.OSinfo;
+import os.commons.om.OSinfo;
+import os.commons.utils.SysUtils;
 import resources.om.FilePojo;
-import utility.manipulation.ConversionUtils;
-import utility.properties.PropertiesManager;
-import utils.SysUtils;
+import various.common.light.files.CustomFileFilters;
+import various.common.light.files.FileWorker;
+import various.common.light.utility.manipulation.ConversionUtils;
+import various.common.light.utility.properties.PropertiesManager;
 
 public class GeneralConfig {
 

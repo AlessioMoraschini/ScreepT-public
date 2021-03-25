@@ -9,13 +9,13 @@ import java.util.Arrays;
 import org.junit.Rule;
 import org.junit.Test;
 
-import configuration.RepeatTest;
-import configuration.RepeatedTestRule;
-import utility.hash.HashDTO;
-import utility.hash.SafeHasher;
-import utility.hash.SafeHasher.HashAlgorithm;
-import utility.hash.SafeHasher.IterationsLevel;
-import utils.TestUtils;
+import test.util.configuration.RepeatTest;
+import test.util.configuration.RepeatedTestRule;
+import test.util.utils.TestUtils;
+import various.common.light.utility.hash.HashDTO;
+import various.common.light.utility.hash.SafeHasher;
+import various.common.light.utility.hash.SafeHasher.HashAlgorithm;
+import various.common.light.utility.hash.SafeHasher.IterationsLevel;
 
 public class TestHashing {
 

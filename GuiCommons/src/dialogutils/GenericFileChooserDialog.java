@@ -36,10 +36,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.FilenameUtils;
 
-import files.FileVarious;
 import general.MyFileView;
-import impl.INItializer;
+import initializer.configs.impl.INItializer;
 import resources.GeneralConfig;
+import various.common.light.files.FileVarious;
 
 public class GenericFileChooserDialog {
 

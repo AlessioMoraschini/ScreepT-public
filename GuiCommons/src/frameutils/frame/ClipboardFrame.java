@@ -21,7 +21,7 @@ import dialogutils.JOptionHelperExtended;
 import frameutils.frame.arch.ParentFrame;
 import frameutils.frame.panels.ClipboardPanelLight;
 import frameutils.utils.GuiUtilsExtended;
-import impl.om.TextEditorOption;
+import initializer.configs.impl.om.TextEditorOption;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;

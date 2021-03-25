@@ -10,13 +10,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import gui.GuiUtils;
-import gui.dialogs.msg.JOptionHelper;
-import network.ftp.FtpDumper;
+import test.util.utils.TestUtils;
 import testconfig.TestConstants;
-import utility.hash.ChecksumHasher;
-import utility.hash.HashingFunction;
-import utils.TestUtils;
+import various.common.light.gui.GuiUtils;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.network.ftp.FtpDumper;
+import various.common.light.utility.hash.ChecksumHasher;
+import various.common.light.utility.hash.HashingFunction;
 
 public class TestFtpConnection {
 
