@@ -1,0 +1,213 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ScreepT_Parent</groupId>
+	<artifactId>ScreepT_Parent</artifactId>
+	<!-- Version is Defined in this file as custom property -->
+	<version>${parent.build.version.screept}</version>
+	<packaging>pom</packaging>
+	
+	<!-- MODULES BUILD -->
+	<modules>
+		<module>../AM_Rkanoid</module>
+		<module>../ExternalPluginInterface</module>
+		<module>../PluginsParent</module>
+		<module>../VariousCommonsLight</module>
+		<module>../GeneralResources</module>
+		<module>../OsCommons</module>
+		<module>${screept.local.repository.folder}/ScreepT_Crypter</module>
+		<module>../Initializer_Configs</module>
+		<module>../GuiCommons</module>
+		<module>${screept.local.repository.folder}/NetworkCommons</module>
+		<module>../UpdaterModule</module>
+		<module>../HardwareCommons</module>
+		<module>${screept.local.repository.folder}/GuiTextEditorCommons</module>
+		<module>../MultimediaConversion</module>
+		<module>../UltimateCalculator</module>
+		<module>${screept.local.repository.folder}/ScreepT_Launcher</module>
+		<module>${screept.local.repository.folder}/ScreepT</module>
+	</modules>
+	
+	<!-- PROFILE TYPES : USED TO DIFFERENTIATE BUILDS USING CUSTOM PROPERTIES FILE (app.properties) -->
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<properties.location>profiles/default/app.properties</properties.location>
+				<jdk>1.8</jdk>
+			</properties>
+		</profile>
+		
+		<profile>
+			<id>free</id>
+			<properties>
+				<properties.location>profiles/free/app.properties</properties.location>
+				<jdk>1.8</jdk>
+			</properties>
+		</profile>
+		
+		<profile>
+			<id>premium</id>
+			<properties>
+				<properties.location>profiles/premium/app.properties</properties.location>
+				<jdk>1.8</jdk>
+			</properties>
+		</profile>
+
+		<profile>
+			<!-- Regenerate report and updates/plugins without export project -->
+			<id>extras</id>
+			<properties>
+				<properties.location>profiles/extras/app.properties</properties.location>
+				<jdk>1.8</jdk>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>test</id> <!-- Do only test automation -->
+			<properties>
+				<properties.location>profiles/test/app.properties</properties.location>
+				<jdk>1.8</jdk>
+			</properties>
+		</profile>
+	</profiles>
+
+	<properties>
+
+		<!-- Builds are coded into pom.xml : "ScreepT_Launcher", "ScreepT", and "UpdaterModule" 
+			This build is designed to the compile entire application. Launch this with 
+			wanted configurations to customize the build process(see after in this file). 
+			Launch normally with "clean install -X -U -P free|premium" (see app.properties) -->
+		
+		<!-- Main application version used everyWhere -->
+		<parent.build.version.screept>0.9.44</parent.build.version.screept>
+		
+		<!-- If true, transitive plugins dependencies included in fatjar (provided=excluded : compile=included) -->
+		<plugins.export.scope>provided</plugins.export.scope>
+		
+		<!-- ! RELATIVE PATHS : NO NEED TO CHANGE THESE ! -->
+		<root.export.dir>../../ScreepT_Build</root.export.dir>
+
+		<!-- ##################### UPDATES FOLDER PACKAGING #################### -->
+		<export.updates.root>${root.export.dir}/LATEST_UPDATES_DATA</export.updates.root>
+		<export.updates.folder>${root.export.dir}/LATEST_UPDATES_DATA/updates</export.updates.folder>
+
+		<!-- ##################### PLUGINS FOLDER PACKAGING #################### -->
+		<export.plugins.folder>${root.export.dir}/LATEST_PLUGINS_DATA</export.plugins.folder>
+
+		<!-- ########################## FATJAR EXPORT - USE THIS ######################## -->
+		<export.directory.fatjar.main>${root.export.dir}/ScreepT_V${parent.build.version.screept}/Application</export.directory.fatjar.main>
+		<export.directory.fatjar.resources>${export.directory.fatjar.main}/Resources_ScreepT</export.directory.fatjar.resources>
+
+		<!-- ############################ MULTIJAR EXPORT - DEPRECATED! ############################### -->
+		<export.directory.multijar.main>${root.export.dir}/ScreepT_V${parent.build.version.screept}_ModularBuild/Application</export.directory.multijar.main>
+		<export.directory.multijar.resources>${export.directory.multijar.main}/Resources_ScreepT</export.directory.multijar.resources>
+		<export.directory.multijar.libs>${export.directory.multijar.resources}/lib</export.directory.multijar.libs>
+
+	</properties>
+
+	<!-- COMMON PLUGINS -->
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<configuration>
+						<header>license-header.txt</header>
+						<includes>
+							<include>**/src/**/*.java</include>
+						</includes>
+						<properties>
+							<developer.name>${developer.name}</developer.name>
+							<developer.mail>${developer.mail}</developer.mail>
+							<inception.year>${inception.year}</inception.year>
+							<current.year>${current.year}</current.year>
+							<project.main.url>${project.main.url}</project.main.url>
+						</properties>
+						<skip>${sources.license.header.skip}</skip>
+					</configuration>
+					<executions>
+						<execution>
+							<id>sources Headers license regeneration</id>
+							<phase>clean</phase>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>properties-maven-plugin</artifactId>
+					<version>1.0.0</version>
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>read-project-properties</goal>
+							</goals>
+							<configuration>
+								<files>
+									<file>${properties.location}</file>
+								</files>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				 <plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<inherited>false</inherited>
+					<executions>
+						<execution>
+							<id>createThriftDir</id>
+							<phase>validate</phase>
+							<configuration>
+								<tasks>
+									<mkdir dir="${root.export.dir}" />
+									<mkdir dir="${export.updates.root}" />
+									<delete dir="${export.updates.folder}" />
+									<mkdir dir="${export.updates.folder}" />
+									<mkdir dir="${export.plugins.folder}" />
+									<mkdir dir="${export.directory.fatjar.main}" />
+									<mkdir dir="${export.directory.fatjar.resources}" />
+								</tasks>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<repositories>
+	   	<repository>
+	        <id>central</id>
+	        <name>jcenter</name>
+	        <url>http://jcenter.bintray.com</url>
+	   	</repository>
+	   	
+	   	<repository>
+	      	<id>Local-repository-Main</id>
+	      	<name>Main LOCAL Repository</name>
+	      	<url>file:C:/Users/xx/.m2/repository</url>
+	    </repository>
+	    
+   	    <repository>
+	      	<id>Local-repository-Two</id>
+	      	<name>Second LOCAL Repository</name>
+	      	<url>file:C:/Users/amoraschini/.m2/repository</url>
+	    </repository>
+	</repositories>
+
+</project>

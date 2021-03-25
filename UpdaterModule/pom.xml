@@ -8,7 +8,7 @@
   	<groupId>ScreepT_Parent</groupId>
   	<artifactId>ScreepT_Parent</artifactId>
   	<version>${parent.build.version.screept}</version>
-  	<relativePath>../../ScreepT_Repository/ScreepT_Parent</relativePath>
+  	<relativePath>../../ScreepT-Common-Repository/ScreepT_Parent</relativePath>
   </parent>
   
   <packaging>jar</packaging>
