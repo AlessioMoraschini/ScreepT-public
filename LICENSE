@@ -4,6 +4,9 @@ MIT licensed modules:
     CodeComparator
     ExternalPluginInterface
     Hacks_Project
+    Initializer_Configs
+    OsCommons
+    PluginsParent
     HardwareCommons
     MultimediaConversion
     PluginsParent
