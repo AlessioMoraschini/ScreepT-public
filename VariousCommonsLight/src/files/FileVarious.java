@@ -504,6 +504,17 @@ public class FileVarious {
 		return filePaths;
 	}
 
+	public static List<String> filesToPathList(List<File> files){
+		List<String> filePaths = new ArrayList<>();
+		if(files != null) {
+			for(File file : files) {
+				filePaths.add(FileVarious.getCanonicalPathSafe(file));
+			}
+		}
+
+		return filePaths;
+	}
+
 	public static File[] getFileArrayFromStrings(String[] filePaths){
 		logger.debug("ARGUMENT FILES:" + Arrays.toString(filePaths));
 

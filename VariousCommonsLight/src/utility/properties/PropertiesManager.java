@@ -23,29 +23,31 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import utility.log.SafeLogger;
+import utility.manipulation.ArrayHelper;
 import utility.manipulation.ConversionUtils;
 import utility.string.StringWorker;
 
 public class PropertiesManager {
-	
+
 	public static SafeLogger logger = new SafeLogger(PropertiesManager.class);
 	private static SimpleDateFormat GENERIC_FORMATTER = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
-	
+
 	public File dynamicFileBindingsDefSource;
 	public Properties dynamicFileBindingsDef;
 	public CommentedProperties commentedProperties;
-	
+
 	public static void setLoggerEnabled(boolean enabled) {
 		logger.setLoggerEnabled(enabled);
 	}
-	
+
 	/**
 	 * To check if definition had success, check if field <b>dynamicFileBindingsDefSource</b> is null after object's creation:
 	 * in that case something has gone wrong
-	 * 
+	 *
 	 * @param bindingsFileDefinitionSource
 	 */
 	public PropertiesManager(String bindingsFileDefinitionSource) {
@@ -60,11 +62,11 @@ public class PropertiesManager {
 			commentedProperties = null;
 		}
 	}
-	
+
 	private boolean loadCommentedProperties() {
 		commentedProperties = new CommentedProperties();
 		if (dynamicFileBindingsDefSource != null) {
-			
+
         	synchronized (dynamicFileBindingsDefSource) {
 				try (InputStream input = new FileInputStream(dynamicFileBindingsDefSource)) {
 
@@ -75,40 +77,40 @@ public class PropertiesManager {
 					logger.error("Cannot prepare commented properties file mapping !!");
 					return false;
 				}
-			} 
+			}
 		}else {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * To check if definition had success, check if field <b>dynamicFileBindingsDefSource</b> is null after object's creation:
 	 * in that case something has gone wrong
-	 * 
+	 *
 	 * @param bindingsFileDefinitionSource
 	 */
 	public PropertiesManager(File bindingsFileDefinitionSource) {
 		dynamicFileBindingsDefSource = bindingsFileDefinitionSource;
 		dynamicFileBindingsDef = new Properties();
-		
+
 		if (!readFromFile()) {
 			dynamicFileBindingsDefSource = null;
 		}
-		
+
 		if (!loadCommentedProperties()) {
 			commentedProperties = null;
 		}
 	}
-	
+
 	public PropertiesManager(Properties bindingsFileDefinitionDef) {
 		dynamicFileBindingsDef = bindingsFileDefinitionDef;
 		dynamicFileBindingsDefSource = new File("");
-	
+
 		if (!loadCommentedProperties()) {
 			commentedProperties = null;
 		}
 	}
-	
+
 	/**
 	 * Avoid null values reading from properties
 	 * @return
@@ -117,7 +119,7 @@ public class PropertiesManager {
 		if(dynamicFileBindingsDef != null) {
 			return dynamicFileBindingsDef.getProperty(key);
 		}
-		
+
 		return "";
 	}
 
@@ -136,26 +138,26 @@ public class PropertiesManager {
 		logger.debug("Loaded property: " + res);
 		return res;
 	}
-	
+
 	public ArrayList<File> getFileList(String key, String separator, boolean excludeNonExisting){
 		ArrayList<String> rawList = getStringList(key, separator);
 		ArrayList<File> fileList = new ArrayList<File>();
-		
+
 		if(rawList == null || rawList.isEmpty()) {
 			return fileList;
 		}
-		
+
 		for(String current : rawList) {
 			File currentFile = new File(current);
 			if(!excludeNonExisting || currentFile.exists()) {
 				fileList.add(currentFile);
 			}
 		}
-		
+
 		return fileList;
 	}
-	
-	public static String listToString(ArrayList<String> stringList, String separator) {
+
+	public static String listToString(List<String> stringList, String separator) {
 		String concatenation = "";
 		// concatenate each element with given separator
 		for(String currentString : stringList) {
@@ -177,10 +179,10 @@ public class PropertiesManager {
 			res = dynamicFileBindingsDef.getProperty(key);
 			res = (res != null)? StringWorker.trimToEmpty(res) : defaultVal;
 		}
-		
+
 		return res;
 	}
-	
+
 	/**
 	 * Use this to refresh properties
 	 * @return
@@ -188,7 +190,7 @@ public class PropertiesManager {
 	public boolean readFromFile() {
 
         if (dynamicFileBindingsDefSource != null) {
-			
+
         	synchronized (dynamicFileBindingsDefSource) {
 				try (InputStream input = new FileInputStream(dynamicFileBindingsDefSource)) {
 
@@ -199,13 +201,13 @@ public class PropertiesManager {
 					logger.error("Cannot prepare properties file mapping !!");
 					return false;
 				}
-			} 
-        	
+			}
+
 		}else {
 			return false;
 		}
     }
-	
+
 	/**
 	 * Set the property value and save current loaded properties to file
 	 * This will maintain comments
@@ -213,7 +215,7 @@ public class PropertiesManager {
 	 * @param value
 	 */
 	public void saveCommentedProperty(String propertyName, String value) {
-		
+
 		java.io.OutputStream out = null;
 		try {
 			out = new FileOutputStream(dynamicFileBindingsDefSource);
@@ -233,7 +235,7 @@ public class PropertiesManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Set the property value and save current loaded properties to file, returning boolean value representing the result of operation
 	 * This will not maintain comments
@@ -242,7 +244,7 @@ public class PropertiesManager {
 	 */
 	public boolean savePropertyChecked(String key, String value){
 		FileOutputStream out = null;
-		
+
 		try {
 			out = new FileOutputStream(dynamicFileBindingsDefSource);
 			dynamicFileBindingsDef.setProperty(key, value);
@@ -257,13 +259,13 @@ public class PropertiesManager {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Set the property value and save current loaded properties to file
 	 * This will not maintain comments
 	 * @param propertyName
 	 * @param value
-	 * 
+	 *
 	 * @Deprecated -> use save Commented property, it's preferrable to this one
 	 */
 	@Deprecated
@@ -287,7 +289,7 @@ public class PropertiesManager {
 			}
 		}
 	}
-	
+
 	public boolean saveAllProperties() {
 		java.io.OutputStream out = null;
 		try {
@@ -311,9 +313,9 @@ public class PropertiesManager {
 
 	public boolean removeProperty(String key){
 		FileOutputStream out = null;
-		
+
 		logger.debug("Removing property: " + key);
-		
+
 		try {
 			out = new FileOutputStream(dynamicFileBindingsDefSource);
 			dynamicFileBindingsDef.remove(key);
@@ -328,11 +330,11 @@ public class PropertiesManager {
 				logger.error("Cannot close properties file stream: " + dynamicFileBindingsDef);
 			}
 		}
-		
+
 		logger.debug("Property removed succesfully: " + key);
 		return true;
 	}
-	
+
 	public int getIntVarFromProps(String key, int defaultVal) {
 		String val = dynamicFileBindingsDef.getProperty(key);
 		try {
@@ -341,23 +343,24 @@ public class PropertiesManager {
 			return defaultVal;
 		}
 	}
-	
+
 	public ArrayList<String> getStringList(String key, String separator){
 		ArrayList<String> list = new ArrayList<>();
-		
+
 		String rawList = dynamicFileBindingsDef.getProperty(key);
-		
+
 		if(rawList == null || "".equals(rawList)) {
 			return list;
 		}
-		
+
 		String[] splitted = rawList.split(separator);
-		
+		splitted = ArrayHelper.removeEmpties(splitted);
+
 		list.addAll(Arrays.asList(splitted));
-		
+
 		return list;
 	}
-	
+
 	public boolean getBooleanVarFromProps(String key, boolean defaultVal) {
 		String val = dynamicFileBindingsDef.getProperty(key);
 		try {
@@ -389,13 +392,13 @@ public class PropertiesManager {
 	    	int red = Integer.parseInt(rgb[0]);
 	    	int green = Integer.parseInt(rgb[1]);
 	    	int blue = Integer.parseInt(rgb[2]);
-	    	
+
 	    	return new Color(red, green, blue);
 		}catch(Exception e){
 			return defaultVal;
 		}
 	}
-	
+
 	/**
 	 * Parse dimension from property string in the form of "int-int", identified by his String key in properties
 	 */
@@ -403,9 +406,9 @@ public class PropertiesManager {
 		int width;
 		int height;
 		String source = StringWorker.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
-		
+
 		if (source.equals("")) {return defaultDim;};
-		
+
 		try {
 			String[] splitted = source.split(separator);
 			width = Integer.parseInt(splitted[0]);
@@ -414,21 +417,21 @@ public class PropertiesManager {
 		} catch (Exception e) {
 			return defaultDim;
 		}
-		
+
 	}
-	
+
     /**
      * parse font from a representing string
      */
     public Font getFontFromString(String key, Font defaultFont) {
     	String stringFont = StringWorker.trimToEmpty(dynamicFileBindingsDef.getProperty(key));
     	if("".equals(StringWorker.trimToEmpty(stringFont))) return defaultFont;
-    	
+
     	return ConversionUtils.getFontFromString(stringFont, defaultFont);
     }
-    
-	// GETTERS AND SETTERS //	
-	
+
+	// GETTERS AND SETTERS //
+
 	public File getDynamicFileBindingsDefSource() {
 		return dynamicFileBindingsDefSource;
 	}
@@ -444,6 +447,6 @@ public class PropertiesManager {
 	public void setDynamicFileBindingsDef(Properties dynamicFileBindingsDef) {
 		this.dynamicFileBindingsDef = dynamicFileBindingsDef;
 	}
-	
-	
+
+
 }
