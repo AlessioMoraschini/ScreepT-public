@@ -90,6 +90,8 @@
 		
 		<!-- ! RELATIVE PATHS : NO NEED TO CHANGE THESE ! -->
 		<root.export.dir>../../ScreepT_Build</root.export.dir>
+		
+		<screept.local.repository.folder>../../ScreepT_Repository</screept.local.repository.folder>
 
 		<!-- ##################### UPDATES FOLDER PACKAGING #################### -->
 		<export.updates.root>${root.export.dir}/LATEST_UPDATES_DATA</export.updates.root>

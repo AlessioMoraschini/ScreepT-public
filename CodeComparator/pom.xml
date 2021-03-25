@@ -46,7 +46,7 @@
 		<current.year>2021</current.year>
 		<project.license.name>MIT</project.license.name>
 		<project.main.url>https://www.am-design-development.com</project.main.url>
-		<license.file.path>License-CodeComparator.txt</license.file.path>
+		<license.file.path>License-CodeComparator-MIT.txt</license.file.path>
 	</properties>
 	
 	  <url>${project.main.url}</url>
