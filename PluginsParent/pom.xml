@@ -6,15 +6,20 @@
 	<artifactId>PluginsParent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		<artifactId>CommonParentGlobal</artifactId>
+		<version>${parent.common.version}</version>
+		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+	</parent>
 
 	<name>PluginsParent</name>
 
 	<properties>
-		<parent.version.plugins>1.0.0-SNAPSHOT</parent.version.plugins>
-		
 		<plugin.common.root.dir>EXTERNAL_PLUGINS</plugin.common.root.dir>
 	
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>${sourceEncoding}</project.build.sourceEncoding>
 		<root.directory>C:/Users/xx/Desktop/Documenti&amp;Utili/Informatica varie/</root.directory>
 		<export.plugins.folder>
 			${root.directory}ScreepT_Build/LATEST_PLUGINS_DATA/EXTERNAL_PLUGINS
@@ -75,7 +80,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<encoding>UTF-8</encoding>
+							<encoding>${sourceEncoding}</encoding>
 							<overwrite>true</overwrite>
 							<outputDirectory>${export.plugins.folder}</outputDirectory>
 							<resources>
@@ -95,12 +100,4 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 </project>

@@ -7,7 +7,7 @@
   <parent>
   	<groupId>ScreepT_Parent</groupId>
   	<artifactId>ScreepT_Parent</artifactId>
-  	<version>${parent.build.version.screept}</version>
+  	<version>${screept.parent.version}</version>
   	<relativePath>../../ScreepT-Common-Repository/ScreepT_Parent</relativePath>
   </parent>
   
@@ -64,11 +64,11 @@
     
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
+				</configuration>
       </plugin>
       <plugin>
 	    <groupId>org.apache.maven.plugins</groupId>
@@ -142,38 +142,38 @@
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
-		<version>4.12</version>
+		<version>${junit.version}</version>
 		<scope>provided</scope>
 	</dependency>
 	<dependency>
 		<groupId>testUtils</groupId>
 		<artifactId>testUtils</artifactId>
-		<version>1.0</version>
+		<version>${test.utils.version}</version>
 		<scope>provided</scope>
 	</dependency>
   
   	<dependency>
 	    <groupId>com.miglayout</groupId>
 	    <artifactId>miglayout</artifactId>
-	    <version>3.7.4</version>
+	    <version>${miglayout.version}</version>
 	</dependency>
   
 	<dependency>
 	    <groupId>commons-net</groupId>
 	    <artifactId>commons-net</artifactId>
-	    <version>3.6</version>
+	    <version>${apache.commons.net.version}</version>
 	</dependency>
 	
 	<dependency>
 		<groupId>org.ini4j</groupId>
 		<artifactId>ini4j</artifactId>
-		<version>0.5.4</version>
+		<version>${ini4j.version}</version>
 	</dependency>
 	
 	<dependency>
 		<groupId>VariousCommonsLight</groupId>
 		<artifactId>VariousCommonsLight</artifactId>
-		<version>1.0</version>
+		<version>${various.common.version}</version>
 	</dependency>
 	
   </dependencies>

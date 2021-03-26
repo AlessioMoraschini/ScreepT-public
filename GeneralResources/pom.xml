@@ -4,6 +4,13 @@
 	<groupId>Resources</groupId>
 	<artifactId>Resources</artifactId>
 	<version>1.0</version>
+	
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		<artifactId>CommonParentGlobal</artifactId>
+		<version>${parent.common.version}</version>
+		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+	</parent>
 
 	<packaging>jar</packaging>
 
@@ -30,10 +37,10 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -44,7 +51,7 @@
 		<dependency>
 			<groupId>VariousCommonsLight</groupId>
 			<artifactId>VariousCommonsLight</artifactId>
-			<version>1.0</version>
+			<version>${various.common.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-io</groupId>
@@ -60,12 +67,12 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>OsCommons</groupId>
 			<artifactId>OsCommons</artifactId>
-			<version>1.0</version>
+			<version>${os.commons.version}</version>
 		</dependency>
 	</dependencies>
 

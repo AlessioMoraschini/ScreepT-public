@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>ScreepT_Parent</groupId>
 		<artifactId>ScreepT_Parent</artifactId>
-		<version>${parent.build.version.screept}</version>
+		<version>${screept.parent.version}</version>
 		<relativePath>../../ScreepT-Common-Repository/ScreepT_Parent</relativePath>
 	</parent>
 
@@ -21,8 +21,8 @@
 	<properties>
 		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
 		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>2019</inception.year>
-		<current.year>2021</current.year>
+		<inception.year>${screept.start.year}</inception.year>
+		<current.year>${screept.current.year}</current.year>
 		<project.license.name>MIT</project.license.name>
 		<project.main.url>https://www.am-design-development.com</project.main.url>
 	</properties>
@@ -67,10 +67,10 @@
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
 				</configuration>
 			</plugin>
 
@@ -119,7 +119,7 @@
 							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 							<generateBundle>true</generateBundle>
 							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
-							<excludedScopes>provided,test</excludedScopes>
+							<excludedScopes>${report.excluded.scopes}</excludedScopes>
 						</configuration>
 						<goals>
 							<goal>third-party-report</goal>
@@ -139,14 +139,14 @@
 		<dependency>
 			<groupId>com.github.oshi</groupId>
 			<artifactId>oshi-core</artifactId>
-			<version>3.13.0</version>
+			<version>${oshi.version}</version>
 			<scope>${plugins.export.scope}</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.github.oshi</groupId>
 			<artifactId>oshi-parent</artifactId>
-			<version>3.13.0</version>
+			<version>${oshi.version}</version>
 			<!-- <scope>${plugins.export.scope}</scope> -->
 			<type>pom</type>
 		</dependency>
@@ -154,12 +154,12 @@
 		<dependency>
 			<groupId>GuiCommons</groupId>
 			<artifactId>GuiCommons</artifactId>
-			<version>1.0</version>
+			<version>${gui.commons.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<version>${log4j.version}</version>
 		</dependency>
 
 	</dependencies>

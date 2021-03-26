@@ -1,67 +1,75 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>Initializer_Configs</groupId>
-  <artifactId>Initializer_Configs</artifactId>
-  <version>1.0</version>
-      
-  <packaging>jar</packaging>
-  
-  <name>Initializer_Configs</name>
-  <description>Common classes used to define and use configuration with custom POJO, Interface, Parent, and specific ScreepT's implementation.</description>
-  <url>${project.main.url}</url>
-  <inceptionYear>${inception.year}</inceptionYear>
-  <licenses>
-    <license>
-      <name>MIT</name>
-      <url>License-MIT.txt</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <name>Alessio Moraschini</name>
-    </developer>
-  </developers>
-  
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  
-  <dependencies>
-  
-  	<!-- Exclude test only dependencies -->
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<version>4.12</version>
-		<scope>provided</scope>
-	</dependency>
-  
-  	<dependency>
-		<groupId>org.ini4j</groupId>
-		<artifactId>ini4j</artifactId>
-		<version>0.5.4</version>
-	</dependency>
-  	
-	<dependency>
-		<groupId>Resources</groupId>
-		<artifactId>Resources</artifactId>
-		<version>1.0</version>
-	</dependency>
-	<dependency>
-		<groupId>VariousCommonsLight</groupId>
-		<artifactId>VariousCommonsLight</artifactId>
-		<version>1.0</version>
-	</dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>Initializer_Configs</groupId>
+	<artifactId>Initializer_Configs</artifactId>
+	<version>1.0</version>
 	
-  </dependencies>
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		<artifactId>CommonParentGlobal</artifactId>
+		<version>${parent.common.version}</version>
+		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+	</parent>
+
+	<packaging>jar</packaging>
+
+	<name>Initializer_Configs</name>
+	<description>Common classes used to define and use configuration with custom POJO, Interface, Parent, and specific ScreepT's implementation.</description>
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>License-MIT.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Alessio Moraschini</name>
+		</developer>
+	</developers>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- Exclude test only dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ini4j</groupId>
+			<artifactId>ini4j</artifactId>
+			<version>${ini4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>Resources</groupId>
+			<artifactId>Resources</artifactId>
+			<version>${general.resources.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>VariousCommonsLight</groupId>
+			<artifactId>VariousCommonsLight</artifactId>
+			<version>${various.common.version}</version>
+		</dependency>
+
+	</dependencies>
 </project>

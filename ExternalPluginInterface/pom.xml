@@ -5,6 +5,13 @@
 	<groupId>ExternalPluginInterface</groupId>
 	<artifactId>external.plugin.interface</artifactId>
 	<version>1.0-SNAPSHOT</version>
+	
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		<artifactId>CommonParentGlobal</artifactId>
+		<version>${parent.common.version}</version>
+		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+	</parent>
 
 	<name>ExternalPluginInterface</name>
 
@@ -12,19 +19,19 @@
 		<dependency>
 			<groupId>VariousCommonsLight</groupId>
 			<artifactId>VariousCommonsLight</artifactId>
-			<version>1.0</version>
+			<version>${various.common.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
-			<version>0.9.12</version>
+			<version>${reflections.version}</version>
 		</dependency>
 		
 		<dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.30</version>
+            <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -38,7 +45,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.6</version>
+            <version>${gson.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -46,14 +53,14 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.24</version>
+            <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
 		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -64,10 +71,10 @@
 			<!-- COMPILER -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
 				</configuration>
 			</plugin>
 		</plugins>

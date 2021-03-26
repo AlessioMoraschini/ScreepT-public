@@ -1,0 +1,109 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>CommonParentGlobal</groupId>
+	<artifactId>CommonParentGlobal</artifactId>
+	<version>${parent.common.version}</version>
+	<packaging>pom</packaging>
+
+	<name>common.parent.global</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<sourceEncoding>UTF-8</sourceEncoding>
+		<jdk.source.level>1.8</jdk.source.level>
+		<jdk.target.level>1.8</jdk.target.level>
+
+		<!-- License report plugin excluded scopes -->
+		<report.excluded.scopes>provided,test</report.excluded.scopes>
+		
+		<!-- Local repositories -->
+		<screept.local.repository.folder>../../ScreepT_Repository</screept.local.repository.folder>
+		<common.local.repository.folder>../../ScreepT-Common-Repository</common.local.repository.folder>
+
+		<!-- ScreepT specific versions -->
+		<!-- Used also for export and project pom version -->
+		<screept.version>0.9.45</screept.version>
+		<screept.crypter.version>1.0</screept.crypter.version>
+		<screept.launcher.version>1.1-SNAPSHOT</screept.launcher.version>
+
+		<!-- Parent modules versions -->
+		<parent.common.version>1.0-SNAPSHOT</parent.common.version>
+		<plugins.parent.version>1.0.0-SNAPSHOT</plugins.parent.version>
+		<screept.parent.version>1.0</screept.parent.version>
+
+		<!-- ScreepT common repo Dependencies versions -->
+		<puppynoid.version>1.0</puppynoid.version>
+		<codecomparator.version>0.0.1-SNAPSHOT</codecomparator.version>
+		<ext.plugin.interface.version>1.0-SNAPSHOT</ext.plugin.interface.version>
+		<general.resources.version>1.0</general.resources.version>
+		<gui.commons.version>1.0</gui.commons.version>
+		<hacks.project.version>0.0.1-SNAPSHOT</hacks.project.version>
+		<hw.commons.version>1.0</hw.commons.version>
+		<initializer.version>1.0</initializer.version>
+		<multimedia.conversion.version>1.0</multimedia.conversion.version>
+		<os.commons.version>1.0</os.commons.version>
+		<test.utils.version>1.0</test.utils.version>
+		<ultimate.calc.version>1.0</ultimate.calc.version>
+		<validation.fwk.version>1.0</validation.fwk.version>
+		<various.common.version>1.0</various.common.version>
+		<gui.txt.commons.version>1.0</gui.txt.commons.version>
+		<network.commons.version>1.0</network.commons.version>
+		<updater.version>1.0</updater.version>
+
+		<!-- Library dependencies -->
+		<junit.version>4.12</junit.version>
+		<ini4j.version>0.5.4</ini4j.version>
+		<miglayout.version>3.7.4</miglayout.version>
+		<jgoodies.version>2.2.2</jgoodies.version>
+		<tess4j.version>4.3.1</tess4j.version>
+		<freetts.version>1.2.2</freetts.version>
+		<icepdf.version>6.2.2</icepdf.version>
+		<oshi.version>3.13.0</oshi.version>
+		<http.client.version>4.5.7</http.client.version>
+		<log4j.version>1.2.17</log4j.version>
+		<rsyntax.textarea.version>3.1.2</rsyntax.textarea.version>
+		<rsyntax.textarea.utils.version>3.0.0</rsyntax.textarea.utils.version>
+		<jmeld.version>3.4</jmeld.version>
+		<reflections.version>0.9.12</reflections.version>
+		<slf4j.version>1.7.30</slf4j.version>
+		<gson.version>2.8.6</gson.version>
+		<pngtastic.version>1.5</pngtastic.version>
+		<apache.commons.version>3.9</apache.commons.version>
+		<apache.commons.net.version>3.6</apache.commons.net.version>
+		<apache.commons.io.version>2.6</apache.commons.io.version>
+		<jnativehoook.version>2.1.0</jnativehoook.version>
+		<jackson.version>2.9.8</jackson.version>
+		<jfontchooser.version>1.0.5-3</jfontchooser.version>
+		<javax.validation.api.version>2.0.1.Final</javax.validation.api.version>
+
+		<!-- Maven plugins -->
+		<maven.compiler.version>3.8.0</maven.compiler.version>
+
+		<!-- Utility properties -->
+		<screept.start.year>2019</screept.start.year>
+		<screept.current.year>2021</screept.current.year>
+	</properties>
+
+	<!-- Maven artifact repositories -->
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>jcenter</name>
+			<url>http://jcenter.bintray.com</url>
+		</repository>
+
+		<repository>
+			<id>Local-repository-Main</id>
+			<name>Main LOCAL Repository</name>
+			<url>file:C:/Users/xx/.m2/repository</url>
+		</repository>
+
+		<repository>
+			<id>Local-repository-Two</id>
+			<name>Second LOCAL Repository</name>
+			<url>file:C:/Users/amoraschini/.m2/repository</url>
+		</repository>
+	</repositories>
+</project>

@@ -4,6 +4,13 @@
 	<groupId>MultimediaConversion</groupId>
 	<artifactId>MultimediaConversion</artifactId>
 	<version>1.0</version>
+	
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		<artifactId>CommonParentGlobal</artifactId>
+		<version>${parent.common.version}</version>
+		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+	</parent>
 
 	<packaging>jar</packaging>
 
@@ -11,8 +18,8 @@
 		<!-- #################### LICENSE COMMON DATA ################# -->
 		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
 		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>2019</inception.year>
-		<current.year>2021</current.year>
+		<inception.year>${screept.start.year}</inception.year>
+		<current.year>${screept.current.year}</current.year>
 		<project.license.name>MIT</project.license.name>
 		<project.main.url>https://www.am-design-development.com</project.main.url>
 	</properties>
@@ -37,10 +44,10 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
 				</configuration>
 			</plugin>
 			<!-- LICENSE REPORT GENERATOR -->
@@ -55,7 +62,7 @@
 							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 							<generateBundle>true</generateBundle>
 							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
-							<excludedScopes>provided,test</excludedScopes>
+							<excludedScopes>${report.excluded.scopes}</excludedScopes>
 						</configuration>
 						<goals>
 							<goal>third-party-report</goal>
@@ -73,21 +80,21 @@
 		<dependency>
 			<groupId>net.sourceforge.tess4j</groupId>
 			<artifactId>tess4j</artifactId>
-			<version>4.3.1</version>
+			<version>${tess4j.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>net.sf.sociaal</groupId>
 			<artifactId>freetts</artifactId>
-			<version>1.2.2</version>
+			<version>${freetts.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.icepdf.os</groupId>
 			<artifactId>icepdf-core</artifactId>
-			<version>6.2.2</version>
+			<version>${icepdf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.media</groupId>
@@ -98,13 +105,13 @@
 		<dependency>
 			<groupId>org.icepdf.os</groupId>
 			<artifactId>icepdf-viewer</artifactId>
-			<version>6.2.2</version>
+			<version>${icepdf.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>ExternalPluginInterface</groupId>
 			<artifactId>external.plugin.interface</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${ext.plugin.interface.version}</version>
 		</dependency>
 
 		<!-- Modules dependencies -->
@@ -112,7 +119,7 @@
 		<dependency>
 			<groupId>GuiCommons</groupId>
 			<artifactId>GuiCommons</artifactId>
-			<version>1.0</version>
+			<version>${gui.commons.version}</version>
 		</dependency>
 
 

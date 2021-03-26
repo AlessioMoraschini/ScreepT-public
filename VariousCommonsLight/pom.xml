@@ -5,69 +5,76 @@
 	<artifactId>VariousCommonsLight</artifactId>
 	<version>1.0</version>
 
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		<artifactId>CommonParentGlobal</artifactId>
+		<version>${parent.common.version}</version>
+		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+	</parent>
+
 	<packaging>jar</packaging>
-	
+
 	<properties>
-	<!-- #################### LICENSE COMMON DATA ################# -->
+		<!-- #################### LICENSE COMMON DATA ################# -->
 		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
 		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>2019</inception.year>
-		<current.year>2021</current.year>
+		<inception.year>${screept.start.year}</inception.year>
+		<current.year>${screept.current.year}</current.year>
 		<project.license.name>MIT</project.license.name>
 		<project.main.url>https://www.am-design-development.com</project.main.url>
 		<!-- <project.license.url>../License_ScreepT.html</project.license.url> -->
 	</properties>
-	
+
 	<name>VariousCommonsLight</name>
-	  <description>
+	<description>
 	  	This module is made to provide a common set of useful minimal operations, with the intent to minimize the use of thirdy-part dependencies, making it a reusable module for future other projects other to ScreepT.
 	  </description>
-	  <url>${project.main.url}</url>
-	  <inceptionYear>${inception.year}</inceptionYear>
-	  <licenses>
-	    <license>
-	      <name>${project.license.name}</name>
-	      <!-- <url>${project.license.url}</url> -->
-	    </license>
-	  </licenses>
-	  <developers>
-	    <developer>
-	      <name>${developer.name}</name>
-	    </developer>
-	  </developers>
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+			<!-- <url>${project.license.url}</url> -->
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
-	    	<resource>
-	            <directory>res</directory>
-	            <includes>
-	                <include>*</include>
-	            </includes>
-	        </resource>
-	        <resource>
+			<resource>
+				<directory>res</directory>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
+			<resource>
 				<directory>src</directory>
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
-	    </resources>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4.1</version>
 				<executions>
-			
+
 					<!-- (1) FATJAR BUILD AND EXPORT -->
 					<execution>
 						<id>make-assembly - main fatjar folder</id>
@@ -102,46 +109,46 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<dependencies>
-	
-	  	<!-- Exclude test only dependencies from build -->
+
+		<!-- Exclude test only dependencies from build -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>testUtils</groupId>
 			<artifactId>testUtils</artifactId>
-			<version>1.0</version>
+			<version>${test.utils.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>2.6</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${apache.commons.io.version}</version>
 		</dependency>
-			
+
 		<dependency>
-		    <groupId>commons-net</groupId>
-		    <artifactId>commons-net</artifactId>
-		    <version>3.6</version>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${apache.commons.net.version}</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>com.miglayout</groupId>
-		    <artifactId>miglayout</artifactId>
-		    <version>3.7.4</version>
+			<groupId>com.miglayout</groupId>
+			<artifactId>miglayout</artifactId>
+			<version>${miglayout.version}</version>
 		</dependency>
-	
+
 		<dependency>
-		    <groupId>com.rover12421.opensource</groupId>
-		    <artifactId>JFontChooser</artifactId>
-		    <version>1.0.5-3</version>
+			<groupId>com.rover12421.opensource</groupId>
+			<artifactId>JFontChooser</artifactId>
+			<version>${jfontchooser.version}</version>
 		</dependency>
-		
+
 	</dependencies>
 </project>

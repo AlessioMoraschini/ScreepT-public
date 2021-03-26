@@ -4,26 +4,33 @@
 	<groupId>ScreepT_Parent</groupId>
 	<artifactId>ScreepT_Parent</artifactId>
 	<!-- Version is Defined in this file as custom property -->
-	<version>${parent.build.version.screept}</version>
+	<version>${screept.parent.version}</version>
 	<packaging>pom</packaging>
+	
+	<parent>
+		<groupId>CommonParentGlobal</groupId>
+		  <artifactId>CommonParentGlobal</artifactId>
+		  <version>1.0-SNAPSHOT</version>
+		<relativePath>../CommonParentGlobal</relativePath>
+	</parent>
 	
 	<!-- MODULES BUILD -->
 	<modules>
-		<module>../AM_Rkanoid</module>
-		<module>../ExternalPluginInterface</module>
-		<module>../PluginsParent</module>
-		<module>../VariousCommonsLight</module>
-		<module>../GeneralResources</module>
-		<module>../OsCommons</module>
+		<module>${common.local.repository.folder}/AM_Rkanoid</module>
+		<module>${common.local.repository.folder}/ExternalPluginInterface</module>
+		<module>${common.local.repository.folder}/PluginsParent</module>
+		<module>${common.local.repository.folder}/VariousCommonsLight</module>
+		<module>${common.local.repository.folder}/GeneralResources</module>
+		<module>${common.local.repository.folder}/OsCommons</module>
 		<module>${screept.local.repository.folder}/ScreepT_Crypter</module>
-		<module>../Initializer_Configs</module>
-		<module>../GuiCommons</module>
+		<module>${common.local.repository.folder}/Initializer_Configs</module>
+		<module>${common.local.repository.folder}/GuiCommons</module>
 		<module>${screept.local.repository.folder}/NetworkCommons</module>
-		<module>../UpdaterModule</module>
-		<module>../HardwareCommons</module>
+		<module>${common.local.repository.folder}/UpdaterModule</module>
+		<module>${common.local.repository.folder}/HardwareCommons</module>
 		<module>${screept.local.repository.folder}/GuiTextEditorCommons</module>
-		<module>../MultimediaConversion</module>
-		<module>../UltimateCalculator</module>
+		<module>${common.local.repository.folder}/MultimediaConversion</module>
+		<module>${common.local.repository.folder}/UltimateCalculator</module>
 		<module>${screept.local.repository.folder}/ScreepT_Launcher</module>
 		<module>${screept.local.repository.folder}/ScreepT</module>
 	</modules>
@@ -81,9 +88,10 @@
 			This build is designed to the compile entire application. Launch this with 
 			wanted configurations to customize the build process(see after in this file). 
 			Launch normally with "clean install -X -U -P free|premium" (see app.properties) -->
+		<properties.location>profiles/default/app.properties</properties.location>
 		
 		<!-- Main application version used everyWhere -->
-		<parent.build.version.screept>0.9.44</parent.build.version.screept>
+		<parent.build.version.screept>${screept.version}</parent.build.version.screept>
 		
 		<!-- If true, transitive plugins dependencies included in fatjar (provided=excluded : compile=included) -->
 		<plugins.export.scope>provided</plugins.export.scope>
@@ -91,8 +99,6 @@
 		<!-- ! RELATIVE PATHS : NO NEED TO CHANGE THESE ! -->
 		<root.export.dir>../../ScreepT_Build</root.export.dir>
 		
-		<screept.local.repository.folder>../../ScreepT_Repository</screept.local.repository.folder>
-
 		<!-- ##################### UPDATES FOLDER PACKAGING #################### -->
 		<export.updates.root>${root.export.dir}/LATEST_UPDATES_DATA</export.updates.root>
 		<export.updates.folder>${root.export.dir}/LATEST_UPDATES_DATA/updates</export.updates.folder>
@@ -191,25 +197,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	<repositories>
-	   	<repository>
-	        <id>central</id>
-	        <name>jcenter</name>
-	        <url>http://jcenter.bintray.com</url>
-	   	</repository>
-	   	
-	   	<repository>
-	      	<id>Local-repository-Main</id>
-	      	<name>Main LOCAL Repository</name>
-	      	<url>file:C:/Users/xx/.m2/repository</url>
-	    </repository>
-	    
-   	    <repository>
-	      	<id>Local-repository-Two</id>
-	      	<name>Second LOCAL Repository</name>
-	      	<url>file:C:/Users/amoraschini/.m2/repository</url>
-	    </repository>
-	</repositories>
 
 </project>

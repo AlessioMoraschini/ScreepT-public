@@ -11,7 +11,7 @@
 		<groupId>PluginsParent</groupId>
 		<artifactId>PluginsParent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../PluginsParent</relativePath>
+		<relativePath>../../ScreepT-Common-Repository/PluginsParent</relativePath>
 	</parent>
 
 	<name>CodeComparator</name>
@@ -20,47 +20,47 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>ExternalPluginInterface</groupId>
 			<artifactId>external.plugin.interface</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${ext.plugin.interface.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.jmeld</groupId>
 			<artifactId>jmeld</artifactId>
-			<version>3.4</version>
+			<version>${jmeld.version}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
-	<properties> 
+	<properties>
 		<outdir>${code.compare.export.destination}</outdir>
-	<!-- #################### LICENSE COMMON DATA ################# -->
+		<!-- #################### LICENSE COMMON DATA ################# -->
 		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
 		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>2019</inception.year>
-		<current.year>2021</current.year>
+		<inception.year>${screept.start.year}</inception.year>
+		<current.year>${screept.current.year}</current.year>
 		<project.license.name>MIT</project.license.name>
 		<project.main.url>https://www.am-design-development.com</project.main.url>
 		<license.file.path>License-CodeComparator-MIT.txt</license.file.path>
 	</properties>
-	
-	  <url>${project.main.url}</url>
-	  <inceptionYear>${inception.year}</inceptionYear>
-	  <licenses>
-	    <license>
-	      <name>${project.license.name}</name>
-	    </license>
-	  </licenses>
-	  <developers>
-	    <developer>
-	      <name>${developer.name}</name>
-	    </developer>
-	  </developers>
+
+	<url>${project.main.url}</url>
+	<inceptionYear>${inception.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${project.license.name}</name>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
 
 	<build>
 		<finalName>CodeComparator</finalName>
@@ -69,10 +69,10 @@
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
 				</configuration>
 			</plugin>
 
@@ -113,7 +113,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<encoding>UTF-8</encoding>
+							<encoding>${sourceEncoding}</encoding>
 							<overwrite>true</overwrite>
 							<outputDirectory>${outdir}</outputDirectory>
 							<name>timestamp</name>
@@ -133,7 +133,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- LICENSE REPORT GENERATOR -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -146,7 +146,7 @@
 							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 							<generateBundle>true</generateBundle>
 							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
-							<excludedScopes></excludedScopes>
+							<excludedScopes>${report.excluded.scopes}</excludedScopes>
 						</configuration>
 						<goals>
 							<goal>third-party-report</goal>

@@ -17,13 +17,13 @@
 	<name>HacksProject</name>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>${sourceEncoding}</project.build.sourceEncoding>
 		<outdir>${hacks.project.export.destination}</outdir>
 <!-- #################### LICENSE COMMON DATA ################# -->
 		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
 		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>2019</inception.year>
-		<current.year>2021</current.year>
+		<inception.year>${screept.start.year}</inception.year>
+		<current.year>${screept.current.year}</current.year>
 		<project.license.name>MIT</project.license.name>
 		<project.main.url>https://www.am-design-development.com</project.main.url>
 		<license.file.path>License-TricksProject-MIT.txt</license.file.path>
@@ -49,10 +49,10 @@
 			<!-- COMPILER -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
 				</configuration>
 			</plugin>
 
@@ -64,8 +64,8 @@
 					<properties>
 						<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
 						<developer.mail>info@am-design-development.com</developer.mail>
-						<inception.year>2019</inception.year>
-						<current.year>2021</current.year>
+						<inception.year>${screept.start.year}</inception.year>
+						<current.year>${screept.current.year}</current.year>
 						<project.main.url>https://www.am-design-development.com/</project.main.url>
 					</properties>
 					<includes>
@@ -94,7 +94,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<encoding>UTF-8</encoding>
+							<encoding>${sourceEncoding}</encoding>
 							<overwrite>true</overwrite>
 							<outputDirectory>${outdir}</outputDirectory>
 							<name>timestamp</name>
@@ -159,7 +159,7 @@
 							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
 							<generateBundle>true</generateBundle>
 							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
-							<excludedScopes>provided,test</excludedScopes>
+							<excludedScopes>${report.excluded.scopes}</excludedScopes>
 						</configuration>
 						<goals>
 						<goal>third-party-report</goal>
@@ -177,26 +177,26 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${junit.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>testUtils</groupId>
 			<artifactId>testUtils</artifactId>
-			<version>1.0</version>
+			<version>${test.utils.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.1stleg</groupId>
 			<artifactId>jnativehook</artifactId>
-			<version>2.1.0</version>
+			<version>${jnativehoook.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ExternalPluginInterface</groupId>
 			<artifactId>external.plugin.interface</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${ext.plugin.interface.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
