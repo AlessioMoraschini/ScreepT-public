@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-import gui.StartFrame;
+import puppynoid.gui.StartFrame;
 
 public class MainRunner {
 

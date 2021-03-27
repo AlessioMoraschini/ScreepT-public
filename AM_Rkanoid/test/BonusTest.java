@@ -1,6 +1,6 @@
 import org.junit.Test;
 
-import om.Bonus;
+import puppynoid.om.Bonus;
 
 public class BonusTest {
 

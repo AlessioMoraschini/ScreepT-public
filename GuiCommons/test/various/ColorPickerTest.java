@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 import org.junit.Test;
 
-import frameutils.frame.ColorPickerFrame;
+import gui.commons.frameutils.frame.ColorPickerFrame;
 import various.common.light.utility.manipulation.ConversionUtils;
 
 public class ColorPickerTest {

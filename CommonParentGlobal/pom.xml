@@ -9,14 +9,28 @@
 
 	<name>common.parent.global</name>
 	<url>http://maven.apache.org</url>
+	
+	<!-- MIT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${mit.license.name}</name>
+			<url>${mit.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
 
 	<properties>
 		<sourceEncoding>UTF-8</sourceEncoding>
 		<jdk.source.level>1.8</jdk.source.level>
 		<jdk.target.level>1.8</jdk.target.level>
 
-		<!-- License report plugin excluded scopes -->
-		<report.excluded.scopes>provided,test</report.excluded.scopes>
+		<!-- License report plugin excluded scopes [provided,test] -->
+		<report.excluded.scopes></report.excluded.scopes>
 		
 		<!-- Local repositories -->
 		<screept.local.repository.folder>../../ScreepT_Repository</screept.local.repository.folder>
@@ -25,7 +39,6 @@
 		<!-- ScreepT specific versions -->
 		<!-- Used also for export and project pom version -->
 		<screept.version>0.9.45</screept.version>
-		<screept.crypter.version>1.0</screept.crypter.version>
 		<screept.launcher.version>1.1-SNAPSHOT</screept.launcher.version>
 
 		<!-- Parent modules versions -->
@@ -34,6 +47,7 @@
 		<screept.parent.version>1.0</screept.parent.version>
 
 		<!-- ScreepT common repo Dependencies versions -->
+		<screept.crypter.version>1.0</screept.crypter.version>
 		<puppynoid.version>1.0</puppynoid.version>
 		<codecomparator.version>0.0.1-SNAPSHOT</codecomparator.version>
 		<ext.plugin.interface.version>1.0-SNAPSHOT</ext.plugin.interface.version>
@@ -84,6 +98,19 @@
 		<!-- Utility properties -->
 		<screept.start.year>2019</screept.start.year>
 		<screept.current.year>2021</screept.current.year>
+		
+		<!-- #################### LICENSE COMMON DATA ################# -->
+		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
+		<developer.mail>info@am-design-development.com</developer.mail>
+		
+		<!-- LICENSE PROPERTIES - ScreepT_License -->
+		<screept.license.name>SceepT EULA - Copyright</screept.license.name>
+		<screept.main.url>https://www.am-design-development.com</screept.main.url>
+		<screept.license.url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html</screept.license.url>
+		
+		<!-- LICENSE PROPERTIES - MIT License -->
+		<mit.license.name>MIT</mit.license.name>
+		<mit.license.url>license/License-MIT.txt</mit.license.url>
 	</properties>
 
 	<!-- Maven artifact repositories -->

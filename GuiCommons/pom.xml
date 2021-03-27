@@ -4,7 +4,7 @@
 	<groupId>GuiCommons</groupId>
 	<artifactId>GuiCommons</artifactId>
 	<version>1.0</version>
-	
+
 	<parent>
 		<groupId>CommonParentGlobal</groupId>
 		<artifactId>CommonParentGlobal</artifactId>
@@ -14,27 +14,16 @@
 
 	<packaging>jar</packaging>
 
-	<properties>
-		<!-- #################### LICENSE COMMON DATA ################# -->
-		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
-		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>${screept.start.year}</inception.year>
-		<current.year>${screept.current.year}</current.year>
-		<project.license.name>Proprietary dual License (Freeware|Commercial)</project.license.name>
-		<project.main.url>https://www.am-design-development.com</project.main.url>
-		<project.license.url>../License_ScreepT.html</project.license.url>
-	</properties>
-
 	<name>GuiCommons</name>
-	<description>
-  	This module is Specific for all the graphics functions needed by ScreepT project, in order to make them reusable in a future release.
-  </description>
+	<description>This module is Specific for all the graphics functions needed by ScreepT project, in order to make them reusable in a future release.</description>
 	<url>${project.main.url}</url>
-	<inceptionYear>${inception.year}</inceptionYear>
+	
+	<!-- SCREEPT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>
-			<name>${project.license.name}</name>
-			<url>${project.license.url}</url>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
 		</license>
 	</licenses>
 	<developers>

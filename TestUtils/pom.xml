@@ -14,6 +14,21 @@
 
 	<name>testUtils</name>
 	<description>This is a group of methods useful for tests</description>
+	
+	<!-- MIT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${mit.license.name}</name>
+			<url>${mit.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>

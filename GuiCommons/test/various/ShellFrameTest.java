@@ -3,9 +3,9 @@ package various;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import frameutils.frame.ShellFrame;
-import frameutils.frame.panels.ShellReadWritePanel;
-import frameutils.frame.panels.arch.ParentPanel;
+import gui.commons.frameutils.frame.ShellFrame;
+import gui.commons.frameutils.frame.panels.ShellReadWritePanel;
+import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import resources.IconsPathConfigurator;
 import various.common.light.gui.GuiUtils;
 

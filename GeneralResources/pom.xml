@@ -15,15 +15,16 @@
 	<packaging>jar</packaging>
 
 	<name>Resources</name>
-	<description>
-  	This module is made to keep in a specific place all the configurations needed for ScreepT to run, providing a common set of reusable configured media.
-  </description>
+	<description>This module is made to keep in a specific place all the configurations needed for ScreepT to run, providing a common set of reusable configured media.</description>
+	
 	<url>${project.main.url}</url>
-	<inceptionYear>${inception.year}</inceptionYear>
+	
+	<!-- SCREEPT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>
-			<name>${project.license.name}</name>
-			<url>${project.license.url}</url>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
 		</license>
 	</licenses>
 	<developers>

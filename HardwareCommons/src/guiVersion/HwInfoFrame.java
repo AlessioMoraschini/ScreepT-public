@@ -34,10 +34,10 @@ import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 
-import frameutils.frame.arch.ParentFrame;
-import frameutils.utils.GuiUtilsExtended;
+import gui.commons.frameutils.frame.arch.ParentFrame;
+import gui.commons.frameutils.utils.GuiUtilsExtended;
+import hw.commons.om.HDinfo;
 import net.miginfocom.swing.MigLayout;
-import om.HDinfo;
 import oshi.SystemInfo;
 import oshi.hardware.Baseboard;
 import oshi.hardware.CentralProcessor;

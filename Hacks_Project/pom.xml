@@ -15,32 +15,27 @@
 	</parent>
 
 	<name>HacksProject</name>
+	<url>${project.main.url}</url>
+	
+	<!-- MIT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${mit.license.name}</name>
+			<url>${mit.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>${sourceEncoding}</project.build.sourceEncoding>
 		<outdir>${hacks.project.export.destination}</outdir>
-<!-- #################### LICENSE COMMON DATA ################# -->
-		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
-		<developer.mail>info@am-design-development.com</developer.mail>
-		<inception.year>${screept.start.year}</inception.year>
-		<current.year>${screept.current.year}</current.year>
-		<project.license.name>MIT</project.license.name>
-		<project.main.url>https://www.am-design-development.com</project.main.url>
-		<license.file.path>License-TricksProject-MIT.txt</license.file.path>
 	</properties>
 	
-	  <url>${project.main.url}</url>
-	  <inceptionYear>${inception.year}</inceptionYear>
-	  <licenses>
-	    <license>
-	      <name>${project.license.name}</name>
-	    </license>
-	  </licenses>
-	  <developers>
-	    <developer>
-	      <name>${developer.name}</name>
-	    </developer>
-	  </developers>
 	<build>
 		<finalName>TricksProject</finalName>
 		<sourceDirectory>src</sourceDirectory>
@@ -105,7 +100,7 @@
 									<filtering>false</filtering>
 									<directory>./</directory>
 									<includes>
-										<include>${license.file.path}</include>
+										<include>${mit.license.url}</include>
 									</includes>
 									<excludes>/**/*humbs.db</excludes>
 								</resource>

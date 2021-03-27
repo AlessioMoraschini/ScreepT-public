@@ -14,8 +14,24 @@
 		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
 	</parent>
 	
+	<!-- SCREEPT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
+	
 	<!-- MODULES BUILD -->
 	<modules>
+		<module>${common.local.repository.folder}/CommonParentGlobal</module>
+		<module>${common.local.repository.folder}/CodeComparator</module>
 		<module>${common.local.repository.folder}/AM_Rkanoid</module>
 		<module>${common.local.repository.folder}/ExternalPluginInterface</module>
 		<module>${common.local.repository.folder}/VariousCommonsLight</module>
@@ -114,6 +130,10 @@
 		<export.directory.multijar.resources>${export.directory.multijar.main}/Resources_ScreepT</export.directory.multijar.resources>
 		<export.directory.multijar.libs>${export.directory.multijar.resources}/lib</export.directory.multijar.libs>
 
+		<!-- LICENSE PROPERTIES - ScreepT_License -->
+		<screept.license.name>SceepT EULA - Copyright</screept.license.name>
+		<screept.main.url>https://www.am-design-development.com</screept.main.url>
+		<screept.license.url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html</screept.license.url>
 	</properties>
 
 	<!-- COMMON PLUGINS -->
