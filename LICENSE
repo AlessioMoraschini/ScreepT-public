@@ -1,7 +1,6 @@
 This is a collection of common libraries available under different licenses.
 
-MIT licensed modules:
-    CodeComparator
+- MIT licensed modules:
     ExternalPluginInterface
     Hacks_Project
     Initializer_Configs
@@ -15,8 +14,11 @@ MIT licensed modules:
     UpdaterModule
     VariousCommonsLight
     ValidationFwk
+    
+- LGPL licensed modules:
+    CodeComparator
 
-Other projects are available under ScreepT EULA (https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html)
+- Other projects are available under ScreepT EULA (https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html)
 
 ########################### MIT LICENSE ###########################
 
