@@ -129,7 +129,7 @@
 							<forceDownload>true</forceDownload>
 							<excludedScopes>test</excludedScopes>
 							<skipDownloadLicenses>${report.licenses.update.skip}</skipDownloadLicenses>
-							<licensesOutputFile>${project.build.directory}/generated-resources/license_list_raw_${project.artifactId}.xml</licensesOutputFile>
+							<licensesOutputFile>${report.licenses.raw.dir}/license_list_${project.artifactId}.xml</licensesOutputFile>
 						</configuration>
 					</execution>
 				</executions>

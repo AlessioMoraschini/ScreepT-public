@@ -50,7 +50,10 @@ public class LicensesInfoExtractor {
 
 	public static String syncFromCompleteList(File source, File destination, File completeList) throws Exception {
 
-		Document docSrc = XmlWorker.loadXMLfromFile(FileVarious.getCanonicalPathSafe(source));
+		String docSrcStr = FileWorker.readFileAsString(FileVarious.getCanonicalFileSafe(source));
+		docSrcStr = docSrcStr.replaceAll("<licenseSummary>", "");
+		docSrcStr = docSrcStr.replaceAll("</licenseSummary>", "");
+		Document docSrc = XmlWorker.loadXMLfromString(docSrcStr);
 		Dependencies dependenciesSrc = getDependenciesFromDoc(docSrc, false, null);
 
 		Document docCompleteList = XmlWorker.loadXMLfromFile(FileVarious.getCanonicalPathSafe(completeList));
