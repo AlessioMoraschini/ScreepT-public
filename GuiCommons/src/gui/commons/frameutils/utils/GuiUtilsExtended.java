@@ -32,24 +32,25 @@ import resources.SoundsManagerExtended;
 import various.common.light.gui.GuiUtils;
 import various.common.light.utility.string.CustomCodeFormatter;
 import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.xml.XmlWorker;
 
 public class GuiUtilsExtended extends GuiUtils {
-	
-	// INItializer logger creation		
-	public static Logger logger = Logger.getLogger(GuiUtilsExtended.class); 
-	
+
+	// INItializer logger creation
+	public static Logger logger = Logger.getLogger(GuiUtilsExtended.class);
+
 	public static final Cursor CURSOR_WAIT = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
 	public static final Cursor CURSOR_DEFAULT = Cursor.getDefaultCursor();
 	public static final Cursor CURSOR_TEXT = new Cursor(Cursor.TEXT_CURSOR);
 	public static final Cursor CURSOR_HAND = new Cursor(Cursor.HAND_CURSOR);
 	public static final Cursor CURSOR_CROSS = new Cursor(Cursor.CROSSHAIR_CURSOR);
-	
+
 	public static final Dimension DEF_CUSTOM_CURSOR_SIZE = new Dimension(8,8);
 	public static Cursor CURSOR_COLOR_PICK;
-	
+
 	public static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 	public static CustomCodeFormatter codeFormatter;
-	
+
 	public static final String XML = "xml";
 	public static final String JS = "js";
 	public static final String JSON = "json";
@@ -60,12 +61,12 @@ public class GuiUtilsExtended extends GuiUtils {
 			XML, JS, JSON, HTML, CSS, JAVA
 	};
 	public static final List<String> supportedTypesList = new ArrayList<>(Arrays.asList(supportedTypes));
-	
+
 	public static void init() {
 		codeFormatter = new CustomCodeFormatter(GeneralConfig.JS_LIB_FOLDER);
 		CURSOR_COLOR_PICK = GuiUtils.getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER, DEF_CUSTOM_CURSOR_SIZE);
 	}
-	
+
 	public static void formatTextLater(JTextArea sourceArea, String extension, int tabSize) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -76,12 +77,12 @@ public class GuiUtilsExtended extends GuiUtils {
 			}
 		});
 	}
-	
+
 	public static void formatText(JTextArea sourceArea, String extension, int tabSize) {
 		Dimension originalDialogDim = dialogHelper.IF_SCROLLABLE_DEF_DIMENSION;
 		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(new Dimension(500,230));
 		boolean error = false;
-		int selStart = sourceArea.getSelectionStart(); 
+		int selStart = sourceArea.getSelectionStart();
 		int selEnd = sourceArea.getSelectionEnd();
 		String source = GuiUtilsExtended.getSelectedOrAllText(sourceArea);
 		String old = new String(source);
@@ -92,8 +93,8 @@ public class GuiUtilsExtended extends GuiUtils {
 			// XML format handler (if xml formatter works then is a xml recognized file)
 			if (extension.toLowerCase().endsWith(XML)) {
 				suppported = true;
-				formatted = CustomCodeFormatter.xmlPrettyFormat(source, tabSize);
-				source = CustomCodeFormatter.xmlPrettyFormat(source, tabSize);
+				formatted = XmlWorker.xmlPrettyFormat(source, tabSize);
+				source = XmlWorker.xmlPrettyFormat(source, tabSize);
 				if (source.equals(old)) {
 					// already formatted
 					source = StringWorker.removeLines(source);
@@ -103,19 +104,19 @@ public class GuiUtilsExtended extends GuiUtils {
 				suppported = true;
 				formatted = codeFormatter.jsFormatJSLIB(source, 5);
 				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
-				
+
 			// HTML -> use javascript function call with custom library to prettify html string
 			}else if (extension.toLowerCase().endsWith(HTML)) {
 				suppported = true;
 				formatted = codeFormatter.htmlFormatJSLIB(source, 5);
 				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
-			
+
 			// CSS -> use javascript function call with custom library to prettify css string
 			}else if (extension.toLowerCase().endsWith(CSS)) {
 				suppported = true;
 				formatted = codeFormatter.cssFormatJSLIB(source, 5);
 				source = StringWorker.replaceSpacesWithTabs(formatted, tabSize);
-				
+
 			// JAVA -> use google library to prettify java string
 			} else if (extension.toLowerCase().endsWith(JAVA)) {
 			suppported = false;
@@ -139,17 +140,17 @@ public class GuiUtilsExtended extends GuiUtils {
 			if(!suppported) {
 				unsupportedAdvice = extension + " is not yet supported... maybe coming soon? ;)";
 			}
-			
+
 			if (!suppported || error) {
 				SoundsManagerExtended.playSound(SoundsConfigurator.ERROR, null);
 				logger.warn("Format not supported or an error occurred :-> skipping text replace in text area. " + unsupportedAdvice);
 				dialogHelper.warn(GuiUtils.encapsulateInHtml("<b>Cannot format with current settings</b></br>" + unsupportedAdvice), "Cannot Format text");
 			}
 		}
-		
+
 		dialogHelper.setIF_SCROLLABLE_DEF_DIMENSION(originalDialogDim);
 	}
-	
+
 	public static boolean isFileTypeSupportedFormatter(File file) {
 		if(file != null && file.exists() && file.isFile()) {
 			for(String ext : supportedTypes) {
@@ -158,8 +159,8 @@ public class GuiUtilsExtended extends GuiUtils {
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 }

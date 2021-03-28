@@ -62,6 +62,14 @@
 				<jdk>1.8</jdk>
 			</properties>
 		</profile>
+
+		<profile>
+			<id>default_with_embedded_plugin</id>
+			<properties>
+				<properties.location>profiles/default_with_embedded_plugins/app.properties</properties.location>
+				<jdk>1.8</jdk>
+			</properties>
+		</profile>
 		
 		<profile>
 			<id>free</id>

@@ -65,7 +65,7 @@
 							<outputDirectory>./built</outputDirectory>
 							<archive>
 								<manifest>
-									<mainClass>MainPuppynoidRunner</mainClass>
+									<mainClass>puppynoid.main.MainPuppynoidRunner</mainClass>
 								</manifest>
 							</archive>
 							<appendAssemblyId>false</appendAssemblyId>

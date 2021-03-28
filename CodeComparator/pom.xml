@@ -6,7 +6,7 @@
 	<artifactId>CodeComparator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
+
 	<name>CodeComparator</name>
 
 	<parent>
@@ -15,7 +15,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../../ScreepT-Common-Repository/PluginsParent</relativePath>
 	</parent>
-	
+
 	<!-- MIT LICENSE -->
 	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
@@ -144,6 +144,21 @@
 						<goals>
 							<goal>third-party-report</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>download-licenses</id>
+						<phase>install</phase>
+						<goals>
+							<goal>download-licenses</goal>
+						</goals>
+						<configuration>
+							<licensesOutputFileEncoding>UTF-8</licensesOutputFileEncoding>
+							<includeTransitiveDependencies>true</includeTransitiveDependencies>
+							<forceDownload>true</forceDownload>
+							<excludedScopes>test</excludedScopes>
+							<skipDownloadLicenses>${report.licenses.update.skip}</skipDownloadLicenses>
+							<licensesOutputFile>${project.build.directory}/generated-resources/license_list_raw_${project.artifactId}.xml</licensesOutputFile>
+						</configuration>
 					</execution>
 				</executions>
 				<configuration>

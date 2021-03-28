@@ -81,6 +81,7 @@ import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.manipulation.ImageWorker;
 import various.common.light.utility.string.StringWorker;
+import various.common.light.utility.string.StringWorker.EOL;
 
 public class GuiUtils {
 
@@ -1035,6 +1036,18 @@ public class GuiUtils {
 		String trimmedTag = StringWorker.trimToEmpty(tag);
 
 		return "<" + trimmedTag + ">" + original + "</" + trimmedTag + ">";
+	}
+	public static String encapsulateInAnchorTag(String original, String link, boolean newTab) {
+		String newTabStr = newTab ? "target=\"_blank\"" : "";
+		return "<a href=\"" + link + "\" " + newTabStr + ">" + original + "</a>";
+	}
+	public static String encapsulateInTagPre(String original, String tag) {
+
+		return encapsulateInTag(encapsulateInTag(original, tag) + EOL.CRLF.eol, "pre");
+	}
+	public static String encapsulateInAnchorTagPre(String original, String link, boolean newTab) {
+
+		return encapsulateInTag(encapsulateInAnchorTag(original, link, newTab) + EOL.CRLF.eol, "pre");
 	}
 
 	public static KeyEventDispatcher getKeyDispatcherFromCode(int keyCode) {

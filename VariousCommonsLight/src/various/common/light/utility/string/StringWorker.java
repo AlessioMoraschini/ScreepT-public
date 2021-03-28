@@ -36,22 +36,22 @@ import javax.swing.JTextArea;
 import various.common.light.utility.log.SafeLogger;
 
 public class StringWorker {
-	
+
 	public enum EOL{
 		CR("\r", "\\r"),
 		LF("\n", "\\n"),
 		CRLF("\r\n", "\\r\\n");
-		
+
 		public static final String CR_EXCLUSIVE_REGEX = "\\r(?!\\n)";
 		public static final String LF_EXCLUSIVE_REGEX = "\\n(?!\\r)";
 		public static final char UNICODE_CR = 0x00A;
 		public static final char UNICODE_LF = 0x00D;
-		
+
 		public String eol;
 		public String eolRegex;
-		
+
 		public static EOL defaultEol = getOsBasedEOL();
-		
+
 		public static EOL getOsBasedEOL() {
 			String osNameShort = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
 			if(osNameShort != null && osNameShort.indexOf("win") > 0) {
@@ -60,76 +60,76 @@ public class StringWorker {
 				return EOL.LF;
 			}
 		}
-	
+
 		private EOL(String eol, String regex) {
 			this.eol = eol;
 			this.eolRegex = regex;
 		}
 	}
-	
+
 	private static SafeLogger logger = new SafeLogger(StringWorker.class);
-	
+
 	public static ArrayList<String> TXT_EDITOR_UPPERCASE_SEPARATORS = new ArrayList<>();
 	static {
 		TXT_EDITOR_UPPERCASE_SEPARATORS.addAll(Arrays.asList(new String[] {".","!","<",">","?"}));
 	}
-	
+
 	public static final String UNPRINTABLE_ESCAPES = "[^\\x20-\\x7e]";
-	
+
 	public String currentString;
-	
+
 	public StringWorker() {
 		currentString = new String("");
 	}
-	
+
 	public StringWorker(String input) {
 		currentString = new String(input);
 	}
-	
+
     public static boolean isStringUpperCase(String source){
-        
+
     	// Validation
     	if("".equals(trimToEmpty(source))) {
     		return false;
     	}
-    	
+
         //convert String to char array
         char[] charArray = source.toCharArray();
-        
+
         for(int i=0; i < charArray.length; i++){
-            
+
             //if any character is not in upper case, return false
             if(Character.isAlphabetic(charArray[i]) && !Character.isUpperCase(charArray[i])) {
             	return false;
             }
         }
-        
+
         return true;
     }
 
 	public static InputStream stringToInputStream(String src) throws IOException {
-	    
+
 		byte[] sourceBytes = src.getBytes(Charset.forName(System.getProperty("file.encoding")));
 	    InputStream inputStream = new ByteArrayInputStream(sourceBytes);
-	    
+
 	    return inputStream;
 	}
-	
+
 	public static String removeLastChar(String source) {
 		if(source != null && !source.isEmpty()) {
 			return source.substring(0, source.length()-1);
 		}
-		
+
 		return source;
 	}
-	
+
 	public static String lowerAfterDots(String source, char trigger) {
-		
+
 		String result="";
 		// first letter lowercase
-		boolean flagNewUp = false; 
+		boolean flagNewUp = false;
 		boolean firstChanged = false;
-		
+
 		// for every char in string if flag is true makeLower case, else add the same original char
 		for(int i=0; i<source.length(); i++) {
 			char character_i = source.charAt(i);
@@ -137,17 +137,17 @@ public class StringWorker {
 				// First alphabetic letter is always changed
 				result+=String.valueOf(character_i).toLowerCase();
 				firstChanged = true;
-				
+
 			}else if (flagNewUp==true) {
 				result+=String.valueOf(character_i).toLowerCase();
 				// space and still to lowercase handler
 				if(!(character_i == ' ') && !(TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i)))) {
 					flagNewUp=false;
-				}		
+				}
 			} else {
 				result+=String.valueOf(character_i);
 			}
-				
+
 			// finally update flag according to char value il blacklist
 			if (character_i==trigger || TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i))){
 				flagNewUp=true;
@@ -155,53 +155,53 @@ public class StringWorker {
 		}
 		return result;
 	}
-	
+
 	public static String upperAfterDots(String source, char trigger) {
-		
+
 		String result="";
 		// first letter uppercase
-		boolean flagNewUp = false; 
+		boolean flagNewUp = false;
 		boolean firstChanged = false;
-		
+
 		// for every char in string if flag is true makeUpper case, else add the same original char
 		for(int i=0; i<source.length(); i++) {
 			char character_i = source.charAt(i);
-			
+
 			if(!firstChanged && Character.isAlphabetic(character_i)) {
 				// First alphabetic letter is always changed
 				result+=String.valueOf(character_i).toUpperCase();
 				firstChanged = true;
-				
+
 			} else if (flagNewUp==true) {
 				result+=String.valueOf(character_i).toUpperCase();
 				// space and still to uppercase handler
 				if(!(character_i == ' ') && !(TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i)))) {
 					flagNewUp=false;
-				}		
-				
+				}
+
 			} else {
 				result+=String.valueOf(character_i);
 			}
-			
+
 			// finally update flag according to char value il blacklist
 			if (character_i==trigger || TXT_EDITOR_UPPERCASE_SEPARATORS.contains(String.valueOf(character_i))){
 				flagNewUp=true;
 			}
 		}
-		
-		
+
+
 		return result;
 	}
 
 	public static String fitToMaxLentgh(String source, int lim) {
 		String res = source;
 		int length = source.length();
-		
+
 		if (length > lim) {
-			int half = (int)(float)lim/2;
+			int half = lim/2;
 			res = source.substring(0, half-3)+".."+source.substring(length-half-2, length);
 		}
-		
+
 		return res;
 	}
 
@@ -219,21 +219,21 @@ public class StringWorker {
 		if(source == null) {
 			return null;
 		}
-		
+
 		int sourceLength = source.length();
 		byte[] extractedBytes = new byte[source.length()];
 		ArrayList<Byte> extractedList = new ArrayList<Byte>();
-		
+
 		// extract bytes from source string
 		for(int i=0; i<sourceLength; i++) {
 			String currentChar = source.substring(i, i+1);
 			byte[] byteChar = currentChar.getBytes("UTF-8");
-			
+
 			for(byte b : byteChar) {
 				extractedList.add(b);
 			}
 		}
-		
+
 		// create array containing bytes
 		int i = 0;
 		for(byte by : extractedList) {
@@ -243,18 +243,18 @@ public class StringWorker {
 			extractedBytes[i] = by;
 			i++;
 		}
-		
+
 		return extractedBytes;
 	}
-	
+
 	public static int countOccurrencies(String source, String match) {
 		int lastIndex = 0;
 		int count = 0;
-		
+
 		if (isEmpty(match) || isEmpty(source)) {
 			return 0;
 		}
-		
+
 		while(lastIndex != -1){
 
 		    lastIndex = source.indexOf(match, lastIndex);
@@ -264,12 +264,12 @@ public class StringWorker {
 		        lastIndex += match.length();
 		    }
 		}
-		
+
 		return count;
 	}
-	
+
 	/**
-	 * this method extract from the source string the elements starting from N elements, and return it. 
+	 * this method extract from the source string the elements starting from N elements, and return it.
 	 * the elements are calculated as separated by the given separator.
 	 * @param source
 	 * @param separator
@@ -297,7 +297,7 @@ public class StringWorker {
 
 	/**
 	 * this function take a string parameter and a jtextarea to remove from all occurrences of parameter
-	 * 
+	 *
 	 * @return the integer new selection end of the string
 	 */
 	public static int removeCharacterFromTxtArea(String toRemove, JTextArea textSourceArea, int startSel, int endSel) {
@@ -306,29 +306,29 @@ public class StringWorker {
 		textSourceArea.setSelectionEnd(endSel);
 		String selText = textSourceArea.getSelectedText();
 		String allText = textSourceArea.getText();
-		
+
 		int newEnd = 0;
-		
+
 		if (selText == null || selText.equals("")) {
 			String text = allText;
 			text = text.replaceAll(toRemove, "");
 			textSourceArea.setText(text);
 			newEnd = text.length();
-			
+
 		}else {
-			
+
 			String prefix = textSourceArea.getText().substring(0, startSel);
 			String postFix = textSourceArea.getText().substring(endSel, allText.length());
 			selText = selText.replaceAll(toRemove, "");
 			newEnd = startSel + selText.length();
-			
+
 			textSourceArea.setText(prefix.concat(selText).concat(postFix));
 		}
 		return newEnd;
 	}
 
 	/**
-	 * this method extract from the source string the elements starting from N elements to end element, and return it. 
+	 * this method extract from the source string the elements starting from N elements to end element, and return it.
 	 * the elements are calculated as separated by the given separator.
 	 * @param source
 	 * @param separator
@@ -379,14 +379,14 @@ public class StringWorker {
 				result+=word;
 			}
 		}
-		
+
 		return result;
 	}
 
 	public static String lowerCaseEveryFirstLetterNoSpace(String sourceString) {
 		String result="";
 		String separator=" ";
-		StringTokenizer tokenizer = new StringTokenizer(sourceString, separator); 
+		StringTokenizer tokenizer = new StringTokenizer(sourceString, separator);
 		while(tokenizer.hasMoreTokens()) {
 			String word = tokenizer.nextToken();
 			int spaceEluder = 0;
@@ -408,39 +408,39 @@ public class StringWorker {
 				result+=word;
 			}
 		}
-		
+
 		return result;
 	}
 
 	public static String removeSpacesAndLines(String source) {
-		String result=""; 
-		
+		String result="";
+
 		// for every char in string if flag is true makeUpper case, else add the same original char
 		for(int i=0; i<source.length(); i++) {
-			char character_i = source.charAt(i);			
+			char character_i = source.charAt(i);
 			// finally update flag according to char value il blacklist
 			if (!(character_i==' ' || String.valueOf(character_i).equals(EOL.defaultEol.eol))){
 				result+=String.valueOf(character_i);
 			}
 		}
-		
-		
+
+
 		return result;
 	}
 
 	public static String removeLines(String source) {
-		String result=""; 
-		
+		String result="";
+
 		// for every char in string if flag is true makeUpper case, else add the same original char
 		for(int i=0; i<source.length(); i++) {
-			char character_i = source.charAt(i);			
+			char character_i = source.charAt(i);
 			// finally update flag according to char value il blacklist
 			if (!(String.valueOf(character_i).equals(EOL.defaultEol.eol))){
 				result+=String.valueOf(character_i);
 			}
 		}
-		
-		
+
+
 		return result;
 	}
 
@@ -463,27 +463,27 @@ public class StringWorker {
 		}
 		return lowercaseNames;
 	}
-	
+
 	public static String getNTimesString(String source, int n) {
 		if(n < 0 || isEmptyNoTrim(source)) {
 			return source;
 		}
-		
+
 		String result = "";
-		
+
 		String original = new String(source);
 		for(int i = 0; i < n; i++) {
 			result += original;
 		}
-		
+
 		return result;
 	}
-	
+
 	public static String replaceSpacesWithTabs(String source, int tabSize) {
 		String[] lines = source.split(EOL.defaultEol.eol);
 		StringBuilder builder = new StringBuilder();
 		for (String line : lines) {
-			
+
 			int lineLength = line.length();
 			String convertedBlock = "";
 			String buffer = "";
@@ -495,24 +495,24 @@ public class StringWorker {
 					convertedBlock += buffer;
 					buffer = "";
 				}
-				
+
 				if (buffer.length() == tabSize ) {
 					convertedBlock += "\t";
 					buffer = "";
 				}
 			}
-			
+
 			builder.append(convertedBlock).append(buffer).append(EOL.defaultEol.eol);
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	public static String replaceTabsWithSpaces(String source, int tabSize) {
 		String spaces = getNTimesString(" ", tabSize);
 		return source.replace("\t", spaces);
 	}
-	
+
 	public static ArrayList<String> getStringWhileNotNull(Character[] buffer) {
 		ArrayList<String> notNulls = new ArrayList<>();
 		for(Character current : buffer) {
@@ -527,7 +527,7 @@ public class StringWorker {
 
 	/**
 	 * This method changes the characters from start to end in the string with the given String
-	 * 
+	 *
 	 * @param int start : 0<start<end<src.lenght
 	 * @param int end : 0<start<end<src.lenght
 	 */
@@ -557,7 +557,7 @@ public class StringWorker {
 		String second=src.substring(end, src.length());
 		result+=insert+second;
 		return result;
-		
+
 	}
 
 	/**
@@ -566,7 +566,7 @@ public class StringWorker {
 	 */
 	public static <K, V> void printMap(Map<K, V> map) {
 	    for (Map.Entry<K, V> entry : map.entrySet()) {
-	        System.out.println("Key : " + entry.getKey() 
+	        System.out.println("Key : " + entry.getKey()
 				+ " <=> Value : " + entry.getValue());
 	    }
 	}
@@ -580,7 +580,7 @@ public class StringWorker {
 		for (Map.Entry<K, V> entry : map.entrySet()) {
 			builder.append("Key : " + entry.getKey() + " <=> Value : " + entry.getValue()).append(EOL.defaultEol.eol);
 		}
-		
+
 		return builder.toString();
 	}
 
@@ -603,7 +603,7 @@ public class StringWorker {
 				builder.append("Val["+i+"] : " + curr);
 				i++;
 			}
-		
+
 		return builder.toString();
 	}
 
@@ -663,7 +663,7 @@ public class StringWorker {
 		if(first == null || second == null) {
 			return false;
 		}
-		
+
 		return first.toLowerCase().contains(second.toLowerCase());
 	}
 
@@ -671,10 +671,10 @@ public class StringWorker {
 		if(first == null || second == null) {
 			return false;
 		}
-		
+
 		return first.contains(second);
 	}
-	
+
 	public static String concat(List<? extends Object> list,  EOL separator) {
 		StringBuilder builder = new StringBuilder();
 		if(list != null && !list.isEmpty()) {
@@ -684,14 +684,14 @@ public class StringWorker {
 					builder.append(s);
 				if(s != null && i < list.size() - 1)
 					builder.append(separator.eol);
-				
+
 				i++;
 			}
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	public static String concatFilePaths(List<File> list,  EOL separator) {
 		separator = separator == null ? EOL.defaultEol : separator;
 		StringBuilder builder = new StringBuilder();
@@ -706,12 +706,19 @@ public class StringWorker {
 					}
 				if(file != null && i < list.size() - 1)
 					builder.append(separator.eol);
-				
+
 				i++;
 			}
 		}
-		
+
 		return builder.toString();
+	}
+
+	public static String replaceEmpyWithDefault(String source, String defaultStr) {
+		if(isEmpty(source))
+			return defaultStr;
+		else
+			return source;
 	}
 
 	public static boolean isEmpty(String source) {
@@ -732,7 +739,7 @@ public class StringWorker {
 	public static String trimToEmpty(String source) {
 		return nullToEmpty(source).trim();
 	}
-	
+
 	public static boolean notEmpty(String source) {
 		return !isEmpty(source);
 	}
@@ -742,10 +749,10 @@ public class StringWorker {
 			for (char match : targetMatches) {
 				if (iterator == match) {
 					return true;
-				} 
+				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -755,28 +762,30 @@ public class StringWorker {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public static String removeBlankLines(String text, String lineSeparator) {
 		if(text == null || lineSeparator == null)
 			return text;
-		
+
 		StringBuilder builder = new StringBuilder();
-		
+
 		String[] lines = text.split(lineSeparator);
 		for(int i = 0; i < lines.length; i++) {
 			if(!StringWorker.isEmpty(lines[i]))
 				builder.append(lines[i]);
-			
+			else
+				continue;
+
 			if(i < lines.length - 1)
 				builder.append(lineSeparator);
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	public static boolean checkWildcardMatch(String toCheck, String wildcardExpression) {
 		return checkWildcardMatch(toCheck, wildcardExpression, false);
 	}
@@ -784,12 +793,12 @@ public class StringWorker {
 	public static boolean checkWildcardMatch(String toCheck, String wildcardExpression, boolean ignoreCase) {
 		if(isEmpty(toCheck) || isEmpty(wildcardExpression))
 			return false;
-		
+
 		if(ignoreCase) {
 			wildcardExpression = wildcardExpression.toLowerCase();
 			toCheck = toCheck.toLowerCase();
 		}
-		
+
 		return trimToEmpty(toCheck).matches(trimToEmpty(wildcardExpression).replace("?", ".?").replace("*", ".*?"));
 	}
 
@@ -799,9 +808,9 @@ public class StringWorker {
 	 * @return
 	 */
 	public static String normalizeStringToEol(String source, EOL outputEOL) {
-		
+
 		String output = normalizeStringToLF(source).replaceAll(EOL.LF.eol, outputEOL.eol);
-		
+
 		return output;
 	}
 
@@ -811,9 +820,9 @@ public class StringWorker {
 	 * @return
 	 */
 	public static String normalizeStringToEol(String source, String outputEOL) {
-		
+
 		String output = normalizeStringToLF(source).replaceAll(EOL.LF.eol, outputEOL);
-		
+
 		return output;
 	}
 
@@ -824,10 +833,10 @@ public class StringWorker {
 	 */
 	public static String normalizeStringToLF(String source) {
 		String output = trimToEmpty(source);
-		
+
 		output = source.replaceAll(EOL.CRLF.eolRegex, EOL.LF.eol);
 		output = output.replaceAll(EOL.CR.eolRegex, EOL.LF.eol);
-		
+
 		return output;
 	}
 
@@ -838,11 +847,11 @@ public class StringWorker {
 		if(isEmpty(source)) {
 			return "";
 		}
-		
+
 		byte[] random = new byte[32];
 		new Random().nextBytes(random);
 		String rand = UUID.nameUUIDFromBytes(random).toString();
-		
+
 		return source.replace("\r\n", "[\\r\\n]"+rand).replace("\n", "[\\n]"+rand).replace("\r", "[\\r]"+rand).replace(rand, System.getProperty("line.separator"));
 	}
 
@@ -850,10 +859,10 @@ public class StringWorker {
 		if(source == null || !source.exists()) {
 			throw new IOException();
 		}
-	
+
 		logger.info("readFileAsString -> Start...");
 		long startTime = System.currentTimeMillis();
-	
+
 		StringBuilder builder = new StringBuilder(100000);
 		FileInputStream readerStream = new FileInputStream(source);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(readerStream, Charset.forName("UTF-8")));
@@ -886,20 +895,20 @@ public class StringWorker {
 		} catch (IOException e) {
 			throw e;
 		}finally {
-			reader.close();			
+			reader.close();
 		}
-		
+
 		logger.info("readFileAsString -> Finished in " + String.valueOf(System.currentTimeMillis()-startTime) + " ms");
 		return builder.toString();
 	}
-	
+
 	public static boolean isStringSupportedByCharset(String source, Charset charset) {
-		
+
 		try {
 			if("".equals(trimToEmpty(source)) || !validateCharset(charset)) {
 				return false;
 			}
-			
+
 			return charset.newEncoder().canEncode(source);
 		} catch (Exception e) {
 			return false;
@@ -907,18 +916,18 @@ public class StringWorker {
 	}
 
 	public static boolean isStringSupportedByCharset(String source, String charsetName) {
-		
+
 		try {
 			if("".equals(trimToEmpty(source)) || !validateCharset(charsetName)) {
 				return false;
 			}
-			
+
 			return Charset.forName(charsetName).newEncoder().canEncode(source);
 		} catch (Exception e) {
 			return false;
 		}
 	}
-	
+
 	public static boolean validateCharset(Charset charset) throws Exception {
 		return charset != null && Charset.isSupported(charset.name());
 	}
@@ -929,7 +938,7 @@ public class StringWorker {
 	/**
 	 * Use this method to remove every character from given string, except "." and
 	 * digits 0-9 Note that eventual undescores will become dots.
-	 * 
+	 *
 	 * @param source
 	 * @return
 	 */
@@ -943,24 +952,24 @@ public class StringWorker {
 	/**
 	 * Dotted version format compare - if version not matches format
 	 * <Strong>IllegalArgumentException</Strong> is thrown
-	 * 
+	 *
 	 * @param version_A
 	 * @param version_B
 	 * @return -1 if A less than B, 1 if A more than B, 0 if equals
 	 */
 	public static int compareVersions(String version_A, String version_B) throws IllegalArgumentException {
-	
+
 		if (version_A == null || version_B == null) {
 			throw new IllegalArgumentException("Version can not be null");
 		}
-		
+
 		String cleanVersA = keepOnlyDotsAndDigits(version_A);
 		String cleanVersB = keepOnlyDotsAndDigits(version_B);
-		
+
 		if (!cleanVersA.matches("[0-9]+(\\.[0-9]+)*") || !cleanVersB.matches("[0-9]+(\\.[0-9]+)*")) {
 			throw new IllegalArgumentException("Invalid version format");
 		}
-	
+
 		String[] AParts = cleanVersA.split("\\.");
 		String[] BParts = cleanVersB.split("\\.");
 		int length = Math.max(AParts.length, BParts.length);
@@ -976,21 +985,21 @@ public class StringWorker {
 		}
 		return 0;
 	}
-	
+
 	public static String repeatStringNTimes(String string, int n, boolean newLineEach) {
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < n; i++) {
 			builder.append(string).append((newLineEach && i < n - 1) ? EOL.defaultEol.eol : "");
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	public static DecimalFormat getNDecimalsFormat(int n) {
 		String decimalPattern = repeatStringNTimes("0", n, false);
-		return new DecimalFormat("#0." + decimalPattern); 
+		return new DecimalFormat("#0." + decimalPattern);
 	}
-	
+
 	public static String getStringDouble(Double value, int nDecimals) {
 		return getNDecimalsFormat(nDecimals).format(value);
 	}

@@ -85,7 +85,7 @@
 							<archive>
 								<manifest>
 									<mainClass>
-										guiVersion.HardwareInfoFrameLauncher
+										hw.commons.main.HardwareInfoFrameLauncher
 									</mainClass>
 								</manifest>
 							</archive>
@@ -116,6 +116,21 @@
 						<goals>
 							<goal>third-party-report</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>download-licenses</id>
+						<phase>install</phase>
+						<goals>
+							<goal>download-licenses</goal>
+						</goals>
+						<configuration>
+							<licensesOutputFileEncoding>UTF-8</licensesOutputFileEncoding>
+							<includeTransitiveDependencies>true</includeTransitiveDependencies>
+							<forceDownload>true</forceDownload>
+							<excludedScopes>test</excludedScopes>
+							<skipDownloadLicenses>${report.licenses.update.skip}</skipDownloadLicenses>
+							<licensesOutputFile>${project.build.directory}/generated-resources/license_list_raw_${project.artifactId}.xml</licensesOutputFile>
+						</configuration>
 					</execution>
 				</executions>
 				<configuration>

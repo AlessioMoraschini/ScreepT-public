@@ -31,7 +31,6 @@
 	<!-- MODULES BUILD -->
 	<modules>
 		<module>${common.local.repository.folder}/AM_Rkanoid</module>
-		<module>${common.local.repository.folder}/ExternalPluginInterface</module>
 		<!-- Added --><module>${common.local.repository.folder}/PluginsParent</module>
 		<module>${common.local.repository.folder}/VariousCommonsLight</module>
 		<module>${common.local.repository.folder}/GeneralResources</module>

@@ -30,7 +30,8 @@
 		<jdk.target.level>1.8</jdk.target.level>
 
 		<!-- License report plugin excluded scopes [provided,test] -->
-		<report.excluded.scopes></report.excluded.scopes>
+		<report.excluded.scopes>provided,test</report.excluded.scopes>
+		<report.licenses.update.skip>true</report.licenses.update.skip>
 		
 		<!-- Local repositories -->
 		<screept.local.repository.folder>../../ScreepT_Repository</screept.local.repository.folder>
@@ -116,21 +117,21 @@
 	<!-- Maven artifact repositories -->
 	<repositories>
 		<repository>
-			<id>central</id>
-			<name>jcenter</name>
-			<url>http://jcenter.bintray.com</url>
-		</repository>
-
-		<repository>
 			<id>Local-repository-Main</id>
 			<name>Main LOCAL Repository</name>
 			<url>file:C:/Users/xx/.m2/repository</url>
 		</repository>
 
 		<repository>
+			<id>central</id>
+			<name>jcenter</name>
+			<url>http://jcenter.bintray.com</url>
+		</repository>
+
+		<!-- <repository>
 			<id>Local-repository-Two</id>
 			<name>Second LOCAL Repository</name>
 			<url>file:C:/Users/amoraschini/.m2/repository</url>
-		</repository>
+		</repository> -->
 	</repositories>
 </project>

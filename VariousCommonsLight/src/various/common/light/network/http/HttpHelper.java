@@ -36,16 +36,16 @@ import various.common.light.utility.manipulation.ConversionUtils;
 import various.common.light.utility.manipulation.EncodingUtils;
 
 public class HttpHelper {
-	
+
 	public static SafeLogger logger = new SafeLogger(HttpHelper.class);
 	public static int timeout = DownloadUtils.CONNECTION_TIMEOUT_MS;
-	
+
 	public static Authenticator defaultAuth = null;
 	public static char[] defaultProxyPsw = null;
 	public static String defaultProxyUser = null;
-	
+
 	public static Proxy proxy = getProxy();
-	
+
 	public static boolean is404(URL url, HttpRequestMetod method) throws MalformedURLException, IOException {
 		return 404 == (getResponseCode(url, method));
 	}
@@ -55,51 +55,55 @@ public class HttpHelper {
 	}
 
 	public static int getResponseCode(String urlString, HttpRequestMetod method) throws MalformedURLException, IOException {
-	    URL url = new URL(urlString); 
-	    
+	    URL url = new URL(urlString);
+
 	    return getResponseCode(url, method);
 	}
 
 	public static int getResponseCode(URL url, HttpRequestMetod method) throws MalformedURLException, IOException {
 		logger.debug("Getting response code from " + url);
-		HttpsURLConnection httpsUrlConnection = null; 
+		HttpURLConnection httpsUrlConnection = null;
 		int responseCode = -1;
 		try {
-			httpsUrlConnection =  (HttpsURLConnection)url.openConnection(getProxy()); 
-			httpsUrlConnection.setRequestMethod(method.name()); 
+			if(url.getPath().contains("https"))
+				httpsUrlConnection =  (HttpsURLConnection)url.openConnection(getProxy());
+			else
+				httpsUrlConnection =  (HttpURLConnection)url.openConnection(getProxy());
+
+			httpsUrlConnection.setRequestMethod(method.name());
 			httpsUrlConnection.setUseCaches(false);
-			httpsUrlConnection.connect(); 
+			httpsUrlConnection.connect();
 			responseCode = httpsUrlConnection.getResponseCode();
-		
+
 		} catch (Exception e) {
-			
+
 			logger.error("Cannot check response code: an error occurred!", e);
 			throw e;
-		
+
 		} finally {
 			if(httpsUrlConnection != null) {
 				httpsUrlConnection.disconnect();
 			}
 		}
-	    
+
 		logger.info("Response code from " + url + ": " + responseCode);
 	    return responseCode;
 	}
-	
+
 	public static Proxy getProxy() {
 		Proxy retrievedProxy = proxy != null ? proxy : Proxy.NO_PROXY;
 		logger.info("Retrieved proxy from default settings: " + retrievedProxy);
 		return retrievedProxy;
 	}
-	
+
 	public enum HttpRequestMetod {
 		GET,
-		POST, 
+		POST,
 		HEAD,
-		OPTIONS, 
-		PUT, 
-		DELETE, 
-		TRACE; 
+		OPTIONS,
+		PUT,
+		DELETE,
+		TRACE;
 	}
 
 	public static boolean isUrlReachable(URL urlToTest) {
@@ -108,7 +112,7 @@ public class HttpHelper {
 			boolean reachable = InetAddress.getByName(urlToTest.getHost()).isReachable(5000);
 			logger.info(urlToTest + " reachable test result: " + reachable);
 			return reachable;
-			
+
 		} catch (IOException e) {
 			logger.error("Cannot check if " + urlToTest + " is reachable: an error occurred!", e);
 			return false;
@@ -119,10 +123,10 @@ public class HttpHelper {
 	 * Retrieve a list of String lines from the given text file
 	 */
 	public static List<String> getLinesFromUrlFile(URL url) {
-		ArrayList<String> lines = new ArrayList<>(); 
+		ArrayList<String> lines = new ArrayList<>();
 		InputStream inStream = null;
 		Scanner scanner = null;
-		
+
 		try {
 			inStream = url.openStream();
 			scanner = new Scanner(inStream);
@@ -140,7 +144,7 @@ public class HttpHelper {
 				logger.error("Cannot close stream, an error occurred", e2);
 			}
 		}
-		
+
 		return lines;
 	}
 
@@ -148,7 +152,7 @@ public class HttpHelper {
 	 * Retrieve the size in bytes of a file located at given remote URL
 	 * @param url
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static int getFileSize(URL url) throws Exception {
 	    URLConnection conn = null;
@@ -187,9 +191,9 @@ public class HttpHelper {
 	        }
 		}
 	}
-	
+
 	/**
-	 * Set the proxy that will be used for http/https connections. 
+	 * Set the proxy that will be used for http/https connections.
 	 * The host must NOT have the protocol prefix (ex: proxybp.domain.com)
 	 */
 	public static void setProxy(String host, int port) {
@@ -206,9 +210,10 @@ public class HttpHelper {
 		System.setProperty("java.net.useSystemProxies", "false");
 		logger.info("Proxy resetted (no proxy will be used)");
 	}
-	
+
 	public static void setDefaultProxyAutentication(String username, char[] password) {
 		defaultAuth = new Authenticator() {
+			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
 
 	    		PasswordAuthentication pswAuth = new PasswordAuthentication(username, password);
@@ -216,15 +221,15 @@ public class HttpHelper {
 		        return pswAuth;
 		    }
 		};
-		
+
 		defaultProxyPsw = password;
 		defaultProxyUser = username;
-		
+
 		Authenticator.setDefault(defaultAuth);
-		
+
 		logger.info("Proxy  authentication set to -> [user: " + username + " ; psw: XXXXXXX ]");
 	}
-	
+
 	public static void removePreviousProxyAuthentication() {
 		defaultAuth = null;
 		defaultProxyPsw = null;
@@ -240,7 +245,7 @@ public class HttpHelper {
 			conn.setRequestProperty("Proxy-Authorization", "Basic " + encodedUserPwd);
 		}
 		conn.setRequestProperty("Accept-Charset", "UTF-8");
-		
+
 		return conn.getInputStream();
 	}
 }

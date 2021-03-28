@@ -56,6 +56,7 @@
 
 	<modules>
 		<module>${common.local.repository.folder}/CommonParentGlobal</module>
+		<module>${common.local.repository.folder}/ExternalPluginInterface</module>
 		<module>${common.local.repository.folder}/CodeComparator</module>
 		<module>${common.local.repository.folder}/Hacks_Project</module>
 	</modules>
