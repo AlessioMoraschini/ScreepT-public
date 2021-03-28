@@ -20,8 +20,8 @@
 	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>
-			<name>${mit.license.name}</name>
-			<url>${mit.license.url}</url>
+			<name>${lgpl.license.name}</name>
+			<url>${lgpl.license.url}</url>
 		</license>
 	</licenses>
 	<developers>
@@ -117,7 +117,7 @@
 									<filtering>false</filtering>
 									<directory>./</directory>
 									<includes>
-										<include>${mit.license.url}</include>
+										<include>${lgpl.license.url}</include>
 									</includes>
 									<excludes>/**/*humbs.db</excludes>
 								</resource>

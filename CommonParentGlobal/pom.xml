@@ -116,6 +116,10 @@
 		<!-- LICENSE PROPERTIES - MIT License -->
 		<mit.license.name>MIT</mit.license.name>
 		<mit.license.url>license/License-MIT.txt</mit.license.url>
+
+		<!-- LICENSE PROPERTIES - MIT License -->
+		<lgpl.license.name>LGPL</lgpl.license.name>
+		<lgpl.license.url>license/License-LGPL.txt</lgpl.license.url>
 	</properties>
 
 	<!-- Maven artifact repositories -->

@@ -11,7 +11,7 @@ import various.common.light.om.SelectionDtoFull;
 
 public class CodeComparePlugin implements IPluginTextEditor {
 
-	JMeldFork jMeld;
+	JMeldLauncher jMeld;
 
 	public CodeComparePlugin() {
 	}
@@ -28,13 +28,13 @@ public class CodeComparePlugin implements IPluginTextEditor {
 
 	@Override
 	public void initialize() {
-		jMeld = new JMeldFork(new String[0]);
+		jMeld = new JMeldLauncher(new String[0]);
 	}
 
 	@Override
 	public boolean launchMain(final String[] args) {
 		new Thread(()-> {
-			JMeldFork.main(args);
+			JMeldLauncher.main(args);
 		}).start();
 		return true;
 	}
@@ -42,7 +42,7 @@ public class CodeComparePlugin implements IPluginTextEditor {
 	@Override
 	public boolean openFrame(List<File> files) {
 
-		jMeld = new JMeldFork(FileVarious.filesToPaths(files));
+		jMeld = new JMeldLauncher(FileVarious.filesToPaths(files));
 		jMeld.run();
 
 		return true;

@@ -18,12 +18,12 @@ import org.jmeld.ui.util.ImageUtil;
 import org.jmeld.ui.util.LookAndFeelManager;
 import org.jmeld.util.prefs.WindowPreference;
 
-public class JMeldFork implements Runnable {
+public class JMeldLauncher implements Runnable {
 
 	private List<String> fileNameList;
 	private static JMeldPanel jmeldPanel;
 
-	public JMeldFork(String args[]) {
+	public JMeldLauncher(String args[]) {
 		fileNameList = new ArrayList<>();
 		String as[] = args;
 		int i = as.length;
@@ -75,6 +75,6 @@ public class JMeldFork implements Runnable {
 		settings.setCurveType(1);
 		if (settings.getEditor().isAntialiasEnabled())
 			System.setProperty("swing.aatext", "true");
-		SwingUtilities.invokeLater(new JMeldFork(args));
+		SwingUtilities.invokeLater(new JMeldLauncher(args));
 	}
 }
