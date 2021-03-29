@@ -847,4 +847,28 @@ public class FileWorker {
 
 		return (esit)? new File(destdir.getAbsolutePath()+File.separator + source.getName()) : null;
 	}
+
+	public static final void mkDirs(String... mkdirList) {
+		if(mkdirList != null) {
+			for(String dir : mkdirList) {
+				try {
+					new File(dir).mkdirs();
+				} catch (Exception e) {
+					logger.warn("Cannot apply mkDirs to given source: " + dir);
+				}
+			}
+		}
+	}
+
+	public static final void cleanupDirs(String... mkdirList) {
+		if(mkdirList != null) {
+			for(String dir : mkdirList) {
+				try {
+					deleteDirContentRecursive(new File(dir));
+				} catch (Exception e) {
+					logger.warn("Cannot cleanup given source: " + dir);
+				}
+			}
+		}
+	}
 }

@@ -157,6 +157,7 @@
 							<forceDownload>true</forceDownload>
 							<excludedScopes>test</excludedScopes>
 							<licensesOutputFile>${report.licenses.raw.dir}/license_list_${project.artifactId}.xml</licensesOutputFile>
+							<overrideFile>true</overrideFile>
 						</configuration>
 					</execution>
 				</executions>

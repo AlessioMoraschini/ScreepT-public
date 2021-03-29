@@ -15,11 +15,14 @@ import licenses.info.extractor.om.License;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.gui.GuiUtils;
+import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.string.StringWorker;
 import various.common.light.utility.string.StringWorker.EOL;
 import various.common.light.utility.xml.XmlWorker;
 
 public class LicensesInfoExtractor {
+
+	private static final SafeLogger logger = new SafeLogger(LicensesInfoExtractor.class);
 
 	public static String TAG_ROOT = "dependencies";
 	public static String TAG_SUB_ITEM_1 = "dependency";
@@ -63,11 +66,14 @@ public class LicensesInfoExtractor {
 
 		for(Dependency dependency : dependenciesSrc.dependencies) {
 			for(Dependency dependencyRef : dependenciesCompleteList.dependencies) {
-				boolean refContainsArtifact = StringWorker.trimToEmpty(dependencyRef.artifactId).equals(dependency.artifactId);
-				boolean groupEqualsRef = StringWorker.trimToEmpty(dependencyRef.groupId).contains(dependency.groupId);
+				boolean refEqualArtifact = StringWorker.trimToEmpty(dependencyRef.artifactId).equals(dependency.artifactId);
+				boolean artifactContainsRef = StringWorker.trimToEmpty(dependency.artifactId).contains(dependencyRef.artifactId);
+				boolean refContainsGroup = StringWorker.trimToEmpty(dependencyRef.groupId).contains(dependency.groupId);
 
-				if(refContainsArtifact && groupEqualsRef) {
+				if((artifactContainsRef && refContainsGroup) || refEqualArtifact) {
 					artifactsToImport.add(dependencyRef.artifactId);
+				} else {
+					logger.info("Dependency not found in complete list: not synched: " + dependency.toString());
 				}
 			}
 		}
@@ -153,7 +159,7 @@ public class LicensesInfoExtractor {
 
 							license.file = "./" + FileVarious.getNlevelsPathString(licenseFile, 3);
 						} else {
-							license.file = " - ";
+							license.file = "#";
 						}
 
 

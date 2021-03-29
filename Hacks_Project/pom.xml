@@ -158,6 +158,7 @@
 							<generateBundle>true</generateBundle>
 							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
 							<excludedScopes>${report.excluded.scopes}</excludedScopes>
+							<overrideFile>true</overrideFile>
 						</configuration>
 					</execution>
 					<execution>

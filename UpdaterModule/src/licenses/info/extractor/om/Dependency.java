@@ -35,4 +35,11 @@ public class Dependency {
 
 		return dependencyBuilder.toString();
 	}
+
+	@Override
+	public String toString() {
+		return "Dependency [groupId=" + groupId + ", version=" + version + ", artifactId=" + artifactId + "]";
+	}
+
+
 }
