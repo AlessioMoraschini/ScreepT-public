@@ -12,6 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
 import various.common.light.files.FileVarious;
+import various.common.light.utility.string.StringWorker;
 
 public class PluginAbstractParent implements IPlugin {
 
@@ -139,6 +140,18 @@ public class PluginAbstractParent implements IPlugin {
 			// dialog.setModal(true); // set modality (or setModalityType)
 			return dialog;
 		}
+	}
+
+	@Override
+	public int compareTo(IPlugin o) {
+
+		if(o == null || StringWorker.isEmpty(o.getPluginName()) || StringWorker.isEmpty(getPluginName()))
+			return -1;
+
+		if(o.getPluginName().equals(getPluginName()))
+			return 0;
+
+		return getPluginName().compareTo(o.getPluginName());
 	}
 
 }

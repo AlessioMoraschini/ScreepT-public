@@ -10,7 +10,7 @@ import java.util.Set;
 import plugin.external.root.embedded.test.HellowordPlugin;
 import various.common.light.om.SelectionDtoFull;
 
-public interface IPluginParentExecutor {
+public interface IPluginParentExecutor<T> extends Comparable<T> {
 
 	final Map<String, Map<String, FunctionExecutor>> functionsMap = new HashMap<>();
 

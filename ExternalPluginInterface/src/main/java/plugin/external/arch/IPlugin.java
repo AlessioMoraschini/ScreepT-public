@@ -9,7 +9,7 @@ import java.util.UUID;
 
 import javax.swing.ImageIcon;
 
-public interface IPlugin extends IPluginParentExecutor {
+public interface IPlugin extends IPluginParentExecutor<IPlugin> {
 
 	@Override
 	public default Map<String, FunctionExecutor> getMainStandalonExecutorMap() {

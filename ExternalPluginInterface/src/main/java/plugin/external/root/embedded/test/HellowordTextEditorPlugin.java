@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import plugin.external.arch.IPlugin;
 import plugin.external.arch.IPluginTextEditor;
+import various.common.light.utility.string.StringWorker;
 
 public class HellowordTextEditorPlugin implements IPluginTextEditor {
 
@@ -57,6 +59,18 @@ public class HellowordTextEditorPlugin implements IPluginTextEditor {
 	public String getID() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int compareTo(IPlugin o) {
+
+		if(o == null || StringWorker.isEmpty(o.getPluginName()) || StringWorker.isEmpty(getPluginName()))
+			return -1;
+
+		if(o.getPluginName().equals(getPluginName()))
+			return 0;
+
+		return getPluginName().compareTo(o.getPluginName());
 	}
 
 }

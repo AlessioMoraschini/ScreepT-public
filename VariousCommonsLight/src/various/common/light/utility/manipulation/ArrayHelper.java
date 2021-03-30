@@ -2,6 +2,8 @@ package various.common.light.utility.manipulation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -30,11 +32,36 @@ public class ArrayHelper {
 		return sourceList;
 	}
 
-	public static <T> Set<T> sortSet(Set<T> set){
-		TreeSet<T> myTreeSet = new TreeSet<>();
-		myTreeSet.addAll(set);
+	public static <T extends Comparable<?>> Set<T> sortSet(Set<T> set){
+		return listToSet(setToList(set), true);
+	}
 
-		return myTreeSet;
+	public static <T> List<T> setToList(Set<T> set) {
+		List<T> list = new ArrayList<>();
+
+		if(set == null || set.isEmpty())
+			return list;
+
+		Iterator<T> it = set.iterator();
+		while(it.hasNext()) {
+			T element = it.next();
+			list.add(element);
+		}
+
+		return list;
+	}
+
+	public static <T> Set<T> listToSet(List<T> list, boolean sorted) {
+		Set<T> set = sorted ? new TreeSet<>() : new HashSet<>();
+
+		if(list == null || list.isEmpty())
+			return set;
+
+		for(T element : list) {
+			set.add(element);
+		}
+
+		return set;
 	}
 
 	@SafeVarargs
