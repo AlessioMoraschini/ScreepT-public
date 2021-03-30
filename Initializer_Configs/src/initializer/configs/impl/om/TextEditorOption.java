@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +27,7 @@ import various.common.light.om.LimitedConcurrentList;
 import various.common.light.utility.string.StringWorker.EOL;
 
 public class TextEditorOption {
-	
+
 	INItializer parentConfig;
 
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
@@ -43,7 +42,7 @@ public class TextEditorOption {
 	public static final String DEFAULT_SELECTED_FILE_AT_START = "";
 	public static final String DEF_LastEscapeLanguage = "HTML_4";
 	public static final EOL DEF_eol = EOL.defaultEol;
-	
+
 	//TEXT AREA
 	public static final String DEFAULT_SELECTED_THEME = GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml";
 	public static final boolean DEF_headerVisible = true;
@@ -69,13 +68,13 @@ public class TextEditorOption {
 	public static final String DEF_preferredSyntaxIfNotSync = "TXT";
 	public static final boolean DEF_uppercase_hash = true;
 	public static final boolean DEF_prefix_hash = false;
-	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedFiles;
-	public static LimitedConcurrentList<FileNamed> DEF_lastSelectedWorkspaces;
-	public static LimitedConcurrentList<FileNamed> DEF_lastOpenedShellFiles;
-	public static LimitedConcurrentList<String> DEF_lastTagsUsed;
-	public static LimitedConcurrentList<String> DEF_lastReplaceTerms;
-	public static LimitedConcurrentList<String> DEF_lastSearchTerms;
-	
+	public static LimitedConcurrentList<FileNamed> 	DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);
+	public static LimitedConcurrentList<FileNamed> 	DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE);
+	public static LimitedConcurrentList<FileNamed> 	DEF_lastOpenedShellFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);
+	public static LimitedConcurrentList<String>    DEF_lastTagsUsed = new LimitedConcurrentList<String>(60);
+	public static LimitedConcurrentList<String>    DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE);
+	public static LimitedConcurrentList<String>    DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_SEARCH_DIAL_LIST_SIZE);
+
 	// TEXT AREA DETAIL
 	public static final boolean DEF_codeFoldingEnabled = true;
 	public static final boolean DEF_autoIndentEnabled = true;
@@ -101,8 +100,8 @@ public class TextEditorOption {
 	public static final boolean DEF_showBracketsPopup = false;
 	public static final boolean DEF_spellChecker = false;
 	public static final String DEF_prefDictspellChecker = GeneralConfig.SPELLCHECKER_DICT_FOLDER + GeneralConfig.SPELLCHECKER_DEFAULT_DICT;
-	
-	// FIELDS	
+
+	// FIELDS
 	public EOL eol;
 	public boolean firstTimeOpened;
 	public boolean headerVisible;
@@ -126,7 +125,7 @@ public class TextEditorOption {
 	public LimitedConcurrentList<String> lastSearchTerms;
 	public LimitedConcurrentList<String> lastTagsUsed;
 	String[] lastTagsInit = new String[] {"a", "span", "p", "div", "br", "image", "h1", "h2", "h3", "h4", "h5"};
-	
+
 	// TEXT AREA
 	public String defaultWorkspacePath;
 	public String selectedTheme;
@@ -150,7 +149,7 @@ public class TextEditorOption {
 	public boolean breaklineActive;
 	public boolean prefix_hash;
 	public boolean uppercase_hash;
-	
+
 	public boolean antialiasedTxtArea;
 	public boolean bracketMatchingEnabled;
 	public boolean clearWhitespaceLinesEnabled;
@@ -175,28 +174,25 @@ public class TextEditorOption {
 	public boolean showBracketsPopup;
 	public boolean spellChecker;
 	public String prefDictspellChecker;
-	
-	
+
+
 	// CONSTRUCTOR
 	public TextEditorOption() {
-		DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);      
-		DEF_lastOpenedShellFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE); 
-		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
-		DEF_lastReplaceTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_REPLACE_DIAL_LIST_SIZE); 
-		DEF_lastSearchTerms = new LimitedConcurrentList<String>(GeneralConfig.MAX_SEARCH_DIAL_LIST_SIZE); 
-		DEF_lastTagsUsed = new LimitedConcurrentList<String>(60); 
-		DEF_lastTagsUsed.addAll(Arrays.asList(lastTagsInit));
-		
+		this.parentConfig = new INItializer();
+		init();
+	}
+
+	public void init() {
 		eol = DEF_eol;
-		
+
 		firstTimeOpened = DEF_firstTimeOpened;
 		uppercase_hash = DEF_uppercase_hash;
 		prefix_hash = DEF_prefix_hash;
-		
+
 		headerVisible = DEF_headerVisible;
 		subHeaderVisible = DEF_subHeaderVisible;
 		footerVisible = DEF_footerVisible;
-		
+
 		openedFileList = new ArrayList<String>();
 		openedFileListCaretPosition = new HashMap<>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
@@ -223,7 +219,7 @@ public class TextEditorOption {
 		lastFileOpenedClipboard = DEF_lastFileOpenedClipboard;
 		lastSelectedTemplate = DEF_lastSelectedTemplate;
 		tabSize = DEFAULT_TAB_SIZE;
-		
+
 		fileTreeActive = DEFAULT_FTREE_ACTIVE;
 		bottomViewActive = DEF_bottomViewActive;
 		clipboardViewActive = DEF_clipboardViewActive;
@@ -233,7 +229,7 @@ public class TextEditorOption {
 		workspaceViewSelected = DEFAULT_WORKSPACE_VIEW_SELECTED;
 		defaultAutoSyntaxSync = DFAULT_AUTO_SYNTAX_SYN_FLAG;
 		preferredSyntaxIfNotSync = DEF_preferredSyntaxIfNotSync;
-		
+
 		tabLineVisible = DEFAULT_TAB_LINE_VISIBLE;
 		breaklineActive = DEFAULT_BREAK_LINE;
 		antialiasedTxtArea = DEF_antialiasedTxtArea;
@@ -260,37 +256,35 @@ public class TextEditorOption {
 		showBracketsPopup = DEF_showBracketsPopup;
 		spellChecker = DEF_spellChecker;
 		prefDictspellChecker = DEF_prefDictspellChecker;
-		
-		this.parentConfig = new INItializer();
 	}
-	
+
 	public TextEditorOption(INItializer parentConfig) {
-		super();
-		DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);      
-		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE); 
+		init();
+		DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);
+		DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE);
 		this.parentConfig = parentConfig;
 	}
 
-	
+
 	/**
 	 * If already present move to top, else if not present add it as last
 	 */
 	public synchronized void addFileToTopLimitedList(File toAdd, LimitedConcurrentList<FileNamed> targetList, String varToSave) {
-		
+
 		if(toAdd == null || targetList == null || !toAdd.exists()) {return;}
-		
+
 		// FIRST REMOVE ALL REFERENCES
 		synchronized (targetList) {
 			Iterator<FileNamed> iter = targetList.getList().iterator();
 			List<FileNamed> toRemove = new ArrayList<FileNamed>();
 			while (iter.hasNext()) {
-				FileNamed elem = (FileNamed)iter.next();
+				FileNamed elem = iter.next();
 				File file = elem.mFile;
 				if (file.equals(toAdd)) {
 					toRemove.add(elem);
 				}
 			}
-			
+
 			if (toRemove.size() != 0) {
 				// remove and re-add on top
 				targetList.getList().removeAll(toRemove);
@@ -301,11 +295,11 @@ public class TextEditorOption {
 	}
 
 	// GETTERS AND SETTERS
-	
+
 	public boolean isTabLineVisible() {
 		return tabLineVisible;
 	}
-	
+
 	public LimitedConcurrentList<String> getLastTagsUsed() {
 		return lastTagsUsed;
 	}
@@ -422,7 +416,7 @@ public class TextEditorOption {
 	public LimitedConcurrentList<String> getLastReplaceTerms() {
 		return lastReplaceTerms;
 	}
-	
+
 	public void setLastReplaceTerms(LimitedConcurrentList<String> lastReplaceTerms) {
 		this.lastReplaceTerms = lastReplaceTerms;
 	}
@@ -458,7 +452,7 @@ public class TextEditorOption {
 	public void setLastFileOpenedClipboard(String lastFileOpenedClipboard) {
 		this.lastFileOpenedClipboard = lastFileOpenedClipboard;
 	}
-	
+
 	public String getLastSelectedTemplate() {
 		return lastSelectedTemplate;
 	}
@@ -506,11 +500,11 @@ public class TextEditorOption {
 	public void setTabLineVisible(boolean tabLineVisible) {
 		this.tabLineVisible = tabLineVisible;
 	}
-	
+
 	public ArrayList<String> getOpenedFileList() {
 		return openedFileList;
 	}
-	
+
 	public boolean isBreaklineActive() {
 		return breaklineActive;
 	}
@@ -554,7 +548,7 @@ public class TextEditorOption {
 	public void setOpenedFileList(ArrayList<String> openedList) {
 		this.openedFileList = openedList;
 	}
-	
+
 	public Map<String, String> getOpenedFileListCaretPosition() {
 		return openedFileListCaretPosition;
 	}
@@ -566,11 +560,11 @@ public class TextEditorOption {
 	public void setInlinedTabs(boolean inlinedTabs) {
 		this.inlinedTabs = inlinedTabs;
 	}
-	
+
 	public boolean isInlinedTabs() {
 		return inlinedTabs;
 	}
-	
+
 	public String getSelectedTheme() {
 		return selectedTheme;
 	}
@@ -578,7 +572,7 @@ public class TextEditorOption {
 	public void setSelectedTheme(String selectedTheme) {
 		this.selectedTheme = selectedTheme;
 	}
-	
+
 	public String getSelectedAtStart() {
 		return selectedAtStart;
 	}
@@ -618,7 +612,7 @@ public class TextEditorOption {
 	public void setForeCol(Color foreCol) {
 		this.foreCol = foreCol;
 	}
-	
+
 	public Color getFilePanelBackCol() {
 		return filePanelBackCol;
 	}
@@ -844,7 +838,7 @@ public class TextEditorOption {
 	public void setMapViewActive(boolean mapViewActive) {
 		this.mapViewActive = mapViewActive;
 	}
-	
+
 	public Double getDividerBottomPosRatio() {
 		return dividerBottomPosRatio;
 	}
@@ -882,7 +876,7 @@ public class TextEditorOption {
 
 
 	public LimitedConcurrentList<FileNamed> getLastOpenedFiles() {
-		return lastOpenedFiles;
+		return lastOpenedFiles == null ? DEF_lastOpenedFiles : lastOpenedFiles;
 	}
 
 
@@ -897,5 +891,5 @@ public class TextEditorOption {
 	public void setFirstTimeOpened(boolean firstTimeOpened) {
 		this.firstTimeOpened = firstTimeOpened;
 	}
-	
+
 }

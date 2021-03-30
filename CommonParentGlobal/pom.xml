@@ -31,7 +31,7 @@
 
 		<!-- License report plugin excluded scopes [provided,test] -->
 		<report.excluded.scopes>provided,test</report.excluded.scopes>
-		<report.licenses.update.skip>false</report.licenses.update.skip>
+		<report.licenses.update.skip>true</report.licenses.update.skip>
 		<!-- Licenses generation directories -->
 		<report.licenses.src.dir>${screept.local.repository.folder}/ScreepT/licenses_builds</report.licenses.src.dir>
 		<report.licenses.raw.dir>${report.licenses.src.dir}/raw_licenses_list</report.licenses.raw.dir>

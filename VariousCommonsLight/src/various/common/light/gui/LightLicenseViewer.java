@@ -68,11 +68,16 @@ public class LightLicenseViewer extends JDialog {
 	private JMenuItem mntmScreepT;
 	private JMenu mnLibraries;
 	private JMenu mnLibrariesDetail;
+	private JMenu mnLibrariesDetailPlugins;
 	private JMenuItem mntmOpenWithBrowser;
 
 	private File loadedLicense;
 
 	public LightLicenseViewer(File sourceLicense, String header, String title) {
+		this(sourceLicense, header, title, null);
+	}
+
+	public LightLicenseViewer(File sourceLicense, String header, String title, boolean... submenuVisible) {
 
 		instance = this;
 
@@ -154,6 +159,7 @@ public class LightLicenseViewer extends JDialog {
 		addHandlers();
 
 		setVisible(true);
+		setSubMenusVisible(submenuVisible);
 	}
 
 	public void addHandlers() {
@@ -187,6 +193,18 @@ public class LightLicenseViewer extends JDialog {
 		});
 	}
 
+	public void setSubMenusVisible(boolean... indexes) {
+		if(indexes == null)
+			return;
+
+		// TODO fixme
+
+		mntmScreepT.setVisible((indexes.length > 0 ? indexes[0] : true));
+		mnLibraries.setVisible((indexes.length > 1 ? indexes[1] : true));
+		mnLibrariesDetailPlugins.setVisible((indexes.length > 2 ? indexes[2] : true));
+		mntmOpenWithBrowser.setVisible((indexes.length > 3 ? indexes[3] : true));
+	}
+
 	public void updateMenuBar() {
 
 		menuBar.removeAll();
@@ -198,14 +216,14 @@ public class LightLicenseViewer extends JDialog {
 		mntmScreepT.setHorizontalTextPosition(SwingConstants.LEFT);
 		mntmScreepT.setPreferredSize(new Dimension(160, 20));
 		mntmScreepT.setMaximumSize(new Dimension(180, 20));
-		mntmScreepT.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		mntmScreepT.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		menuBar.add(mntmScreepT);
 
 		mnLibraries = new JMenu("Libraries");
 		mnLibraries.setAlignmentX(Component.LEFT_ALIGNMENT);
 		mnLibraries.setBorder(new EmptyBorder(0, 0, 0, 0));
 		mnLibraries.setPreferredSize(new Dimension(100, 20));
-		mnLibraries.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		mnLibraries.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		menuBar.add(mnLibraries);
 
 		for(File libraryLicense : MAIN_LIBRARIES_FOLDER.listFiles(CustomFileFilters.customTypeFilter(CustomFileFilters.FILE_ONLY))) {
@@ -221,15 +239,25 @@ public class LightLicenseViewer extends JDialog {
 		mnLibrariesDetail = new JMenu("Detailed Reports");
 		mnLibrariesDetail.setBorder(new EmptyBorder(0, 0, 0, 0));
 		mnLibrariesDetail.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		mnLibrariesDetail.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		mnLibrariesDetail.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		menuBar.add(mnLibrariesDetail);
+
+		mnLibrariesDetailPlugins = new JMenu("Plugins");
+		mnLibrariesDetailPlugins.setBorder(new EmptyBorder(0, 0, 0, 0));
+		mnLibrariesDetailPlugins.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		mnLibrariesDetailPlugins.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		mnLibrariesDetail.add(mnLibrariesDetailPlugins);
 
 		ArrayList<File> details = FileWorker.getAllContent(MAIN_LIBRARIES_FOLDER_DETAIL, CustomFileFilters.FILE_ONLY);
 		if(details != null)
 			for(File libraryLicense : details) {
 				JMenuItem licenseFileMenuItem = new JMenuItem(libraryLicense.getName());
 				licenseFileMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-				mnLibrariesDetail.add(licenseFileMenuItem);
+
+				if(libraryLicense.getName().toLowerCase().contains("screept"))
+					mnLibrariesDetail.add(licenseFileMenuItem);
+				else
+					mnLibrariesDetailPlugins.add(licenseFileMenuItem);
 
 				licenseFileMenuItem.addActionListener((e) -> {
 					loadFile(libraryLicense);
@@ -247,7 +275,7 @@ public class LightLicenseViewer extends JDialog {
 		mntmOpenWithBrowser = new JMenuItem("Open with browser");
 		mntmOpenWithBrowser.setBorder(new EmptyBorder(0, 0, 0, 0));
 		mntmOpenWithBrowser.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		mntmOpenWithBrowser.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		mntmOpenWithBrowser.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		mntmOpenWithBrowser.addActionListener((e) -> {
 			try {
 				Desktop.getDesktop().browse(FileVarious.getCanonicalFileSafe(loadedLicense).toURI());

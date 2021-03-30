@@ -32,92 +32,92 @@ import resources.IconsPathConfigurator;
 
 public class ShellFrame extends ParentFrame {
 	private static final long serialVersionUID = 7066597918430250412L;
-	
+
 	public static ShellFrame singletonInstance = null;
 
 	JFrame thisFrame;
 	public ParentPanel payloadPanel;
 	public boolean writeMode = false;
 	private Runnable closeAction;
-	
+
 	public ShellFrame(JFrame parentFrame) {
 		this(parentFrame, false);
 	}
-	
+
 	public ShellFrame(JFrame parentFrame, boolean writeMode) {
 		this(parentFrame, writeMode, null);
 	}
-	
+
 	public ShellFrame(JFrame parentFrame, boolean writeMode, File preloadFile) {
 		this(null, parentFrame, writeMode, preloadFile);
 	}
-	
+
 	public ShellFrame(JTextArea cmdAreaToEnrich, JFrame parentFrame, boolean writeMode, File preloadFile) {
 
 		this.writeMode = writeMode;
 		this.closeAction = () -> {};
-		
+
 		logger.info(this.getClass().getName() + " - Starting...");
-		
+
 		setTitle("Shell Frame - " + GeneralConfig.APPLICATION_NAME);
-		
+
 		super.resizeToDefault(true, true, false);
 
 		GuiUtilsExtended.centerComponent(this);
 		setVisible(true);
 		setAlwaysOnTop(false);
-		
+
 		isActive.set(true);
 		thisFrame = this;
-		
+
 		this.dialogHelper = new JOptionHelperExtended(this);
 		this.fileChooser = new GenericFileChooserDialog(null);
 
 		// SW window icon
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_CONSOLE, this);
-		
+
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		
+
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[100%, grow]", "[100%, grow]"));
-		
+
 		if(writeMode) {
 			ShellReadWritePanel panel = new ShellReadWritePanel(80000, this, cmdAreaToEnrich);
 			if(preloadFile != null && preloadFile.isFile() && preloadFile.exists())
 				panel.loadAction(preloadFile).run();
-			
+
 			payloadPanel = panel;
-			
+
 		} else {
 			payloadPanel = new ShellReadPanel(20000);
 		}
 		getContentPane().add(payloadPanel, "cell 0 0 1 1, grow");
-		
+
 		addHandlers();
 		logger.info(this.getClass().getName() + " - Started and ready!");
-		
+
 		if (payloadPanel instanceof ShellReadWritePanel) {
 			SwingUtilities.invokeLater(() -> {
 				((ShellReadWritePanel)payloadPanel).commandTextArea.requestFocusInWindow();
 			});
 		}
 	}
-	
+
 	public File getLoadedFile() {
 		if(payloadPanel instanceof ShellReadWritePanel) {
 			return ((ShellReadWritePanel)payloadPanel).loadedFile;
 		}
-		
+
 		return null;
 	}
-	
+
 	private void addHandlers() {
-		// DEFAULT CLOSE ACTIONS 
+		// DEFAULT CLOSE ACTIONS
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
-		    
+
 			@Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
+
 				if(payloadPanel instanceof ShellReadWritePanel) {
 					setVisible(true);
 					if(((ShellReadWritePanel)payloadPanel).askSaveIfUnsaved() == null) {
@@ -135,7 +135,7 @@ public class ShellFrame extends ParentFrame {
 		    }
 		});
 	}
-	
+
 	public Runnable getCloseAction() {
 		return closeAction;
 	}
@@ -148,7 +148,7 @@ public class ShellFrame extends ParentFrame {
 	public Dimension getDefaultDimension() {
 		return new Dimension(1100, 600);
 	}
-	
+
 	@Override
 	public Dimension getMinimumDimension() {
 		return new Dimension(1000, 400);
@@ -157,7 +157,7 @@ public class ShellFrame extends ParentFrame {
 	public static ShellFrame getInstance(JFrame parentFrame) {
 		if(singletonInstance == null)
 			singletonInstance = new ShellFrame(parentFrame);
-		
+
 		return singletonInstance;
 	}
 
@@ -176,7 +176,7 @@ public class ShellFrame extends ParentFrame {
 	public static ShellFrame getInstance(JTextArea cmdTxtAreaToEnrich, JFrame parentFrame, boolean writeMode, File preloadFile) {
 		if(singletonInstance == null || singletonInstance.writeMode != writeMode)
 			singletonInstance = new ShellFrame(cmdTxtAreaToEnrich, parentFrame, writeMode, preloadFile);
-		
+
 		return  singletonInstance;
 	}
 }

@@ -15,7 +15,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -32,13 +35,15 @@ import various.common.light.utility.log.SafeLogger;
 
 class ButtonEditor extends DefaultCellEditor {
 	private static final long serialVersionUID = 2322648608181904669L;
-	
+
 	private static SafeLogger logger = new SafeLogger(ButtonEditor.class);
 
 	protected JButton button;
     private String label;
     private boolean isPushed;
-    
+
+    private static AtomicBoolean isRunning = new AtomicBoolean(false);
+
     private IPluginManagerGui pluginManagerInterface;
 
     public ButtonEditor(IPluginManagerGui pluginManagerInterface) {
@@ -49,7 +54,7 @@ class ButtonEditor extends DefaultCellEditor {
         this.button.setOpaque(false);
         this.pluginManagerInterface = pluginManagerInterface;
         this.button.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				 fireEditingStopped();
@@ -60,7 +65,7 @@ class ButtonEditor extends DefaultCellEditor {
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
             boolean isSelected, int row, int column) {
-    	
+
     	String pluginName = (String)table.getValueAt(row, 0);
     	GuiUtils.launchThreadSafeSwing(getActionOnClick(pluginName));
     	PluginDTO clickedButtonPlugin = pluginManagerInterface.getPluginDTO(pluginName);
@@ -75,7 +80,7 @@ class ButtonEditor extends DefaultCellEditor {
     @Override
     public Object getCellEditorValue() {
         if (isPushed) {
-        	
+
         }
         isPushed = false;
         return label;
@@ -86,18 +91,22 @@ class ButtonEditor extends DefaultCellEditor {
         isPushed = false;
         return super.stopCellEditing();
     }
-    
+
     public Runnable getActionOnClick(String pluginName) {
     	return new Runnable() {
+			@Override
 			public void run() {
-				
+
+				button.setEnabled(false);
+				isRunning.set(true);
+
 				logger.info("Starting plugin installation: " + pluginName);
-				
+
 				if (!pluginManagerInterface.isInstalling()) {
 					pluginManagerInterface.setInstalling(true);
-					
+
 					PluginDTO clickedButtonPlugin = pluginManagerInterface.getPluginDTO(pluginName);
-					
+
 					boolean installed = clickedButtonPlugin.installationCompleted;
 					PluginManager pluginManager = pluginManagerInterface.getPluginManager();
 					JFrame thisPanel = pluginManagerInterface.getFrame();
@@ -105,7 +114,7 @@ class ButtonEditor extends DefaultCellEditor {
 
 					try {
 						if (installed) {
-								
+
 							PluginDTO refreshedPlugin = pluginManager.retrieveFromCache(clickedButtonPlugin.getName());
 
 							boolean uninstalled = pluginManager.removePlugin(refreshedPlugin);
@@ -135,12 +144,12 @@ class ButtonEditor extends DefaultCellEditor {
 									String message = "Installation process interrupted by user.";
 									logger.info(message);
 									dialogHelper.info(message, "Interrupted by user");
-								
+
 								} else if(e instanceof TimeoutException) {
 									String message = "Server is unreachable!";
 									logger.error(message, e);
 									dialogHelper.error(message, "An error occurred");
-								
+
 								} else {
 									String message = "An error occurred during installation";
 									logger.error(message, e);
@@ -151,9 +160,11 @@ class ButtonEditor extends DefaultCellEditor {
 					} catch (Throwable e) {
 						logger.error("An error occurred", e);
 					} finally {
-						
+
+						isRunning.set(false);
+
 						logger.info("Installation Completed, refreshing elements...");
-								
+
 						try {
 							pluginManagerInterface.refreshTable(true);
 						} catch (Throwable e) {
@@ -161,14 +172,15 @@ class ButtonEditor extends DefaultCellEditor {
 						}
 						pluginManagerInterface.refreshGuiLibsAfterChange();
 					}
-					
+
 					pluginManagerInterface.setInstalling(false);
 					logger.info("Installation Completed, refresh completed!");
-					
+
 				} else {
 					logger.warn("Exiting, installation already in progress.");
 					new JOptionHelper(pluginManagerInterface.getFrame()).warn("Must wait current installation to finish before to start another one!", "Already installing");
 				}
+				button.setEnabled(true);
 			}
 		};
     }

@@ -18,7 +18,11 @@ import org.jmeld.ui.util.ImageUtil;
 import org.jmeld.ui.util.LookAndFeelManager;
 import org.jmeld.util.prefs.WindowPreference;
 
+import various.common.light.files.FileWorker;
+
 public class JMeldLauncher implements Runnable {
+
+	public static int DEFAULT_CLOSE_OPTION = JFrame.HIDE_ON_CLOSE;
 
 	private List<String> fileNameList;
 	private static JMeldPanel jmeldPanel;
@@ -45,6 +49,8 @@ public class JMeldLauncher implements Runnable {
 					if (!contentPanel.checkSave())
 						return;
 				}
+
+				FileWorker.cleanupDirs(CodeComparePlugin.defaultTempFolder);
 			}
 		};
 	}
@@ -63,9 +69,10 @@ public class JMeldLauncher implements Runnable {
 		new WindowPreference(frame.getTitle(), frame);
 		frame.addWindowListener(getWindowListener());
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		frame.setDefaultCloseOperation(DEFAULT_CLOSE_OPTION);
 		frame.toFront();
 		jmeldPanel.openComparison(fileNameList);
+
 	}
 
 	public static void main(String args[]) {

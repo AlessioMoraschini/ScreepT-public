@@ -40,9 +40,11 @@ various\common\light\utility\manipulation\ArrayHelper.class
 various\common\light\network\http\HttpHelper$1.class
 various\common\light\gui\dialogs\color\om\SelectionColorChangedAbstract.class
 various\common\light\network\ftp\FtpDumper.class
+various\common\light\files\om\FilesRetriever.class
 various\common\light\network\proxy\ProxySettingsGUI$1$1.class
 various\common\light\easteregg\games\snake\Snake$1.class
 various\common\light\gui\GuiUtils$10.class
+various\common\light\utility\threads\ThreadUtil.class
 various\common\light\network\http\HttpHelper.class
 various\common\light\cache\arch\AbstractResultCache.class
 various\common\light\gui\dnd\FileDrop$1.class
@@ -88,6 +90,7 @@ various\common\light\gui\MenuSetter.class
 various\common\light\gui\selection\JFontChooserExtended$ListSearchTextFieldDocumentHandler$ListSelector.class
 various\common\light\gui\GuiUtils$1.class
 various\common\light\network\ftp\FtpDumperThreaded.class
+various\common\light\files\search\FileNameSearchAdvancedThreadedWIP.class
 various\common\light\utility\properties\CommentedProperties.class
 various\common\light\gui\GUIStyelSettings$ComboPainter.class
 various\common\light\gui\dialogs\msg\JOptionHelper$Choice.class

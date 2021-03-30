@@ -24,40 +24,47 @@ import various.common.light.utility.log.SafeLogger;
 
 public class ParentFrame extends JFrame{
 	private static final long serialVersionUID = 7079644907872152737L;
-	
+
 	public static final char DEFAULT_PSW_CHAR = '\u25CF';
-	
+
 	public static SafeLogger logger = new SafeLogger(ParentFrame.class);
-	
+
 	public AtomicBoolean isActive = new AtomicBoolean(true);
 
 	public JOptionHelperExtended dialogHelper;
 	public GenericFileChooserDialog fileChooser;
-	
+
 	public JFrame parentFrame;
 	public JFrame thisFrame;
 	public INItializer configuration;
-	
+
 	public ParentFrame() {
 		this(null, null);
 	}
 
 	public ParentFrame(JFrame parentFrame, INItializer configuration) {
+		this(parentFrame, configuration, true);
+	}
+
+	public ParentFrame(JFrame parentFrame, INItializer configuration, boolean addEscAutoClose) {
 		isActive.set(true);
-		
+
 		thisFrame = this;
-		
+
 		this.configuration = configuration == null ? new INItializer() : configuration;
 		this.parentFrame = parentFrame;
-		
+
 		this.dialogHelper = new JOptionHelperExtended(this.parentFrame);
 		this.fileChooser = new GenericFileChooserDialog(this.configuration);
-		
+
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
+
 		setCloseAction();
+
+//		if(addEscAutoClose)
+//			GuiUtils.addEscAdapter(this);
 	}
-	
+
 	public void resizeToDefault(boolean minimum, boolean preferred, boolean maximum) {
 		if(minimum) {
 			setMinimumSize(getDefaultDimension());
@@ -69,28 +76,28 @@ public class ParentFrame extends JFrame{
 			setMaximumSize(getMaximumDimension());
 		}
 	}
-	
+
 	protected void setCloseAction() {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-	        	logger.debug("Closing Frame: " + getClass().getName());	        	
+
+	        	logger.debug("Closing Frame: " + getClass().getName());
 	        	isActive.set(false);
-	        	
+
 	        	dispose();
 		    }
 		});
 	}
-	
+
 	public Dimension getDefaultDimension() {
 		return GuiUtils.getScreenSizePerc(80, this);
 	}
-	
+
 	public Dimension getMinimumDimension() {
 		return getDefaultDimension();
 	}
-	
+
 	public Dimension getMaximumDimension() {
 		return getDefaultDimension();
 	}

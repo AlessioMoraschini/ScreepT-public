@@ -36,6 +36,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -210,27 +211,6 @@ public class GuiUtils {
 			public void mouseDragged(MouseEvent e) {
 			}
 		};
-	}
-
-	public static void addEscDisposeListener(JFrame target) {
-
-		if (target == null) {
-			return;
-		}
-
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
-
-			@Override
-			public boolean dispatchKeyEvent(KeyEvent e) {
-				if (target != null) {
-					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-						target.dispatchEvent(new WindowEvent(target, WindowEvent.WINDOW_CLOSING));
-						KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
-					}
-				}
-				return false;
-			}
-		});
 	}
 
 	public static void launchThreadSafeSwing(Runnable threadAction) {
@@ -1057,6 +1037,30 @@ public class GuiUtils {
 				return e.getKeyCode() == keyCode;
 			}
 		};
+	}
+
+	public static void setAllContentEnabled(boolean enabled, Window window, Component... exceptions) {
+		List<Component> excepts = Arrays.asList(exceptions);
+		for( Component comp : window.getComponents()){
+			if(!excepts.contains(comp))
+				comp.setEnabled(enabled);
+		}
+	}
+
+	public static void addEscAdapter(Window window) {
+
+		if (window == null) {
+			return;
+		}
+
+		window.addKeyListener( new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE && !e.isControlDown() && !e.isAltDown() && !e.isShiftDown())
+					logger.debug("ESCAPE pressed.. closing window!");
+					window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+			}
+		});
 	}
 
 	/**

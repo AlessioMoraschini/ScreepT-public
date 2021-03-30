@@ -35,17 +35,17 @@ import various.common.light.utility.string.StringWorker;
 
 public abstract class INItializerParent implements INItializerInterface{
 
-	protected static SafeLogger logger = new SafeLogger(INItializerParent.class); 
+	protected static SafeLogger logger = new SafeLogger(INItializerParent.class);
 	public static final String SEPARATOR_DEFAULT = ";";
 	public static final String SEPARATOR_INNER_DEFAULT = "::";
 	public static final String SEPARATOR_INNER_DEFAULT_LONG = ":;:;";
-	
+
 	public static final String USER_PERSONAL_DIR = System.getProperty("user.home")+"/";
-	
+
 	// FIELDS
 	protected Ini iniReadFile;
 	protected Wini iniFile;
-	
+
 	public INItializerParent(String iniPath) {
 		try {
 			iniReadFile = new Wini(new File(iniPath));
@@ -54,7 +54,7 @@ public abstract class INItializerParent implements INItializerInterface{
 			logger.error("INItializer() -> Exception happened initializing configuration!", e);
 		}
 	}
-	
+
 	public INItializerParent(Wini configFile, String defaultIniPath) {
 		// initialize both read and write ini variable, to keep them synchronyzed
 		if(configFile!=null) {
@@ -67,12 +67,14 @@ public abstract class INItializerParent implements INItializerInterface{
 			logger.error("INItializer(Wini configFile) -> Exception happened initializing configuration!", e);
 		}
 	}
-	
+
+	@Override
 	public abstract void readConfigIniFile();
-	
+
+	@Override
 	public abstract void writeCurrentConfigIniFile();
-	
-	
+
+
 	/**
 	 * Use this to store all pending changes to file (options must have been pre-written with <b>writeXxxOptions()</b>)
 	 */
@@ -84,7 +86,7 @@ public abstract class INItializerParent implements INItializerInterface{
 			logger.error("Exception happened!", e);
 		}
 	}
-	
+
 	/**
 	 * Read a value from a given INI file in String format : nullSafe
 	 * @param iniToReadPath
@@ -100,10 +102,10 @@ public abstract class INItializerParent implements INItializerInterface{
 			Ini tempIniFile = new Wini(new File(iniToReadPath));
 			valueRead = StringWorker.trimToEmpty(tempIniFile.get(OPT_SECTION, OPT_VAR));
 		}
-		
+
 		return valueRead;
 	}
-	
+
 	/**
 	 * Read a value from loaded INI file in String format : nullSafe
 	 * @param OPT_SECTION
@@ -115,7 +117,7 @@ public abstract class INItializerParent implements INItializerInterface{
 	public String readFromFile(String OPT_SECTION, String OPT_VAR) throws InvalidFileFormatException, IOException {
 		return readFromFile(iniReadFile.getFile().getCanonicalPath(), OPT_SECTION, OPT_VAR);
 	}
-	
+
 	/**
 	 * Writes a value inside a given file, returning true if value is effectively written
 	 * @param iniToReadPath
@@ -131,7 +133,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		if (iniToReadPath != null && new File(iniToReadPath).exists()) {
 			Wini iniTempFile = new Wini(new File(iniToReadPath));
 			iniTempFile.load();
-			
+
 			iniTempFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
 			iniTempFile.store();
 			String result = readFromFile(iniToReadPath, OPT_SECTION, OPT_VAR);
@@ -139,17 +141,17 @@ public abstract class INItializerParent implements INItializerInterface{
 				valueWritten = true;
 			}
 		}
-		
+
 		return valueWritten;
 	}
-	
+
 	/**
 	 * This method is used to write on file single opt values in a precise section
 	 * @return true if no exception is throwed
 	 */
 	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, String OPT_VALUE ) {
 		boolean OK = false;
-		
+
 		synchronized (iniFile) {
 			try {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
@@ -163,14 +165,14 @@ public abstract class INItializerParent implements INItializerInterface{
 		}
 		return OK;
 	}
-	
+
 	/**
 	 * This method is used to write on file single opt values in a precise section
 	 * @return true if no exception is throwed
 	 */
 	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, float OPT_VALUE ) {
 		boolean OK = false;
-		
+
 		synchronized (iniFile) {
 			try {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
@@ -184,14 +186,14 @@ public abstract class INItializerParent implements INItializerInterface{
 		}
 		return OK;
 	}
-	
+
 	/**
 	 * This method is used to write on file single opt values in a precise section (INT value)
 	 * @return true if no exception is throwed
 	 */
 	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, int OPT_VALUE ) {
 		boolean OK = false;
-		
+
 		synchronized (iniFile) {
 			try {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
@@ -205,14 +207,14 @@ public abstract class INItializerParent implements INItializerInterface{
 		}
 		return OK;
 	}
-	
+
 	/**
 	 * This method is used to write on file single opt values in a precise section (INT value)
 	 * @return true if no exception is throwed
 	 */
 	public synchronized boolean writeSingleValue(String OPT_SECTION, String OPT_VAR, boolean OPT_VALUE ) {
 		boolean OK = false;
-		
+
 		synchronized (iniFile) {
 			try {
 				iniFile.put(OPT_SECTION, OPT_VAR, OPT_VALUE);
@@ -226,21 +228,21 @@ public abstract class INItializerParent implements INItializerInterface{
 		}
 		return OK;
 	}
-	
+
 	public String getSafeStringConf(String section, String variable, String defIfBlank) {
 		String result = iniReadFile.get(section, variable);
 		result = (StringWorker.isEmpty(result))? defIfBlank : result;
-		
+
 		return result;
 	}
 
 	public File getSafeFileConf(String section, String variable, String defPathIfBlank) {
 		File result = new File(getSafeStringConf(section, variable, defPathIfBlank));
 		result = (result == null || !result.exists() || !result.isFile()) ? new File(defPathIfBlank) : result;
-		
+
 		return result;
 	}
-	
+
 	public boolean getBooleanFromString(String value, boolean defIfBlank) {
 		boolean result = false;
 		if(value == null || "".equals(value)) {
@@ -248,10 +250,10 @@ public abstract class INItializerParent implements INItializerInterface{
 		}else {
 			result = Boolean.valueOf(value);
 		}
-		
+
 		return result;
 	}
-	
+
 	public static int getIntVarFromString(String val, int defaultVal) {
 		try {
 			return Integer.valueOf(val);
@@ -278,28 +280,31 @@ public abstract class INItializerParent implements INItializerInterface{
 			return defaultVal;
 		}
 	}
-	
+
 	public static File getFileFromString(String val, File defaultVal) {
 		try {
 			if(val != null)
 				return new File(val);
-			else 
+			else
 				return defaultVal;
-			
+
 		}catch(Exception e){
 			logger.warn("Catched exception, default value [" + defaultVal + "] will be used", e);
 			return defaultVal;
 		}
 	}
-	
+
 	public static Vector<FileNamed> getFileNamedListFromString(String val, String separator, Vector<FileNamed> defaultList) {
+		val = StringWorker.trimToEmpty(val);
+		separator = StringWorker.isEmptyNoTrim(separator) ? ";" : separator;
+
 		Vector<FileNamed> list = new Vector<>();
 		try {
 			String[] parts = val.split(separator);
 			for(int i = 0; i < parts.length; i++) {
 				list.add(new FileNamed(parts[i]));
 			}
-			
+
 		} catch (Exception e1) {
 			logger.warn("Catched exception, default value [" + defaultList + "] will be used", e1);
 			return defaultList;
@@ -314,12 +319,12 @@ public abstract class INItializerParent implements INItializerInterface{
 			for(int i = 0; i < parts.length; i++) {
 				list.add(parts[i]);
 			}
-			
+
 		} catch (Exception e1) {
 			logger.warn("Catched exception, default value [" + defaultList + "] will be used", e1);
 			return defaultList;
 		}
-		
+
 		return list;
 	}
 
@@ -334,12 +339,12 @@ public abstract class INItializerParent implements INItializerInterface{
 		}
 		return lastFilters;
 	}
-	
-	
+
+
 
 	public static <T> Map<String, T> getMapFromKeyList(List<String> keys, List<T> values, T defaultNullVal) {
 		Map<String, T> map = new HashMap<>();
-		
+
 		int i = 0;
 		for(String key : keys) {
 			T value = null;
@@ -348,14 +353,14 @@ public abstract class INItializerParent implements INItializerInterface{
 			} catch(Exception e) {
 				value = defaultNullVal;
 			}
-			
+
 			map.put(key, value);
 			i++;
 		}
-		
+
 		return map;
 	}
-	
+
 	public static Map<String, String> getStringMapFromString(String val, String separator, String innerSeparator, Map<String, String> defaultMap) {
 		Map<String, String> map = new HashMap<>();
 		try {
@@ -363,23 +368,23 @@ public abstract class INItializerParent implements INItializerInterface{
 			while(tokenizerOpenedFiles.hasMoreTokens()) {
 				String token = tokenizerOpenedFiles.nextToken();
 				String[] splittedKeyVal = StringWorker.isEmpty(token) ? new String[0] : token.split(StringWorker.trimToEmpty(innerSeparator));
-				
+
 				if(splittedKeyVal.length == 1) {
 					map.put(StringWorker.trimToEmpty(splittedKeyVal[0]), "");
-				
+
 				} else if(splittedKeyVal.length == 2) {
 					map.put(StringWorker.trimToEmpty(splittedKeyVal[0]), StringWorker.trimToEmpty(splittedKeyVal[1]));
 				}
 			}
-			
+
 		} catch (Exception e1) {
 			logger.error(e1);
 			return map;
 		}
-		
+
 		return map;
 	}
-	
+
 	public static ArrayList<String> getStringListFromString(String val, String separator, ArrayList<String> defaultList) {
 		ArrayList<String> list = new ArrayList<>();
 		try {
@@ -387,15 +392,15 @@ public abstract class INItializerParent implements INItializerInterface{
 			while(tokenizerOpenedFiles.hasMoreTokens()) {
 				list.add(tokenizerOpenedFiles.nextToken());
 			}
-			
+
 		} catch (Exception e1) {
 			logger.error(e1);
 			return defaultList;
 		}
-		
+
 		return list;
 	}
-	
+
 	public String listToString(ArrayList<String> loadedFiles) {
 		String openedFiles = "";
 		// concateno gli elementi della lista e, tranne l'ultimo, aggiungo una virgola
@@ -407,17 +412,17 @@ public abstract class INItializerParent implements INItializerInterface{
 		}
 		return openedFiles;
 	}
-	
+
 	public static String mapToString(Map<String, String> map) {
 		String stringMap = "";
-		
+
 		if(map == null || map.isEmpty())
 			return stringMap;
-		
+
 		String[] keys = map.keySet().toArray(new String[map.size()]);
 
 		for(int i = 0; i < keys.length; i++) {
-			
+
 			stringMap += keys[i] + SEPARATOR_INNER_DEFAULT + map.get(keys[i]);
 			if(i < keys.length - 1)
 				stringMap += SEPARATOR_DEFAULT;
@@ -425,7 +430,7 @@ public abstract class INItializerParent implements INItializerInterface{
 
 		return stringMap;
 	}
-	
+
 	@Override
 	public String toStringa() {
 		List<Field> list = ReflectionUtils.retrieveAllFields(getClass());
@@ -433,10 +438,10 @@ public abstract class INItializerParent implements INItializerInterface{
 		for (Field i : list) {
 			builder.append(i.toGenericString());
 		}
-		
+
 		return builder.toString();
 	};
-	
+
 	public Wini getIniFile() {
 		return iniFile;
 	}
@@ -452,23 +457,23 @@ public abstract class INItializerParent implements INItializerInterface{
 	public void setIniFile(Wini iniFile) {
 		this.iniFile = iniFile;
 	}
-	
+
 	// Utility methods //
-	
+
 	 /**
      * parse font from a representing string
      */
     public static Font getFontFromString(String stringFont) {
     	return ConversionUtils.getFontFromString(stringFont);
     }
-    
+
     /**
      * parse font from a representing string
      */
     public static Font getFontFromString(String stringFont, Font defaultFont) {
     	return ConversionUtils.getFontFromString(stringFont, defaultFont);
     }
-    
+
     /**
      * return font in string format
      * @return
@@ -476,14 +481,14 @@ public abstract class INItializerParent implements INItializerInterface{
     public static String getFontString(Font srcFont) {
     	return ConversionUtils.getFontString(srcFont);
     }
-    
+
     /**
      * create color from String RGB separed with "-" representation (red-green-blue)
      */
     public static Color getRgbColorFromString(String color) {
     	return ConversionUtils.getColorFromRgbString(color);
     }
-    
+
     /**
      * Convert color to string RGB
      */
