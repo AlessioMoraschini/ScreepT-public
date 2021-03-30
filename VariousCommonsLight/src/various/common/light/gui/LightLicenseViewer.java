@@ -155,11 +155,11 @@ public class LightLicenseViewer extends JDialog {
 		setJMenuBar(menuBar);
 
 		updateMenuBar();
+		setSubMenusVisible(submenuVisible);
 
 		addHandlers();
 
 		setVisible(true);
-		setSubMenusVisible(submenuVisible);
 	}
 
 	public void addHandlers() {
@@ -199,10 +199,29 @@ public class LightLicenseViewer extends JDialog {
 
 		// TODO fixme
 
-		mntmScreepT.setVisible((indexes.length > 0 ? indexes[0] : true));
-		mnLibraries.setVisible((indexes.length > 1 ? indexes[1] : true));
-		mnLibrariesDetailPlugins.setVisible((indexes.length > 2 ? indexes[2] : true));
-		mntmOpenWithBrowser.setVisible((indexes.length > 3 ? indexes[3] : true));
+		checkIndex(mntmScreepT, 0, indexes);
+		checkIndex(mnLibraries, 1, indexes);
+		checkIndex(mnLibrariesDetail, 2, indexes);
+		checkIndex(mntmOpenWithBrowser, 3, indexes);
+	}
+
+	private boolean isContainedInMenu(JMenuItem item) {
+		for(Component comp : menuBar.getComponents()) {
+			if(comp == item) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private void checkIndex(JMenuItem item, int i, boolean... indexes) {
+		boolean visible = (indexes.length > i ? indexes[i] : true);
+		if (visible && !isContainedInMenu(item)) {
+			menuBar.add(item);
+		} else if(!visible && isContainedInMenu(item)) {
+			menuBar.remove(item);
+		}
 	}
 
 	public void updateMenuBar() {
@@ -267,7 +286,7 @@ public class LightLicenseViewer extends JDialog {
 		JMenuItem itemPadding = new JMenuItem();
 		itemPadding.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		itemPadding.setMaximumSize(new Dimension(5000, 20));
-		itemPadding.setPreferredSize(new Dimension(600, 20));
+		itemPadding.setPreferredSize(new Dimension(700, 20));
 		itemPadding.setMinimumSize(new Dimension(600, 20));
 		itemPadding.setEnabled(false);
 		menuBar.add(itemPadding);
@@ -343,8 +362,8 @@ public class LightLicenseViewer extends JDialog {
 		dispose();
 	}
 
-	public static LightLicenseViewer getInstance(File sourceLicenseFile, String header, String title) {
-		return instance == null ? new LightLicenseViewer(sourceLicenseFile, header, title) : instance;
+	public static LightLicenseViewer getInstance(File sourceLicenseFile, String header, String title, boolean... visibleFlags) {
+		return instance == null ? new LightLicenseViewer(sourceLicenseFile, header, title, visibleFlags) : instance;
 	}
 
 	public static File getMAIN_LIBRARIES_FOLDER() {

@@ -11,7 +11,8 @@ public class LicenseAgreementTest {
 		LightLicenseViewer.mandatoryChoice = false;
 		LightLicenseViewer.setMAIN_LIBRARIES_FOLDER(new File("./TEST_FILES/licenses/Libraries_licenses"));
 		LightLicenseViewer.setMAIN_LIBRARIES_FOLDER_DETAIL(new File("./TEST_FILES/licenses/Libraries_licenses/detailedReport"));
-		LightLicenseViewer.getInstance(new File("TEST_FILES/licenses/License_ScreepT.html"), "Here is the EULA (End User License Agreement)", "ScreepT - License (EULA)");
+		LightLicenseViewer.getInstance(new File("TEST_FILES/licenses/License_ScreepT.html"), "Here is the EULA (End User License Agreement)", "ScreepT - License (EULA)",
+				new boolean[] {true, true, true});
 
 	}
 }

@@ -54,7 +54,7 @@ public class StringWorker {
 
 		public static EOL getOsBasedEOL() {
 			String osNameShort = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-			if(osNameShort != null && osNameShort.indexOf("win") > 0) {
+			if(osNameShort != null && osNameShort.indexOf("win") >= 0) {
 				return EOL.CRLF;
 			} else {
 				return EOL.LF;

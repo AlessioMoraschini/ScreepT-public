@@ -192,6 +192,7 @@ various\common\light\easteregg\EasterEgg.class
 various\common\light\gui\GuiUtils$7.class
 various\common\light\network\proxy\ProxySettingsGUI.class
 various\common\light\gui\dialogs\font\om\FontMetricsWrapper.class
+various\common\light\easteregg\games\snake\Snake$2.class
 various\common\light\gui\GuiUtils$8.class
 various\common\light\gui\selection\color\om\ColorSelectionElement.class
 various\common\light\gui\selection\JFontChooserExtended$1.class

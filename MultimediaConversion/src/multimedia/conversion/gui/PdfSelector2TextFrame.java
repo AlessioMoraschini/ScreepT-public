@@ -20,7 +20,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -45,7 +44,6 @@ import gui.commons.splitpanel.SplitPaneUtils;
 import multimedia.conversion.ImageToTextExtractor;
 import net.miginfocom.swing.MigLayout;
 import net.sourceforge.tess4j.TesseractException;
-import plugin.external.arch.IPlugin;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import resources.ImagesPathConfigurator;
@@ -83,6 +81,11 @@ public class PdfSelector2TextFrame extends JFrame {
 
 	JOptionHelperExtended dialogHelper;
 	GenericFileChooserDialog fileDialogHelper;
+
+	public PdfSelector2TextFrame(File file, JFrame parentRootFrame, JTextArea outputTxtArea, String title) {
+		this(parentRootFrame, outputTxtArea, title);
+		loadFile(file);
+	}
 
 	public PdfSelector2TextFrame(JFrame parentRootFrame, JTextArea outputTxtArea, String title) {
 		getContentPane().setBackground(Color.LIGHT_GRAY);
@@ -166,7 +169,7 @@ public class PdfSelector2TextFrame extends JFrame {
 		logger.debug(this.getClass().getName() + "### started");
 	}
 
-	private void loadFile(File selected) {
+	public void loadFile(File selected) {
 		if(selected != null && selected.exists()) {
 			final Cursor backup = imageContainerPanel.getCursor();
 			imageContainerPanel.setCursor(GuiUtilsExtended.CURSOR_WAIT);
@@ -288,47 +291,5 @@ public class PdfSelector2TextFrame extends JFrame {
 		controllerPdf.openDocument(sourceFile.getAbsolutePath());
 	}
 
-	public static class PDFReaderPlugin implements IPlugin {
-		@Override
-		public String getPluginName() {
-			return "Pdf Viewer";
-		}
-
-		@Override
-		public String getPluginZipName() {
-			return "Tesseract.zip";
-		}
-
-		@Override
-		public void initialize() {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public boolean openFrame(List<File> files) {
-			PdfSelector2TextFrame pdfParserBox = new PdfSelector2TextFrame(null, null,
-					GeneralConfig.APPLICATION_NAME + " - Pdf2Text");
-			pdfParserBox.setVisible(true);
-			if(files != null && !files.isEmpty())
-				pdfParserBox.loadFile(files.get(0));
-			return true;
-		}
-
-		@Override
-		public boolean launchMain(String[] args) {
-			PdfSelector2TextFrame pdfParserBox = new PdfSelector2TextFrame(null, null,
-					GeneralConfig.APPLICATION_NAME + " - Pdf2Text");
-			pdfParserBox.setVisible(true);
-			if(args != null && args.length > 0)
-				pdfParserBox.loadFile(new File(args[0]));
-
-			return true;
-		}
-
-		@Override
-		public void kill() {
-			// TODO Auto-generated method stub
-		}
-	}
 
 }

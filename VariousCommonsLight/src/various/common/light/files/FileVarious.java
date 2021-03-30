@@ -504,6 +504,23 @@ public class FileVarious {
 		return filePaths;
 	}
 
+	public static List<File> removeNullsAndUnexisting(List<File> files) {
+		ArrayList<File> okList = new ArrayList<>();
+		if(files != null) {
+			for(int i = 0; i < files.size(); i++) {
+				File file = files.get(i);
+				if(file != null && file.exists())
+					okList.add(FileVarious.getCanonicalFileSafe(file));
+			}
+		}
+
+		return okList;
+	}
+
+	public static String[] removeNullsAndUnexistingArray(List<File> files) {
+		return removeNullsAndUnexisting(files).toArray(new String[0]);
+	}
+
 	public static List<String> filesToPathList(List<File> files){
 		List<String> filePaths = new ArrayList<>();
 		if(files != null) {

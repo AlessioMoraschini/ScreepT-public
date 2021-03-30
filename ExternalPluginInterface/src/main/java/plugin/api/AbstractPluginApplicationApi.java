@@ -18,6 +18,7 @@ import plugin.external.arch.IPlugin;
 import plugin.external.arch.IPluginCrypter;
 import plugin.external.arch.IPluginTextEditor;
 import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.manipulation.ArrayHelper;
 
 /**
  *
@@ -84,7 +85,7 @@ public abstract class AbstractPluginApplicationApi {
 			}
 		}
 
-		return pluginsFiltered;
+		return ArrayHelper.sortSet(pluginsFiltered);
 	}
 
 	private static Reflections initReflections(String packagePath) {

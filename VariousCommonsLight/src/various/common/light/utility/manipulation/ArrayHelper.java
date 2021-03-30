@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import various.common.light.utility.string.StringWorker;
 
@@ -26,6 +28,13 @@ public class ArrayHelper {
 		}
 
 		return sourceList;
+	}
+
+	public static <T> Set<T> sortSet(Set<T> set){
+		TreeSet<T> myTreeSet = new TreeSet<>();
+		myTreeSet.addAll(set);
+
+		return myTreeSet;
 	}
 
 	@SafeVarargs

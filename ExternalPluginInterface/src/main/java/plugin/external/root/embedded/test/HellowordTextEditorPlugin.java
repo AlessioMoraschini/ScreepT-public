@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import plugin.external.arch.IPluginTextEditor;
-import various.common.light.om.SelectionDtoFull;
 
 public class HellowordTextEditorPlugin implements IPluginTextEditor {
 
@@ -24,10 +23,8 @@ public class HellowordTextEditorPlugin implements IPluginTextEditor {
 	@Override
 	public boolean launchMain(String[] args) {
 		System.out.println("LAUNCH MAIN!");
-		return IPluginTextEditor.super.launchMain(args);
+		return false;
 	}
-
-
 
 	@Override
 	public boolean openFrame(List<File> files) {
@@ -45,49 +42,21 @@ public class HellowordTextEditorPlugin implements IPluginTextEditor {
 		System.out.println("INITIALIZED!");
 	}
 
-
-
 	@Override
 	public ImageIcon getMenuIcon() {
 		System.out.println("MENU ICON!");
 		return null;
 	}
 
-
-
-	@Override
-	public List<String> getAvailableFunctions() {
-		System.out.println("getAvailableFunctions!");
-		return null;
-	}
-
-
-
-	@Override
-	public SelectionDtoFull triggerFunction(String function, SelectionDtoFull currentTextArea) {
-		System.out.println("triggerFunction!");
-		return null;
-	}
-
-
-
-	@Override
-	public boolean loadFiles(String function, List<File> files) {
-		System.out.println("loadFiles!");
-		return false;
-	}
-
-
-
-	@Override
-	public boolean loadFilesFromPath(String function, List<String> filePaths) {
-		System.out.println("loadFilesFromPath!");
-		return false;
-	}
-
 	@Override
 	public String getPluginName() {
 		return "Test Plugin - HellowordTextEditor";
+	}
+
+	@Override
+	public String getID() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

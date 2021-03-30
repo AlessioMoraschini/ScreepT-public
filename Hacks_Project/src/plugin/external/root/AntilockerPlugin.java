@@ -12,18 +12,32 @@
 package plugin.external.root;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import antilocker.AntilockerGui;
 import plugin.external.arch.IPlugin;
+import plugin.external.arch.PluginAbstractParent;
 import various.common.light.files.FileVarious;
 
-public class AntilockerPlugin implements IPlugin {
+public class AntilockerPlugin extends PluginAbstractParent implements IPlugin {
+
+	public static final String[] availableFunctionsStandAlone = {"Launch Antilocker"};
 
 	public static AntilockerGui gui;
+
+	public AntilockerPlugin() {
+		super();
+	}
+
+	@Override
+	public boolean isTestPlugin() {
+		return false;
+	}
 
 	@Override
 	public String getPluginZipName() {
@@ -38,10 +52,6 @@ public class AntilockerPlugin implements IPlugin {
 	@Override
 	public String getTooltip() {
 		return "A tool to move the mouse and click ctrl key each N seconds. Useful to avoid get kicked out from softwares if idle ;)";
-	}
-
-	@Override
-	public void initialize() {
 	}
 
 	@Override
@@ -72,6 +82,14 @@ public class AntilockerPlugin implements IPlugin {
 
 			gui.dispose();
 		}
+	}
+
+	@Override
+	public Map<String, FunctionExecutor> getMainStandalonExecutorMap(){
+		Map<String, FunctionExecutor> mainStandalonExecutorMap = new HashMap<>();
+		mainStandalonExecutorMap.put(availableFunctionsStandAlone[0], new FunctionExecutor(this));
+
+		return mainStandalonExecutorMap;
 	}
 
 }

@@ -11,6 +11,8 @@
  */
 package various.common.light.om;
 
+import java.io.File;
+
 import javax.swing.JTextArea;
 
 import various.common.light.gui.GuiUtils;
@@ -18,6 +20,7 @@ import various.common.light.utility.string.StringWorker;
 
 public class SelectionDtoFull {
 
+	public File file;
 	public String prefix = "";
 	public String text = "";
 	public String selection = "";
@@ -27,8 +30,13 @@ public class SelectionDtoFull {
 	public int length = 0;
 	public boolean selected;
 	public JTextArea textArea;
-	
+
 	public SelectionDtoFull(JTextArea textArea) {
+		this(textArea, null);
+	}
+
+	public SelectionDtoFull(JTextArea textArea, File file) {
+		this.file = file != null ? file : new File("./");
 		textArea.requestFocus();
 		this.textArea = textArea;
 		first = textArea.getSelectionStart();
@@ -44,7 +52,7 @@ public class SelectionDtoFull {
 			selected = true;
 		}
 	}
-	
+
 	public void replaceSelection(String replacement, boolean makeNewSelectedIfNothingSelected, boolean ifNotSelThenAppend) {
 		if(replacement != null) {
 			selection = replacement;
@@ -61,7 +69,7 @@ public class SelectionDtoFull {
 			}
 		}
 	}
-	
+
 	public void replaceSelectionOrInsAtGivenPosition(String replacement, boolean makeNewSelectedIfNothingSelected, int lineToInsertAt) throws Exception {
 		if(replacement != null) {
 			selection = replacement;
@@ -75,7 +83,7 @@ public class SelectionDtoFull {
 			}
 		}
 	}
-	
+
 	public void appendText(String textToAppend, boolean makeSelected) {
 		if(textToAppend != null) {
 			selection = textToAppend;
@@ -89,11 +97,11 @@ public class SelectionDtoFull {
 			length = text.length();
 		}
 	}
-	
+
 	public String getSelectedOrAllText() {
 		return selected ? selection : getCompleteString();
 	}
-	
+
 	public void insertText(String textToInsert, int caretPos) {
 		if(!StringWorker.isEmptyNoTrim(textToInsert)) {
 			selection = textToInsert;
@@ -105,7 +113,7 @@ public class SelectionDtoFull {
 			length = text.length();
 		}
 	}
-	
+
 	public void replaceAllText(String textReplacement, boolean makeSelected) {
 		textReplacement = StringWorker.trimToEmpty(textReplacement);
 		end = "";
@@ -121,13 +129,13 @@ public class SelectionDtoFull {
 			first = textReplacement.length();
 			last = textReplacement.length();
 		}
-		
+
 		text = getCompleteString();
 		length = text.length();
-		
+
 		applySelectionDTO(textArea);
 	}
-	
+
 	public String getCompleteString() {
 		return prefix.concat(selection).concat(end);
 	}
@@ -139,7 +147,7 @@ public class SelectionDtoFull {
 	public void applySelectionDTO(boolean setText, final JTextArea textArea) {
 		if(setText)
 			textArea.setText(text);
-		
+
 		GuiUtils.launchThreadSafeSwing(()->{
 			try {
 				Thread.sleep(50);

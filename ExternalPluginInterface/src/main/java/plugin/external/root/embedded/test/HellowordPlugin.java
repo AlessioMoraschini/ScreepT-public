@@ -4,8 +4,9 @@ import java.io.File;
 import java.util.List;
 
 import plugin.external.arch.IPlugin;
+import plugin.external.arch.PluginAbstractParent;
 
-public class HellowordPlugin implements IPlugin {
+public class HellowordPlugin extends PluginAbstractParent implements IPlugin {
 
 	@Override
 	public boolean isTestPlugin() {
@@ -21,7 +22,7 @@ public class HellowordPlugin implements IPlugin {
 	@Override
 	public boolean launchMain(String[] args) {
 		System.out.println("LAUNCH MAIN!");
-		return IPlugin.super.launchMain(args);
+		return false;
 	}
 
 
