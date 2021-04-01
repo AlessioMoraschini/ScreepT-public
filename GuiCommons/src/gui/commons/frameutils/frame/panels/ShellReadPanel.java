@@ -13,6 +13,7 @@ import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.textarea.om.TextAreaOutputStream;
 import net.miginfocom.swing.MigLayout;
+import various.common.light.gui.ScreepTGuiFactory;
 
 /**
  * This class implements a console that prints out every output from System.out/System.err streams
@@ -45,7 +46,7 @@ public class ShellReadPanel extends ParentPanel implements IParentPanel {
 		
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[50px,grow]", "[50px,grow]"));
 		
-		currentScrollPane = getScrollPane(true, true);
+		currentScrollPane = ScreepTGuiFactory.getScrollPane(true, true);
 		currentScrollPane.setPreferredSize(GuiUtilsExtended.getScreenSize());
 		add(currentScrollPane,  "cell 0 0,grow");
 		

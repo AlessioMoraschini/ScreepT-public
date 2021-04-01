@@ -48,6 +48,7 @@ import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.RXTextUtilities;
+import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.om.LimitedConcurrentList;
 import various.common.light.utility.string.StringWorker;
 import various.common.light.utility.string.StringWorker.EOL;
@@ -119,7 +120,7 @@ public class ShellReadWritePanel extends ParentPanel {
 
 		SwingUtilities.invokeLater(() -> {
 			splitPane.setDividerLocation(defaultDividerLocationRatio);
-			commandTextArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+			commandTextArea.setFont(ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		});
 
 		shortcutsListener = new ShellShortcutsListener(this);
@@ -175,23 +176,23 @@ public class ShellReadWritePanel extends ParentPanel {
 		loadNewSavePanel.setOpaque(true);
 		add(loadNewSavePanel, "cell 1 0 1 1,grow");
 
-		clcButton = getButton("", null, null, IconsPathConfigurator.ICON_TEXT_CLEAR, true);
+		clcButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_TEXT_CLEAR, true);
 		add(clcButton, "cell 2 0 1 1,grow");
 
-		checkBoxAutoscroll = getCheckBox("Autoscroll", "Enable/disable output text area auto-scroll feature", false);
+		checkBoxAutoscroll = ScreepTGuiFactory.getCheckBox("Autoscroll", "Enable/disable output text area auto-scroll feature", false);
 		add(checkBoxAutoscroll, "cell 3 0 1 1,grow");
 
-		checkBoxConcatenation = getCheckBox("Concatenate Lines", "When executing, all executed lines will be concatenated with chosen mode", false);
+		checkBoxConcatenation = ScreepTGuiFactory.getCheckBox("Concatenate Lines", "When executing, all executed lines will be concatenated with chosen mode", false);
 		add(checkBoxConcatenation, "cell 4 0 1 1,alignx center, aligny center");
 
-		labelConcatenationMode = getLabel("Lines concatenation mode:", null, null, null, false);
+		labelConcatenationMode = ScreepTGuiFactory.getLabel("Lines concatenation mode:", null, null, null, false);
 		add(labelConcatenationMode, "cell 5 0 1 1,alignx right, aligny center");
 
 		comboConcatenationMode = new JComboBox<String>(getComboModes());
 		comboConcatenationMode.setCursor(GuiUtils.CURSOR_HAND);
 		add(comboConcatenationMode, "cell 6 0 1 1, alignx right");
 
-		lblCurrentFile = getLabel("[No file loaded]", null, null, null, true);
+		lblCurrentFile = ScreepTGuiFactory.getLabel("[No file loaded]", null, null, null, true);
 		lblCurrentFile.setForeground(Color.DARK_GRAY);
 		add(lblCurrentFile, "cell 8 0 1 1, alignx right");
 
@@ -201,15 +202,15 @@ public class ShellReadWritePanel extends ParentPanel {
 		}
 
 		// TOGGLE JTEXT FIELD for interactive input after start
-		lblInteractiveInputDescription = getLabel("Live cmd: ",	null, Color.DARK_GRAY, IconsPathConfigurator.ICON_GEN_INFO, false);
+		lblInteractiveInputDescription = ScreepTGuiFactory.getLabel("Live cmd: ",	null, Color.DARK_GRAY, IconsPathConfigurator.ICON_GEN_INFO, false);
 		lblInteractiveInputDescription.setToolTipText("Enter a command and launch on active process. (to launch command, press enter or click play button)");
 		add(lblInteractiveInputDescription, "cell 0 1 1 1,grow");
 
-		interactiveInputField = getTextField(
+		interactiveInputField = ScreepTGuiFactory.getTextField(
 				Color.WHITE,
 				Color.BLACK,
 				Color.RED,
-				ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), true);
+				ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), true);
 		add(interactiveInputField, "cell 1 1 9 1,grow");
 
 
@@ -221,20 +222,20 @@ public class ShellReadWritePanel extends ParentPanel {
 
 
 		// TOP SCROLL PANEL
-		scrollPaneTop = getScrollPane(true, true);
+		scrollPaneTop = ScreepTGuiFactory.getScrollPane(true, true);
 		scrollPaneTop.setPreferredSize(new Dimension(1920, 1080));
 		splitPane.setTopComponent(scrollPaneTop);
 
-		commandTextArea = getTextArea(commandTextArea, Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+		commandTextArea = ScreepTGuiFactory.getTextArea(commandTextArea, Color.DARK_GRAY, Color.WHITE, Color.WHITE, ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		scrollPaneTop.setViewportView(commandTextArea);
 
 
 		// BOTTOM SCROLL PANEL
-		scrollPaneBottom = getScrollPane(true, true);
+		scrollPaneBottom = ScreepTGuiFactory.getScrollPane(true, true);
 		scrollPaneBottom.setPreferredSize(new Dimension(1920, 1080));
 		splitPane.setBottomComponent(scrollPaneBottom);
 
-		outputTextArea = getTextArea(Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
+		outputTextArea = ScreepTGuiFactory.getTextArea(Color.DARK_GRAY, Color.WHITE, Color.WHITE, ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		outputTextArea.setEditable(false);
 		outputTextArea.setCursor(GuiUtils.CURSOR_TEXT);
 		outputTextArea.setText("I'm ready to launch your commands ;)");

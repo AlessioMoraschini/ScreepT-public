@@ -12,25 +12,34 @@
 package updater.module.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -38,8 +47,10 @@ import net.miginfocom.swing.MigLayout;
 import updater.module.plugins.PluginDTO;
 import updater.module.plugins.PluginManager;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.string.StringWorker;
 
 public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	private static final long serialVersionUID = 8830965172863577977L;
@@ -52,6 +63,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	private PluginManager pluginManager;
 
 	private JTable table;
+	TableRowSorter<DefaultTableModel> sorter;
 	private JLabel lblTitleHeaderMessage;
 
 	private static final String BUTTON_INSTALL = "Install";
@@ -70,6 +82,10 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 	private JTableButtonRenderer renderer;
 	private ButtonEditor btnEditor;
+	private JPanel panel;
+	private JTextField textFieldSearch;
+	private JLabel lblFilter;
+	private JButton btnRefreshFromRemote;
 
 	// constructor
 	/**
@@ -115,7 +131,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		UIManager.put("ToolTip.background", new Color(255, 250, 205));
 		this.setAlwaysOnTop(true);
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[50px:80px][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[32px:40px][60px:60px:60px][40px][grow]"));
 
 		lblTitleHeaderMessage = new JLabel("Welcome to Plugin Manager, choose and install your preferred add-ons ;)");
 		lblTitleHeaderMessage.setForeground(new Color(211, 211, 211));
@@ -127,7 +143,39 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		lblTitleHeaderMessage.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 2 1,grow");
 
+		panel = new JPanel();
+		panel.setBorder(new LineBorder(Color.GRAY, 1, true));
+		panel.setBackground(new Color(64, 64, 64));
+		getContentPane().add(panel, "cell 0 1 2 1,grow");
+		panel.setLayout(new MigLayout("", "[::10px][][grow][170px:n][::10px]", "[45px:45px:45px]"));
+
+		lblFilter = new JLabel("Filter:");
+		lblFilter.setForeground(Color.LIGHT_GRAY);
+		lblFilter.setMinimumSize(new Dimension(60, 45));
+		lblFilter.setPreferredSize(new Dimension(60, 45));
+		lblFilter.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblFilter.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblFilter.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblFilter, "cell 1 0,alignx right,growy");
+
+		String previousFilter = textFieldSearch != null ? textFieldSearch.getText() : "";
+		textFieldSearch = ScreepTGuiFactory.getTextField(Color.WHITE, Color.DARK_GRAY, null, new Font("Segoe UI", Font.PLAIN, 17), false);
+		textFieldSearch.setText(previousFilter);
+		textFieldSearch.setMinimumSize(new Dimension(10, 45));
+		textFieldSearch.setPreferredSize(new Dimension(10, 45));
+		textFieldSearch.setColumns(10);
+		panel.add(textFieldSearch, "cell 2 0,growx,aligny center");
+
+		btnRefreshFromRemote = new JButton("Refresh from remote");
+		btnRefreshFromRemote.setForeground(Color.WHITE);
+		btnRefreshFromRemote.setBackground(Color.DARK_GRAY);
+		btnRefreshFromRemote.setCursor(GuiUtils.CURSOR_HAND);
+		btnRefreshFromRemote.setOpaque(false);
+		panel.add(btnRefreshFromRemote, "cell 3 0,alignx right,aligny center");
+
 		table = new JTable();
+		table.setAutoCreateRowSorter(true);
+//		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
 
 //		renderer = new JTableButtonRenderer(thisPanel);
 //		table.setDefaultRenderer(JButton.class, renderer);
@@ -139,7 +187,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		table.setShowHorizontalLines(true);
 		table.setShowVerticalLines(true);
 		table.setRowHeight(30);
-		getContentPane().add(tableContainer, "cell 0 1 2 1,grow");
+		getContentPane().add(tableContainer, "cell 0 3 2 1,grow");
 
 		addHandlers();
 
@@ -153,7 +201,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		SwingUtilities.invokeLater(()->{
-			GuiUtils.centerComponent(this, 1300, 350);
+			GuiUtils.centerComponent(this, 1300, 450);
 		});
 
 		setInstalling(false);
@@ -188,10 +236,13 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		table.addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				if(isInstalling)
+				if(isInstalling) {
 					table.setEnabled(false);
-				else
+					btnRefreshFromRemote.setEnabled(false);
+				} else {
 					table.setEnabled(true);
+					btnRefreshFromRemote.setEnabled(true);
+				}
 			}
 		});
 
@@ -210,19 +261,119 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 			}
 		}); // END table listener
 
+		textFieldSearch.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				try {
+					applyFilter();
+				} catch (Throwable e1) {
+					logger.error("Cannot filter and refresh table!", e1);
+				}
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				try {
+					applyFilter();
+				} catch (Throwable e1) {
+					logger.error("Cannot filter and refresh table!", e1);
+				}
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				try {
+					applyFilter();
+				} catch (Throwable e1) {
+					logger.error("Cannot filter and refresh table!", e1);
+				}
+			}
+		});
+
+		btnRefreshFromRemote.addActionListener((e)->{
+			try {
+				final Image icon = this.getIconImage();
+				dispose();
+				pluginManager.discoverLatestPlugins();
+				GuiUtils.launchThreadSafeSwing(()->{
+					PluginManagerGUI gui = new PluginManagerGUI(parentFrame, pluginManager, refreshDependencyAction);
+					gui.setIconImage(icon);
+					gui.setVisible(true);
+					gui.toFront();
+				});
+			} catch (Throwable e1) {
+				logger.error("Cannot refresh table after user click on button refresh", e1);
+			}
+		});
+
+		btnRefreshFromRemote.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if(isInstalling)
+					btnRefreshFromRemote.setEnabled(false);
+				else
+					btnRefreshFromRemote.setEnabled(true);
+			}
+		});
+	}
+
+	private String getRegexFromFilter() {
+		String expr = StringWorker.trimToEmpty(textFieldSearch.getText());
+//		boolean emptyExpression = StringWorker.isEmpty(expr);
+//
+//		String regex = emptyExpression
+//				? ""
+//				: StringWorker.getWildcardRegex(textFieldSearch.getText(), true);
+
+		return "(?i)" + expr;
+	}
+
+	private void applyModel() {
+
+	    PluginTableModel model = new PluginTableModel(null, columnNames);
+		table.setModel(model);
+		sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel)table.getModel());
+		table.setRowSorter(sorter);
+
+	}
+
+	private void applyFilter() {
+		RowFilter<DefaultTableModel, Object> rf = null;
+		try {
+			rf = RowFilter.regexFilter(getRegexFromFilter(), 0, 1, 2);
+		} catch (java.util.regex.PatternSyntaxException e) {
+			return;
+		}
+		sorter.setRowFilter(rf);
+	}
+
+	public class PluginTableModel extends DefaultTableModel {
+		private static final long serialVersionUID = 2183863172814214653L;
+
+
+		public PluginTableModel(Object[][] data, Object[] columnNames) {
+			super(data, columnNames);
+		}
+
+
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return column == 3;
+		}
 	}
 
 	private void setTableModel() {
-		DefaultTableModel model = new DefaultTableModel(null, columnNames) {
-			private static final long serialVersionUID = 2183863172814214653L;
 
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return true;
-			}
-		};
+		applyModel();
 
-		table.setModel(model);
+		table.setCellSelectionEnabled(false);
+		table.setFillsViewportHeight(true);
+		table.setShowHorizontalLines(true);
+		table.setShowVerticalLines(true);
+		table.setRowHeight(30);
+
+//		table.setModel(new PluginTableModel(null, columnNames));
 
 		table.setGridColor(Color.DARK_GRAY);
 		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
@@ -275,6 +426,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		setTableModel();
 
 		ArrayList<PluginDTO> pluginList = (useCache) ?  pluginManager.retrieveAllFromCache() : pluginManager.discoverLatestPlugins();
+		Collections.sort(pluginList);
 
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		for(PluginDTO current : pluginList) {

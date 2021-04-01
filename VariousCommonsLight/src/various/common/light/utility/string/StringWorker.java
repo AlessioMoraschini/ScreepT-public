@@ -790,6 +790,14 @@ public class StringWorker {
 		return checkWildcardMatch(toCheck, wildcardExpression, false);
 	}
 
+	public static String getWildcardRegex(String wildcardExpression, boolean ignoreCase) {
+		String wildcardRegex =  trimToEmpty(wildcardExpression).replace("?", ".?").replace("*", ".*?");
+		if(ignoreCase)
+			wildcardRegex = "(?i)" + wildcardRegex.toLowerCase();
+
+		return wildcardRegex;
+	}
+
 	public static boolean checkWildcardMatch(String toCheck, String wildcardExpression, boolean ignoreCase) {
 		if(isEmpty(toCheck) || isEmpty(wildcardExpression))
 			return false;

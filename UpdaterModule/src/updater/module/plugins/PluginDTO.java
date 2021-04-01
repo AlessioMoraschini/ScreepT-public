@@ -13,7 +13,9 @@ package updater.module.plugins;
 
 import java.io.File;
 
-public class PluginDTO {
+import various.common.light.utility.string.StringWorker;
+
+public class PluginDTO implements Comparable<PluginDTO> {
 
 	public File localExtractedDir;
 	public File localFile;
@@ -22,7 +24,7 @@ public class PluginDTO {
 	public String description;
 	public String checkSum;
 	public boolean installationCompleted;
-	
+
 	public PluginDTO(String completeURL, String name, String checkSum) {
 		this.completeURL = completeURL;
 		this.name = name;
@@ -32,7 +34,7 @@ public class PluginDTO {
 		this.installationCompleted = false;
 		this.description = "";
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -64,7 +66,7 @@ public class PluginDTO {
 	public void setCheckSum(String checkSum) {
 		this.checkSum = checkSum;
 	}
-	
+
 	public File getLocalFile() {
 		return localFile;
 	}
@@ -93,6 +95,23 @@ public class PluginDTO {
 	public String toString() {
 		return "PluginDTO [localExtractedDir=" + localExtractedDir + ", localFile=" + localFile + ", completeURL=" + completeURL + ", name=" + name
 				+ ", checkSum=" + checkSum + ", installationCompleted=" + installationCompleted + "]";
+	}
+
+	@Override
+	public int compareTo(PluginDTO o) {
+		if(o == null)
+			return -1;
+
+		if(!StringWorker.isEmpty(getName()) && StringWorker.isEmpty(o.getName()))
+			return -1;
+
+		if(StringWorker.isEmpty(getName()) && StringWorker.isEmpty(o.getName()))
+			return 0;
+
+		if(StringWorker.isEmpty(getName()) && !StringWorker.isEmpty(o.getName()))
+			return 1;
+
+		return getName().compareTo(o.getName());
 	}
 
 }

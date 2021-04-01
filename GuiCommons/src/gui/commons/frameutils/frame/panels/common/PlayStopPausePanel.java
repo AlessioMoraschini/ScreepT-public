@@ -5,6 +5,7 @@ import javax.swing.JButton;
 import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import various.common.light.gui.ScreepTGuiFactory;
 
 public class PlayStopPausePanel extends ParentPanel {
 	private static final long serialVersionUID = -3789652661940094712L;
@@ -41,13 +42,13 @@ public class PlayStopPausePanel extends ParentPanel {
 	public void initGui() {
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[::33px,grow][::33px,grow][::33px,grow]", "[::9px,grow]"));
 		
-		playButton = getButton("", null, null, IconsPathConfigurator.ICON_PLAY, true);
+		playButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_PLAY, true);
 		add(playButton, "cell 0 0,alignx left,aligny center");
 		
-		pauseButton = getButton("", null, null, IconsPathConfigurator.ICON_PAUSE, true);
+		pauseButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_PAUSE, true);
 		add(pauseButton, "cell 1 0,alignx left,aligny center");
 		
-		stopButton = getButton("", null, null, IconsPathConfigurator.ICON_STOP, true);
+		stopButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_STOP, true);
 		add(stopButton, "cell 2 0,alignx left,aligny center");
 		
 		initButtons();

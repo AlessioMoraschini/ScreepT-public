@@ -44,6 +44,7 @@ import resources.IconsPathConfigurator;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreepTGuiFactory;
 
 import java.awt.Dimension;
 import javax.swing.JLabel;
@@ -118,7 +119,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 	@Override
 	protected void initGui() {
 		
-		currentScrollPane = getScrollPane(true, true);
+		currentScrollPane = ScreepTGuiFactory.getScrollPane(true, true);
 		
 		this.dataMap = GeneralConfig.CLIPBOARD_PANEL_MAP;
 		this.txtAreaClipboard = new JTextArea();

@@ -27,6 +27,7 @@ import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.utility.hash.ChecksumHasher;
 import various.common.light.utility.hash.HashingFunction;
 import various.common.light.utility.manipulation.ConversionUtils;
@@ -37,7 +38,6 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
-import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
 import gui.commons.general.MyFileView;
 
@@ -105,7 +105,7 @@ public class FilePropertiesFrame extends JFrame{
 		lblFileName.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblFileName, "cell 0 0,alignx center");
 		
-		dynLblFileName = ParentPanel.getTextField(null, Color.DARK_GRAY, null, null, true);
+		dynLblFileName = ScreepTGuiFactory.getTextField(null, Color.DARK_GRAY, null, null, true);
 		panel.add(dynLblFileName, "cell 1 0 3 1,growx");
 		
 		viewInFileSystemButton = new JButton("");
@@ -133,7 +133,7 @@ public class FilePropertiesFrame extends JFrame{
 		lblPath.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblPath, "cell 0 2,alignx center");
 		
-		dynLblPath = ParentPanel.getTextField(null, Color.DARK_GRAY, null, null, true);
+		dynLblPath = ScreepTGuiFactory.getTextField(null, Color.DARK_GRAY, null, null, true);
 		panel.add(dynLblPath, "cell 1 2 4 1,growx");
 		
 		hashMd5Lbl = new JLabel("Hash MD5:");

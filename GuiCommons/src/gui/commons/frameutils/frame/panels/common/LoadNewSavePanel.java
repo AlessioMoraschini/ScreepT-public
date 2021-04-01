@@ -5,6 +5,7 @@ import javax.swing.JButton;
 import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
+import various.common.light.gui.ScreepTGuiFactory;
 
 public class LoadNewSavePanel extends ParentPanel {
 	private static final long serialVersionUID = -3789652661940094712L;
@@ -36,16 +37,16 @@ public class LoadNewSavePanel extends ParentPanel {
 	public void initGui() {
 		setLayout(new MigLayout("fill, insets 1, hidemode 2", "[::33px,grow][::33px,grow][::33px,grow][::33px,grow]", "[::9px,grow]"));
 		
-		newButton = getButton("", null, null, IconsPathConfigurator.ICON_FILE_NEW, true);
+		newButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_FILE_NEW, true);
 		add(newButton, "cell 0 0,alignx left,aligny center");
 		
-		loadButton = getButton("", null, null, IconsPathConfigurator.ICON_FILE_LOAD, true);
+		loadButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_FILE_LOAD, true);
 		add(loadButton, "cell 1 0,alignx left,aligny center");
 
-		saveButton = getButton("", null, null, IconsPathConfigurator.ICON_FILE_SAVE, true);
+		saveButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_FILE_SAVE, true);
 		add(saveButton, "cell 2 0,alignx left,aligny center");
 		
-		saveAsButton = getButton("", null, null, IconsPathConfigurator.ICON_FILE_SAVE_AS, true);
+		saveAsButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_FILE_SAVE_AS, true);
 		add(saveAsButton, "cell 3 0,alignx left,aligny center");
 		
 		initButtons();
