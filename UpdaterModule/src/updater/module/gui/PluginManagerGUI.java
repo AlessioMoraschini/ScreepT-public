@@ -122,6 +122,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 		active = true;
 		parentFrame = parent != null ? parent : new JFrame();
+		setLocationRelativeTo(parentFrame);
+
 		thisPanel.setTitle("Plugin Manager Module");
 
 		this.refreshDependencyAction = refreshDependencyCheck;

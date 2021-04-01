@@ -10,6 +10,8 @@ import javax.swing.JMenuItem;
 import plugin.external.arch.IPlugin;
 import plugin.external.arch.IPluginParentExecutor.FunctionExecutor;
 import plugin.external.arch.IPluginParentExecutor.FunctionType;
+import plugin.external.arch.IPluginParentExecutor.ValidationException;
+import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.om.SelectionDtoFull;
 
 public class PluginJMenuCreator {
@@ -54,6 +56,12 @@ public class PluginJMenuCreator {
 						paramFlag = "seldto";
 					}
 
+					try {
+						executor.validateInput(availableFunction, new Object[] {safeRetriever.getParam()});
+					} catch (ValidationException e1) {
+						new JOptionHelper(null).error("Unsupported type! " + e1.getMessage());
+						return;
+					}
 
 
 					if(paramFlag.equals("main") || paramFlag.equals("string")) {

@@ -32,6 +32,16 @@ public class ArrayHelper {
 		return sourceList;
 	}
 
+	@SafeVarargs
+	public static <T, E  extends Collection<T>> E populateList(Class<E> collection, T... values) throws InstantiationException, IllegalAccessException{
+		E instance = collection.newInstance();
+		for(T val : values) {
+			instance.add(val);
+		}
+
+		return instance;
+	}
+
 	public static <T extends Comparable<?>> Set<T> sortSet(Set<T> set){
 		return listToSet(setToList(set), true);
 	}

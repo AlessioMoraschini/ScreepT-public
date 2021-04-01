@@ -111,6 +111,10 @@ public interface IPluginParentExecutor<T> extends Comparable<T> {
 			this.plugin = plugin != null ? plugin : new HellowordPlugin();
 		}
 
+		public <T extends Object> void validateInput(String function, T[] input) throws ValidationException {
+			return;
+		}
+
 		public boolean executeMain(String[] args) {
 			plugin.launchMain(args);
 			return true;
@@ -123,5 +127,25 @@ public interface IPluginParentExecutor<T> extends Comparable<T> {
 		public SelectionDtoFull executeSelectionDto(SelectionDtoFull dto) {
 			return null;
 		};
+	}
+
+	public class ValidationException extends Exception {
+		private static final long serialVersionUID = 732167608824115362L;
+
+		public ValidationException() {
+			super();
+		}
+		public ValidationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+			super(message, cause, enableSuppression, writableStackTrace);
+		}
+		public ValidationException(String message, Throwable cause) {
+			super(message, cause);
+		}
+		public ValidationException(String message) {
+			super(message);
+		}
+		public ValidationException(Throwable cause) {
+			super(cause);
+		}
 	}
 }

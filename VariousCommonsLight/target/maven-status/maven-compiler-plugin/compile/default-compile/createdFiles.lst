@@ -133,6 +133,7 @@ various\common\light\network\ftp\FtpDumper$1.class
 various\common\light\om\Templates_Enum.class
 various\common\light\easteregg\PhrasesCollection.class
 various\common\light\gui\dialogs\color\om\SelectionColorChangedAbstract$1.class
+various\common\light\gui\ScreepTGuiFactory$1.class
 various\common\light\easteregg\games\snake\Board$TAdapter.class
 various\common\light\gui\selection\JFontChooserExtended$ListSelectionHandler.class
 various\common\light\om\ShortcutFilter.class
@@ -158,6 +159,7 @@ various\common\light\utility\manipulation\EncodingUtils.class
 various\common\light\om\TextRetriever.class
 various\common\light\gui\dialogs\color\ColorChooserGrid.class
 various\common\light\utility\string\CustomCodeFormatter$JsFormatParams.class
+various\common\light\gui\ScreepTGuiFactory.class
 various\common\light\gui\listener\KeyListenerParent.class
 various\common\light\validation\arch\model\IDynaValidator.class
 various\common\light\files\om\FileSearchDTO.class
@@ -192,6 +194,7 @@ various\common\light\easteregg\EasterEgg.class
 various\common\light\gui\GuiUtils$7.class
 various\common\light\network\proxy\ProxySettingsGUI.class
 various\common\light\gui\dialogs\font\om\FontMetricsWrapper.class
+various\common\light\utility\string\KeyVal.class
 various\common\light\easteregg\games\snake\Snake$2.class
 various\common\light\gui\GuiUtils$8.class
 various\common\light\gui\selection\color\om\ColorSelectionElement.class

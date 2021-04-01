@@ -86,6 +86,7 @@ import various.common.light.files.om.FileNamed;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.manipulation.ImageWorker;
+import various.common.light.utility.string.KeyVal;
 import various.common.light.utility.string.StringWorker;
 import various.common.light.utility.string.StringWorker.EOL;
 
@@ -1100,10 +1101,20 @@ public class GuiUtils {
 		return "<ul>" + builder.toString() + "</ul>";
 	}
 
-	public static String encapsulateInTag(String original, String tag) {
+	public static String encapsulateInTag(String original, String tag, List<KeyVal> attributes) {
 		String trimmedTag = StringWorker.trimToEmpty(tag);
+		String attributesStr = " ";
 
-		return "<" + trimmedTag + ">" + original + "</" + trimmedTag + ">";
+		if(attributes != null)
+			for(KeyVal keyVal : attributes)
+				if(keyVal != null)
+					attributesStr += StringWorker.trimToEmpty(keyVal.key) + "=" + StringWorker.trimToEmpty(keyVal.value) + "\" ";
+
+		return "<" + trimmedTag + attributesStr + ">" + original + "</" + trimmedTag + ">";
+	}
+
+	public static String encapsulateInTag(String original, String tag) {
+		return encapsulateInTag(original, tag, null);
 	}
 	public static String encapsulateInAnchorTag(String original, String link, boolean newTab) {
 		String newTabStr = newTab ? "target=\"_blank\"" : "";

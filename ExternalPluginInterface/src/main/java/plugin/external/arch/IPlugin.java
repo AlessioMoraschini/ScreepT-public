@@ -48,6 +48,15 @@ public interface IPlugin extends IPluginParentExecutor<IPlugin> {
 
 	public default String getTooltip() {return "";};
 
+	/**
+	 * Without dots (txt, jpg, pdf, ecc...)
+	 * if (*) then all extensions are managed
+	 * if empty array no extension is managed (only non-file related functions will be available)
+	 *
+	 * By default all extensions are managed
+	 */
+	public default String[] getManagedFileExtensions(String function, boolean caseSensitive) {return new String[] {"*"};};
+
 	public default boolean isTestPlugin() {return false;};
 
 	public String getPluginZipName();
