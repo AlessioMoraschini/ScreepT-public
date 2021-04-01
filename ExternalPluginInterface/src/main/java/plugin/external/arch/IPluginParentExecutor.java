@@ -14,34 +14,63 @@ public interface IPluginParentExecutor<T> extends Comparable<T> {
 
 	final Map<String, Map<String, FunctionExecutor>> functionsMap = new HashMap<>();
 
+	/**
+	 * No need to override default implementation
+	 */
 	public default String getMapKey(String pluginId, FunctionType type) {
 		return pluginId + type.name();
 	}
 
+	/**
+	 * No need to override default implementation
+	 */
 	public default void registerFunctions(String pluginId, FunctionType type, Map<String, FunctionExecutor> functionMap) {
 		functionsMap.put(getMapKey(pluginId, type), functionMap);
 	};
 
+	/**
+	 * No need to override default implementation
+	 */
 	public default Set<String> getAvailableFunctions(String pluginId, FunctionType type) {
 		return functionsMap.get(getMapKey(pluginId, type)).keySet();
 	};
 
+	/**
+	 * No need to override default implementation
+	 */
 	public default Collection<FunctionExecutor> getAvailableExecutors(String pluginId, FunctionType type) {
 		return functionsMap.get(getMapKey(pluginId, type)).values();
 	};
 
+	/**
+	 * No need to override default implementation
+	 */
 	public default FunctionExecutor getExecutor(String pluginId, FunctionType type, String function) {
 		return functionsMap.get(getMapKey(pluginId, type)).get(function);
 	};
 
+	/**
+	 * OVERRIDE TO PROVIDE FUNCTIONS IMPLEMENTATION:
+	 * #### STAND_ALONE ####
+	 */
 	public default Map<String, FunctionExecutor> getMainStandalonExecutorMap() {
 		return new HashMap<String, FunctionExecutor>();
 	}
 
+
+	/**
+	 * OVERRIDE TO PROVIDE FUNCTIONS IMPLEMENTATION:
+	 * #### FILE_TREE ####
+	 */
 	public default Map<String, FunctionExecutor> getFileTreeExecutorMap() {
 		return new HashMap<String, FunctionExecutor>();
 	};
 
+
+	/**
+	 * OVERRIDE TO PROVIDE FUNCTIONS IMPLEMENTATION:
+	 * #### STAND_ALONE ####
+	 */
 	public default Map<String, FunctionExecutor> getTextAreaExecutorMap() {
 		return new HashMap<String, FunctionExecutor>();
 	};

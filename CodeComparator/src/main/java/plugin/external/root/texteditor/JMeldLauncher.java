@@ -3,6 +3,7 @@ package plugin.external.root.texteditor;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +51,8 @@ public class JMeldLauncher implements Runnable {
 						return;
 				}
 
-				FileWorker.cleanupDirs(CodeComparePlugin.defaultTempFolder);
+				File parent = new File(CodeComparePlugin.currentSessionTempFolder).getParentFile();
+				FileWorker.cleanupDirs(parent.getAbsolutePath());
 			}
 		};
 	}

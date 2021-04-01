@@ -68,6 +68,7 @@ public class TextEditorOption {
 	public static final String DEF_preferredSyntaxIfNotSync = "TXT";
 	public static final boolean DEF_uppercase_hash = true;
 	public static final boolean DEF_prefix_hash = false;
+	public static final boolean DEF_autosaveTempFiles = true;
 	public static LimitedConcurrentList<FileNamed> 	DEF_lastOpenedFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);
 	public static LimitedConcurrentList<FileNamed> 	DEF_lastSelectedWorkspaces = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_WORKSPACE_LIST_SIZE);
 	public static LimitedConcurrentList<FileNamed> 	DEF_lastOpenedShellFiles = new LimitedConcurrentList<FileNamed>(GeneralConfig.MAX_LAST_OPENED_LIST_SIZE);
@@ -114,6 +115,7 @@ public class TextEditorOption {
 	public Color filePanelBackCol;
 	public Color backCol;
 	public Color foreCol;
+	public ArrayList<String> openedTempFileList;
 	public ArrayList<String> openedFileList;
 	public Map<String, String> openedFileListCaretPosition;
 	public String selectedAtStart;
@@ -149,6 +151,7 @@ public class TextEditorOption {
 	public boolean breaklineActive;
 	public boolean prefix_hash;
 	public boolean uppercase_hash;
+	public boolean autosaveTempFiles;
 
 	public boolean antialiasedTxtArea;
 	public boolean bracketMatchingEnabled;
@@ -194,6 +197,7 @@ public class TextEditorOption {
 		footerVisible = DEF_footerVisible;
 
 		openedFileList = new ArrayList<String>();
+		openedTempFileList = new ArrayList<String>();
 		openedFileListCaretPosition = new HashMap<>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
 		lastOpenedShellFiles = DEF_lastOpenedShellFiles;
@@ -365,6 +369,14 @@ public class TextEditorOption {
 		this.prefix_hash = prefix_hash;
 	}
 
+	public boolean isAutosaveTempFiles() {
+		return autosaveTempFiles;
+	}
+
+	public void setAutosaveTempFiles(boolean autosaveTempFiles) {
+		this.autosaveTempFiles = autosaveTempFiles;
+	}
+
 	public boolean isUppercase_hash() {
 		return uppercase_hash;
 	}
@@ -503,6 +515,14 @@ public class TextEditorOption {
 
 	public ArrayList<String> getOpenedFileList() {
 		return openedFileList;
+	}
+
+	public ArrayList<String> getOpenedTempFileList() {
+		return openedTempFileList;
+	}
+
+	public void setOpenedTempFileList(ArrayList<String> openedTempFileList) {
+		this.openedTempFileList = openedTempFileList;
 	}
 
 	public boolean isBreaklineActive() {

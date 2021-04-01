@@ -29,7 +29,8 @@ import various.common.light.utility.string.StringWorker;
 
 public class DownloadUtils {
 
-	public static final String tempFolderPath = System.getProperty("user.home")+"/SCREEPT_TEMP";
+	public static String tempFolderPath = System.getProperty("user.home")+"/ScreepT_temp_files/COMMON_DATA/Downloads/";
+
 	static {
 		File file = new File(tempFolderPath);
 		if(!file.exists()) {

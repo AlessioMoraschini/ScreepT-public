@@ -36,6 +36,8 @@ public abstract class AbstractPluginApplicationApi {
 
 	private static final SafeLogger LOGGER = new SafeLogger(AbstractPluginApplicationApi.class);
 
+	public static String defaultTempFolder = System.getProperty("user.home") + "/ScreepT_temp_files/COMMON_DATA/";
+
 	public static final String PACKAGE_PLUGINS_ROOT = "plugin.external.root";
 	public static final String PACKAGE_PLUGINS_ROOT_EMBEDDED = "plugin.external.root.embedded";
 	public static final String PACKAGE_PLUGINS_TEXT_EDITOR = "plugin.external.root.texteditor";
@@ -175,8 +177,16 @@ public abstract class AbstractPluginApplicationApi {
 	public abstract String loadFiles(List<File> files);
 
 	/**
-	 * @param plugin
-	 *            the plugin to search folder for
+	 * @param call the implementor to launch a jar with given params
+	 */
+	public abstract void launchJar(String[] args, String minJavaVersion, String maxJavaVersion);
+
+	public abstract File saveTempFileInApplicationFolder(String name, boolean persistent, String subPath);
+
+	public abstract File getTempApplicationFolder(boolean persistent, String subPath);
+
+	/**
+	 * @param plugin the plugin to search folder for
 	 * @return Return plugin folder path
 	 */
 	public abstract String getPluginFolderPath(Class<? extends IPlugin> plugin);

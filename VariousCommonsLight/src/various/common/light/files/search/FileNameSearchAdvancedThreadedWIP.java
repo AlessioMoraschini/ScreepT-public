@@ -324,7 +324,7 @@ public class FileNameSearchAdvancedThreadedWIP {
 		return (file) -> {return file.isFile();};
 	}
 
-	private static List<File> threadedExecutor(long stopAfterNResults, File[] roots, int maxThreads, FilesRetriever retriever) throws InterruptedException {
+	protected static List<File> threadedExecutor(long stopAfterNResults, File[] roots, int maxThreads, FilesRetriever retriever) throws InterruptedException {
 
 		List<File> asyncResults = new ArrayList<>();
 

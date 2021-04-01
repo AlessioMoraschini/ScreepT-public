@@ -11,31 +11,41 @@
  */
 package updater.module.plugins;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import main.MainStandAloneUpdater;
+import updater.module.gui.PluginManagerGUI;
 import various.common.light.files.FileVarious;
 import various.common.light.files.FileWorker;
 import various.common.light.files.ZipWorker;
 import various.common.light.gui.UpdateProgressPanel;
-import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.network.http.HttpHelper;
 import various.common.light.network.http.HttpHelper.HttpRequestMetod;
 import various.common.light.network.utils.DownloadUtils;
+import various.common.light.om.LimitedConcurrentList;
 import various.common.light.om.exception.ProgressBarInterruptedException;
 import various.common.light.utility.hash.ChecksumHasher;
 import various.common.light.utility.hash.HashingFunction;
 import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.manipulation.ArrayHelper;
 import various.common.light.utility.manipulation.ConversionUtils;
 import various.common.light.utility.properties.PropertiesManager;
 
@@ -70,6 +80,8 @@ public class PluginManager {
 
 	// This is the plugin informations cache, updated at each download. NB there is not data here, only informations about it
 	private HashMap<String, PluginDTO> pluginLocalMap;
+
+	public static LimitedConcurrentList<String> pluginsFreshlyInstalled = new LimitedConcurrentList<>(200);
 
 	public ArrayList<String> installedPluginNames;
 
@@ -113,7 +125,7 @@ public class PluginManager {
 			boolean throwHashException = false;
 			if(askUserIfUnverifiedChecksum) {
 				String askMessage = plugin.getName() + " -> File integrity cannot be verified, install anyway?";
-				if(new JOptionHelper(null).yesOrNo(askMessage, "File verification failed")) {
+				if(PluginManagerGUI.dialogHelper.yesOrNo(askMessage, "File verification failed")) {
 					String message = "Hash [" + plugin.getCheckSum() + "] not verified for file: " + plugin.localFile;
 					logger.error(message);
 					throw new Exception(message);
@@ -157,6 +169,8 @@ public class PluginManager {
 
 		updateCache(plugin);
 
+		pluginsFreshlyInstalled.addUniqueToTop(plugin.getName());
+
 		return plugin;
 	}
 
@@ -173,6 +187,8 @@ public class PluginManager {
 		}
 
 		ArrayList<String> strPluginFilesList = installedPluginProperties.getStringList(pluginToRemove.getName(), installedPluginPropsListSeparator);
+		strPluginFilesList = filterSharedFiles(strPluginFilesList, pluginToRemove);
+
 		for(String toDelete : strPluginFilesList) {
 			File filePending = new File(toDelete);
 			try {
@@ -203,6 +219,8 @@ public class PluginManager {
 		pluginToRemove.setInstallationCompleted(!uninstallOK);
 		updateCache(pluginToRemove);
 		logger.info("Cache updated: " + pluginLocalMap);
+
+		pluginsFreshlyInstalled.removeAllOccurrencesByEquals(pluginToRemove.getName());
 
 		if(!uninstallOK) {
 			// if something went wrong with delete, mark files that weren't deleted to be deleted by launcher at start
@@ -259,6 +277,14 @@ public class PluginManager {
 
 		try {
 			pluginManagerProgbar = new UpdateProgressPanel(true);
+			final UpdateProgressPanel finalProg = pluginManagerProgbar;
+			pluginManagerProgbar.dialog.addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					finalProg.toFront();
+					finalProg.dialog.toFront();
+				}
+			});
 			pluginManagerProgbar.getPb().setIndeterminate(true);
 			pluginManagerProgbar.getGeneralBar().setIndeterminate(true);
 
@@ -412,6 +438,75 @@ public class PluginManager {
 		plugin.installationCompleted = false;
 	}
 
+	public List<File> filterFilesSharedWithOthers(List<File> files, PluginDTO dto){
+		List<File> filtered = getAllInstalledFilesExceptPlugin(dto);
+		List<File> output = new ArrayList<>();
+
+		for(File file : files) {
+			if(!FileVarious.containedInList(filtered, file)) {
+				output.add(file);
+			}
+		}
+
+		return output;
+	}
+
+	public Map<String, List<File>> getAllInstalledFilesMapExceptPlugin(PluginDTO plugin){
+		Map<String, List<File>> allFiles = getAllInstalledFiles();
+		if(allFiles.containsKey(plugin.getName()))
+			allFiles.remove(plugin.getName());
+
+		return allFiles;
+	}
+
+	public List<File> getAllInstalledFilesExceptPlugin(PluginDTO plugin){
+		Map<String, List<File>> allFiles = getAllInstalledFiles();
+		Iterator<String> it = allFiles.keySet().iterator();
+		Set<File> filesFiltered = new HashSet<>();
+
+		while(it.hasNext()) {
+			String pluginName = it.next();
+			if(!pluginName.equals(plugin.getName()))
+				filesFiltered.addAll(allFiles.get(pluginName));
+		}
+
+		return ArrayHelper.setToList(filesFiltered);
+	}
+
+	public Map<String, List<File>> getAllInstalledFiles(){
+
+		List<String> installed = getInstalledPluginsList();
+		Map<String, List<File>> installedMap = new HashMap<>();
+
+		for(String pluginName : installed) {
+			List<File> installedFiles = installedPluginProperties.getFileList(pluginName, ";", true);
+			installedMap.put(pluginName, installedFiles);
+		}
+
+		return installedMap;
+	}
+
+	/**
+	 * Updates and save string list of relative paths of files to delete at next start by launcher.
+	 * Existing pending deletes will be kept, if already present pending delete won't be written to list in installed_plugins.properties
+	 *
+	 * @param pendingRelativePaths
+	 */
+	public ArrayList<String> filterSharedFiles(ArrayList<String> pendingRelativePaths, PluginDTO toRemove) {
+
+		List<File> filteredToRemove = FileVarious.pathsToFileList(pendingRelativePaths, true);
+		filteredToRemove = filterFilesSharedWithOthers(filteredToRemove, toRemove);
+
+		ArrayList<String> filteredStr = new ArrayList<>();
+		for(String s : pendingRelativePaths) {
+			if(!FileVarious.containedInList(filteredToRemove, FileVarious.getCanonicalFileSafe(s))) {
+				filteredStr.add(s);
+			}
+		}
+
+		return filteredStr;
+	}
+
 	/**
 	 * Updates and save string list of relative paths of files to delete at next start by launcher.
 	 * Existing pending deletes will be kept, if already present pending delete won't be written to list in installed_plugins.properties
@@ -538,6 +633,23 @@ public class PluginManager {
 		}
 
 		return null;
+	}
+
+	public void refreshCache() {
+		refreshCache((String[])null);
+	}
+
+	public void refreshCache(String... pluginNamesNoExt) {
+		try {
+			List<PluginDTO> updatedFromWeb = discoverLatestPlugins();
+			for(PluginDTO dto : updatedFromWeb) {
+				boolean match = pluginNamesNoExt == null || pluginNamesNoExt.length == 0 || Arrays.asList(pluginNamesNoExt).contains(FilenameUtils.removeExtension(dto.getName()));
+				if(match)
+					updateCache(dto);
+			}
+		} catch (Throwable e) {
+			logger.error("Can't refresh plugin cache!", e);
+		}
 	}
 
 	public PluginDTO updateCache(PluginDTO pluginToUpdate) {

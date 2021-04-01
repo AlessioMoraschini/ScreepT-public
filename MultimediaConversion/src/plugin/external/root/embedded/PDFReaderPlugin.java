@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import multimedia.conversion.gui.PdfSelector2TextFrame;
-import plugin.external.arch.IPlugin;
+import plugin.external.arch.IPluginTextEditor;
 import plugin.external.arch.PluginAbstractParent;
 import resources.GeneralConfig;
 import various.common.light.files.FileVarious;
 
 /////////////////// PLUGIN INTERFACE ////////////////////////
 
-public class PDFReaderPlugin extends PluginAbstractParent implements IPlugin {
+public class PDFReaderPlugin extends PluginAbstractParent implements IPluginTextEditor {
 
 	public static final String[] availableFunctionsStandAlone = { "Launch PDF Reader" };
 	public static final String[] availableFunctionsRightFileTreeClick = { "Open last file of selection" };
@@ -77,7 +77,7 @@ public class PDFReaderPlugin extends PluginAbstractParent implements IPlugin {
 		fileTreeExecutorMap.put(availableFunctionsRightFileTreeClick[0], new FunctionExecutor(this) {
 			@Override
 			public boolean executeFiles(List<File> files) {
-				launchMain(FileVarious.filesToPaths(FileVarious.removeNullsAndUnexisting(files)));
+				launchMain(FileVarious.filesToStrings(FileVarious.removeNullsAndUnexisting(files)));
 				return true;
 			}
 		});

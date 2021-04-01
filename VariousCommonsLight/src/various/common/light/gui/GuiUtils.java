@@ -11,6 +11,7 @@
  */
 package various.common.light.gui;
 
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -30,12 +31,15 @@ import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -47,6 +51,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -140,13 +145,96 @@ public class GuiUtils {
 		};
 	}
 
-	public static void forceToFront(JFrame target) {
+	public static void forceToFront(Window target) {
+		forceToFront(target, null);
+	}
+
+	public static <T> List<T>  getSubComponentsFiltered(Container component, Class<T> filterType, boolean deep){
+		List<Component> allMatches = getSubComponents(component, deep);
+		List<T> matches = new ArrayList<>();
+
+		if(allMatches.isEmpty())
+			return matches;
+
+		for (Component comp : allMatches) {
+			if(comp != null && filterType.isAssignableFrom(comp.getClass())) {
+				matches.add(comp.getClass().asSubclass(filterType).cast(comp));
+			}
+		}
+
+		return matches;
+	}
+	public static List<Component>  getSubComponents(Container component, boolean deep){
+		List<Component> matches = new ArrayList<>();
+		if(component == null)
+			return matches;
+
+		Component[] subComponents = component.getComponents();
+		if(subComponents == null || subComponents.length == 0)
+			return matches;
+
+		for (int i = 0; i < subComponents.length; i++) {
+			matches.add(subComponents[i]);
+			if(deep && subComponents[i] != null && subComponents[i] instanceof Container){
+				matches.addAll(getSubComponents((Container)subComponents[i], deep));
+			}
+		}
+
+		return matches;
+	}
+
+	public static void forceToFront(Window target, Component mouseMouseOn) {
 
 		if (target != null) {
 			boolean alwayOnTopBackup = target.isAlwaysOnTop();
-			target.setAlwaysOnTop(true);
+			target.setAlwaysOnTop(!alwayOnTopBackup);
+			target.toBack();
 			target.toFront();
 			target.setAlwaysOnTop(alwayOnTopBackup);
+
+			if(mouseMouseOn != null) {
+				mouseClick(target.getX() + 1, target.getY() + 1);
+				SwingUtilities.invokeLater(()->{
+					mouseMove(getCenter(mouseMouseOn));
+				});
+			}
+		}
+	}
+
+	public static Point getCenter(Component comp) {
+
+		if(comp == null)
+			return null;
+
+		Rectangle bounds = comp.getBounds();
+		return new Point(bounds.x + bounds.width/2, bounds.y + bounds.height/2);
+	}
+
+	public static void mouseClick(int x, int y) {
+		Robot bot;
+		try {
+			bot = new Robot();
+			bot.mouseMove(x, y);
+			bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		} catch (AWTException e) {
+			logger.error("Cannot click mouse", e);
+		}
+	}
+
+	public static void mouseMove(Point p) {
+		if(p != null) {
+			mouseMove(p.x, p.y);
+		}
+	}
+
+	public static void mouseMove(int x, int y) {
+		Robot bot;
+		try {
+			bot = new Robot();
+			bot.mouseMove(x, y);
+		} catch (AWTException e) {
+			logger.error("Cannot click mouse", e);
 		}
 	}
 

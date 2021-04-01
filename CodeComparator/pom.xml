@@ -43,12 +43,13 @@
 			<version>${ext.plugin.interface.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.devocative/jmeld -->
 		<dependency>
-			<groupId>com.jmeld</groupId>
-			<artifactId>JMeld</artifactId>
-			<version>${jmeld.version}</version>
+		    <groupId>org.devocative</groupId>
+		    <artifactId>jmeld</artifactId>
+		    <version>${jmeld.version}</version>
 			<scope>compile</scope>
-		</dependency>
+		</dependency>		
 	</dependencies>
 
 	<properties>

@@ -94,7 +94,7 @@ public class Benchmarker {
 		records = concurrent ? new ConcurrentHashMap<>() : new HashMap<>();
 	}
 	
-	public String getSortedRecordsString() {
+	public String getSortedReportString() {
 		StringBuilder builder = new StringBuilder();
 		List<TimeRecord> sortedRecords = getRecords();
 		List<Long> elapsedList = new ArrayList<>();

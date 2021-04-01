@@ -23,7 +23,7 @@ public class PluginAbstractParent implements IPlugin {
 	}
 
 	@Override
-	public String getID() {
+	public final String getID() {
 		if (pluginID == null)
 			pluginID = getRandomId();
 
@@ -60,17 +60,17 @@ public class PluginAbstractParent implements IPlugin {
 
 	// UTILITY METHODS //
 
-	protected String[] ensureAtLeastTwoFiles(String args[], String currentUserTempFolder) {
+	protected String[] ensureAtLeastTwoFiles(String tempName, String args[], String currentUserTempFolder) {
 
 		String[] argsValid = new String[args.length > 2 ? args.length : 2];
 
 		if (args != null && args.length == 0) {
-			argsValid[0] = createTempFile(currentUserTempFolder).getAbsolutePath();
-			argsValid[1] = createTempFile(currentUserTempFolder).getAbsolutePath();
+			argsValid[0] = createTempFile(tempName, currentUserTempFolder).getAbsolutePath();
+			argsValid[1] = createTempFile(tempName, currentUserTempFolder).getAbsolutePath();
 
 		} else if (args != null && args.length == 1) {
 			argsValid[0] = args[0];
-			argsValid[1] = createTempFile(currentUserTempFolder).getAbsolutePath();
+			argsValid[1] = createTempFile(tempName, currentUserTempFolder).getAbsolutePath();
 
 		} else {
 			argsValid[0] = args[0];
@@ -80,8 +80,8 @@ public class PluginAbstractParent implements IPlugin {
 		return argsValid;
 	}
 
-	protected File createTempFile(String currentUserTempFolder) {
-		String userHome = currentUserTempFolder + "CompareTest.txt";
+	public static File createTempFile(String name, String currentUserTempFolder) {
+		String userHome = currentUserTempFolder + name;
 		File home = FileVarious.uniqueJavaObjFile(new File(userHome));
 		home.getParentFile().mkdirs();
 		try {

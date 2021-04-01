@@ -94,6 +94,10 @@ public class FileVarious {
 		}
 	}
 
+	public static File getCanonicalFileSafe(String filePath) {
+		return getCanonicalFileSafe(new File(filePath));
+	}
+
 	public static File getCanonicalFileSafe(File file) {
 		try {
 			return file.getCanonicalFile();
@@ -493,11 +497,35 @@ public class FileVarious {
 		return countFilesUntilLimit(directory, countDirectories, maxAdmitted + 1) > maxAdmitted;
 	}
 
-	public static String[] filesToPaths(List<File> files) {
+	public static String[] filesToStrings(List<File> files) {
 		String[] filePaths = new String[files != null ? files.size() : 0];
 		if(files != null) {
 			for(int i = 0; i < files.size(); i++) {
 				filePaths[i] = FileVarious.getCanonicalPathSafe(files.get(i));
+			}
+		}
+
+		return filePaths;
+	}
+
+	public static List<String> filesToStringList(List<File> files) {
+		List<String> filePaths = new ArrayList<>();
+		if(files != null) {
+			for(int i = 0; i < files.size(); i++) {
+				filePaths.add(FileVarious.getCanonicalPathSafe(files.get(i)));
+			}
+		}
+
+		return filePaths;
+	}
+
+	public static List<File> pathsToFileList(List<String> paths, boolean filterUnexisting) {
+		List<File> filePaths = new ArrayList<>();
+		if(paths != null) {
+			for(int i = 0; i < paths.size(); i++) {
+				File file = getCanonicalFileSafe(paths.get(0));
+				if(!filterUnexisting || file.exists())
+					filePaths.add(getCanonicalFileSafe(paths.get(0)));
 			}
 		}
 

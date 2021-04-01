@@ -1,0 +1,30 @@
+
+ [main.MainStandAloneUpdater] INFO: 
+###############################################################
+# updater.jar - Starting - Wed Mar 31 11:56:45 CEST 2021
+###############################################################
+
+ [main.MainStandAloneUpdater] INFO: 
+
+
+******************************************************
+* MainRelease detected: -generateHashes-mainRelease  *
+******************************************************/
+
+
+ [various.common.light.utility.properties.PropertiesManager] ERROR: Cannot prepare properties file mapping !!
+ [various.common.light.utility.properties.PropertiesManager] DEBUG: Loading property: RELEASE_FOLDER-OR-ZIP_TO_ELABORATE From cached properties: null
+ [various.common.light.utility.properties.PropertiesManager] DEBUG: Loaded property: 
+ [main.MainStandAloneUpdater] INFO: Src: C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\ScreepT-Common-Repository\UpdaterModule
+ [main.MainStandAloneUpdater] INFO: 
+
+
+*******************************************
+* Upload flag detected: -uploadFtpUpdates *
+*******************************************/
+
+
+ [main.MainStandAloneUpdater] INFO: Files to upload:
+C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\ScreepT-Common-Repository\UpdaterModule\updater.jar
+C:\Users\xx\Desktop\Documenti&Utili\Informatica varie\ScreepT-Common-Repository\UpdaterModule\manifest.properties
+ [various.common.light.utility.properties.PropertiesManager] ERROR: Cannot prepare properties file mapping !!

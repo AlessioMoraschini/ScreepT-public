@@ -23,7 +23,7 @@ import updater.module.plugins.PluginDTO;
 
 class JTableButtonRenderer extends JButton implements TableCellRenderer {
 	private static final long serialVersionUID = 6493027142302342323L;
-	
+
 	private IPluginManagerGui pluginManagerInterface;
 
 	public JTableButtonRenderer(IPluginManagerGui pluginManagerInterface) {
@@ -37,15 +37,15 @@ class JTableButtonRenderer extends JButton implements TableCellRenderer {
 	@Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
-		
+
 		String pluginName = (String)table.getValueAt(row, 0);
 		PluginDTO plugin = pluginManagerInterface.getPluginDTO(pluginName);
+
 		boolean installed = plugin.installationCompleted;
-		
-        setForeground((installed)? Color.LIGHT_GRAY : Color.BLACK);
-        setBackground((installed)? Color.BLACK : Color.LIGHT_GRAY);
-        setText((installed)? "Uninstall " + pluginName : "Install " + pluginName);
-        
+		setForeground((installed) ? Color.LIGHT_GRAY : Color.BLACK);
+		setBackground((installed) ? Color.BLACK : Color.LIGHT_GRAY);
+		setText((installed) ? "Uninstall " + pluginName : "Install " + pluginName);
+
 		return this;
     }
 }

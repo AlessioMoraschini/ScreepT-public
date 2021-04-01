@@ -13,6 +13,8 @@ package updater.module.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -44,6 +46,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 	private static SafeLogger logger = new SafeLogger(PluginManagerGUI.class);
 
+	public static JOptionHelper dialogHelper = new JOptionHelper(null);
+
 	private PluginManagerGUI thisPanel;
 	private PluginManager pluginManager;
 
@@ -60,9 +64,12 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 	public JFrame parentFrame;
 
-	public boolean isInstalling = false;
+	public volatile boolean isInstalling = false;
 
 	public Runnable refreshDependencyAction;
+
+	private JTableButtonRenderer renderer;
+	private ButtonEditor btnEditor;
 
 	// constructor
 	/**
@@ -71,11 +78,34 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	 * @param parent
 	 * @param pluginManager
 	 */
-	public PluginManagerGUI(JFrame parent, PluginManager pluginManager, Runnable refreshDependencyCheck) {
+	public PluginManagerGUI(JFrame parent, PluginManager pluginManager, Runnable refreshDependencyCheck){
+		init(parent, pluginManager, refreshDependencyCheck);
+	}
+
+	public void reset() {
+		renderer = new JTableButtonRenderer(thisPanel);
+		btnEditor = new ButtonEditor(thisPanel);
+
+		if(table != null) {
+			table.setDefaultRenderer(JButton.class, renderer);
+		}
+	}
+
+	public void init(JFrame parent, PluginManager pluginManager, Runnable refreshDependencyCheck) {
+
+		thisPanel = this;
+
+		reset();
+
+		synchronized (dialogHelper) {
+			if(dialogHelper == null)
+				dialogHelper = new JOptionHelper(parent);
+			else
+				dialogHelper.setParentComponent(parent);
+		}
 
 		active = true;
 		parentFrame = parent != null ? parent : new JFrame();
-		thisPanel = this;
 		thisPanel.setTitle("Plugin Manager Module");
 
 		this.refreshDependencyAction = refreshDependencyCheck;
@@ -98,7 +128,9 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 2 1,grow");
 
 		table = new JTable();
-		table.setDefaultRenderer(JButton.class, new JTableButtonRenderer(thisPanel));
+
+//		renderer = new JTableButtonRenderer(thisPanel);
+//		table.setDefaultRenderer(JButton.class, renderer);
 
 		JScrollPane tableContainer = new JScrollPane(table);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -112,15 +144,19 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		addHandlers();
 
 		try {
-			refreshTable(false);
+			refreshTableOnly(false);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+
+		table.setEnabled(true);
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		SwingUtilities.invokeLater(()->{
 			GuiUtils.centerComponent(this, 1300, 350);
 		});
+
+		setInstalling(false);
 	}
 
 	@Override
@@ -147,6 +183,16 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 		    	dispose();
 		    }
+		});
+
+		table.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if(isInstalling)
+					table.setEnabled(false);
+				else
+					table.setEnabled(true);
+			}
 		});
 
 		// listener for row selected: if there is no installer disable button
@@ -190,8 +236,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		table.setSelectionBackground(new Color(3, 127, 252, 30));
 		table.setSelectionForeground(Color.BLACK);
 
-		table.getColumn(columnNames[3]).setCellRenderer(new JTableButtonRenderer(thisPanel));
-		table.getColumn(columnNames[3]).setCellEditor(new ButtonEditor(thisPanel));
+		table.getColumn(columnNames[3]).setCellRenderer(renderer);
+		table.getColumn(columnNames[3]).setCellEditor(btnEditor);
 
 		table.getColumnModel().getColumn(0).setPreferredWidth(110);
 		table.getColumnModel().getColumn(0).setMinWidth(110);
@@ -204,6 +250,19 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 	@Override
 	public void refreshTable(boolean useCache) throws Throwable {
+
+		logger.debug("Refreshing table...");
+
+		if(isInstalling) {
+			return;
+		}
+
+		init(parentFrame, pluginManager, refreshDependencyAction);
+
+		logger.debug("Table refreshed!");
+	}
+
+	public void refreshTableOnly(boolean useCache) throws Throwable {
 
 		logger.debug("Refreshing table...");
 
@@ -225,19 +284,19 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 			String installedText = (installed) ? "Already installed!" : "Not yet Installed";
 
 			JButton installOrRemoveBtn = (installed) ? new JButton(BUTTON_UNINSTALL) : new JButton(BUTTON_INSTALL);
-
+			installOrRemoveBtn.setEnabled(true);
 			model.addRow(new Object[]{noExtensionName, description, installedText, installOrRemoveBtn});
 		}
 
 		table.revalidate();
 		table.repaint();
-
+		table.setEnabled(true);
 		logger.debug("Table refreshed!");
 	}
 
 	private boolean askIfSureToClose() {
 		String msg = "Are you sure to close Plugin Manager? There is an installation in progress. It will be interrupted";
-		if (new JOptionHelper(thisPanel).showYNOrNullDialogWarn(msg, "Exit plugin manager?")) {
+		if (dialogHelper.showYNOrNullDialogWarn(msg, "Exit plugin manager?")) {
 			return true;
 		}else {
 			return false;
@@ -246,6 +305,11 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 	@Override
 	public PluginDTO getPluginDTO(String nameWithoutExtension) {
+		PluginDTO dto = pluginManager.retrieveFromCacheByNameNoExtension(nameWithoutExtension);
+
+		if(dto == null)
+			pluginManager.refreshCache(nameWithoutExtension);
+
 		return pluginManager.retrieveFromCacheByNameNoExtension(nameWithoutExtension);
 	}
 

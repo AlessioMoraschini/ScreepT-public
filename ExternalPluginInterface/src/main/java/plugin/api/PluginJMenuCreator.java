@@ -14,47 +14,56 @@ import various.common.light.om.SelectionDtoFull;
 
 public class PluginJMenuCreator {
 
+	@FunctionalInterface
+	public interface ObjectRetriever {
+		public Object getParam();
+	}
+
 	public PluginJMenuCreator() {
 	}
 
-	public JMenu getPluginMenu(Object parameter, FunctionType type, IPlugin plugin, boolean specifyFunctionName) {
+	public JMenu getPluginMenu(ObjectRetriever retriever, FunctionType type, IPlugin plugin, boolean specifyFunctionName) {
+
+		ObjectRetriever safeRetriever = retriever == null ? () -> {return null;} : retriever;
 
 		JMenu menu = new JMenu(plugin.getPluginName() + (specifyFunctionName ? " - " + type.readableName : ""));
 
 		Set<String> functions = plugin.getAvailableFunctions(plugin.getID(), type);
-		if(parameter == null || functions.isEmpty())
+		if(functions.isEmpty())
 			return menu;
-
-
-		String paramFlag = "main";
-		if(parameter instanceof List<?>) {
-			paramFlag = "list";
-		} else if (parameter instanceof String[]) {
-			paramFlag = "string";
-		} else if (parameter instanceof SelectionDtoFull) {
-			paramFlag = "seldto";
-		} else {
-			parameter = new String[0];
-		}
 
 		Iterator<String> iterator = functions.iterator();
 		while(iterator.hasNext()) {
 			String availableFunction = iterator.next();
 
 			JMenuItem item = new JMenuItem(availableFunction);
-			final String flag = paramFlag;
-			final Object paramObj = parameter;
 			item.addActionListener((e) -> {
 				FunctionExecutor executor = plugin.getExecutor(plugin.getID(), type, availableFunction);
 				if(executor != null) {
-					if(flag.equals("main") || flag.equals("string")) {
-						executor.executeMain((String[])paramObj);
 
-					} else if(flag.equals("list")) {
-						executor.executeFiles((List)paramObj);
+					if(safeRetriever.getParam() == null) {
+						return;
+					}
 
-					} else if(flag.equals("seldto")) {
-						executor.executeSelectionDto((SelectionDtoFull)paramObj);
+					String paramFlag = "main";
+					if(safeRetriever.getParam() instanceof List<?>) {
+						paramFlag = "list";
+					} else if (safeRetriever.getParam() instanceof String[]) {
+						paramFlag = "string";
+					} else if (safeRetriever.getParam() instanceof SelectionDtoFull) {
+						paramFlag = "seldto";
+					}
+
+
+
+					if(paramFlag.equals("main") || paramFlag.equals("string")) {
+						executor.executeMain((String[])safeRetriever.getParam());
+
+					} else if(paramFlag.equals("list")) {
+						executor.executeFiles((List)safeRetriever.getParam());
+
+					} else if(paramFlag.equals("seldto")) {
+						executor.executeSelectionDto((SelectionDtoFull)safeRetriever.getParam());
 					}
 				}
 			});

@@ -36,7 +36,7 @@ public class SelectionDtoFull {
 	}
 
 	public SelectionDtoFull(JTextArea textArea, File file) {
-		this.file = file != null ? file : new File("./");
+		this.file = file;
 		textArea.requestFocus();
 		this.textArea = textArea;
 		first = textArea.getSelectionStart();

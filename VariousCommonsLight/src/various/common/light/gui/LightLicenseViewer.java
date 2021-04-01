@@ -355,7 +355,7 @@ public class LightLicenseViewer extends JDialog {
 
 	private void exitAccepting() {
 		dialogHelper.info(
-			GuiUtils.encapsulateInHtml("<b>License accepted!</b><br>If you want to read it again you can find it at: " + sourceLicense),
+			GuiUtils.encapsulateInHtml("<b>License accepted!</b></br>If you want to read it again you can find it at: " + sourceLicense),
 			"License accepted"
 		);
 		userChoice = UserLicenseChoice.ACCEPTED;

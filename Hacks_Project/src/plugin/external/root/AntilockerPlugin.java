@@ -56,7 +56,7 @@ public class AntilockerPlugin extends PluginAbstractParent implements IPlugin {
 
 	@Override
 	public boolean openFrame(List<File> files) {
-		AntilockerGui.main(FileVarious.filesToPaths(files));
+		AntilockerGui.main(FileVarious.filesToStrings(files));
 		SwingUtilities.invokeLater(()->{
 			gui = AntilockerGui.gui;
 			gui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

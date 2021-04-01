@@ -497,8 +497,10 @@ public class GenericFileChooserDialog {
 		addMultipleFileFilter(fileChooser, filters);
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setFileView(fileView);
-		fileChooser.setCurrentDirectory(defaultDir != null ? defaultDir : new File(currentConf.getFileOpt().getLastDstFolderPath()));
-		updateDefaultDir(defaultDirectory, fileChooser);
+		defaultDir = !currentConf.getTextEditorOpt().workspaceViewSelected
+				? defaultDir
+				: new File(currentConf.getTextEditorOpt().getDefaultWorkspacePath());
+		updateDefaultDir(defaultDir, fileChooser);
 		fileChooser.setSelectedFile(new File(defaultName));
 		fileChooser.setPreferredSize(GeneralConfig.FILE_CHOOSER_SIZE);
 		File correctFile = null;

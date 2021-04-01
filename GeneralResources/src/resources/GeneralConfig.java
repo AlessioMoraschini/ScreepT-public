@@ -87,8 +87,10 @@ public class GeneralConfig {
 			// General Folders
 			public static String MAIN_APP_ROOT_DIR = resourcesFilePathsMappings.getProperty("MAIN_APP_ROOT_DIR", "Application/");
 
-			public static String USER_PERSONAL_DIR_SCREEPT_FOLDER = USER_PERSONAL_DIR + "ScreepT_temp_files" + File.separatorChar + APP_VERSION;
-			public static File F_USER_PERSONAL_DIR_SCREEPT_FOLDER = new File(USER_PERSONAL_DIR_SCREEPT_FOLDER);
+			public static String USER_PERSONAL_DIR_SCREEPT_ROOT_FOLDER = USER_PERSONAL_DIR + "ScreepT_temp_files/";
+			public static String USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION = USER_PERSONAL_DIR_SCREEPT_ROOT_FOLDER + "/" + APP_VERSION + "/";
+			public static File F_USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION = new File(USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION);
+			public static String USER_PERSONAL_DIR_SCREEPT_FILE_COMMON_DATA_FOLDER = USER_PERSONAL_DIR_SCREEPT_ROOT_FOLDER + "COMMON_DATA/";
 			public static String TEMP_DECRIPTED_ROOT_PATH = USER_DESKTOP + "ScreepT_decrypted_tempFiles";
 			public static File TEMP_DECRIPTED_ROOT = new File(TEMP_DECRIPTED_ROOT_PATH);
 
@@ -96,18 +98,7 @@ public class GeneralConfig {
 			public static String PLUGINS_DIR = resourcesFilePathsMappings.getProperty("PLUGINS_DIR");
 			public static String EXTERNAL_PLUGINS = resourcesFilePathsMappings.getProperty("EXTERNAL_PLUGINS", "EXTERNAL_PLUGINS/");
 			public static String UPDATES_DIR = resourcesFilePathsMappings.getProperty("UPDATES_DIR");
-			static{
-				try {
-					File updates = new File(UPDATES_DIR);
-					if(!updates.exists())
-						updates.mkdirs();
 
-					File externalPlugins = new File(EXTERNAL_PLUGINS);
-					if(!externalPlugins.exists())
-						externalPlugins.mkdirs();
-				} catch (Exception e) {
-				}
-			}
 			public static String CREEPTER_FOLDER = resourcesFilePathsMappings.getProperty("CREEPTER_FOLDER", "Resources_ScreepT/CreepTer/");
 			public static String CREEPTER_INSTRUCTIONS_FILE = CREEPTER_FOLDER + "Instructions.txt";
 			public static String DEFAULT_IMAGE_FOLDER = resourcesFilePathsMappings.getProperty("DEFAULT_IMAGE_FOLDER");
@@ -127,9 +118,14 @@ public class GeneralConfig {
 			// Temp Folders and Files
 			public static String TEMP_DIRECTORY = resourcesFilePathsMappings.getProperty("TEMP_DIR", RESOURCES_DIR + "temp/");
 			public static File TEMP_DIRECTORY_FILE = new File(TEMP_DIRECTORY);
-			static {
-				if(!TEMP_DIRECTORY_FILE.exists())
-					TEMP_DIRECTORY_FILE.mkdirs();
+			static{
+				FileWorker.mkDirs(
+						EXTERNAL_PLUGINS,
+						UPDATES_DIR,
+						EXTERNAL_PLUGINS,
+						USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION,
+						USER_PERSONAL_DIR_SCREEPT_FILE_COMMON_DATA_FOLDER,
+						TEMP_DIRECTORY);
 			}
 
 			// LICENSE MAPPING
@@ -141,7 +137,7 @@ public class GeneralConfig {
 			/**
 			 * This file is created at SW start, and deleted on close to signal other external programs
 			 */
-			public static String SCREEPT_ACTIVE_SIGNAL_PATH = USER_PERSONAL_DIR_SCREEPT_FOLDER + File.separatorChar + "mainApplicationSignalFile.ScreepT";
+			public static String SCREEPT_ACTIVE_SIGNAL_PATH = USER_PERSONAL_DIR_SCREEPT_FOLDER_VERSION + "mainApplicationSignalFile.ScreepT";
 			public static File SCREEPT_ACTIVE_SIGNAL_FILE = new File(SCREEPT_ACTIVE_SIGNAL_PATH);
 			public static String SIGNAL_FILE_TO_LAUNCH_PROP_PREFIX = "FILE_TO_LAUNCH_";
 			public static int SIGNAL_LISTENER_PERIOD = resourcesFilePathsMappings.getIntVarFromProps("SIGNAL_LISTENER_PERIOD", 300);
@@ -434,22 +430,6 @@ public class GeneralConfig {
 				}
 
 				return customThemeContents;
-			}
-
-			/**
-			 * This method creates directory in user system folder to put shared screept's files
-			 * @return
-			 */
-			public static boolean mkDirUserDirScreepT() {
-				try {
-					File userDirScreeptFolder = new File(USER_PERSONAL_DIR_SCREEPT_FOLDER);
-					if (!userDirScreeptFolder.exists()) {
-						userDirScreeptFolder.mkdirs();
-					}
-					return true;
-				} catch (Exception e) {
-					return false;
-				}
 			}
 
 			/**

@@ -1,11 +1,29 @@
 package gui.commons.frameutils.frame.panels;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
+import java.awt.SystemColor;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -34,28 +52,6 @@ import various.common.light.om.LimitedConcurrentList;
 import various.common.light.utility.string.StringWorker;
 import various.common.light.utility.string.StringWorker.EOL;
 
-import javax.swing.JSplitPane;
-
-import java.awt.AWTException;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.KeyboardFocusManager;
-import java.awt.Robot;
-import java.awt.SystemColor;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * This class implements a console that prints out every output from System.out/System.err streams
  * @author Alessio Moraschini
@@ -63,14 +59,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ShellReadWritePanel extends ParentPanel {
 	private static final long serialVersionUID = -351031239684511014L;
-	
+
 	public static final Double defaultDividerLocationRatio = 0.30D;
 
 	public int maxLines;
-	
+
 	private JScrollPane scrollPaneBottom;
 	private JScrollPane scrollPaneTop;
-	
+
 	public JSplitPane splitPane;
 
 	public PlayStopPausePanel playStopPausePanel;
@@ -86,22 +82,22 @@ public class ShellReadWritePanel extends ParentPanel {
 	public JComboBox<String> comboConcatenationMode;
 	public JTextArea commandTextArea;
 	private JTextArea outputTextArea;
-	
+
 	public boolean fileUnsaved;
 	public File loadedFile;
-	
+
 	private Process process;
-	
+
 	private JFrame parentFrame;
-	
+
 	private Runnable syncAction;
 	private Runnable afterLoadAction;
 	private Runnable afterSaveAction;
-	
+
 	private ShellShortcutsListener shortcutsListener;
-	
+
 	private LimitedConcurrentList<String> lastInteractiveCommands;
-	
+
 	private AtomicInteger currentCommandIndex;
 
 	public ShellReadWritePanel() {
@@ -111,7 +107,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	public ShellReadWritePanel(int visibleLines, JFrame parentFrame) {
 		this(visibleLines, parentFrame, null);
 	}
-	
+
 	public ShellReadWritePanel(int visibleLines, JFrame parentFrame, JTextArea initializedTextAreaInstance) {
 		currentCommandIndex = new AtomicInteger(0);
 		maxLines = visibleLines;
@@ -120,22 +116,22 @@ public class ShellReadWritePanel extends ParentPanel {
 		this.commandTextArea = initializedTextAreaInstance != null ? initializedTextAreaInstance : new JTextArea();
 		setSyncAction(null);
 		super.init();
-		
+
 		SwingUtilities.invokeLater(() -> {
 			splitPane.setDividerLocation(defaultDividerLocationRatio);
 			commandTextArea.setFont(ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		});
-		
+
 		shortcutsListener = new ShellShortcutsListener(this);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(shortcutsListener);
 	}
-	
+
 	public void darker() {
 		getCommandTextArea().setBackground(Color.DARK_GRAY.darker().darker());
 		getOutputTextArea().setBackground(Color.DARK_GRAY.darker().darker());
 		playStopPausePanel.setBackground(Color.DARK_GRAY.darker());
 		loadNewSavePanel.setBackground(Color.DARK_GRAY.darker());
-		
+
 		labelConcatenationMode.setBackground(Color.DARK_GRAY);
 		labelConcatenationMode.setForeground(Color.LIGHT_GRAY);
 		checkBoxConcatenation.setForeground(SystemColor.menu);
@@ -150,19 +146,19 @@ public class ShellReadWritePanel extends ParentPanel {
 		comboConcatenationMode.setBackground(Color.DARK_GRAY);
 		interactiveInputField.setForeground(SystemColor.menu);
 		interactiveInputField.setBackground(Color.DARK_GRAY.darker());
-		
+
 		SplitPaneUtils.setDividerColors(Color.DARK_GRAY.darker(), Color.DARK_GRAY, splitPane);
 
 		setBackground(Color.DARK_GRAY.darker());
 	}
-	
+
 	@Override
 	public void initGui() {
 		setLayout(new MigLayout(
-				"fill, insets 1, hidemode 2", 
-				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][10px][60px, grow][20px]", 
+				"fill, insets 1, hidemode 2",
+				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][10px][60px, grow][20px]",
 				"[25px:25px][:0px:30px][50px,grow]"));
-		
+
 		// HEADER
 		playStopPausePanel = new PlayStopPausePanel(playAction(), stopAction(), pauseAction());
 		playStopPausePanel.setPauseVisible(false);
@@ -178,19 +174,19 @@ public class ShellReadWritePanel extends ParentPanel {
 		loadNewSavePanel.setNewVisible(false);
 		loadNewSavePanel.setOpaque(true);
 		add(loadNewSavePanel, "cell 1 0 1 1,grow");
-		
+
 		clcButton = getButton("", null, null, IconsPathConfigurator.ICON_TEXT_CLEAR, true);
 		add(clcButton, "cell 2 0 1 1,grow");
-		
+
 		checkBoxAutoscroll = getCheckBox("Autoscroll", "Enable/disable output text area auto-scroll feature", false);
 		add(checkBoxAutoscroll, "cell 3 0 1 1,grow");
-		
+
 		checkBoxConcatenation = getCheckBox("Concatenate Lines", "When executing, all executed lines will be concatenated with chosen mode", false);
 		add(checkBoxConcatenation, "cell 4 0 1 1,alignx center, aligny center");
-		
+
 		labelConcatenationMode = getLabel("Lines concatenation mode:", null, null, null, false);
 		add(labelConcatenationMode, "cell 5 0 1 1,alignx right, aligny center");
-		
+
 		comboConcatenationMode = new JComboBox<String>(getComboModes());
 		comboConcatenationMode.setCursor(GuiUtils.CURSOR_HAND);
 		add(comboConcatenationMode, "cell 6 0 1 1, alignx right");
@@ -198,57 +194,57 @@ public class ShellReadWritePanel extends ParentPanel {
 		lblCurrentFile = getLabel("[No file loaded]", null, null, null, true);
 		lblCurrentFile.setForeground(Color.DARK_GRAY);
 		add(lblCurrentFile, "cell 8 0 1 1, alignx right");
-		
+
 		pinToTopButton = getPinToTopButton(parentFrame);
 		if(parentFrame != null) {
 			add(pinToTopButton, "cell 9 0 1 1, alignx right, grow");
 		}
-		
+
 		// TOGGLE JTEXT FIELD for interactive input after start
 		lblInteractiveInputDescription = getLabel("Live cmd: ",	null, Color.DARK_GRAY, IconsPathConfigurator.ICON_GEN_INFO, false);
 		lblInteractiveInputDescription.setToolTipText("Enter a command and launch on active process. (to launch command, press enter or click play button)");
 		add(lblInteractiveInputDescription, "cell 0 1 1 1,grow");
-		
+
 		interactiveInputField = getTextField(
 				Color.WHITE,
 				Color.BLACK,
 				Color.RED,
 				ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), true);
 		add(interactiveInputField, "cell 1 1 9 1,grow");
-		
-		
+
+
 		// SPLIT PANE
 		splitPane = new JSplitPane();
 		splitPane.setContinuousLayout(true);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		add(splitPane, "cell 0 2 10 1,grow");
 
-		
+
 		// TOP SCROLL PANEL
 		scrollPaneTop = getScrollPane(true, true);
 		scrollPaneTop.setPreferredSize(new Dimension(1920, 1080));
 		splitPane.setTopComponent(scrollPaneTop);
-		
+
 		commandTextArea = getTextArea(commandTextArea, Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		scrollPaneTop.setViewportView(commandTextArea);
-		
-		
+
+
 		// BOTTOM SCROLL PANEL
 		scrollPaneBottom = getScrollPane(true, true);
 		scrollPaneBottom.setPreferredSize(new Dimension(1920, 1080));
 		splitPane.setBottomComponent(scrollPaneBottom);
-		
+
 		outputTextArea = getTextArea(Color.DARK_GRAY, Color.WHITE, Color.WHITE, ParentPanel.DEFAULT_TEXT_AREA_FONT.deriveFont(GeneralConfig.SHELL_PANEL_FONT_SIZE));
 		outputTextArea.setEditable(false);
 		outputTextArea.setCursor(GuiUtils.CURSOR_TEXT);
 		outputTextArea.setText("I'm ready to launch your commands ;)");
 		scrollPaneBottom.setViewportView(outputTextArea);
-		
+
 		commandTextArea.requestFocusInWindow();
-		
+
 		setInteractiveInputMode(false);
 	}
-	
+
 	public void setSyncAction(Runnable action) {
 		syncAction = action != null ? action : syncAction;
 	}
@@ -264,29 +260,29 @@ public class ShellReadWritePanel extends ParentPanel {
 		clcButton.addActionListener((e) -> {
 			outputTextArea.setText("");
 		});
-		
+
 		interactiveInputField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				try {
 					if(KeyEvent.VK_ENTER == e.getKeyCode())
 						playStopPausePanel.getPlayButton().doClick();
-					
+
 					else if(lastInteractiveCommands == null || lastInteractiveCommands.isEmpty())
 						return;
-						
+
 					else if(KeyEvent.VK_UP == e.getKeyCode() && currentCommandIndex.get() < lastInteractiveCommands.getSize() - 1)
 						interactiveInputField.setText(lastInteractiveCommands.getList().get(currentCommandIndex.incrementAndGet()));
-						
+
 					else if(KeyEvent.VK_DOWN == e.getKeyCode() && currentCommandIndex.get() > 0)
 						interactiveInputField.setText(lastInteractiveCommands.getList().get(currentCommandIndex.decrementAndGet()));
-				
+
 				} catch (Exception e1) {
 					logger.error("Can't go to command element number " + currentCommandIndex);
 				}
 			}
 		});
-		
+
 		checkBoxConcatenation.addActionListener((e)->{
 			labelConcatenationMode.setEnabled(checkBoxConcatenation.isSelected());
 			comboConcatenationMode.setEnabled(checkBoxConcatenation.isSelected());
@@ -294,9 +290,9 @@ public class ShellReadWritePanel extends ParentPanel {
 		GuiUtils.clickAndTriggerCheckbox(checkBoxConcatenation, true);
 
 		GuiUtils.clickAndTriggerCheckbox(checkBoxAutoscroll, false);
-		
+
 		commandTextArea.getDocument().addDocumentListener(new DocumentListener() {
-			
+
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				onDocumentModification();
@@ -310,9 +306,9 @@ public class ShellReadWritePanel extends ParentPanel {
 				onDocumentModification();
 			}
 		});
-		
+
 	}
-	
+
 	@Override
 	protected void addKeyListeners() {
 	}
@@ -320,30 +316,22 @@ public class ShellReadWritePanel extends ParentPanel {
 	private void onDocumentModification() {
 		fileUnsaved = true;
 		String fileName = lblCurrentFile.getText();
-		if(!fileName.endsWith("(*)")) 
+		if(!fileName.endsWith("(*)"))
 			lblCurrentFile.setText(fileName + "(*)");
 	}
 
 	private void onDocumentReset() {
 		fileUnsaved = false;
 		String fileName = lblCurrentFile.getText();
-		if(fileName.endsWith("(*)")) 
+		if(fileName.endsWith("(*)"))
 			lblCurrentFile.setText(fileName.substring(0, fileName.length() - 3));
 	}
-	
+
 	private Runnable stopAction() {
 		return () -> {
 
 			GuiUtils.giveFocusToComponent(commandTextArea);
-			try {
-				Robot bot = new Robot();
-				bot.mouseMove(commandTextArea.getLocationOnScreen().x + 10, commandTextArea.getLocationOnScreen().y + 10);
-				bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-				bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-			} catch (AWTException e) {
-				logger.error("", e);
-			}
-			
+			GuiUtils.mouseClick(commandTextArea.getLocationOnScreen().x + 10, commandTextArea.getLocationOnScreen().y + 10);
 			GuiUtils.launchThreadSafeSwing(() -> {
 				try {
 					stopProcess();
@@ -354,7 +342,7 @@ public class ShellReadWritePanel extends ParentPanel {
 			});
 		};
 	}
-	
+
 	private void setInteractiveInputMode(boolean interactiveMode) {
 		interactiveInputField.setVisible(interactiveMode);
 		lblInteractiveInputDescription.setVisible(interactiveMode);
@@ -366,15 +354,15 @@ public class ShellReadWritePanel extends ParentPanel {
 			commandTextArea.requestFocusInWindow();
 		}
 	}
-	
+
 	private void addInteractiveCommandToList(String command) {
 		if(lastInteractiveCommands == null)
 			lastInteractiveCommands = new LimitedConcurrentList<>(50);
-		
+
 		lastInteractiveCommands.addUniqueToTop(command);
 		currentCommandIndex.set(lastInteractiveCommands.getSize() - 1);
 	}
-	
+
 	private Runnable playAction() {
 		return () -> {
 			GuiUtils.launchThreadSafeSwing(() -> {
@@ -383,44 +371,44 @@ public class ShellReadWritePanel extends ParentPanel {
 					// If a command is blocking, then the play button must stay clickable
 					playStopPausePanel.getPlayButton().setEnabled(true);
 					playStopPausePanel.getStopButton().setEnabled(true);
-					
+
 					// If there is already a running process, then write to it and return
 					if(process != null) {
 						try {
 							String cmd = interactiveInputField.getText();
 							addInteractiveCommandToList(cmd);
-							
+
 							if(!StringWorker.isEmpty(cmd)) {
-								
+
 								if(cmd.equalsIgnoreCase("CLC") || cmd.equalsIgnoreCase("CLEAR")) {
 									outputTextArea.setText("");
-								
+
 								} else {
 									outputTextArea.append(EOL.defaultEol.eol + " USER INPUT >> " + cmd + EOL.defaultEol.eol);
 									if(checkBoxAutoscroll.isSelected())
 										outputTextArea.setCaretPosition(outputTextArea.getDocument().getLength()-1);
-									
+
 									process.getOutputStream().write(cmd.getBytes());
 									process.getOutputStream().flush();
 								}
 							}
 							return;
-							
+
 						} catch (Exception e) {
 							logger.error("Can't write to output process!", e);
 							return;
 						}
 					}
-						
+
 					// Otherwise start a new one
 					boolean concatenateSelectedLines = checkBoxConcatenation.isSelected();
-					String command = concatenateSelectedLines 
+					String command = concatenateSelectedLines
 							? RXTextUtilities.getSelectedOrBlockText(commandTextArea, true, (String)comboConcatenationMode.getSelectedItem())
 							: RXTextUtilities.getSelectedOrBlockText(commandTextArea, true, EOL.LF.eol);
-					
+
 					Thread input = null;
 					Thread error = null;
-					
+
 					if(concatenateSelectedLines) {
 						outputTextArea.append("\n\n ##############################################\n\n "
 								+ " >> Command Launched: \n\n" + command + "\n\n");
@@ -436,21 +424,21 @@ public class ShellReadWritePanel extends ParentPanel {
 						input = readProcessOutput(process.getInputStream(), false);
 						error = readProcessOutput(process.getErrorStream(), true);
 					}
-					
+
 					setInteractiveInputMode(true);
 					input.start();
 					error.start();
 //					input.join();
 //					error.join();
 					process.waitFor();
-					
-					
+
+
 				} catch (Exception e) {
 					logger.error("Error launching command", e);
 					dialogHelper.error("Error launching command!");
-				
-				} 
-				
+
+				}
+
 				try {
 					stopProcess();
 				} catch (InterruptedException e) {
@@ -463,38 +451,38 @@ public class ShellReadWritePanel extends ParentPanel {
 			});
 		};
 	}
-	
+
 	private Runnable pauseAction() {
 		return () -> {};
 	}
-	
+
 	public Boolean askSaveIfUnsaved() {
 		Boolean askSave = false;
 		if(fileUnsaved)
 			askSave = askSave();
-		
+
 		if(askSave != null && askSave)
 			loadNewSavePanel.getSaveButton().doClick();
-		
+
 		return askSave;
 	}
-	
+
 	public Runnable loadAction(final File forceFile) {
 		return () -> {
-			
+
 			File source = forceFile == null ? fileChooser.fileRead(null) : forceFile;
-			
+
 			if(source == null || askSaveIfUnsaved() == null) {
 				// CANC pressed
 				loadNewSavePanel.setAllButtonsEnabled(true);
 				return;
 			}
 			loadedFile = source;
-			
+
 			FileWorker.loadFileTxtArea(source, commandTextArea, lblCurrentFile, null, EOL.LF);
 			lblCurrentFile.setToolTipText(loadedFile.getAbsolutePath());
 			fileUnsaved = false;
-			
+
 			if(afterLoadAction != null)
 				afterLoadAction.run();
 		};
@@ -502,13 +490,13 @@ public class ShellReadWritePanel extends ParentPanel {
 
 	public Runnable newAction() {
 		return () -> {
-			
+
 			if(askSaveIfUnsaved() == null) {
 				// CANC pressed
 				loadNewSavePanel.setAllButtonsEnabled(true);
 				return;
 			}
-			
+
 			commandTextArea.setText("");
 			lblCurrentFile.setText("");
 			loadedFile = null;
@@ -519,9 +507,9 @@ public class ShellReadWritePanel extends ParentPanel {
 		return () -> {
 			if(saveFile(false))
 				onDocumentReset();
-			
+
 			loadNewSavePanel.setAllButtonsEnabled(true);
-			
+
 			if(afterSaveAction != null)
 				afterSaveAction.run();
 		};
@@ -530,7 +518,7 @@ public class ShellReadWritePanel extends ParentPanel {
 		return () -> {
 			if(saveFile(true))
 				onDocumentReset();
-			
+
 			loadNewSavePanel.setAllButtonsEnabled(true);
 		};
 	}
@@ -538,55 +526,55 @@ public class ShellReadWritePanel extends ParentPanel {
 	private boolean saveFile(boolean saveAs) {
 		boolean done = false;
 		try {
-			File selectedFile = saveAs || loadedFile == null || !loadedFile.isFile() || !loadedFile.exists() 
+			File selectedFile = saveAs || loadedFile == null || !loadedFile.isFile() || !loadedFile.exists()
 					? fileChooser.fileWrite(null, (loadedFile != null ? loadedFile.getName() : "ShellFile.txt"), FileVarious.getParent(loadedFile), null)
 					: loadedFile;
 
 			if (selectedFile != null) {
-				
+
 				String outString = StringWorker.normalizeStringToEol(commandTextArea.getText(), EOL.LF);
-				
+
 				if (selectedFile.exists()) {
 					if (dialogHelper.yesOrNo("File " + selectedFile.getName()
 							+ " exists, overwrite it?", "Overwrite?")) {
 						done = FileWorker.writeStringToFile(outString, selectedFile, true);
-					} 
+					}
 				} else {
 					done = selectedFile.createNewFile();
 					PrintWriter out = new PrintWriter(selectedFile.getAbsolutePath());
 					out.write(outString);
 					out.close();
 				}
-				
+
 				if (done) {
 					String msgOk = selectedFile.getName() + " succesfully saved!";
 					if(saveAs)
 						dialogHelper.info(msgOk, "File Saved!");
 
-					if (loadedFile == null) 
+					if (loadedFile == null)
 						loadedFile = selectedFile;
-					
+
 					lblCurrentFile.setText(loadedFile.getName());
 					lblCurrentFile.setToolTipText(loadedFile.getCanonicalPath());
-				
+
 				} else {
 					dialogHelper.error("Error while saving text to file");
 				}
 			}
-			
+
 		} catch (Exception e1) {
 			done = false;
 			dialogHelper.error("error Saving the selected file :(");
 			logger.error("Exception happened!", e1);
 		}
-		
+
 		return done;
 	}
-	
+
 	private Boolean askSave() {
 		return dialogHelper.askYorNPrecond("Unsaved file", "Do you want to save current file before to continue?", this, fileUnsaved);
 	}
-	
+
 	private Process launchCommand(String command) throws IOException {
 		List<String> commands = new ArrayList<>();
 		if(new OSinfo().isWindows()) {
@@ -594,36 +582,36 @@ public class ShellReadWritePanel extends ParentPanel {
 			commands.add("/C");
 		}
 		commands.add(command);
-		
+
 		ProcessBuilder builder = new ProcessBuilder(commands);
 		return builder.start();
 	}
-	
+
 	private static String writeInitBatShAndGetPath(String commandList) throws IOException {
-		
+
 		String initFilePath = (new OSinfo().isWindows())? "TEMP_SHELL_EXECUTABLE.bat" : "TEMP_SHELL_EXECUTABLE.sh";
 		logger.info("Creating batch/bash file : " + initFilePath);
-		
+
 		// write commands to build bash/batch starter file
 		boolean written = FileWorker.writeStringToFile(commandList, new File(initFilePath), false);
-		
+
 		String msg = (written)? "Write completed correctly :)" : "Write not succeded for some error :(";
 		logger.info(msg);
-		
+
 		return initFilePath;
 	}
 
 	private void stopProcess() throws InterruptedException {
 		if(this.process != null)
 			this.process.destroyForcibly().waitFor();
-		
+
 		this.process = null;
 		setInteractiveInputMode(false);
 	}
-	
+
 	private Thread readProcessOutput(InputStream inputStream, boolean errorStream) throws UnsupportedEncodingException {
-//		Charset charset = Charset.forName(new OSinfo().isWindows() && Charset.isSupported("UTF-16LE") 
-//				? "UTF-16" 
+//		Charset charset = Charset.forName(new OSinfo().isWindows() && Charset.isSupported("UTF-16LE")
+//				? "UTF-16"
 //				: "UTF-8");
 		Runnable readerAction = () -> {
 			BufferedReader reader = null;
@@ -639,11 +627,11 @@ public class ShellReadWritePanel extends ParentPanel {
 							outputTextArea.setCaretPosition(outputTextArea.getDocument().getLength()-1);
 					});
 				}
-			
+
 			} catch (IOException e) {
 				logger.error("Error reading process output:\n\n", e);
 				outputTextArea.append("!! Error reading process output:\n\n");
-			
+
 			} finally {
 				if(reader != null)
 					try {
@@ -655,11 +643,11 @@ public class ShellReadWritePanel extends ParentPanel {
 		};
 		return new Thread(readerAction);
 	}
-	
+
 	private String[] getComboModes() {
 		if(new OSinfo().isWindows())
 			return ConsoleConcatenationModeWindows.values(false);
-		else 
+		else
 			return ConsoleConcatenationMode.values(false);
 	}
 
@@ -670,7 +658,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	public JTextArea getOutputTextArea() {
 		return outputTextArea;
 	}
-	
+
 	public Runnable getAfterLoadAction() {
 		return afterLoadAction;
 	}
@@ -695,5 +683,5 @@ public class ShellReadWritePanel extends ParentPanel {
 		this.lastInteractiveCommands = lastInteractiveCommands;
 		currentCommandIndex.set(lastInteractiveCommands.getSize() - 1);
 	}
-	
+
 }

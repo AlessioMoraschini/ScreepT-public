@@ -401,7 +401,7 @@ public abstract class INItializerParent implements INItializerInterface{
 		return list;
 	}
 
-	public String listToString(ArrayList<String> loadedFiles) {
+	public String listToString(List<String> loadedFiles) {
 		String openedFiles = "";
 		// concateno gli elementi della lista e, tranne l'ultimo, aggiungo una virgola
 		for(String currentPath : loadedFiles) {

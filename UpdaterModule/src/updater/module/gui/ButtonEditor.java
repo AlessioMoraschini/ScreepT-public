@@ -15,15 +15,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JTable;
 
 import updater.module.plugins.PluginDTO;
@@ -109,78 +106,74 @@ class ButtonEditor extends DefaultCellEditor {
 
 					boolean installed = clickedButtonPlugin.installationCompleted;
 					PluginManager pluginManager = pluginManagerInterface.getPluginManager();
-					JFrame thisPanel = pluginManagerInterface.getFrame();
-					JOptionHelper dialogHelper = new JOptionHelper(thisPanel);
 
 					try {
-						if (installed) {
 
-							PluginDTO refreshedPlugin = pluginManager.retrieveFromCache(clickedButtonPlugin.getName());
+						PluginDTO refreshedPlugin = pluginManager.retrieveFromCache(clickedButtonPlugin.getName());
+
+						String dynaMsg = installed ? "Uninstall " : "Install ";
+						boolean confirm = PluginManagerGUI.dialogHelper.yesOrNo(dynaMsg + refreshedPlugin.getName() + " ?");
+
+						if (confirm && installed) {
+
 
 							boolean uninstalled = pluginManager.removePlugin(refreshedPlugin);
 							if (uninstalled) {
 								String message = "Plugin uninstalled correctly. Files are marked for delete and will be removed at next restart ;)";
 								logger.info(message);
-								dialogHelper.info(message, "Plugin uninstalled");
+								PluginManagerGUI.dialogHelper.info(message, "Plugin uninstalled");
 							} else {
 								String message = "An error occurred during plugin removal! Delete will be re-tried on exit.";
 								logger.warn(message);
-								dialogHelper.warn(message, "An error occurred");
+								PluginManagerGUI.dialogHelper.warn(message, "An error occurred");
 							}
 
-						} else {
+							pluginManagerInterface.setInstalling(false);
+
+						} else if (confirm) {
 							try {
-								PluginDTO refreshedPlugin = pluginManager.retrieveFromCache(clickedButtonPlugin.getName());
 
 								PluginDTO downloaded = pluginManager.downloadPlugin(refreshedPlugin);
 								pluginManager.installPlugin(downloaded, true);
 								String message = "Installation completed! Plugin will be available after application restart.";
 								logger.info(message);
-								dialogHelper.info(message, "Plugin installed");
+								PluginManagerGUI.dialogHelper.info(message, "Plugin installed");
 
 							} catch (Throwable e) {
 								if (e instanceof ProgressBarInterruptedException) {
-									pluginManagerInterface.setInstalling(false);
 									String message = "Installation process interrupted by user.";
 									logger.info(message);
-									dialogHelper.info(message, "Interrupted by user");
+									PluginManagerGUI.dialogHelper.info(message, "Interrupted by user");
 
 								} else if(e instanceof TimeoutException) {
 									String message = "Server is unreachable!";
 									logger.error(message, e);
-									dialogHelper.error(message, "An error occurred");
+									PluginManagerGUI.dialogHelper.error(message, "An error occurred");
 
 								} else {
 									String message = "An error occurred during installation";
 									logger.error(message, e);
-									dialogHelper.error(message, "An error occurred");
+									PluginManagerGUI.dialogHelper.error(message, "An error occurred");
 								}
+							} finally {
+								pluginManagerInterface.setInstalling(false);
 							}
+
 						}
 					} catch (Throwable e) {
 						logger.error("An error occurred", e);
-					} finally {
-
-						isRunning.set(false);
-
-						logger.info("Installation Completed, refreshing elements...");
-
-						try {
-							pluginManagerInterface.refreshTable(true);
-						} catch (Throwable e) {
-							logger.error("Cannot refresh table!", e);
-						}
-						pluginManagerInterface.refreshGuiLibsAfterChange();
 					}
-
-					pluginManagerInterface.setInstalling(false);
-					logger.info("Installation Completed, refresh completed!");
 
 				} else {
 					logger.warn("Exiting, installation already in progress.");
 					new JOptionHelper(pluginManagerInterface.getFrame()).warn("Must wait current installation to finish before to start another one!", "Already installing");
 				}
+
+				logger.info("Refreshing elements...");
+				isRunning.set(false);
 				button.setEnabled(true);
+				pluginManagerInterface.setInstalling(false);
+				logger.info("Process completed, refresh completed!");
 			}
 		};
     }

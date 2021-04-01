@@ -41,11 +41,11 @@ import various.common.light.utility.string.StringWorker.EOL;
 
 public class INItializer extends INItializerParent implements INItializerInterface{
 
-	// INItializer logger creation		
-	static SafeLogger logger = new SafeLogger(INItializer.class); 
-	
+	// INItializer logger creation
+	static SafeLogger logger = new SafeLogger(INItializer.class);
+
 	// DEFAULT INI
-	public final static String DEFAULT_INI_PATH = GeneralConfig.RESOURCES_DIR + "CONFIG.ini"; 
+	public final static String DEFAULT_INI_PATH = GeneralConfig.RESOURCES_DIR + "CONFIG.ini";
 
 	// options om
 	private GenericOption genOpt;
@@ -55,7 +55,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	private GuiOption guiOpt;
 	private TextEditorOption textEditorOpt;
 	private ImgConverterOption imageConvertOption;
-	
+
 	public final static String AES_OPT = "AES_OPTIONS";
 	public final static String STEGA_OPT = "STEGANO_OPTIONS";
 	public final static String FILE_OPT = "FILE_OPTIONS";
@@ -63,7 +63,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	public final static String GUI_OPT = "GUI_OPTIONS";
 	public final static String TEXT_EDITOR_OPT = "TEXT_EDITOR";
 	public final static String IMAGE_CONVERTER_OPT = "IMAGE_CONVERTER";
-	
+
 	public INItializer() {
 		super(DEFAULT_INI_PATH);
 		genOpt = new GenericOption();
@@ -74,7 +74,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt = new TextEditorOption(this);
 		imageConvertOption = new ImgConverterOption();
 	}
-	
+
 	public INItializer(Wini configFile) {
 		super(configFile, DEFAULT_INI_PATH);
 		genOpt = new GenericOption();
@@ -85,16 +85,16 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt = new TextEditorOption();
 		imageConvertOption = new ImgConverterOption();
 	}
-	
+
 	// READ & FILL FIELDS METHODS
-	
+
 	/**
-	 * Method that fills the pojo object mapped from the file given as ini file with iniReadFile setter method, 
+	 * Method that fills the pojo object mapped from the file given as ini file with iniReadFile setter method,
 	 * or also with constructor "INItializer(Wini configFile)". if some value is null it sets default values.
 	 */
 	@Override
 	public void readConfigIniFile() {
-		
+
 		// LOAD AES OPTIONS => disabled key for security
 		aesOpt.setFlagAes(Boolean.parseBoolean(iniReadFile.get(AES_OPT, "flagCodificaAes")));
 		aesOpt.setHashKey(Boolean.parseBoolean(iniReadFile.get(AES_OPT, "hashKey")));
@@ -103,76 +103,76 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		} catch (Exception e) {
 			aesOpt.setSecurityLevel(AesOption.DEF_securityLevel);
 		}
-		
+
 		loadFileOptions();
 		loadGeneralOptions();
 		loadGuiOptions();
 		loadSteganoOptions();
 		loadTxtEditorOptions();
 		loadImageConverterOptions();
-		
+
 		logger.info("Loaded ini file: "+ this.toStringa());
 	}
-	
-	
+
+
 	// WRITE & FILL FIELDS METHODS
-	
+
 	/**
 	 * Method that write on the iniFile (notice that it's different from iniReadFile which is user to read values from file)
 	 * the values setted on pojo's of this class. if some value is null it writes default values of pojo's
 	 */
 	@Override
 	public synchronized void writeCurrentConfigIniFile() {
-		
+
 		synchronized(iniFile) {
 			// set INIFILE-AES OPTIONS
 			iniFile.put(AES_OPT, "flagCodificaAes", aesOpt.isFlagAes());
 			iniFile.put(AES_OPT, "hashKey", aesOpt.isHashKey());
 			iniFile.put(AES_OPT, "securityLevel", aesOpt.getSecurityLevel().name());
-			
+
 			writeFileOptions();
 			writeGeneralOptions();
 			writeGuiOptions();
 			writeImgConverterOptions();
 			writeTxtEditOptions();
 			writeSteganoOptions();
-			
+
 			logger.info("Configuration written to: "+iniFile.getFile().getAbsolutePath() + this.toStringa());
-			
+
 			// WRITE ALL VALUES TO FILE
 			super.store();
 		}
 	}
-	
+
 	// READ PROPERTIES
-	
+
 	/**
 	 * Load file properties from file into volatile memory
 	 */
 	public void loadFileOptions() {
 		// LOAD FILE OPTIONS
-		
+
 		// FNAME SEARCH OPTIONS
 		fileOpt.setfNameSearchUseManual(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fNameSearchUseManual")));
 		fileOpt.setfNameSearchManualDir(getFileFromString(iniReadFile.get(FILE_OPT, "fNameSearchManualDir"), FileOptions.DEF_fNameSearchManualDir));
-		
+
 		// FSEARCH OPTIONS
 		fileOpt.setfSearchBinaries(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchBinaries")));
 		fileOpt.setfSearchMatchCase(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchMatchCase")));
 		fileOpt.setfSearchRegex(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchRegex")));
 		fileOpt.setfSearchWholeWord(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchWholeWord")));
-		
-		
+
+
 		String fSearchLastSearchStrings = iniReadFile.get(FILE_OPT, "fSearchLastSearchStrings");
 		fileOpt.getfSearchLastSearchStrings().setList(getStringListFromString(fSearchLastSearchStrings, SEPARATOR_INNER_DEFAULT_LONG, new Vector<String>()));
-		
+
 		String fSearchLastLoadedFiles = iniReadFile.get(FILE_OPT, "fSearchLastLoadedFiles");
 		fileOpt.getfSearchLastLoadedFiles().setList(getFileNamedListFromString(fSearchLastLoadedFiles, SEPARATOR_DEFAULT, new Vector<FileNamed>()));
-		
+
 		String fSearchLastFileFilters = iniReadFile.get(FILE_OPT, "fSearchLastFileFilters");
 		fileOpt.getfSearchLastFileFilters().setList(getMatrixOfStringsFromString(fSearchLastFileFilters, SEPARATOR_INNER_DEFAULT, SEPARATOR_INNER_DEFAULT_LONG, new Vector<String[]>()));
-		
-		
+
+
 		// boolean
 		fileOpt.setFlagAutosave(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "flagAutosave")));
 		fileOpt.setFlagOverwrite(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "flagOverwrite")));
@@ -193,20 +193,20 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			}else {
 				fileOpt.setAutosaveInterval(Integer.valueOf(iniReadFile.get(FILE_OPT, "autosaveInterval")));
 			}
-			
+
 		} catch (NumberFormatException e) {
 			fileOpt.setAutosaveInterval(FileOptions.DEFAULT_AUTOSAVE_INTERVAL);
 			logger.error("Exception happened!", e);
 		}
 	}
-	
+
 	/**
 	 * Load GUI properties from file into volatile memory
 	 */
 	public void loadGuiOptions() {
-		
+
 		// LOAD GUI OPTIONS
-		
+
 		// int values
 		try {
 			guiOpt.setMenuFontSize(Integer.valueOf(iniReadFile.get(GUI_OPT, "menuFontSize")));
@@ -220,20 +220,20 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		} catch (NumberFormatException e) {
 			guiOpt.setNimbusSize(GuiOption.DEFAULT_NIMBUS_SIZE);
 		}
-		
+
 		// string values
 		guiOpt.setPreferredStyle(iniReadFile.get(GUI_OPT, "preferredStyle"));
 		if(guiOpt.getPreferredStyle().equals("")||guiOpt.getPreferredStyle()==null) {
 			guiOpt.setPreferredStyle(GuiOption.DEFAULT_GUI_STYLE);
 		}
-		
+
 		guiOpt.setPreferredThemeName(getSafeStringConf(GUI_OPT, "preferredThemeName", GuiOption.DEFAULT_GUI_PREF_THEME));
-		
+
 		// boolean
 		guiOpt.setDarkGuiNimbus(Boolean.parseBoolean(iniReadFile.get(GUI_OPT, "darkGuiNimbus")));
-				
+
 	}
-	
+
 	/**
 	 * Load Stegano crypter properties from file into volatile memory
 	 */
@@ -260,9 +260,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		} catch (Exception e1) {
 			pathsListString = SteganOption.DEFAULT_IMG_RECENT_PATH;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Load Generic properties from file into volatile memory
 	 */
@@ -276,7 +276,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		if(genOpt.getCharset().equals("")) {
 			genOpt.setCharset(GenericOption.DEFAULT_CHARSET);
 		}
-		
+
 		try {
 			genOpt.setLastPanelOpened(Class.forName(iniReadFile.get(GEN_OPT, "lastPanelOpened")));
 		} catch (Exception e) {
@@ -287,7 +287,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		} catch (Exception e1) {
 			genOpt.setGeneralVolume(GenericOption.DEFAULT_VOLUME);
 		}
-		
+
 		genOpt.setAutomaticUpdateOn(getBooleanFromString(iniReadFile.get(GEN_OPT, "automaticUpdateOn"), GenericOption.DEF_automaticUpdateOn));
 		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
@@ -297,7 +297,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		Locale locale = new Locale(readLocale);
 		genOpt.setLocale(readLocale != null ? locale : GenericOption.DEF_locale);
 	}
-	
+
 	/**
 	 * Load TextEditor properties from file into volatile memory
 	 */
@@ -305,7 +305,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// TEXT EDITOR OPTIONS
 		textEditorOpt.setEol(EOL.valueOf(getSafeStringConf(TEXT_EDITOR_OPT, "EOL", EOL.defaultEol.name())));
 		textEditorOpt.setFirstTimeOpened(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "firstTimeOpened"), TextEditorOption.DEF_firstTimeOpened));
-		
+
 		// INI read
 		String fontStr = iniReadFile.get(TEXT_EDITOR_OPT, "font");
 		String FilePanelbackColStr = iniReadFile.get(TEXT_EDITOR_OPT, "filePanelBackgroundCol");
@@ -323,14 +323,14 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		String selectedFileAtStart = (!"".equals(selectedAtStartStr) && selectedAtStartStr!= null)? selectedAtStartStr : TextEditorOption.DEFAULT_SELECTED_FILE_AT_START;
 		String defaultWorspaceLocation = (!"".equals(defaultWorspaceLocationStr) && defaultWorspaceLocationStr!= null)? defaultWorspaceLocationStr : USER_PERSONAL_DIR;
 		String lastEscapeLanguage = (!"".equals(lastEscapeLanguageStr) && lastEscapeLanguageStr!= null)? lastEscapeLanguageStr : TextEditorOption.DEF_LastEscapeLanguage;
-		
+
 		int tabSize = 2;
 		try {
 			tabSize = Integer.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "tabSize"));
 		} catch (Exception e) {
 			logger.error("Exception happened!", e);
 		}
-		
+
 		// update Object
 		textEditorOpt.setFont(font);
 		textEditorOpt.setTabSize(tabSize);
@@ -339,6 +339,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setForeCol(foreCol);
 		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
 		textEditorOpt.setPrefix_hash(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "prefix_hash")));
+		textEditorOpt.setAutosaveTempFiles(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "autosaveTempFiles")));
 		textEditorOpt.setUppercase_hash(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "uppercase_hash")));
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);
@@ -347,7 +348,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setLastFileOpenedClipboard(getSafeStringConf(
 				TEXT_EDITOR_OPT, "lastFileOpenedClipboard", TextEditorOption.DEF_lastFileOpenedClipboard));
 		textEditorOpt.setClipboardSyncStyle(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "clipboardSyncStyle")));
-		
+
 		// CONVERTED/PARSED TYPES
 		// margin
 		try {
@@ -361,19 +362,19 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		} catch (NumberFormatException e) {
 			textEditorOpt.setVoiceRate(TextEditorOption.DEFAULT_VOICE_RATE);
 		}
-		
+
 		textEditorOpt.setDividerBottomPosRatio(getDoubleVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerBottomPosRatio"), TextEditorOption.DEF_dividerBottomPosRatio));
 		textEditorOpt.setDividerFileTreePosX(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerFileTreePosX"), TextEditorOption.DEFAULT_DIVIDER_POS_X));
 		textEditorOpt.setDividerRightPanePosX(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosX"), TextEditorOption.DEF_dividerRightPanePosX));
 		textEditorOpt.setDividerRightPanePosXClipboard(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "dividerRightPanePosXClipboard"), TextEditorOption.DEF_dividerRightPanePosXClipboard));
-		
+
 		// automatic syntax selection file-extension-based
 		textEditorOpt.setDefaultAutoSyntaxSync(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync")));
 		textEditorOpt.setPreferredSyntaxIfNotSync(getSafeStringConf(TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", TextEditorOption.DEF_preferredSyntaxIfNotSync));
-		
+
 		// workspace view selected
 		textEditorOpt.setWorkspaceViewSelected(Boolean.valueOf(iniReadFile.get(TEXT_EDITOR_OPT, "workspaceViewSelected")));
-		
+
 		// Components visibility
 		textEditorOpt.setFooterVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "footerVisible"), TextEditorOption.DEF_footerVisible));
 		textEditorOpt.setHeaderVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "headerVisible"), TextEditorOption.DEF_headerVisible));
@@ -388,7 +389,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setClipboardViewActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "clipboardViewActive"), TextEditorOption.DEF_clipboardViewActive));
 		textEditorOpt.setBreaklineActive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "breakLineActive"), TextEditorOption.DEFAULT_BREAK_LINE));
 		textEditorOpt.setAntialiasedTxtArea(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "antialiasedTxtArea"), TextEditorOption.DEF_antialiasedTxtArea));
-		
+
 		textEditorOpt.setCodeFoldingEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "codeFoldingEnabled"), TextEditorOption.DEF_codeFoldingEnabled));
 		textEditorOpt.setAutoIndentEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "autoIndentEnabled"), TextEditorOption.DEF_autoIndentEnabled));
 		textEditorOpt.setMarkOccurrences(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "markOccurrences"), TextEditorOption.DEF_markOccurrences));
@@ -401,7 +402,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setWhiteSpaceVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "whiteSpaceVisible"), TextEditorOption.DEF_whiteSpaceVisible));
 		textEditorOpt.setClearWhitespaceLinesEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "clearWhitespaceLinesEnabled"), TextEditorOption.DEF_clearWhitespaceLinesEnabled));
 		textEditorOpt.setMarkEndOfLine(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "markEndOfLine"), TextEditorOption.DEF_markEndOfLine));
-		
+
 		textEditorOpt.setFadeCurrentLineHighlight(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fadeCurrentLineHighlight"), TextEditorOption.DEF_fadeCurrentLineHighlight));
 		textEditorOpt.setUseFocusableTips(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "useFocusableTips"), TextEditorOption.DEF_useFocusableTips));
 		textEditorOpt.setRoundedSelectionEdges(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "roundedSelectionEdges"), TextEditorOption.DEF_roundedSelectionEdges));
@@ -414,37 +415,40 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setShowBracketsPopup(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "showBracketsPopup"), TextEditorOption.DEF_showBracketsPopup));
 		textEditorOpt.setSpellChecker(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "spellChecker"), TextEditorOption.DEF_spellChecker));
 		textEditorOpt.setPrefDictspellChecker(getSafeStringConf(TEXT_EDITOR_OPT, "prefDictspellChecker", TextEditorOption.DEF_prefDictspellChecker));
-		
+
 		String pathsOpenFilesMapString = iniReadFile.get(TEXT_EDITOR_OPT, "openedFileListCaretPosition");
-		textEditorOpt.setOpenedFileListCaretPosition(getStringMapFromString(pathsOpenFilesMapString, SEPARATOR_DEFAULT, SEPARATOR_INNER_DEFAULT, new HashMap<String, String>()));		
+		textEditorOpt.setOpenedFileListCaretPosition(getStringMapFromString(pathsOpenFilesMapString, SEPARATOR_DEFAULT, SEPARATOR_INNER_DEFAULT, new HashMap<String, String>()));
 
 		String pathsOpenFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedFilesAtStart");
-		textEditorOpt.setOpenedFileList(getStringListFromString(pathsOpenFilesString, ",", new ArrayList<String>()));		
-		
+		textEditorOpt.setOpenedFileList(getStringListFromString(pathsOpenFilesString, ",", new ArrayList<String>()));
+
+		String pathsOpenTempFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedTempFilesAtStart");
+		textEditorOpt.setOpenedTempFileList(getStringListFromString(pathsOpenTempFilesString, ",", new ArrayList<String>()));
+
 		String pathsOpenShellFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "lastOpenedShellFiles");
-		textEditorOpt.getLastOpenedShellFrameFiles().setList(getFileNamedListFromString(pathsOpenShellFilesString, ";", new Vector<FileNamed>()));		
-		
+		textEditorOpt.getLastOpenedShellFrameFiles().setList(getFileNamedListFromString(pathsOpenShellFilesString, ";", new Vector<FileNamed>()));
+
 		String lastOpenedFiles = iniReadFile.get(TEXT_EDITOR_OPT, "lastOpenedFiles");
-		textEditorOpt.getLastOpenedFiles().setList(getFileNamedListFromString(lastOpenedFiles, ",", new Vector<FileNamed>()));		
+		textEditorOpt.getLastOpenedFiles().setList(getFileNamedListFromString(lastOpenedFiles, ",", new Vector<FileNamed>()));
 
 		String lastTagsUsed = iniReadFile.get(TEXT_EDITOR_OPT, "lastTagsUsed");
-		textEditorOpt.lastTagsUsed.setList(getStringListFromString(lastTagsUsed, ";", new Vector<String>()));		
-		
+		textEditorOpt.lastTagsUsed.setList(getStringListFromString(lastTagsUsed, ";", new Vector<String>()));
+
 		String lastSearchTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastSearchTerms");
-		textEditorOpt.getLastSearchTerms().setList(getStringListFromString(lastSearchTerms, lastSearchTerms, new Vector<String>()));		
-		
+		textEditorOpt.getLastSearchTerms().setList(getStringListFromString(lastSearchTerms, lastSearchTerms, new Vector<String>()));
+
 		String lastReplaceTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastReplaceTerms");
-		textEditorOpt.getLastReplaceTerms().setList(getStringListFromString(lastReplaceTerms, ",", new Vector<String>()));		
-		
+		textEditorOpt.getLastReplaceTerms().setList(getStringListFromString(lastReplaceTerms, ",", new Vector<String>()));
+
 		String lastSelectedWorkspaces = iniReadFile.get(TEXT_EDITOR_OPT, "lastSelectedWorkspaces");
-		textEditorOpt.lastSelectedWorkspaces.setList(getFileNamedListFromString(lastSelectedWorkspaces, ",", new Vector<FileNamed>()));		
-		
+		textEditorOpt.lastSelectedWorkspaces.setList(getFileNamedListFromString(lastSelectedWorkspaces, ",", new Vector<FileNamed>()));
+
 		// selected theme
 		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
 		String theme = (!StringWorker.trimToEmpty(themeRead).equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
 		textEditorOpt.setSelectedTheme(theme);
 	}
-	
+
 	/**
 	 * Load image converter module properties from file into volatile memory
 	 */
@@ -461,17 +465,17 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		algo = (ScalingAlgorithm.isValidString(algo))? algo : ImgConverterOption.DEFAULT_ALGORITHM.toString();
 		imageConvertOption.setAlgorithm(ScalingAlgorithm.valueOf(algo));
 	}
-	
+
 	// WRITE PROPERTIES
-	
+
 	public void writeFileOptions() {
 		// set INIFILE-FILE OPTIONS
-		
+
 		// FNAME SEARCH OPTIONS
 		iniFile.put(FILE_OPT, "fNameSearchUseManual", fileOpt.isfNameSearchUseManual());
 		iniFile.put(FILE_OPT, "fNameSearchManualDir", FileVarious.getCanonicalPathSafe(fileOpt.getfNameSearchManualDir()));
-		
-		
+
+
 		// FSEARCH OPTIONS
 		iniFile.put(FILE_OPT, "fSearchBinaries", fileOpt.isfSearchBinaries());
 		iniFile.put(FILE_OPT, "fSearchMatchCase", fileOpt.isfSearchMatchCase());
@@ -480,8 +484,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(FILE_OPT, "fSearchLastFileFilters", fileOpt.getfSearchLastFileFilters().toCharSeparatedStringMatrix(SEPARATOR_INNER_DEFAULT, SEPARATOR_INNER_DEFAULT_LONG));
 		iniFile.put(FILE_OPT, "fSearchLastLoadedFiles", fileOpt.getfSearchLastLoadedFiles().toCharSeparatedString(SEPARATOR_DEFAULT));
 		iniFile.put(FILE_OPT, "fSearchLastSearchStrings", fileOpt.getfSearchLastSearchStrings().toCharSeparatedString(SEPARATOR_INNER_DEFAULT_LONG));
-		
-		
+
+
 		// boolean
 		iniFile.put(FILE_OPT, "flagAutosave", fileOpt.isFlagAutosave());
 		iniFile.put(FILE_OPT, "flagOverwrite", fileOpt.isFlagOverwrite());
@@ -496,9 +500,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(FILE_OPT, "lastSrcFolder", fileOpt.getLastSrcFolderPath());
 		// integer values
 		iniFile.put(FILE_OPT, "autosaveInterval", fileOpt.getAutosaveInterval());
-		
+
 	}
-	
+
 	public void writeGuiOptions() {
 		// set INIFILE-GUI OPTIONS
 		if(guiOpt.getPreferredStyle().equals("")) {
@@ -511,7 +515,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(GUI_OPT, "darkGuiNimbus", guiOpt.isDarkGuiNimbus());
 		iniFile.put(GUI_OPT, "nimbusSize", guiOpt.getNimbusSize());
 	}
-	
+
 	public void writeSteganoOptions() {
 		// set INIFILE-STEGANO OPTIONS
 		iniFile.put(STEGA_OPT, "flagCodificaSteg", steganOpt.isFlagSteg());
@@ -532,9 +536,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			accumulator = SteganOption.DEFAULT_IMG_RECENT_PATH;
 		}
 		iniFile.put(STEGA_OPT, "imgKeyRecentPath", accumulator );
-		
+
 	}
-	
+
 	public void writeGeneralOptions() {
 		// set INIFILE-GENERAL OPTIONS
 		if(genOpt.getUserName().equals("")) {
@@ -550,7 +554,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(GEN_OPT, "automaticUpdateOn", genOpt.isAutomaticUpdateOn());
 		iniFile.put(GEN_OPT, "locale", genOpt.getLocale());
 	}
-	
+
 	public void writeImgConverterOptions() {
 		// IMAGE CONVERTER OPTIONS
 		iniFile.put(IMAGE_CONVERTER_OPT, "sameSize", imageConvertOption.sameSize);
@@ -558,13 +562,14 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(IMAGE_CONVERTER_OPT, "quality", imageConvertOption.quality);
 		iniFile.put(IMAGE_CONVERTER_OPT, "algorithm", imageConvertOption.algorithm);
 	}
-	
+
 	public void writeTxtEditOptions() {
 		// TEXT EDITOR OPTIONS
 		iniFile.put(TEXT_EDITOR_OPT, "EOL", textEditorOpt.getEol().name());
 		iniFile.put(TEXT_EDITOR_OPT, "firstTimeOpened", textEditorOpt.isFirstTimeOpened());
-		
+
 		iniFile.put(TEXT_EDITOR_OPT, "prefix_hash", textEditorOpt.isPrefix_hash());
+		iniFile.put(TEXT_EDITOR_OPT, "autosaveTempFiles", textEditorOpt.isAutosaveTempFiles());
 		iniFile.put(TEXT_EDITOR_OPT, "uppercase_hash", textEditorOpt.isUppercase_hash());
 		iniFile.put(TEXT_EDITOR_OPT, "inlineTabs", textEditorOpt.isInlinedTabs());
 		iniFile.put(TEXT_EDITOR_OPT, "font", getFontString(textEditorOpt.font));
@@ -596,12 +601,12 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "workspaceViewSelected", textEditorOpt.workspaceViewSelected);
 		iniFile.put(TEXT_EDITOR_OPT, "defaultAutoSyntaxSync", textEditorOpt.defaultAutoSyntaxSync);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredSyntaxIfNotSync", textEditorOpt.preferredSyntaxIfNotSync);
-		
+
 		// BLOCKS VISIBILITY
 		iniFile.put(TEXT_EDITOR_OPT, "footerVisible", textEditorOpt.footerVisible);
 		iniFile.put(TEXT_EDITOR_OPT, "headerVisible", textEditorOpt.headerVisible);
 		iniFile.put(TEXT_EDITOR_OPT, "subHeaderVisible", textEditorOpt.subHeaderVisible);
-		
+
 		// DETAIL
 		iniFile.put(TEXT_EDITOR_OPT, "codeFoldingEnabled", textEditorOpt.codeFoldingEnabled);
 		iniFile.put(TEXT_EDITOR_OPT, "autoIndentEnabled", textEditorOpt.autoIndentEnabled);
@@ -636,9 +641,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 //		String openedFiles = listToString(textEditorOpt.getOpenedFileList()); => this and selected at start are setted at software closing
 //		iniFile.put(TEXT_EDITOR_OPT, "loadedFilesAtStart", openedFiles ); => this and selected at start are setted at software closing
 	}
-	
+
 	// TO_STRING AND RELATED METHODS
-	
+
 	@Override
 	public String toStringa() {
 		String result = "";
@@ -646,14 +651,14 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 //		result="\n[Debug-Read] String INIFILE -> "+ iniReadFile.getFile().getAbsolutePath();
 //		builder.append"\n[Debug-Write] String INIFILE -> "+ iniFile.getFile().getAbsolutePath()+"\n\n  -----------------\n\n ";
 		StringBuilder builder = new StringBuilder();
-		
+
 		builder.append("\n\n### Config file: "+this.getIniFile().getFile().getAbsolutePath());
 		// concat AES OPTIONS
 		builder.append("\n\n ---- AES OPTIONS -----\n\n")
 			   .append("\nFLAGAES: ").append(aesOpt.isFlagAes())
 			   .append("\nSECURITY LEVEL: ").append(aesOpt.getSecurityLevel().name())
 			   .append("\nHASH KEY: ").append(aesOpt.isHashKey());
-		
+
 		// concat GENERAL OPTIONS
 		builder.append("\n\n ---- GENERAL OPTIONS -----\n\n")
 			   .append("USERNAME: ").append(genOpt.getUserName())
@@ -665,7 +670,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nAutomatic check for updates at start -> ").append(genOpt.isAutomaticUpdateOn())
 			   .append("\nPreferred Locale: ").append(genOpt.getLocale())
 			   .append("\nCHARSET: ").append(genOpt.getCharset());
-		
+
 		// concat GUI_OPTION
 		builder.append("\n\n ---- GUI OPTIONS -----\n\n")
 			   .append("PREFERRED_STYLE: ").append(guiOpt.getPreferredStyle())
@@ -674,7 +679,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nLOG_FONT_SIZE: ").append(guiOpt.getLogFontSize())
 			   .append("\nNIMBUS_SIZE_VAR: ").append(guiOpt.getNimbusSize())
 			   .append("\nDARK_GUI_NUMBUS: ").append(guiOpt.isDarkGuiNimbus());
-		
+
 		// concat FILE OPTIONS
 		builder.append("\n\n ---- FILE OPTIONS -----\n\n")
 			   .append("LAST_DST_FOLDERPATH: ").append(fileOpt.getLastDstFolderPath())
@@ -682,7 +687,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nFLAG_AUTOSAVE: ").append(fileOpt.isFlagAutosave())
 			   .append("\nAUTOSAVE_INTERVAL: ").append(fileOpt.getAutosaveInterval())
 			   .append("\nFLAGOVERWRITE: ").append(fileOpt.isFlagOverwrite());
-		
+
 		// concat STEGANO OPTIONS
 		builder.append("\n\n ---- STEGANO OPTIONS -----\n\n")
 			   .append("DEFAULT_HEIGHT: ").append(steganOpt.getDefaultHeight())
@@ -703,6 +708,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nFOREGROUND_COLOR: ").append(textEditorOpt.foreCol)
 			   .append("\nUPPERCASE HASH: ").append(textEditorOpt.uppercase_hash)
 			   .append("\nPREFIX TO HASH: ").append(textEditorOpt.prefix_hash)
+			   .append("\nAutosave text files: ").append(textEditorOpt.autosaveTempFiles)
 			   .append("\nFONT: ").append(textEditorOpt.font)
 			   .append("\nVOICE_RATE: ").append(textEditorOpt.voiceRate)
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION (Clipboard): ").append(textEditorOpt.dividerRightPanePosXClipboard)
@@ -720,7 +726,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nLAST CODE ESCAPE LANGUAGE: ").append(textEditorOpt.lastEscapeLanguage)
 
 			   .append("\n\n TEXT AREA DETAIL VALUES: \n\n")
-			   
+
 			   .append("\nPREFERRED BOTTOM PANEL POSITION RATIO: ").append(textEditorOpt.dividerBottomPosRatio)
 			   .append("\nPREFERRED DIVIDER FILETREE POSITION: ").append(textEditorOpt.dividerFileTreePosX)
 			   .append("\nPREFERRED DIVIDER RIGHT PANE POSITION: ").append(textEditorOpt.dividerRightPanePosX)
@@ -764,19 +770,19 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nSELL CHECKER ACTIVE: ").append(textEditorOpt.spellChecker)
 			   .append("\nPREFERRED SPELLCHECK DICTIONARY: ").append(textEditorOpt.prefDictspellChecker)
 			   .append("\nFOCUSABLE TIPS FLAG: ").append(textEditorOpt.useFocusableTips);
-		
+
 		// concat TEXT EDITOR OPTIONS
 		builder.append("\n\n ---- IMAGE CONVERTER -----\n\n")
 			   .append("SAME_SIZE: ").append(imageConvertOption.sameSize)
 			   .append("\nSAME EXTENSION: ").append(imageConvertOption.sameExtension)
 			   .append("\nQUALITY: ").append(imageConvertOption.quality)
 			   .append("\nALGORITHM: ").append(imageConvertOption.algorithm);
-		
+
 		// create and return result string
 		result = builder.toString();
 		return result;
 	}
-	
+
 	public GuiOption getGuiOpt() {
 		return guiOpt;
 	}
@@ -820,9 +826,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 	public TextEditorOption getTextEditorOpt() {
 		return this.textEditorOpt;
 	}
-	
+
 	public ImgConverterOption getImageConvertionOpt() {
 		return this.imageConvertOption;
 	}
-	
+
 }
