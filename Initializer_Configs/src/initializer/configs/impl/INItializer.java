@@ -339,7 +339,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setForeCol(foreCol);
 		textEditorOpt.setSelectedAtStart(selectedFileAtStart);
 		textEditorOpt.setPrefix_hash(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "prefix_hash")));
-		textEditorOpt.setAutosaveTempFiles(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "autosaveTempFiles")));
+		textEditorOpt.setAutosaveTempFiles(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "autosaveTempFiles"), true));
 		textEditorOpt.setUppercase_hash(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "uppercase_hash")));
 		textEditorOpt.setInlinedTabs(Boolean.parseBoolean(iniReadFile.get(TEXT_EDITOR_OPT, "inlineTabs")));
 		textEditorOpt.setDefaultWorkspacePath(defaultWorspaceLocation);

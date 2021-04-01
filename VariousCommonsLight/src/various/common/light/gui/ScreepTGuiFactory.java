@@ -1,10 +1,13 @@
 package various.common.light.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,8 +19,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.gui.dnd.FileDrop;
+import various.common.light.gui.dnd.FileDropListener;
 import various.common.light.utility.log.SafeLogger;
 
 public class ScreepTGuiFactory {
@@ -47,6 +53,57 @@ public class ScreepTGuiFactory {
 		checkBox.setFont(DEFAULT_TEXT_AREA_FONT.deriveFont(13f));
 
 		return checkBox;
+	}
+
+	public static JTextArea getFileTextArea(FileDropListener listener) {
+		JTextArea txtFieldSelectedFiles = new JTextArea("\n Nothing selected (drop your files here to add them)");
+		txtFieldSelectedFiles.setMargin(new Insets(8, 8, 8, 8));
+		txtFieldSelectedFiles.setMinimumSize(new Dimension(320, 70));
+		txtFieldSelectedFiles.setPreferredSize(new Dimension(320, 70));
+		txtFieldSelectedFiles.setFont(ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(17f));
+		txtFieldSelectedFiles.setEditable(false);
+		txtFieldSelectedFiles.setAutoscrolls(true);
+		txtFieldSelectedFiles.setBorder(new LineBorder(Color.DARK_GRAY));
+		new FileDrop(txtFieldSelectedFiles, listener);
+
+		return txtFieldSelectedFiles;
+	}
+
+	public static void setSelectedFileLbl(List<File> selected, JTextArea txtFieldSelectedFiles) {
+		if (selected == null || selected.isEmpty() || !selected.get(0).exists()) {
+			txtFieldSelectedFiles.setText("\n Nothing selected (drag your files here)");
+			txtFieldSelectedFiles.setBackground(new Color(252, 240, 146));
+		} else {
+			String fileConcatNames = "";
+			for(File iterator : selected) {
+				String identifier = iterator.isDirectory() ? "<b>Directory: </b>" : "<b>File: </b>";
+				fileConcatNames += identifier + iterator + "<br>";
+			}
+
+			txtFieldSelectedFiles.setBackground(new Color(208, 252, 146));
+			txtFieldSelectedFiles.setText(getStringSourcesSummary(selected));
+			txtFieldSelectedFiles.setToolTipText(GuiUtils.encapsulateInHtml(fileConcatNames));
+		}
+	}
+
+	protected static String getStringSourcesSummary(List<File> selected) {
+		String outcome = "\n Nothing selected (drag your files here)";
+		int directories = 0;
+		int files = 0;
+		if(selected != null) {
+			for(File f : selected) {
+				if(f != null && f.isDirectory())
+					directories ++;
+				else if(f != null)
+					files++;
+			}
+		}
+
+		outcome = " Files selected: " + files + "\n";
+		outcome += " Directories selected: " + directories + "\n";
+		outcome += " (Hover this textArea to see details)";
+
+		return outcome;
 	}
 
 	public static JScrollPane getScrollPane(boolean verticalScroll, boolean horizontalScroll) {

@@ -271,6 +271,9 @@ public class GuiUtils {
 			if(component instanceof JTextComponent)
 				((JTextComponent)component).setRequestFocusEnabled(true);
 
+			if(component instanceof Window)
+				((Window)component).toFront();
+
 			component.requestFocus();
 			component.requestFocusInWindow();
 		});
@@ -301,6 +304,26 @@ public class GuiUtils {
 			}
 		};
 	}
+
+	public static void launchRunnable(Runnable action, final boolean async, boolean invokeLater, boolean daemon) {
+		Runnable r = () -> {
+			Thread t = new Thread(action);
+			t.setDaemon(daemon);
+			t.start();
+
+			if (!async)
+				try {
+					t.join();
+				} catch (InterruptedException e) {
+					logger.error("can't join thread!", e);
+				}
+		};
+
+		if(invokeLater)
+			SwingUtilities.invokeLater(r);
+		else
+			r.run();
+	};
 
 	public static void launchThreadSafeSwing(Runnable threadAction) {
 		SwingUtilities.invokeLater(new Runnable() {
