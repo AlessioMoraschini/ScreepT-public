@@ -25,12 +25,17 @@ public class CustomFileFilters {
 	public static final String DIR_ONLY = "DIR_ONLY";
 	public static final String DIR_ONLY_HIDDEN = "DIR_ONLYH";
 	public static final String DIR_ONLY_VISIBLE = "DIR_ONLYV";
-	
+
 	public static boolean fileAccepted(String filter) {
 		return filter != null &&
 				(filter.contains("ALL") || filter.contains("FILE"));
 	}
-	
+
+	public static boolean dirAccepted(String filter) {
+		return filter != null &&
+				(filter.contains("ALL") || filter.contains("DIR"));
+	}
+
 	/**
 	 * Return a custom file filter with a filter typte to select type of files to accept, without check on extension
 	 * @param filterType use values defined in this class
@@ -38,21 +43,21 @@ public class CustomFileFilters {
 	 */
 	public static FileFilter customTypeFilter(String filterType) {
 		return new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File pathname) {
-				
+
 				// first check if file exists
 				if(!pathname.exists()) {
 					return false;
 				}
-				
+
 				// now filter for type choosen
 				return checkSelectedFileType(filterType, pathname);
 			}
 		};
 	}
-	
+
 	/**
 	 * Return a custom file filter with a filter typte to select type of files to accept, and extension of files to accept
 	 * @param filterType use values defined in this class
@@ -61,25 +66,25 @@ public class CustomFileFilters {
 	 * @return the custom file filter
 	 */
 	public static FileFilter customTypeFilter(String filterType, String extension, boolean caseSensitive) {
-		
+
 		if(extension == null) {
 			return customTypeFilter(filterType);
-			
+
 		}else return new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File pathname) {
-				
+
 				boolean extensionCheck = false;
-				
+
 				// first check if file exists
 				if(!pathname.exists()) {
 					return false;
 				}
-				
+
 				// now filter for type chosen
 				extensionCheck = checkSelectedFileType(filterType, pathname);
-				
+
 				// if at least one match found for this file proceed with extension check
 				if(extensionCheck) {
 					boolean condition = (caseSensitive)? pathname.getName().endsWith(extension) : pathname.getName().toLowerCase().endsWith(extension.toLowerCase());
@@ -91,7 +96,7 @@ public class CustomFileFilters {
 			}
 		};
 	}
-	
+
 	private static boolean checkSelectedFileType(String filterType, File pathname) {
 		if(filterType.equals(ALL_FOUND)) {
 			return true;

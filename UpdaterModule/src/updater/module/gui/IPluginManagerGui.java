@@ -11,13 +11,15 @@
  */
 package updater.module.gui;
 
+import java.util.concurrent.TimeoutException;
+
 import javax.swing.JFrame;
 
 import updater.module.plugins.PluginDTO;
 import updater.module.plugins.PluginManager;
 
 public interface IPluginManagerGui {
-	
+
 	public PluginManager getPluginManager();
 	public PluginDTO getPluginDTO(String nameWithoutExtension);
 	public boolean isInstalling();
@@ -26,4 +28,6 @@ public interface IPluginManagerGui {
 	public JFrame getParentFrame();
 	public void refreshTable(boolean useCache) throws Throwable;
 	public void refreshGuiLibsAfterChange();
+
+	public void restart() throws TimeoutException, Throwable ;
 }

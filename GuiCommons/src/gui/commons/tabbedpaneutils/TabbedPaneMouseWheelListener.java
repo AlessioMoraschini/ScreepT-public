@@ -19,7 +19,7 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JTabbedPane;
 
-public class TabbedPaneMouseWheelListener implements MouseWheelListener{
+public class TabbedPaneMouseWheelListener implements MouseWheelListener {
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
@@ -28,35 +28,40 @@ public class TabbedPaneMouseWheelListener implements MouseWheelListener{
         int oldIndex = pane.getSelectedIndex();
         int newIndex = oldIndex + units;
 
-        if (newIndex < 0) {
-        	pane.setSelectedIndex(0);
-        } else if (newIndex >= pane.getTabCount()) {
-        	pane.setSelectedIndex(pane.getTabCount() - 1);
-        } else {
-        	pane.setSelectedIndex(newIndex);
-        }
-        
         try {
+	        if (newIndex < 0) {
+	        	pane.setSelectedIndex(0);
+	        } else if (newIndex >= pane.getTabCount()) {
+	        	pane.setSelectedIndex(pane.getTabCount() - 1);
+	        } else {
+	        	pane.setSelectedIndex(newIndex);
+	        }
+
 			if(newIndex > 0) {
 				scrollToNextTab(pane);
 			} else {
 				scrollToPreviousTab(pane);
 			}
 		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
-        
+
 	}
-	
+
 	private void clickArrowButton(String actionKey, final JTabbedPane tabs) {
-	    ActionMap map = tabs.getActionMap();
-	    if (map != null) {
-	        Action action = map.get(actionKey);
-	        if (action != null && action.isEnabled()) {
-	            action.actionPerformed(new ActionEvent(tabs, ActionEvent.ACTION_PERFORMED, "", 0, 0));
-	        }
-	    }
+	    try {
+			ActionMap map = tabs.getActionMap();
+			if (map != null) {
+			    Action action = map.get(actionKey);
+			    if (action != null && action.isEnabled()) {
+			        action.actionPerformed(new ActionEvent(tabs, ActionEvent.ACTION_PERFORMED, "", 0, 0));
+			    }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void scrollToNextTab(final JTabbedPane tabs) {
 		clickArrowButton("scrollTabsForwardAction", tabs);
 	}

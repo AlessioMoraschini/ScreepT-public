@@ -63,6 +63,8 @@ public class UpdateProgressPanel {
 
     public JFrame relativeTo = null;
 
+    public volatile boolean skipAskOnClose = false;
+
     // ####################### START CONSTRUCTORS - USE THE ONE WITH TWO PARAMS #################### //
 
     public UpdateProgressPanel() {
@@ -123,10 +125,7 @@ public class UpdateProgressPanel {
 		}
 
 		initSpecBar();
-
-		dialog.repaint();
-		dialog.setLocationRelativeTo(relativeTo);
-
+		dialog.setAlwaysOnTop(true);
         SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -135,6 +134,8 @@ public class UpdateProgressPanel {
 
 		            @Override
 					public void run() {
+		            	dialog.repaint();
+						dialog.setLocationRelativeTo(relativeTo);
 
 		                try {
 		                	if (secondBar) {
@@ -257,7 +258,7 @@ public class UpdateProgressPanel {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						if (new JOptionHelper(dialog).yesOrNo("Stop process?", "Stop process?")) {
+						if (skipAskOnClose || new JOptionHelper(dialog).yesOrNo("Stop process?", "Stop process?")) {
 							stopProcess.set(true);
 							dialog.dispose();
 						} else {
@@ -314,7 +315,7 @@ public class UpdateProgressPanel {
 			}
         	doCheck(bar);
 
-        	Thread.sleep(150);
+        	Thread.sleep(200);
         } // End while
 
         doCheck(bar);
@@ -506,6 +507,10 @@ public class UpdateProgressPanel {
 	}
 
 	public void adaptWidthToCurrentText() {
+		adaptWidthToCurrentText(false);
+	}
+
+	public void adaptWidthToCurrentText(boolean onlyIfMore) {
 		if (label != null) {
 			adaptWidthToString(label.getText());
 		}
@@ -518,6 +523,24 @@ public class UpdateProgressPanel {
 			newWidth = newWidth > maxWidth ? maxWidth : newWidth;
 
 			if (dialog.getWidth() != 0 && dialog.getWidth() < newWidth) {
+				int height = dialog.getHeight();
+				height = height == 0 ? 180 : height;
+				dialog.setBounds(
+						dialog.getX() - ((newWidth-dialog.getWidth())/2),
+						dialog.getY(),
+						newWidth,
+						height);
+			}
+		}
+	}
+
+	public void adaptWidthToString(String source, boolean onlyIfMore) {
+		if(progBarEnabled.get() && dialog != null && label != null && source != null && !source.isEmpty()) {
+			int newWidth = label.getGraphics().getFontMetrics().stringWidth(source) + 80;
+			int maxWidth = (int)GuiUtils.getScreenSize().getWidth()-50;
+			newWidth = newWidth > maxWidth ? maxWidth : newWidth;
+
+			if (dialog.getWidth() != 0 && ((onlyIfMore && dialog.getWidth() > newWidth) || (!onlyIfMore && dialog.getWidth() < newWidth))) {
 				int height = dialog.getHeight();
 				height = height == 0 ? 180 : height;
 				dialog.setBounds(

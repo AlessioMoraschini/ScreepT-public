@@ -150,34 +150,35 @@ public class GuiUtils {
 		forceToFront(target, null);
 	}
 
-	public static <T> List<T>  getSubComponentsFiltered(Container component, Class<T> filterType, boolean deep){
+	public static <T> List<T> getSubComponentsFiltered(Container component, Class<T> filterType, boolean deep) {
 		List<Component> allMatches = getSubComponents(component, deep);
 		List<T> matches = new ArrayList<>();
 
-		if(allMatches.isEmpty())
+		if (allMatches.isEmpty())
 			return matches;
 
 		for (Component comp : allMatches) {
-			if(comp != null && filterType.isAssignableFrom(comp.getClass())) {
+			if (comp != null && filterType.isAssignableFrom(comp.getClass())) {
 				matches.add(comp.getClass().asSubclass(filterType).cast(comp));
 			}
 		}
 
 		return matches;
 	}
-	public static List<Component>  getSubComponents(Container component, boolean deep){
+
+	public static List<Component> getSubComponents(Container component, boolean deep) {
 		List<Component> matches = new ArrayList<>();
-		if(component == null)
+		if (component == null)
 			return matches;
 
 		Component[] subComponents = component.getComponents();
-		if(subComponents == null || subComponents.length == 0)
+		if (subComponents == null || subComponents.length == 0)
 			return matches;
 
 		for (int i = 0; i < subComponents.length; i++) {
 			matches.add(subComponents[i]);
-			if(deep && subComponents[i] != null && subComponents[i] instanceof Container){
-				matches.addAll(getSubComponents((Container)subComponents[i], deep));
+			if (deep && subComponents[i] != null && subComponents[i] instanceof Container) {
+				matches.addAll(getSubComponents((Container) subComponents[i], deep));
 			}
 		}
 
@@ -193,22 +194,47 @@ public class GuiUtils {
 			target.toFront();
 			target.setAlwaysOnTop(alwayOnTopBackup);
 
-			if(mouseMouseOn != null) {
+			if (mouseMouseOn != null) {
 				mouseClick(target.getX() + 1, target.getY() + 1);
-				SwingUtilities.invokeLater(()->{
+				SwingUtilities.invokeLater(() -> {
 					mouseMove(getCenter(mouseMouseOn));
 				});
 			}
 		}
 	}
 
+	public static <T extends Window> void moveRelativeTo(T toMove, Component reference) {
+		if (toMove == null || reference == null)
+			return;
+
+//		Rectangle refBounds = reference.getGraphicsConfiguration().getBounds();
+		Rectangle toMoveBounds = toMove.getGraphicsConfiguration().getBounds();
+		Point relLocation = getLocationOnCurrentScreen(reference);
+
+		toMoveBounds.x = toMoveBounds.x + relLocation.x;
+		toMoveBounds.y = toMoveBounds.y + relLocation.y;
+
+		toMove.setBounds(toMoveBounds);
+	}
+
+	public static Point getLocationOnCurrentScreen(final Component c) {
+		final Point relativeLocation = c.getLocationOnScreen();
+
+		final Rectangle currentScreenBounds = c.getGraphicsConfiguration().getBounds();
+
+		relativeLocation.x -= currentScreenBounds.x;
+		relativeLocation.y -= currentScreenBounds.y;
+
+		return relativeLocation;
+	}
+
 	public static Point getCenter(Component comp) {
 
-		if(comp == null)
+		if (comp == null)
 			return null;
 
 		Rectangle bounds = comp.getBounds();
-		return new Point(bounds.x + bounds.width/2, bounds.y + bounds.height/2);
+		return new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
 	}
 
 	public static void mouseClick(int x, int y) {
@@ -224,7 +250,7 @@ public class GuiUtils {
 	}
 
 	public static void mouseMove(Point p) {
-		if(p != null) {
+		if (p != null) {
 			mouseMove(p.x, p.y);
 		}
 	}
@@ -263,16 +289,20 @@ public class GuiUtils {
 		};
 	}
 
+	public static boolean isFocusedOnTop(Window window) {
+		return window.getFocusOwner() != null && window.isFocusableWindow();
+	}
+
 	public static void giveFocusToComponent(Component component) {
-		if(component == null)
+		if (component == null)
 			return;
 
-		SwingUtilities.invokeLater(()-> {
-			if(component instanceof JTextComponent)
-				((JTextComponent)component).setRequestFocusEnabled(true);
+		SwingUtilities.invokeLater(() -> {
+			if (component instanceof JTextComponent)
+				((JTextComponent) component).setRequestFocusEnabled(true);
 
-			if(component instanceof Window)
-				((Window)component).toFront();
+			if (component instanceof Window)
+				((Window) component).toFront();
 
 			component.requestFocus();
 			component.requestFocusInWindow();
@@ -319,7 +349,7 @@ public class GuiUtils {
 				}
 		};
 
-		if(invokeLater)
+		if (invokeLater)
 			SwingUtilities.invokeLater(r);
 		else
 			r.run();
@@ -777,7 +807,7 @@ public class GuiUtils {
 	public static void openInFileSystem(File destination) {
 		if (destination != null && destination.exists()) {
 			try {
-				if(isWindows()) {
+				if (isWindows()) {
 					openInFileSystemWin(destination);
 				} else if (destination.isDirectory()) {
 					Desktop.getDesktop().open(destination);
@@ -863,12 +893,13 @@ public class GuiUtils {
 	}
 
 	public static void clickAndTriggerButton(JButton button) {
-		if(button != null) {
+		if (button != null) {
 			button.doClick();
 		}
 	}
+
 	public static void clickAndTriggerCheckbox(JCheckBox checkbox, boolean triggerUncheckAction) {
-		if(checkbox != null) {
+		if (checkbox != null) {
 			checkbox.setSelected(triggerUncheckAction);
 			checkbox.doClick();
 		}
@@ -1112,12 +1143,10 @@ public class GuiUtils {
 
 	public static String getAsHtmlList(List<String> originals) {
 		StringBuilder builder = new StringBuilder();
-		if(originals != null) {
+		if (originals != null) {
 
-			for(String original : originals) {
-				builder.append("<li>")
-					.append(original)
-					.append("</li>");
+			for (String original : originals) {
+				builder.append("<li>").append(original).append("</li>");
 			}
 		}
 
@@ -1128,9 +1157,9 @@ public class GuiUtils {
 		String trimmedTag = StringWorker.trimToEmpty(tag);
 		String attributesStr = " ";
 
-		if(attributes != null)
-			for(KeyVal keyVal : attributes)
-				if(keyVal != null)
+		if (attributes != null)
+			for (KeyVal keyVal : attributes)
+				if (keyVal != null)
 					attributesStr += StringWorker.trimToEmpty(keyVal.key) + "=" + StringWorker.trimToEmpty(keyVal.value) + "\" ";
 
 		return "<" + trimmedTag + attributesStr + ">" + original + "</" + trimmedTag + ">";
@@ -1139,14 +1168,17 @@ public class GuiUtils {
 	public static String encapsulateInTag(String original, String tag) {
 		return encapsulateInTag(original, tag, null);
 	}
+
 	public static String encapsulateInAnchorTag(String original, String link, boolean newTab) {
 		String newTabStr = newTab ? "target=\"_blank\"" : "";
 		return "<a href=\"" + link + "\" " + newTabStr + ">" + original + "</a>";
 	}
+
 	public static String encapsulateInTagPre(String original, String tag) {
 
 		return encapsulateInTag(encapsulateInTag(original, tag) + EOL.CRLF.eol, "pre");
 	}
+
 	public static String encapsulateInAnchorTagPre(String original, String link, boolean newTab) {
 
 		return encapsulateInTag(encapsulateInAnchorTag(original, link, newTab) + EOL.CRLF.eol, "pre");
@@ -1163,8 +1195,8 @@ public class GuiUtils {
 
 	public static void setAllContentEnabled(boolean enabled, Window window, Component... exceptions) {
 		List<Component> excepts = Arrays.asList(exceptions);
-		for( Component comp : window.getComponents()){
-			if(!excepts.contains(comp))
+		for (Component comp : window.getComponents()) {
+			if (!excepts.contains(comp))
 				comp.setEnabled(enabled);
 		}
 	}
@@ -1175,12 +1207,12 @@ public class GuiUtils {
 			return;
 		}
 
-		window.addKeyListener( new KeyAdapter() {
+		window.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE && !e.isControlDown() && !e.isAltDown() && !e.isShiftDown())
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !e.isControlDown() && !e.isAltDown() && !e.isShiftDown())
 					logger.debug("ESCAPE pressed.. closing window!");
-					window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+				window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 	}
@@ -1220,16 +1252,16 @@ public class GuiUtils {
 
 	public static void setDialogModalType(Dialog target, ModalityType type, boolean switchVisible) {
 
-		launchThreadSafeSwing(()->{
+		launchThreadSafeSwing(() -> {
 			boolean wasVisible = target.isVisible();
 
-			if(switchVisible)
+			if (switchVisible)
 				target.setVisible(!wasVisible);
 
 			target.setModalityType(type);
 			target.setModal(!ModalityType.MODELESS.equals(type));
 
-			if(switchVisible)
+			if (switchVisible)
 				target.setVisible(wasVisible);
 		});
 	}

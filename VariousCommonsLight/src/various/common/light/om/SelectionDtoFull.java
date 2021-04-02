@@ -16,6 +16,7 @@ import java.io.File;
 import javax.swing.JTextArea;
 
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.RXTextUtilities;
 import various.common.light.utility.string.StringWorker;
 
 public class SelectionDtoFull {
@@ -61,6 +62,8 @@ public class SelectionDtoFull {
 				text = getCompleteString();
 				end = text.substring(last, text.length());
 				length = text.length();
+				applySelectionDTO(textArea);
+
 			} else {
 				if(ifNotSelThenAppend)
 					appendText(replacement, makeNewSelectedIfNothingSelected);
@@ -96,6 +99,8 @@ public class SelectionDtoFull {
 			text = getCompleteString();
 			length = text.length();
 		}
+
+		applySelectionDTO(textArea);
 	}
 
 	public String getSelectedOrAllText() {
@@ -123,11 +128,25 @@ public class SelectionDtoFull {
 			first = 0;
 			last = textReplacement.length();
 		} else {
-			prefix = textReplacement;
-			selection = "";
-			end = "";
-			first = textReplacement.length();
-			last = textReplacement.length();
+
+			try {
+				end = textReplacement.substring(last, textReplacement.length());
+				prefix = textReplacement.substring(0, first);
+				selection = textReplacement.substring(first, last);
+			} catch (Exception e) {
+				e.printStackTrace();
+				selection = textReplacement;
+				prefix = "";
+				end = "";
+				first = 0;
+				last = textReplacement.length();
+			}
+
+			if(first == last || "".equals(selection)){
+				selected = false;
+			}else {
+				selected = true;
+			}
 		}
 
 		text = getCompleteString();
@@ -144,7 +163,17 @@ public class SelectionDtoFull {
 		applySelectionDTO(true, textArea);
 	}
 
+	public boolean isSomethingSelected(boolean ignoreSpacesOnly) {
+		if(ignoreSpacesOnly)
+			return selected && !StringWorker.isEmpty(selection);
+		else
+			return selected && !StringWorker.isEmptyNoTrim(selection);
+	}
+
 	public void applySelectionDTO(boolean setText, final JTextArea textArea) {
+
+		int oldCaretPosition = textArea.getCaretPosition();
+
 		if(setText)
 			textArea.setText(text);
 
@@ -154,7 +183,11 @@ public class SelectionDtoFull {
 				GuiUtils.giveFocusToComponent(textArea);
 				textArea.setSelectionStart(first);
 				textArea.setSelectionEnd(last);
-			} catch (Exception e) {
+				if(first == last || !isSomethingSelected(false)) {
+					textArea.setCaretPosition(oldCaretPosition);
+				}
+				RXTextUtilities.centerLineFullInScrollPane(textArea, true, false);
+			} catch (Throwable e) {
 			}
 		});
 	}

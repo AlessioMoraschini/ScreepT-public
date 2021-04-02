@@ -22,34 +22,38 @@ public interface ICommonShortcuts {
 	public boolean isCtrlDown();
 	public boolean isShiftDown();
 	public boolean isAltDown();
-	
+
 	public void revalidateUnsaved();
-	
+
 	/**
 	 * default line terminator will be used
 	 */
 	public void saveAsShortcut();
-	
+
+	public default boolean areShortcutsEnabled(ShortcutsEnabler enabler) {
+		return enabler == null || enabler.shortcutsEnabled();
+	};
+
 	/**
 	 * If line terminator is null then default one will be used
 	 */
 	public void saveAsShortcut(EOL lineTerminator);
-	
+
 	public static void triggerKeyEvent(boolean press, boolean release, boolean ctrl, boolean alt, boolean shift, int keyCode) throws AWTException {
-		
+
 		Robot robot = new Robot();
-		
+
 		pressModifier(robot, true, ctrl, alt, shift);
-		
+
 		if(press)
 			robot.keyPress(keyCode);
-		
+
 		if(release)
 			robot.keyRelease(keyCode);
-		
+
 		pressModifier(robot, false, ctrl, alt, shift);
 	};
-	
+
 	public static void pressModifier(Robot robot, boolean press, boolean ctrl, boolean alt, boolean shift) {
 		if(press) {
 			if(ctrl)
@@ -66,5 +70,10 @@ public interface ICommonShortcuts {
 			if(shift)
 				robot.keyRelease(KeyEvent.VK_SHIFT);
 		}
+	}
+
+	@FunctionalInterface
+	public interface ShortcutsEnabler {
+		public boolean shortcutsEnabled();
 	}
 }

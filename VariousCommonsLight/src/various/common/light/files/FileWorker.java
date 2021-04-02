@@ -798,8 +798,7 @@ public class FileWorker {
 		ArrayList<File> result = new ArrayList<>();
 		for(File found : sourceDir.listFiles()) {
 			if(found.isDirectory()) {
-				ArrayList<File> subResults = getAllContent(found, filterType);
-				result.addAll(subResults);
+				result.addAll(getAllContent(found, filterType));
 			}else if(CustomFileFilters.fileAccepted(filterType)){
 				result.add(found);
 			}

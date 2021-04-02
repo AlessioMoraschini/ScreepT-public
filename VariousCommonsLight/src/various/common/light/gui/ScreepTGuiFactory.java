@@ -106,6 +106,15 @@ public class ScreepTGuiFactory {
 		return outcome;
 	}
 
+	public static String nCellsLayoutStr(String layoutStr, int nTimes) {
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < nTimes; i++) {
+			builder.append(layoutStr);
+		}
+
+		return builder.toString();
+	}
+
 	public static JScrollPane getScrollPane(boolean verticalScroll, boolean horizontalScroll) {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));

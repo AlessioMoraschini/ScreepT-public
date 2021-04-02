@@ -31,8 +31,7 @@ import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-import javax.swing.JTextArea;
-
+import various.common.light.om.SelectionDtoFull;
 import various.common.light.utility.log.SafeLogger;
 
 public class StringWorker {
@@ -300,31 +299,16 @@ public class StringWorker {
 	 *
 	 * @return the integer new selection end of the string
 	 */
-	public static int removeCharacterFromTxtArea(String toRemove, JTextArea textSourceArea, int startSel, int endSel) {
-		textSourceArea.requestFocus();
-		textSourceArea.setSelectionStart(startSel);
-		textSourceArea.setSelectionEnd(endSel);
-		String selText = textSourceArea.getSelectedText();
-		String allText = textSourceArea.getText();
+	public static SelectionDtoFull removeCharacterFromTxtArea(String toRemove, SelectionDtoFull dto) {
 
-		int newEnd = 0;
+		if (dto.isSomethingSelected(false)) {
+			dto.replaceSelection(dto.selection.replaceAll(toRemove, ""), true, false);
 
-		if (selText == null || selText.equals("")) {
-			String text = allText;
-			text = text.replaceAll(toRemove, "");
-			textSourceArea.setText(text);
-			newEnd = text.length();
-
-		}else {
-
-			String prefix = textSourceArea.getText().substring(0, startSel);
-			String postFix = textSourceArea.getText().substring(endSel, allText.length());
-			selText = selText.replaceAll(toRemove, "");
-			newEnd = startSel + selText.length();
-
-			textSourceArea.setText(prefix.concat(selText).concat(postFix));
+		} else {
+			dto.replaceAllText(dto.getCompleteString().replaceAll(toRemove, ""), false);
 		}
-		return newEnd;
+
+		return dto;
 	}
 
 	/**

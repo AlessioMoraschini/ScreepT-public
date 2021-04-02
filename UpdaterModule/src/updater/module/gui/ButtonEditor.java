@@ -174,6 +174,11 @@ class ButtonEditor extends DefaultCellEditor {
 				button.setEnabled(true);
 				pluginManagerInterface.setInstalling(false);
 				logger.info("Process completed, refresh completed!");
+				try {
+					pluginManagerInterface.restart();
+				} catch (Throwable e) {
+					logger.error("Error restarting plugin manager");
+				}
 			}
 		};
     }

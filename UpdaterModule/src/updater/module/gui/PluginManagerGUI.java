@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -295,15 +296,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 		btnRefreshFromRemote.addActionListener((e)->{
 			try {
-				final Image icon = this.getIconImage();
-				dispose();
-				pluginManager.discoverLatestPlugins();
-				GuiUtils.launchThreadSafeSwing(()->{
-					PluginManagerGUI gui = new PluginManagerGUI(parentFrame, pluginManager, refreshDependencyAction);
-					gui.setIconImage(icon);
-					gui.setVisible(true);
-					gui.toFront();
-				});
+				restart();
 			} catch (Throwable e1) {
 				logger.error("Cannot refresh table after user click on button refresh", e1);
 			}
@@ -318,6 +311,20 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 					btnRefreshFromRemote.setEnabled(true);
 			}
 		});
+	}
+
+	public void restart() throws TimeoutException, Throwable {
+		if (!isInstalling) {
+			final Image icon = this.getIconImage();
+			dispose();
+			pluginManager.discoverLatestPlugins();
+			GuiUtils.launchThreadSafeSwing(() -> {
+				PluginManagerGUI gui = new PluginManagerGUI(parentFrame, pluginManager, refreshDependencyAction);
+				gui.setIconImage(icon);
+				gui.setVisible(true);
+				gui.toFront();
+			});
+		}
 	}
 
 	private String getRegexFromFilter() {

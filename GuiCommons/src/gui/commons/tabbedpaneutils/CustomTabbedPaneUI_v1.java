@@ -77,34 +77,36 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
     @Override
     protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects,
                int tabIndex, Rectangle iconRect, Rectangle textRect) {
-    	int selectedIndex = mainTabPane.getSelectedIndex();
-    	Color savedColor = g.getColor();
-    	Graphics2D g2d = (Graphics2D)g;
-        int x = rects[tabIndex].x+xGap;
-        int y = rects[tabIndex].y+yGap;
+    	try {
 
-        boolean selected = selectedIndex == tabIndex;
+	    	int selectedIndex = mainTabPane.getSelectedIndex();
+	    	Color savedColor = g.getColor();
+	    	Graphics2D g2d = (Graphics2D)g;
+	        int x = rects[tabIndex].x+xGap;
+	        int y = rects[tabIndex].y+yGap;
 
-        currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
-        if (buttonOrdinalPos != Integer.MAX_VALUE && currentButton != null) {
-			if (selected) {
-				g.setColor(fillingColor);
-//				currentButton.setBackground(ACTIVE_BTN_CLOSE_COL);
-				currentButton.setIcon(IconsPathConfigurator.X_WHITE_IMG_RED);
-			} else {
-				g.setColor(deSelfillingColor);
-//				currentButton.setBackground(INACTIVE_BTN_CLOSE_COL);
-				currentButton.setIcon(IconsPathConfigurator.X_GRAY_IMG_RED);
+	        boolean selected = selectedIndex == tabIndex;
+
+	        currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
+	        if (buttonOrdinalPos != Integer.MAX_VALUE && currentButton != null) {
+				if (selected) {
+					g.setColor(fillingColor);
+	//				currentButton.setBackground(ACTIVE_BTN_CLOSE_COL);
+					currentButton.setIcon(IconsPathConfigurator.X_WHITE_IMG_RED);
+				} else {
+					g.setColor(deSelfillingColor);
+	//				currentButton.setBackground(INACTIVE_BTN_CLOSE_COL);
+					currentButton.setIcon(IconsPathConfigurator.X_GRAY_IMG_RED);
+				}
 			}
-		}
-		g.fillRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);
+			g.fillRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);
 
-        g2d.setColor(borderColor);
-        g2d.setStroke(new BasicStroke(THICKNESS_BORDER));
-        g2d.drawRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);
-        g2d.setColor(savedColor);
+	        g2d.setColor(borderColor);
+	        g2d.setStroke(new BasicStroke(THICKNESS_BORDER));
+	        g2d.drawRoundRect(x, y, rects[tabIndex].width+wPad, rects[tabIndex].height+hPad, arch, arch);
+	        g2d.setColor(savedColor);
 
-        try {
+
         	JLabel label = getLabelText(tabIndex, buttonOrdinalPos-1);
         	boolean unsaved = StringWorker.trimToEmpty(label.getText()).contains("(*)");
         	Color foregroundCompl = unsaved

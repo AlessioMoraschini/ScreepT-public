@@ -7,7 +7,7 @@ import org.junit.Test;
 import various.common.light.utility.string.StringWorker;
 
 public class VersionCompareTest {
-	
+
 	private static String version_A = "0.9.9";
 	private static String version_B = "1.1.1";
 	private static String version_C = "1.1.1.2";
@@ -23,5 +23,6 @@ public class VersionCompareTest {
 		assertTrue(StringWorker.compareVersions("0.9.37", "1") == -1);
 		assertTrue(StringWorker.compareVersions("1.0", "1") == 0);
 		assertTrue(StringWorker.compareVersions("1.0", "1.0.0") == 0);
+		assertTrue(StringWorker.compareVersions("1.0", "1.0.1") == -1);
 	}
 }

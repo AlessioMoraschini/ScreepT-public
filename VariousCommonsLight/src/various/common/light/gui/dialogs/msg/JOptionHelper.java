@@ -600,8 +600,9 @@ public class JOptionHelper {
 		final JDialog dialog = optionPane.createDialog(title);
 		try {
 			dialog.setAlwaysOnTop(true);
-			dialog.setLocationRelativeTo(parentComponent);
 			dialog.enableInputMethods(true);
+			dialog.setLocationRelativeTo(parentComponent);
+//			GuiUtils.moveRelativeTo(dialog, parentComponent);
 			dialog.toFront();
 			dialog.setVisible(true);
 			dialog.dispose();
