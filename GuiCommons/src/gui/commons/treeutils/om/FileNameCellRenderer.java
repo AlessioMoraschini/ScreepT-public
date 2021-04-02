@@ -31,39 +31,39 @@ import gui.commons.treeutils.TreeUtils;
 import various.common.light.files.om.FileNamed;
 
 public class FileNameCellRenderer implements TreeCellRenderer {
-	
-	private static final int FOLDER_TEXT_HEIGHT = 15;
-	private static final int FILE_TEXT_HEIGHT = 8;
-	
-	public static Font fileFont = new Font("Segoe UI", Font.PLAIN, 14);
-	public static Font folderFont = new Font("Segoe UI", Font.BOLD, 13);
 
-	static Logger logger = Logger.getLogger(FileNameCellRenderer.class); 
-		
+	private static final int FOLDER_TEXT_HEIGHT = 10;
+	private static final int FILE_TEXT_HEIGHT = 8;
+
+	public static Font fileFont = new Font("Segoe UI", Font.PLAIN, 14);
+
+	static Logger logger = Logger.getLogger(FileNameCellRenderer.class);
+
 	public JLabel iconContainer;
 	public JPanel container;
-	
+
 	public JTree treeRef;
-	
+
 	public int hoveringRow = -1;
-	
+
 	public FileNameCellRenderer() {
 		container = new JPanel(new BorderLayout());
-		
+
 		treeRef = new JTree();
-		
+
 		iconContainer = new JLabel();
 		iconContainer.setForeground(Color.LIGHT_GRAY);
 		container.add(iconContainer);
     }
 
-    public Component getTreeCellRendererComponent(final JTree tree, Object value, final boolean selected, boolean expanded,
+    @Override
+	public Component getTreeCellRendererComponent(final JTree tree, Object value, final boolean selected, boolean expanded,
                                                   boolean leaf, int row, boolean hasFocus) {
-    	
+
     	treeRef = tree;
-    	
+
         if (iconContainer != null && container != null && value != null) {
-        	
+
 			if (value instanceof FileNamed) {
 
 				// custom icon setter
@@ -85,34 +85,33 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 					logger.error(e);
 				}
 
+				iconContainer.setFont(fileFont);
 				if (selectedFile.isFile()) {
-					iconContainer.setFont(fileFont);
 					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth() + 100, FILE_TEXT_HEIGHT));
 				} else {
-					iconContainer.setFont(folderFont);
 					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth() + 100, FOLDER_TEXT_HEIGHT));
 				}
 
 				container.setToolTipText(selectedFile != null ? selectedFile.getAbsolutePath() : "file is null!");
-				
+
 			}
-			
+
 			iconContainer.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
 			container.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
 			if(hoveringRow == row){
-				iconContainer.setForeground(new Color(230,230,230));
-				container.setForeground(new Color(230,230,230));
+				iconContainer.setForeground(new Color(240,240,240));
+				container.setForeground(new Color(240,240,240));
 			} else {
 				iconContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
-				iconContainer.setForeground(selected ? Color.WHITE : Color.GRAY);
-				container.setForeground(selected ? Color.WHITE : Color.GRAY);
+				iconContainer.setForeground(selected ? Color.WHITE : Color.LIGHT_GRAY);
+				container.setForeground(selected ? Color.WHITE : Color.LIGHT_GRAY);
 			}
 		}
 		return container;
     }
-    
+
     public Object getTreeCellRendererComponent() {
     	return container;
     }
-    
+
 }

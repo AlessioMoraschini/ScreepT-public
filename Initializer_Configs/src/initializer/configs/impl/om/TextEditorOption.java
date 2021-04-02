@@ -37,7 +37,7 @@ public class TextEditorOption {
 	public static final boolean DEFAULT_TAB_INLINE = true;
 	public static final Font DEFAULT_FONT = new Font("Segoe UI", Font.PLAIN, 16);
 	public static final Color DEFAULT_BACKGROUND_COL = new Color(250,250,250);
-	public static final Color DEFAULT_FILE_PANEL_BACKGROUND_COL = new Color(41, 49, 52);
+	public static final Color DEFAULT_FILE_PANEL_BACKGROUND_COL = new Color(20,20,20);
 	public static final Color DEFAULT_FOREGROUND_COL = Color.BLACK;
 	public static final String DEFAULT_SELECTED_FILE_AT_START = "";
 	public static final String DEF_LastEscapeLanguage = "HTML_4";

@@ -287,6 +287,7 @@ public class GeneralConfig {
 			public static int MAX_FILE_SIZE_TXT_EDITOR_KB;
 			public static int MAX_TEXT_EDITOR_SAFE_LINES;
 			public static int TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS;
+			public static int TAIL_CHECKER_REFRESH_PERIOD = 3000;
 			public static int NORMAL_WHEEL_SPEED;
 			public static int FAST_WHEEL_SPEED;
 			public static int ULTRA_FAST_WHEEL_SPEED;
@@ -579,6 +580,7 @@ public class GeneralConfig {
 					MAX_FILE_SIZE_TXT_EDITOR_KB = resourcesFilePathsMappings.getIntVarFromProps("MAX_FILE_SIZE_TXT_EDITOR_KB", 1024*20); // 20 MB default
 					MAX_TEXT_EDITOR_SAFE_LINES = resourcesFilePathsMappings.getIntVarFromProps("MAX_TEXT_EDITOR_SAFE_LINES", 1000000); // 1 Million lines default
 					TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS = resourcesFilePathsMappings.getIntVarFromProps("TEXT_EDITOR_FOOTER_REFRESH_PERIOD_MS", 300);
+					TAIL_CHECKER_REFRESH_PERIOD = resourcesFilePathsMappings.getIntVarFromProps("TAIL_CHECKER_REFRESH_PERIOD", 3000);
 					NORMAL_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("NORMAL_WHEEL_SPEED", 14);
 					FAST_WHEEL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("FAST_WHEEL_SPEED", 150);
 					KEY_SCROLL_SPEED = resourcesFilePathsMappings.getIntVarFromProps("KEY_SCROLL_SPEED", 3);

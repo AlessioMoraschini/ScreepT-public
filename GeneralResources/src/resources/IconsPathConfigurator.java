@@ -18,9 +18,9 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 
 public class IconsPathConfigurator {
-	
+
 	///////////////// MENU ICONS /////////////////
-	
+
 	// file extension types
 	public static final String F_ICON_PDF = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/pdf.png";
 	public static final String F_ICON_PNG = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_png.png";
@@ -49,7 +49,7 @@ public class IconsPathConfigurator {
 	public static final String F_ICON_CODE = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_code.png";
 	public static final String F_ICON_RUNNABLE = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_runnable.png";
 	public static final String F_ICON_WAV = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_wav.png";
-	
+
 		// file submenu
 	public static final String ICON_CONF_MANAGER = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/manager.png";
 	public static final String ICON_LOAD_CUSTOM_CONF = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/loadConfig.png";
@@ -60,17 +60,17 @@ public class IconsPathConfigurator {
 	public static final String ICON_RESET_CONF = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/reset.png";
 	public static final String ICON_RESTART = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/Restart.png";
 	public static final String ICON_EXIT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/turnOff.png";
-	
+
 		// preferences submenu
 	public static final String ICON_GUI_OPT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/graphics.png";
 	public static final String ICON_GEN_OPT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/options.png";
-	
+
 		// Screept submenu
 	public static final String ICON_FILE_CRYPTER = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/crypter.png";
 	public static final String ICON_KEYGEN = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/imageWriter.png";
 	public static final String ICON_KEYGEN_PSW = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/keyGenPsw.png";
 	public static final String ICON_KEY_DICT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/keyDictionary.png";
-	
+
 		// TEXT editor submenu
 	public static final String ICON_TEXT_EDITOR = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/textEditor.png";
 	public static final String ICON_FOLDER_IMP_EXP = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/FolderImpExp.png";
@@ -80,9 +80,9 @@ public class IconsPathConfigurator {
 	public static final String ICON_HW_INFO = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/hardware.png";
 	public static final String ICON_CONVERSION = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/conversion.png";
 	public static final String ICON_FILE_N_DIR = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/folderActions.png";
-	
+
 	public static final String ICON_IMAGE_CONVERTER = GeneralConfig.RESOURCES_DIR + "Icons/File_Extensions/F_image.png";
-	
+
 	public static final String ICON_UPPERCASE_FIRST = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/uppercase.png";
 	public static final String ICON_CREATE_FOLDER = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/createFolder.png";
 	public static final String ICON_DELETE_TARGETED = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/targetedDelete.png";
@@ -90,15 +90,15 @@ public class IconsPathConfigurator {
 	public static final String ICON_DELETE_DIRS_ONLY = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/emptyDirectory.png";
 	public static final String ICON_COPY_DIR_STRUCTURE = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/cloneDirectory.png";
 	public static final String ICON_FOLDER_WEB = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/webFolder.png";
-	
+
 		// help submenu
 	public static final String ICON_ABOUT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/about.png";
 	public static final String ICON_EXPORT_LOG = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/logExport.png";
 	public static final String ICON_USER_GUIDE = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/userGuide.png";
 	public static final String ICON_HOME_PAGE = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/homePage.png";
-		
+
 	/////////////////// END MENU ICONS //////////////////
-	
+
 	///////////////// POP-UP MENU ICONS /////////////////
 	public static final String ICON_IMPORT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/import.png";
 	public static final String ICON_IMPORT_FROM_SCREEPT = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/importFromScreept.png";
@@ -108,7 +108,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_LOOK_INFO = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/look.png";
 	public static final String ICON_CHECKMARK = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/checkmark.png";
 	public static String ICON_ADD = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/add.png";
-	
+
 	///////////////// TEXT EDITOR ICONS /////////////////
 	/* First shared with Menu Icons */
 	public static final String ICON_NEW_FILE = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/loadConfig.png";
@@ -116,7 +116,7 @@ public class IconsPathConfigurator {
 	public static final String ICON_DOC_VOID = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/voidDoc.png";
 	public static final String ICON_DOC_SAVED = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/docSaved.png";
 	public static final String ICON_DOC_UNSAVED = GeneralConfig.RESOURCES_DIR + "Icons/Menu_Icons/starDoc.png";
-	
+
 	/* Then custom only for Text Editor */
 	public static final String ICON_LINES_SCREEN = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/screenLines.png";
 	public static final String ICON_LINES_FILE = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/fileLines.png";
@@ -156,13 +156,13 @@ public class IconsPathConfigurator {
 	public static final String ICON_COLOR_SAMPLER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropper.png";
 	public static final String ICON_COLOR_SAMPLER_BIG = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/colorDropperBig.png";
 	public static final String ICON_SPELLCHECKER = GeneralConfig.RESOURCES_DIR + "Icons/Text_Editor/spellChecker.png";
-	
+
 	///////////////// TREE RENDERER ICONS /////////////////
 	public static final String iconFolderPath = GeneralConfig.RESOURCES_DIR + "Icons/General/Folder.png";
 	public static final String iconFilePath = GeneralConfig.RESOURCES_DIR + "Icons/General/File.png";
 	public static final String iconConfigFilePath = GeneralConfig.RESOURCES_DIR + "Icons/General/configFile.png";
 	public static final String iconRootPath = GeneralConfig.RESOURCES_DIR + "Icons/General/Root.png";
-	
+
 	/////////////////  GENERAL PURPOSE  ///////////////////
 	/** This is the standard blue one **/
 	public static final String ICON_RELOAD = GeneralConfig.RESOURCES_DIR + "Icons/General/Reload.png";
@@ -173,7 +173,8 @@ public class IconsPathConfigurator {
 	public static final String ICON_RELOAD3 = GeneralConfig.RESOURCES_DIR + "Icons/General/Reload_3.png";
 	/** This is the green version with 4 arrows **/
 	public static final String ICON_RELOAD4 = GeneralConfig.RESOURCES_DIR + "Icons/General/Reload_4.png";
-	
+
+	public static final String ICON_EYE = GeneralConfig.RESOURCES_DIR + "Icons/General/Eye.png";
 	public static final String ICON_LICENSE = GeneralConfig.RESOURCES_DIR + "Icons/General/license.png";
 	public static final String ICON_GEN_INFO = GeneralConfig.RESOURCES_DIR + "Icons/General/info.png";
 	public static final String ICON_BIG_GEN_INFO = GeneralConfig.RESOURCES_DIR + "Icons/General/Info_Big.png";
@@ -227,7 +228,7 @@ public class IconsPathConfigurator {
 	public static final ImageIcon IMG_ICON_VISIBLE = new ImageIcon(ICON_VISIBLE);
 	public static final String ICON_INVISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/invisible.png";
 	public static final ImageIcon IMG_ICON_INVISIBLE = new ImageIcon(ICON_INVISIBLE);
-	
+
 	public static final String ICON_HASHING = GeneralConfig.RESOURCES_DIR + "Icons/General/hash.png";
 	public static final String ICON_64_PURPLE = GeneralConfig.RESOURCES_DIR + "Icons/General/64_Purple.png";
 	public static final String ICON_64_RED = GeneralConfig.RESOURCES_DIR + "Icons/General/64_Red.png";
@@ -240,7 +241,7 @@ public class IconsPathConfigurator {
 	public static String ICON_PLAY = GeneralConfig.RESOURCES_DIR + "Icons/General/play.png";
 	public static String ICON_STOP = GeneralConfig.RESOURCES_DIR + "Icons/General/Stop.png";
 	public static String ICON_PAUSE = GeneralConfig.RESOURCES_DIR + "Icons/General/pause.png";
-	
+
 	// TOGGLES
 	public static final String ST_ICON_HEAD_VISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/Head_visible.png";
 	public static final String ST_ICON_SUBHEAD_VISIBLE = GeneralConfig.RESOURCES_DIR + "Icons/General/Toggles/SubHead_visible.png";
@@ -254,11 +255,11 @@ public class IconsPathConfigurator {
 	public static final ImageIcon IMG_ICON_HEAD_INVISIBLE = new ImageIcon(ST_ICON_HEAD_INVISIBLE);
 	public static final ImageIcon IMG_ICON_SUBHEAD_INVISIBLE = new ImageIcon(ST_ICON_SUBHEAD_INVISIBLE);
 	public static final ImageIcon IMG_ICON_FOOTER_INVISIBLE = new ImageIcon(ST_ICON_FOOTER_INVISIBLE);
-	
+
 	////////////////  MOST_USED INSTANTIATED DEFAULT STATIC ICONS   ///////////////////
 	public static final ImageIcon IMG_ICON_LIGHT_ON = new ImageIcon(ICON_LIGHT_ON);
 	public static final ImageIcon IMG_ICON_LIGHT_OFF = new ImageIcon(ICON_LIGHT_OFF);
-	
+
 	public static final ImageIcon X_WHITE_IMG = new ImageIcon(ICON_X_WHITE);
 	public static final ImageIcon X_WHITE_IMG_RED = new ImageIcon(ICON_X_WHITE_RED);
 	public static final ImageIcon X_LIGHT_GRAY_IMG = new ImageIcon(ICON_X_LIGHT_GRAY);
@@ -267,7 +268,7 @@ public class IconsPathConfigurator {
 	public static final ImageIcon X_GRAY_IMG_RED_LIGHT = new ImageIcon(ICON_X_GRAY_RED_LIGHTER);
 	public static final ImageIcon X_BLACK_IMG = new ImageIcon(ICON_X_BLACK);
 	public static final ImageIcon X_BLACK_IMG_RED = new ImageIcon(ICON_X_BLACK_RED);
-	
+
 	/**
 	 * Same as defaultFileIcons(), but this one is already lazy initialized
 	 */
@@ -276,32 +277,32 @@ public class IconsPathConfigurator {
 	 * This is a set containing all types of extension recognized by ScreepT
 	 */
 	public static final Set<String> FILE_TYPE_ICONS_KEYS = FILE_TYPE_ICONS_MAP.keySet();
-	
+
 	public static ImageIcon getIconByFile(File file) {
-		
+
 		String ext = ".txt";
-		
+
 		if(file == null) {
 			return new ImageIcon(ICON_DOC_SAVED);
 		}
-		
+
 		for(String k : FILE_TYPE_ICONS_KEYS) {
 			if(file.getName().toLowerCase().endsWith(k)) {
 				ext = k;
 				break;
 			}
 		}
-		
+
 		ImageIcon result = (FILE_TYPE_ICONS_MAP.containsKey(ext))? FILE_TYPE_ICONS_MAP.get(ext) : new ImageIcon(ICON_DOC_SAVED);
 		return result != null ? result : new ImageIcon();
 	}
-	
+
 	/** Icons <-> File Image Mappings - (Used in Text Editor tabs)
-	 * 
+	 *
 	 * @return hashtable of extensions linked to related icons
 	 */
 	public static Hashtable<String,ImageIcon> defaultFileIcons() {
-    	
+
     	Hashtable<String,ImageIcon> table=new Hashtable<>();
 
 	    // Add extensions and icons
@@ -347,7 +348,7 @@ public class IconsPathConfigurator {
 	    table.put(".config",new ImageIcon(F_ICON_PROPERTIES));
 	    table.put(".ini",new ImageIcon(F_ICON_PROPERTIES));
 	    table.put(".yml",new ImageIcon(F_ICON_PROPERTIES));
-	    
+
 	    // generics video
 	    table.put(".mov",new ImageIcon(F_ICON_VIDEO));
 	    table.put(".mpeg",new ImageIcon(F_ICON_VIDEO));
@@ -355,21 +356,21 @@ public class IconsPathConfigurator {
 	    table.put(".flv",new ImageIcon(F_ICON_VIDEO));
 	    table.put(".mp4",new ImageIcon(F_ICON_VIDEO));
 	    table.put(".gif",new ImageIcon(F_ICON_VIDEO));
-	    
+
 	    // generics audio
 	    table.put(".mp3",new ImageIcon(F_ICON_AUDIO));
 	    table.put(".wav",new ImageIcon(F_ICON_WAV));
-	    
+
 	    // generics image
 	    table.put(".tiff",new ImageIcon(F_ICON_IMAGE));
 	    table.put(".gif",new ImageIcon(F_ICON_IMAGE));
-	    
+
 	    return table;
     }
-	
+
 	// MAIN RESOURCES DIR SETTER & GETTER //
 	public static String getRESOURCES_DIR() {
 		return GeneralConfig.RESOURCES_DIR;
 	}
-	
+
 }
