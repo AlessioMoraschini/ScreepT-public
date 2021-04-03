@@ -239,6 +239,7 @@ public class GeneralConfig {
 
 			// TEXT EDITOR DEFAULTS
 			public static int UNDO_MAX_LIM;
+			public static int MAX_RESULT_FILE_CONTENT_SEARCH = 200000;
 			public static int ADVICE_FOOTER_TIMEOUT;
 			public static Color ADVICE_FOOTER_OK_COLOR;
 			public static Color ADVICE_FOOTER_KO_COLOR;
@@ -540,6 +541,7 @@ public class GeneralConfig {
 
 					// TEXT EDITOR DEFAULTS
 					UNDO_MAX_LIM = resourcesFilePathsMappings.getIntVarFromProps("UNDO_MAX_LIM", 1000);
+					MAX_RESULT_FILE_CONTENT_SEARCH = resourcesFilePathsMappings.getIntVarFromProps("MAX_RESULT_FILE_CONTENT_SEARCH", 200000);
 					ADVICE_FOOTER_TIMEOUT = resourcesFilePathsMappings.getIntVarFromProps("ADVICE_FOOTER_TIMEOUT", 7000);
 					ADVICE_FOOTER_OK_COLOR = resourcesFilePathsMappings.getColorVarFromProps("ADVICE_FOOTER_OK_COLOR", Color.GREEN);
 					ADVICE_FOOTER_KO_COLOR = resourcesFilePathsMappings.getColorVarFromProps("ADVICE_FOOTER_KO_COLOR", Color.RED);

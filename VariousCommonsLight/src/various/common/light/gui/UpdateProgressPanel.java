@@ -315,7 +315,7 @@ public class UpdateProgressPanel {
 			}
         	doCheck(bar);
 
-        	Thread.sleep(200);
+        	Thread.sleep(50);
         } // End while
 
         doCheck(bar);
