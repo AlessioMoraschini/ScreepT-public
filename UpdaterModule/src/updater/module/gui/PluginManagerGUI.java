@@ -12,15 +12,18 @@
 package updater.module.gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,6 +42,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -50,6 +54,7 @@ import updater.module.plugins.PluginManager;
 import various.common.light.gui.GuiUtils;
 import various.common.light.gui.ScreepTGuiFactory;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.gui.dialogs.msg.JOptionHelper.DefaultSysIcons;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.string.StringWorker;
 
@@ -71,7 +76,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	private static final String BUTTON_UNINSTALL = "Uninstall";
 
 	// String name <-> string description <-> boolean already installed <-> checkBox select <-> jbutton uninstall (if installed)
-	private static final String[] columnNames = {"Plugin name", "DeScreepTion", "Status", "Plugin Action"};
+	private static final String[] columnNames = {"Plugin name", "DeScreepTion", "Status", "Plugin Action", "Last Version"};
 
 	public static boolean active = false;
 
@@ -204,7 +209,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		SwingUtilities.invokeLater(()->{
-			GuiUtils.centerComponent(this, 1300, 450);
+			GuiUtils.centerComponent(this, 1400, 750);
 		});
 
 		setInstalling(false);
@@ -313,6 +318,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		});
 	}
 
+	@Override
 	public void restart() throws TimeoutException, Throwable {
 		if (!isInstalling) {
 			final Image icon = this.getIconImage();
@@ -399,13 +405,55 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		table.getColumn(columnNames[3]).setCellRenderer(renderer);
 		table.getColumn(columnNames[3]).setCellEditor(btnEditor);
 
+		table.getColumn(columnNames[4]).setCellRenderer(new WarningsCellRenderer());
+
 		table.getColumnModel().getColumn(0).setPreferredWidth(110);
 		table.getColumnModel().getColumn(0).setMinWidth(110);
-		table.getColumnModel().getColumn(1).setPreferredWidth(600);
-		table.getColumnModel().getColumn(2).setPreferredWidth(110);
+		table.getColumnModel().getColumn(1).setPreferredWidth(500);
+		table.getColumnModel().getColumn(2).setPreferredWidth(250);
 		table.getColumnModel().getColumn(3).setPreferredWidth(150);
 		table.getColumnModel().getColumn(3).setMinWidth(150);
+		table.getColumnModel().getColumn(4).setPreferredWidth(40);
+		table.getColumnModel().getColumn(4).setMinWidth(40);
+	}
 
+	public class WarningsCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = -6124028505039452207L;
+
+		@Override
+		public Component getTableCellRendererComponent(
+	                        JTable table, Object value,
+	                        boolean isSelected, boolean hasFocus,
+	                        int row, int column) {
+
+	    	String pluginName = (String)table.getValueAt(row, 0);
+			PluginDTO plugin = getPluginDTO(pluginName);
+	        JLabel labelItem = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	        String warningHtml = plugin.getWarnings().isEmpty()
+	        		? null
+	        		: GuiUtils.encapsulateInHtml("<b>Warnings found:</b> <br><br>" + GuiUtils.getAsHtmlList(plugin.getWarnings())); // Could be value.toString()
+
+//	        warningHtml = GuiUtils.encapsulateInHtml("<b>This is a test:</b> <br>" + plugin.getName()); // TEST
+	        if(warningHtml != null) {
+	        	labelItem.setToolTipText(warningHtml);
+	        	labelItem.setBackground(Color.BLACK);
+	        	labelItem.setForeground(Color.WHITE);
+	        	labelItem.setFont(labelItem.getFont().deriveFont(Font.BOLD));
+	        	try {
+					labelItem.setIcon(GuiUtils.getDefaultSystemIcon(DefaultSysIcons.WARN, 16, 16));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        } else {
+	        	labelItem.setToolTipText(null);
+	        	labelItem.setBackground(Color.WHITE);
+	        	labelItem.setForeground(Color.BLACK);
+	        	labelItem.setFont(labelItem.getFont().deriveFont(Font.PLAIN));
+				labelItem.setIcon(new ImageIcon());
+	        }
+	        labelItem.setHorizontalAlignment(JLabel.CENTER);
+	        return labelItem;
+	    }
 	}
 
 	@Override
@@ -442,11 +490,14 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 			String noExtensionName = FilenameUtils.removeExtension(current.getName());
 			String description = current.getDescription();
 			boolean installed = current.isInstallationCompleted();
-			String installedText = (installed) ? "Already installed!" : "Not yet Installed";
+			String alreadyInstalledStr = "Already installed (" + current.getInstalledVersion() + ")";
+			String notUpToDateStr = "Installed - to update (Installed version: " + current.getInstalledVersion() + ")";
+			alreadyInstalledStr = current.isUpToDate() ? alreadyInstalledStr : notUpToDateStr;
+			String installedText = (installed) ? alreadyInstalledStr : "Not yet Installed";
 
 			JButton installOrRemoveBtn = (installed) ? new JButton(BUTTON_UNINSTALL) : new JButton(BUTTON_INSTALL);
 			installOrRemoveBtn.setEnabled(true);
-			model.addRow(new Object[]{noExtensionName, description, installedText, installOrRemoveBtn});
+			model.addRow(new Object[]{noExtensionName, description, installedText, installOrRemoveBtn, current.getLastVersion()});
 		}
 
 		table.revalidate();
@@ -498,4 +549,10 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	public boolean isInstalling() {
 		return isInstalling;
 	}
+
+	@Override
+	public JTable getTable() {
+		return table;
+	}
+
 }

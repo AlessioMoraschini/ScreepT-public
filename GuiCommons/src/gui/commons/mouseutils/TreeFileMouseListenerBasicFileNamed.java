@@ -61,21 +61,21 @@ import various.common.light.utility.string.StringWorker.EOL;
  *
  */
 public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
-	
+
 	// KeyGenPanel logger
-	static Logger logger = Logger.getLogger(TreeFileMouseListenerBasicFileNamed.class); 
-	
+	static Logger logger = Logger.getLogger(TreeFileMouseListenerBasicFileNamed.class);
+
 	// gui elements
 	public JTree tree;
 	public FileNamed selectedNode;
 	public Vector<FileNamed> selectedNodes;
-	
+
 	public HashCheckerFrame hashCheckerFrame;
-	
-	public JFrame propertiesFrame = null; 
+
+	public JFrame propertiesFrame = null;
 	public Component parent;
 	public JOptionHelperExtended dialogHelper;
-	
+
 	public JMenuItem itemLoadFile;
 	public JMenuItem deleteItem;
 
@@ -89,39 +89,45 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 		this.parent = parent;
 		dialogHelper = new JOptionHelperExtended(parent);
 	}
-	
+
 	public TreeFileMouseListenerBasicFileNamed(JTree treeIn) {
+		this(treeIn, true);
+	}
+
+	public TreeFileMouseListenerBasicFileNamed(JTree treeIn, boolean autoAddListeners) {
 		selectedNodes = new Vector<>();
 		tree = treeIn;
-		tree.setComponentPopupMenu(getPopUpMenu());
-		tree.addMouseListener(getMouseListener());
+		if (autoAddListeners) {
+			tree.setComponentPopupMenu(getPopUpMenu());
+			tree.addMouseListener(getMouseListener());
+		}
 		dialogHelper = new JOptionHelperExtended(tree);
 	}
-	
+
 	public MouseListener getMouseListener() {
 	    return new MouseAdapter() {
 
 	        @Override
 	        public void mousePressed(MouseEvent arg0) {
 	            if(arg0.getButton() == MouseEvent.BUTTON3){
-	            
+
 		            TreePath pathForLocation = tree.getPathForLocation(arg0.getPoint().x, arg0.getPoint().y);
 	                TreePath[] pathsSelection = tree.getSelectionPaths();
 	                updateSelectedNodes(pathsSelection);
 	                tree.setSelectionPaths(pathsSelection);
-	                
+
 		            if(pathForLocation != null){
 		            	selectedNode = (FileNamed) pathForLocation.getLastPathComponent();
 		            } else{
 		            	selectedNode = null;
 		            }
-		           
+
 		            super.mousePressed(arg0);
 	            }
 	        }
 	    };
 	}
-	
+
 	public Vector<FileNamed> updateSelectedNodes(TreePath[] selectionPaths) {
 		selectedNodes = new Vector<>();
 		try {
@@ -130,22 +136,22 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			}
 		} catch (Exception e) {
 		}
-		
+
 		return selectedNodes;
 	}
 
 	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
-	    
+
 	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
 	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
-	    
+
 	    itemLoadFile = new JMenuItem("Open File");
 	    itemLoadFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    menu.add(itemLoadFile);
-	    
+
 	    deleteItem = new JMenuItem("Delete selected files");
 	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    deleteItem.addActionListener(getDeleteActionListener());
@@ -155,7 +161,7 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 	    refreshItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
-	    
+
 	    JMenuItem propertiesItem = new JMenuItem("File Properties");
 	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
@@ -163,21 +169,21 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 
 	    // set menu icons
 	    MenuSetter.setIconTextGap(menu, 12);
-	    
+
 	    sysExplorerItem.setIcon(new ImageIcon(IconsPathConfigurator.iconFolderPath));
 	    deleteItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_DELETE));
 	    refreshItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 	    propertiesItem.setIcon(new ImageIcon(IconsPathConfigurator.ICON_ABOUT));
-	    
+
 	    return menu;
 	}
-	
+
 	public ActionListener openInSystemExplorer() {
 		return (e) -> {
 			GuiUtilsExtended.openInFileSystem(selectedNode.mFile);
 		};
 	}
-	
+
 	public ActionListener getNewFolderActionListener() {
 		return (e) -> {
 			FileNamed node = (FileNamed)tree.getSelectionPath().getLastPathComponent();
@@ -189,24 +195,24 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			File unexistant = new File(targetDir.getAbsolutePath() + File.separator + "new_folder");
 			unexistant = FileVarious.uniqueJavaObjFile(unexistant);
 			String newName = dialogHelper.askForStringNullable("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
-			
+
 			if(newName == null) {
 				return;
 			}else if(!StringWorker.trimToEmpty(newName).equals("")){
 				unexistant = FileVarious.uniqueJavaObjFile(new File(targetDir.getAbsolutePath() + File.separator + newName));
 			}
-			
+
 			boolean result = unexistant.mkdirs();
 			logger.info("getNewFolderActionListener() -> " + unexistant + " creation process had result: "+result);
 		};
 	}
-	
+
 	public List<File> getSelectedFiles() {
 		 TreePath[] treeSelArr = tree.getSelectionPaths();
 		 ArrayList<File> files = new ArrayList<>();
 		 if(treeSelArr == null)
 			 return files;
-		 
+
 		 for(TreePath path : treeSelArr) {
 			 FileNamed node = (FileNamed)path.getLastPathComponent();
 			 if (node != null) {
@@ -217,7 +223,7 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 				}
 			}
 		 }
-		 
+
 		 return files;
 	}
 
@@ -234,7 +240,7 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 				}
 			}
 		}
-		
+
 		return files;
 	}
 
@@ -247,13 +253,13 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 	            TreePath[] treeSelArr = tree.getSelectionPaths();
 	            String currFilesString = (treeSelArr.length == 1)? ((FileNamed)treeSelArr[0].getLastPathComponent()).toString() : "selected files" ;
             	if(treeSelArr.length!= 0 && new JOptionHelperExtended(null).yesOrNo("Are you sure to delete "+currFilesString+" from disk(cannot be undone)? "
-            			+ "All eventual selected folders will be deleted with all the file contained in them!", null)){	        		
+            			+ "All eventual selected folders will be deleted with all the file contained in them!", null)){
 		            for(TreePath tp : treeSelArr) {
-		            	
+
 		            	FileNamed node = (FileNamed)tp.getLastPathComponent();
 		            	File selectedFile = node.mFile;
-		            	if(selectedFile.isFile()) {	
-		            		logger.info("getDeleteActionListener()"+node.mFile+"File -> Deleted: "+selectedFile.delete());	
+		            	if(selectedFile.isFile()) {
+		            		logger.info("getDeleteActionListener()"+node.mFile+"File -> Deleted: "+selectedFile.delete());
 		            	}else {
 		            		logger.info("getDeleteActionListener()"+node.mFile + "File -> Deleting folder content recursively...");
 		            		FileWorker.deleteDirContentInclRoot(node.mFile);
@@ -266,16 +272,16 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			    	logger.debug(msg);
 			    	dialogHelper.info(msg, "Delete Skipped!");
 	            }
-            	
+
             	refreshTree();
             	logger.info("getDeleteActionListener() -> Completed!");
 	        }
 	    };
 	}
-	
+
 	public ActionListener refreshListener() {
 		return new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				refreshTree();
@@ -285,7 +291,7 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 
 	public ActionListener selectAllListener() {
 		return new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -296,10 +302,10 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			}
 		};
 	}
-	
+
 	public ActionListener hashingListener(File initialFile) {
 		return new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -318,13 +324,14 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			}
 		};
 	}
-	
+
 	public ActionListener propertiesListener() {
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (propertiesFrame == null || !propertiesFrame.isVisible()) {
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							try {
 								if (selectedNode != null && selectedNode.mFile != null && selectedNode.mFile.exists()) {
@@ -345,31 +352,31 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			}
 		};
 	}
-	
+
 	protected JMenuItem addMenuItem(JComponent menu, String label, Font font, boolean separatorBefore, boolean separatorAfter) {
-		if (separatorBefore) 
+		if (separatorBefore)
 			menu.add(new JSeparator());
-		
+
 		JMenuItem item = new JMenuItem(label);
 		item.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 		menu.add(item);
-		
+
 		if (separatorAfter)
 			menu.add(new JSeparator());
-		
+
 		return item;
 	}
-	
+
 	public void changeTreeSelectionColor(Color color) {
-		
+
 		UIDefaults treeDefaults = new UIDefaults();
 		treeDefaults.put("Tree.selectionBackground", color);
 
 	    tree.putClientProperty("Nimbus.Overrides",treeDefaults);
 	    tree.putClientProperty("Nimbus.Overrides.InheritDefaults", color == null);
 	}
-	
-	
+
+
 	/**
 	 * Retrieve parent if a file is selected, or current selected if file itself is a directory
 	 * @return
@@ -385,9 +392,9 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			return null;
 		}
 	}
-	
+
 	// utility methods //
-	
+
 	public void refreshTree() {
 		tree.setModel(tree.getModel());
 		tree.revalidate();
@@ -396,18 +403,18 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void keyReleased(KeyEvent event) {
 		if(tree.hasFocus()) try {
 			tree.setCursor(GuiUtils.CURSOR_WAIT);
-			
+
 			if (!event.isAltDown() && !event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
 				if(itemLoadFile != null) {
 					itemLoadFile.doClick();
@@ -418,7 +425,7 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 				}
 			} else if (!event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() == 1) {
 				pasteFromClipboard();
-				
+
 			} else if(event.isControlDown() && !event.isShiftDown() && !event.isAltDown() && event.getKeyCode() == KeyEvent.VK_C && tree.getSelectionCount() != 0) {
 				copySelectedFilesToClipboard();
 			}
@@ -428,19 +435,19 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			tree.setCursor(GuiUtils.CURSOR_DEFAULT);
 		}
 	}
-	
+
 	protected void pasteFromClipboard() throws IOException {
 		File destination = getCurrentDestinationDynamic(selectedNode);
 		if(SystemClipboardUtils.pasteFilesFromClipboard(destination, null, dialogHelper))
 			refreshTree();
 	}
-	
+
 	protected void copySelectedFilesToClipboard() {
 		List<File> files = getSelectedFiles();
 		if(files != null && !files.isEmpty())
 			SystemClipboardUtils.setClipobardFiles(getSelectedFiles());
 	}
-	
+
 	protected void writeSelectedFilesPathIntoClipboard() {
 		List<File> files = getSelectedFiles();
 		if(files != null && !files.isEmpty())

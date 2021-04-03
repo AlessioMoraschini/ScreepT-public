@@ -18,6 +18,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,12 +48,12 @@ import various.common.light.utility.log.SafeLogger;
 public class ImageWorker {
 
 	static SafeLogger logger = new SafeLogger(ImageWorker.class);
-	
-	public final static int ORIZ_OPTION = 0; 
-	public final static int VERT_OPTION = 1; 
-	
+
+	public final static int ORIZ_OPTION = 0;
+	public final static int VERT_OPTION = 1;
+
 	public final static String[] SUPPORTED_EXTENSIONS = ImageIO.getWriterFileSuffixes();
-	
+
 	SecureRandom rand;
 
 	protected BufferedImage image;
@@ -71,8 +72,8 @@ public class ImageWorker {
 	public ImageWorker(BufferedImage img) {
 		image = img;
 	}
-	
-	
+
+
 
 	public int Height() {
 		return image.getHeight();
@@ -81,7 +82,7 @@ public class ImageWorker {
 	public int Width() {
 		return image.getWidth();
 	}
-	
+
 
 
 	/**
@@ -159,14 +160,14 @@ public class ImageWorker {
 	    // Return the buffered image
 	    return bimage;
 	}
-	
 
-	
+
+
 
 	/**
 	 * this method resize an image to the given wanted dimensions keeping the same
 	 * width/height ratio. returns a BufferedImage resized
-	 * 
+	 *
 	 * @param image
 	 * @param imageType
 	 * @param newWidth
@@ -194,7 +195,7 @@ public class ImageWorker {
 
 		return newImage;
 	}
-	
+
 	public static Dimension getDimensionSameRatio(Image image, int newWidth, int newHeight) {
 		// Make sure the aspect ratio is maintained, so the image is not distorted
 		double thumbRatio = (double) newWidth / (double) newHeight;
@@ -207,20 +208,20 @@ public class ImageWorker {
 		} else {
 			newWidth = (int) (newHeight * aspectRatio);
 		}
-		
+
 		return new Dimension(newWidth, newHeight);
 	}
-	
+
 	/**
 	 * this method resize an image to the given wanted dimensions keeping the same
 	 * width/height ratio. returns a Image resized
 	 */
 	public static Image scaleImageSameRatio(Image image, int newWidth, int newHeight) {
-		
+
 		Dimension sameRatio = getDimensionSameRatio(image, newWidth, newHeight);
 		return image.getScaledInstance(sameRatio.width, sameRatio.height, Image.SCALE_SMOOTH);
 	}
-	
+
 	/**
 	 * this method resize an image to the given wanted dimensions keeping the same
 	 * width/height ratio. returns a Image resized
@@ -235,7 +236,7 @@ public class ImageWorker {
 	/**
 	 * this method generate a random color of the type argb
 	 * more the value is high and more the color is dark
-	 * 
+	 *
 	 * @return
 	 */
 	public static Color randomColorRGB(float darkness) {
@@ -266,16 +267,16 @@ public class ImageWorker {
 
 		return new Color(r, g, b, a);
 	}
-	
+
 	public static int getColorComponentsTotRGBA(Color color) {
 		int a = color.getAlpha();
 		int r = color.getRed();
 		int g = color.getGreen();
 		int b = color.getBlue();
-		
+
 		return a+r+g+b;
 	}
-	
+
 	/**
 	 * return the percent integer from 0 to 100 representing how much a color is light
 	 * @param color
@@ -286,17 +287,17 @@ public class ImageWorker {
 		int max = 255*4;
 		return ((max/sum)*100);
 	}
-	
+
 	 /**
 	   * Returns the complimentary (opposite) color.
 	   * @param color int RGB color to return the compliment of
 	   * @return int RGB of compliment color
 	   */
 	  public static Color getComplimentColor(Color color) {
-		  
+
 		  if(color == null) {return Color.WHITE;}
 		  int colorSrc = color.getRGB();
-		  
+
 		  return new Color(colorSrc ^ 0x00ffffff);
 	  }
 
@@ -314,14 +315,29 @@ public class ImageWorker {
 			return false;
 		}
 	}
-	
-	
-	
+
+	public static Image convert(Image srcImageRaw, String outExtension) throws IOException {
+		BufferedImage srcImage = toBufferedImage(srcImageRaw);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] converted = new byte[256];
+		try {
+			ImageIO.write(srcImage, outExtension, baos);
+			converted = baos.toByteArray();
+			baos.close();
+		} catch (Exception exp) {
+			return null;
+		}
+		ByteArrayInputStream is = new ByteArrayInputStream(converted);
+		return ImageIO.read(is);
+	}
+
+
+
 	/**
 	 * method to clone BufferedImage by value
-	 * 
+	 *
 	 * @param source image to clone
-	 * 
+	 *
 	 * @return the cloned BufferedImage
 	 */
 	public static BufferedImage copyImage(BufferedImage source){
@@ -331,28 +347,28 @@ public class ImageWorker {
 	    g.dispose();
 	    return b;
 	}
-	
+
 	/**
 	 * This method compress an image with given params and returns the compressed image as byte array
-	 * 
+	 *
 	 * @param sourceImage the image to be compressed
 	 * @param extension is the string extension for the output bytes (loseless modes as "png" do not lose information)
 	 * @param factor the compression factor between 0.0 and 1.0
-	 * 
+	 *
 	 * @author Alessio Moraschini
 	 */
 	public static byte[] compressIMGjpgNoMeta(BufferedImage sourceImage, float factor) throws UnsupportedOperationException {
-		
+
 		ByteArrayOutputStream compressed = new ByteArrayOutputStream();
-			
+
 		try {
 			// intialize ImageStream to byteArrayStream
 			ImageOutputStream outputStream = ImageIO.createImageOutputStream(compressed);
-			
+
 			// initialize type use it to create outWriter
 			ImageTypeSpecifier type = ImageTypeSpecifier.createFromBufferedImageType(sourceImage.getType());
 			ImageWriter writer = ImageIO.getImageWriters(type, "jpg").next();
-			
+
 			// calculate param for compression
 			ImageWriteParam param = writer.getDefaultWriteParam();
 			if (param.canWriteCompressed()) {
@@ -369,38 +385,38 @@ public class ImageWorker {
 			// now write image to in-memory buffer
 			writer.setOutput(outputStream);
 			writer.write(null, new IIOImage(sourceImage, null, null), param);
-			
+
 			// free used in-memory structures
 			outputStream.close();
 			writer.dispose();
-			
+
 		} catch (IOException e) {
 			logger.error("Exception happened!", e);
 		}catch (IllegalArgumentException e) {
 			logger.error("Error ", e);
 		}
-	
+
 		return compressed.toByteArray();
 	}
-	
+
 	/**
 	 * This method compress an image with given params and returns the compressed image as byte array
-	 * 
+	 *
 	 * @param sourceImage the image to be compressed
 	 * @param extension is the string extension for the output bytes (loseless modes as "png" do not lose information)
 	 * @param factor the compression factor between 0.0 and 1.0
 	 * @param keepMetadata true if want to keep metadata, false to discard metadata
-	 * 
+	 *
 	 * @author Alessio Moraschini
-	 * 
-	 * @throws IOException 
+	 *
+	 * @throws IOException
 	 */
 	public static byte[] compressIMGjpg(File sourceImageFile, float factor, boolean keepMetadata) throws IOException, UnsupportedOperationException {
-		
+
 		ByteArrayOutputStream compressed = new ByteArrayOutputStream();
 		BufferedImage srcImage = null;
 		IIOMetadata metadata = null;
-		
+
 		if(keepMetadata) {
 			try {
 				ImageInputStream in = ImageIO.createImageInputStream(sourceImageFile);
@@ -414,15 +430,15 @@ public class ImageWorker {
 		}else {
 			srcImage = ImageIO.read(sourceImageFile);
 		}
-		
+
 		try {
 			// intialize ImageStream to byteArrayStream
 			ImageOutputStream outputStream = ImageIO.createImageOutputStream(compressed);
-			
+
 			// initialize type use it to create outWriter
 			ImageTypeSpecifier type = ImageTypeSpecifier.createFromBufferedImageType(srcImage.getType());
 			ImageWriter writer = ImageIO.getImageWriters(type, "jpg").next();
-			
+
 			// calculate param for compression
 			ImageWriteParam param = writer.getDefaultWriteParam();
 			if (param.canWriteCompressed()) {
@@ -434,55 +450,55 @@ public class ImageWorker {
 				writer.dispose();
 				throw new UnsupportedOperationException();
 			}
-			
+
 			// now write image to in-memory buffer
 			writer.setOutput(outputStream);
 			writer.write(null, new IIOImage(srcImage, null, metadata), param);
-			
+
 			// free used in-memory structures
 			compressed.flush();
 			outputStream.flush();
 			outputStream.close();
 			writer.dispose();
-			
+
 		} catch (FileNotFoundException e) {
 			logger.error("Exception happened!", e);
 		}
-	
+
 		return compressed.toByteArray();
 	}
-	
+
 	/**
 	 * Metodo statico che, dato il file dell'immagine e il logger ritorna la matrice
 	 * di interi x pixel (getRGB(x,y))
 	 */
 	public static Integer[][] readPxValue(File imgFile, File fileLogger) throws IOException {
-	
+
 		// inizializzo variabili necessarie globali
 		BufferedImage img = null;
 		FileWriter writer;
 		// creo variabile immagine
 		img = ImageIO.read(imgFile);
-	
+
 		// se file di log non esiste lo creo
 		if (!fileLogger.exists()) {
 			fileLogger.createNewFile();
 		}
 		// associo il file e abilito la sovrascrittura
 		writer = new FileWriter(fileLogger, false);
-	
+
 		// calcolo larghezza e altezza immagine
 		int height = img.getHeight();
 		int width = img.getWidth();
-	
+
 		// matrice rappresentante gli interi getRGB(x,y) -> � il valore del pixel
 		Integer[][] imgPixels = new Integer[width][height];
-	
+
 		// ciclo di scansione immagine
-	
+
 		// per ogni riga
 		for (int i = 0; i < height; i++) {
-	
+
 			// per ogni colonna
 			for (int j = 0; j < width; j++) {
 				Integer px = img.getRGB(j, i);
@@ -491,13 +507,13 @@ public class ImageWorker {
 				writer.write("[X=" + j + " ; Y=" + i + "] Value: " + px + " ");
 			}
 		}
-	
+
 		// chiudo il writer per non sprecare memoria
 		writer.close();
-	
+
 		return imgPixels;
 	}
-	
+
 	/**
 	 * @param File
 	 *            logger : this variable will contain file rapresentation Metodo con
@@ -549,34 +565,34 @@ public class ImageWorker {
 	 * ritorna la matrice di interi x pixel (getRGB(x,y))
 	 */
 	public static Integer[][] readPxValues(String imgPath, File logger) throws IOException {
-	
+
 		// inizializzo variabili necessarie globali
 		BufferedImage img = null;
 		File fileImg = null;
 		FileWriter writer;
-	
+
 		fileImg = new File(imgPath);
 		img = ImageIO.read(fileImg);
-	
+
 		// se file di log non esiste lo creo
 		if (!logger.exists()) {
 			logger.createNewFile();
 		}
 		// associo il file e abilito la sovrascrittura
 		writer = new FileWriter(logger, false);
-	
+
 		// calcolo larghezza e altezza immagine
 		int height = img.getHeight();
 		int width = img.getWidth();
-	
+
 		// matrice rappresentante gli interi getRGB(x,y) -> � il valore del pixel
 		Integer[][] imgPixels = new Integer[width][height];
-	
+
 		// ciclo di scansione immagine
-	
+
 		// per ogni riga
 		for (int i = 0; i < height; i++) {
-	
+
 			// per ogni colonna
 			for (int j = 0; j < width; j++) {
 				Integer px = img.getRGB(j, i);
@@ -585,10 +601,10 @@ public class ImageWorker {
 				writer.write("[X=" + j + " ; Y=" + i + "] Value: " + px + " ");
 			}
 		}
-	
+
 		// chiudo il writer per non sprecare memoria
 		writer.close();
-	
+
 		return imgPixels;
 	}
 
@@ -598,7 +614,7 @@ public class ImageWorker {
 	 * @param N E' il numero di pixel da estrarre. Può essere anche maggiore del numero di pixel contenuti nell'immagine
 	 * @param interval intervallo tra un pixel e il successivo durante la scansione
 	 * @return array di interi rappresentanti il valore dei pixel scansionati
-	 * @throws STEGException 
+	 * @throws STEGException
 	 */
 	public static int[] readNSpacedValuesFromImage(BufferedImage image, int N, int interval) throws Exception {
 		int H = 0;
@@ -610,7 +626,7 @@ public class ImageWorker {
 				interval = (W/N)%W;
 			}
 		}else throw new Exception("Invalid input");
-		
+
 		if(N<=(W*H)) {
 			int[] read = new int[N];
 			int row=0;
@@ -624,7 +640,7 @@ public class ImageWorker {
 					col=0;
 					row++;
 				}
-				
+
 				read[i] = image.getRGB(col, row);
 				col += interval%W;
 			}
@@ -647,14 +663,14 @@ public class ImageWorker {
 		}
 		return color;
 	}
-	
+
 
 	/**
 	 * metodo che crea un'immagine casuale di i*j pixel e la salva nel file
 	 * specificato come parametro
-	 * 
+	 *
 	 * @return null : in caso di errore ritorna null
-	 * 
+	 *
 	 * @param extension
 	 *            of the file of the type ".jpg" or others formats
 	 * @return BufferedImage keyImage
@@ -703,7 +719,7 @@ public class ImageWorker {
 	 * @param image immagine sorgente
 	 * @param N numero di valori da estrarre: se maggiore del numero di pixel presenti in image allora ritorna null
 	 * @param option : ORIZ_OPTION oppure VERT_OPTION (definiti in questa classe come statici)
-	 * @throws STEGException 
+	 * @throws STEGException
 	 */
 	public static int[] readNValuesFromImage(BufferedImage image, int N, int option) throws Exception {
 		int H = 0;
@@ -712,7 +728,7 @@ public class ImageWorker {
 			H = image.getHeight();
 			W = image.getWidth();
 		}else throw new Exception("invalid input!");
-		
+
 		if(N<=(W*H)) {
 			int[] read = new int[N];
 			int row=0;
@@ -726,7 +742,7 @@ public class ImageWorker {
 					col=0;
 					row++;
 				}
-				
+
 				if(option==ORIZ_OPTION) {
 					read[i] = image.getRGB(col, row);
 					col++;
@@ -740,25 +756,25 @@ public class ImageWorker {
 			return null;
 		}
 	}
-	
+
 	/////////////////////
 	// GETTERS & SETTERS /
 	//////////////////////
-	
+
 	public File getImageFile() {
 	return imageFile;
 	}
-	
+
 	public void setImageFile(File imageFile) {
 	this.imageFile = imageFile;
 	}
-	
+
 	public BufferedImage getImage() {
 	return image;
 	}
-	
+
 	public void setImage(BufferedImage image) {
 	this.image = image;
 	}
-	
+
 }

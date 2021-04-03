@@ -99,6 +99,7 @@ class ButtonEditor extends DefaultCellEditor {
 
 				logger.info("Starting plugin installation: " + pluginName);
 
+				boolean confirm = false;
 				if (!pluginManagerInterface.isInstalling()) {
 					pluginManagerInterface.setInstalling(true);
 
@@ -112,7 +113,7 @@ class ButtonEditor extends DefaultCellEditor {
 						PluginDTO refreshedPlugin = pluginManager.retrieveFromCache(clickedButtonPlugin.getName());
 
 						String dynaMsg = installed ? "Uninstall " : "Install ";
-						boolean confirm = PluginManagerGUI.dialogHelper.yesOrNo(dynaMsg + refreshedPlugin.getName() + " ?");
+						confirm = PluginManagerGUI.dialogHelper.yesOrNo(dynaMsg + refreshedPlugin.getName() + " ?");
 
 						if (confirm && installed) {
 
@@ -175,10 +176,19 @@ class ButtonEditor extends DefaultCellEditor {
 				pluginManagerInterface.setInstalling(false);
 				logger.info("Process completed, refresh completed!");
 				try {
-					pluginManagerInterface.restart();
+					if(confirm)
+						pluginManagerInterface.restart();
+					else {
+						// Workaround to reset button graphics
+						button.doClick();
+					}
+
 				} catch (Throwable e) {
 					logger.error("Error restarting plugin manager");
 				}
+
+				pluginManagerInterface.getTable().revalidate();
+				pluginManagerInterface.getTable().repaint(50);
 			}
 		};
     }

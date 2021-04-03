@@ -28,6 +28,8 @@ import javax.swing.ImageIcon;
 **/
 public interface IPlugin extends IPluginParentExecutor<IPlugin> {
 
+	public static final String DEFAULT_VERSION = "1.0.0";
+
 	@Override
 	public default Map<String, FunctionExecutor> getMainStandalonExecutorMap() {
 		Map<String, FunctionExecutor> mainStandalonExecutorMap = new HashMap<>();
@@ -58,6 +60,12 @@ public interface IPlugin extends IPluginParentExecutor<IPlugin> {
 	public default String[] getManagedFileExtensions(String function, boolean caseSensitive) {return new String[] {"*"};};
 
 	public default boolean isTestPlugin() {return false;};
+
+	/**
+	 * NB: version should be formed by only dots and digits without letters
+	 * @return
+	 */
+	public default String getVersion() {return DEFAULT_VERSION;};
 
 	public String getPluginZipName();
 

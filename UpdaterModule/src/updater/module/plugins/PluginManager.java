@@ -59,6 +59,10 @@ public class PluginManager {
 	private static SafeLogger logger = new SafeLogger(PluginManager.class);
 
 	public static final String DESCRIPTION_PROP_PREFIX = "DESCREEPTION_";
+	public static final String WARNING_MESSAGES_PROP_PREFIX = "WARNING_MESSAGES_";
+	public static final String WARNING_MESSAGES_ITEM_SEPARATOR = "#_#";
+	public static final String PLUGIN_VERSION_PROP = "PLUGIN_VERSION_";
+	public static final String PLUGIN_INSTALLED_VERSION_PROP = "PLUGIN_VERSION_INSTALLED_";
 
 	public static final String installedPluginPropsFileName = "Installed_plugins.properties";
 	public static final String installedPluginPropsListKey = "INSTALLED_LIST";
@@ -350,9 +354,13 @@ public class PluginManager {
 					String checkSum = propsManager.getProperty(pluginName);
 					String completeUrl = WEB_PLUGINS_BASE_URL + pluginName;
 					String descrKey = DESCRIPTION_PROP_PREFIX + pluginName;
+					String version = propsManager.getProperty(PLUGIN_VERSION_PROP + pluginName, PluginDTO.DEFAULT_VERSION);
+					List<String> warnings = propsManager.getStringList(WARNING_MESSAGES_PROP_PREFIX + pluginName, WARNING_MESSAGES_ITEM_SEPARATOR);
 					String description = propsManager.getProperty(descrKey, "Description not available.");
-					PluginDTO toAdd = new PluginDTO(completeUrl, pluginName, checkSum);
+					PluginDTO toAdd = new PluginDTO(version, completeUrl, pluginName, checkSum);
+					toAdd.setWarnings(warnings);
 					toAdd.setDescription(description);
+					toAdd.enrichWithInstalledVersion(installedPluginPropsFileName);
 
 					plugins.add(toAdd);
 					updateCache(toAdd);

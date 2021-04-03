@@ -12,10 +12,16 @@
 package updater.module.plugins;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import various.common.light.utility.properties.PropertiesManager;
 import various.common.light.utility.string.StringWorker;
 
 public class PluginDTO implements Comparable<PluginDTO> {
+
+	public static final String DEFAULT_VERSION = "1.0.0";
+	public static final String EMPTY_VERSION = "";
 
 	public File localExtractedDir;
 	public File localFile;
@@ -23,9 +29,12 @@ public class PluginDTO implements Comparable<PluginDTO> {
 	public String name;
 	public String description;
 	public String checkSum;
+	public List<String> warnings;
+	public String lastVersion;
+	public String installedVersion;
 	public boolean installationCompleted;
 
-	public PluginDTO(String completeURL, String name, String checkSum) {
+	public PluginDTO(String version, String completeURL, String name, String checkSum) {
 		this.completeURL = completeURL;
 		this.name = name;
 		this.checkSum = checkSum;
@@ -33,7 +42,25 @@ public class PluginDTO implements Comparable<PluginDTO> {
 		this.localExtractedDir = null;
 		this.installationCompleted = false;
 		this.description = "";
+		this.lastVersion = version == null ? DEFAULT_VERSION : version;
+		this.warnings = new ArrayList<>();
+		installedVersion = getInstalledVersion();
 	}
+
+	public List<String> getWarnings() {
+		return warnings;
+	}
+
+	public void setWarnings(List<String> warnings) {
+		this.warnings = warnings;
+	}
+	public String getLastVersion() {
+		return lastVersion;
+	}
+	public void setLastVersion(String version) {
+		this.lastVersion = version;
+	}
+
 
 	public String getDescription() {
 		return description;
@@ -91,10 +118,43 @@ public class PluginDTO implements Comparable<PluginDTO> {
 		this.installationCompleted = installationCompleted;
 	}
 
+	public String enrichWithInstalledVersion(String filePropsPath) {
+		setInstalledVersion(new PropertiesManager(filePropsPath).getProperty(PluginManager.PLUGIN_INSTALLED_VERSION_PROP, EMPTY_VERSION));
+		return installedVersion;
+	}
+
+	public String getInstalledVersion() {
+		return installationCompleted
+				? EMPTY_VERSION.equals(installedVersion)
+						? DEFAULT_VERSION
+						: installedVersion
+				: EMPTY_VERSION;
+	}
+
+	public void setInstalledVersion(String installedVersion) {
+		this.installedVersion = installedVersion;
+	}
+
 	@Override
 	public String toString() {
 		return "PluginDTO [localExtractedDir=" + localExtractedDir + ", localFile=" + localFile + ", completeURL=" + completeURL + ", name=" + name
 				+ ", checkSum=" + checkSum + ", installationCompleted=" + installationCompleted + "]";
+	}
+
+	public boolean isUpToDate() {
+		return compareVersionWithLast(installedVersion) >= 0;
+	}
+
+	public int compareVersionWithInstalled(String version) {
+		return StringWorker.compareVersions(version, getInstalledVersion());
+	}
+
+	public int compareVersionWithLast(String version) {
+		try {
+			return StringWorker.compareVersions(version, this.lastVersion);
+		} catch (IllegalArgumentException e) {
+			return - 1;
+		}
 	}
 
 	@Override

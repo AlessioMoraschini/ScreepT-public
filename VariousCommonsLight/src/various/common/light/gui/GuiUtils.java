@@ -84,6 +84,7 @@ import javax.swing.text.JTextComponent;
 
 import various.common.light.files.om.FileNamed;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
+import various.common.light.gui.dialogs.msg.JOptionHelper.DefaultSysIcons;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.manipulation.ImageWorker;
 import various.common.light.utility.string.KeyVal;
@@ -118,6 +119,11 @@ public class GuiUtils {
 		String result = (selection == null) ? allText : selection;
 
 		return result;
+	}
+
+	public static Icon getDefaultSystemIcon(DefaultSysIcons icon, int width, int height) throws IOException {
+		ImageIcon imgIcon = new ImageIcon(ImageWorker.scaleImage(iconToImage(icon.getIcon()),width, height, Image.SCALE_SMOOTH));
+		return imgIcon;
 	}
 
 	public static boolean checkIfComponentContains(Container container, Component toSearch) {

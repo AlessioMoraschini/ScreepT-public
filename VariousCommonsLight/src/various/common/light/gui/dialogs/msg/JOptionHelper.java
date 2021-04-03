@@ -39,6 +39,23 @@ import various.common.light.utility.string.StringWorker;
 
 public class JOptionHelper {
 
+	public enum DefaultSysIcons {
+		ERR("OptionPane.errorIcon"),
+		WARN("OptionPane.warningIcon"),
+		INFO("OptionPane.informationIcon"),
+		QUESTION("OptionPane.questionIcon");
+
+		public String key;
+
+		private DefaultSysIcons(String key) {
+			this.key = key;
+		}
+
+		public Icon getIcon() {
+			return UIManager.getIcon(key);
+		}
+	}
+
 	// MESSAGE TYPES
 	public static final int ERR = JOptionPane.ERROR_MESSAGE;
 	public static final int WARN = JOptionPane.WARNING_MESSAGE;

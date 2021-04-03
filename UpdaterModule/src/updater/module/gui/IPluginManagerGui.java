@@ -14,6 +14,7 @@ package updater.module.gui;
 import java.util.concurrent.TimeoutException;
 
 import javax.swing.JFrame;
+import javax.swing.JTable;
 
 import updater.module.plugins.PluginDTO;
 import updater.module.plugins.PluginManager;
@@ -28,6 +29,6 @@ public interface IPluginManagerGui {
 	public JFrame getParentFrame();
 	public void refreshTable(boolean useCache) throws Throwable;
 	public void refreshGuiLibsAfterChange();
-
+	public JTable getTable();
 	public void restart() throws TimeoutException, Throwable ;
 }
