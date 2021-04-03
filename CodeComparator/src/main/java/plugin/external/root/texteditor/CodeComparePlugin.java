@@ -22,12 +22,12 @@ public class CodeComparePlugin extends PluginAbstractParent implements IPluginTe
 
 	public static String TEMP_F_NAME = "CompareTest.txt";
 
-	public static final String currentSessionTempFolder = AbstractPluginApplicationApi.defaultTempFolder + "JMeld_ScreepT_Plugin/" + new Date().getTime() + "/";
-
 	public static final String[] availableFunctionsStandAlone = {"Launch code compare plugin"};
 	public static final String[] availableFunctionsRightTextAreaClick =
 		{"Compare current file with another", "Compare current file with empty one", "Compare loaded text with file content"};
 	public static final String[] availableFunctionsRightFileTreeClick = {"Compare selected files", "Empty source compare"};
+
+	public static final String currentSessionTempFolder = AbstractPluginApplicationApi.defaultTempFolder + "JMeld_ScreepT_Plugin/" + new Date().getTime() + "/";
 
 	JMeldLauncher jMeld;
 
