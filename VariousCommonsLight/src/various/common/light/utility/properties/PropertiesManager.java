@@ -312,20 +312,28 @@ public class PropertiesManager {
 	}
 
 	public boolean removeProperty(String key){
+		return removeProperty(key, true);
+	}
+
+	public boolean removeProperty(String key, boolean writeFile){
 		FileOutputStream out = null;
 
 		logger.debug("Removing property: " + key);
 
 		try {
-			out = new FileOutputStream(dynamicFileBindingsDefSource);
 			dynamicFileBindingsDef.remove(key);
-			dynamicFileBindingsDef.store(out, null);
+			if(writeFile) {
+				out = new FileOutputStream(dynamicFileBindingsDefSource);
+				dynamicFileBindingsDef.store(out, null);
+			}
 		} catch (IOException e) {
 			logger.error("Cannot remove property: " + key);
 			return false;
 		} finally {
 			try {
-				out.close();
+				if (out != null) {
+					out.close();
+				}
 			} catch (Exception e2) {
 				logger.error("Cannot close properties file stream: " + dynamicFileBindingsDef);
 			}
