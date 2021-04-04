@@ -44,7 +44,7 @@ public class JOptionHelperExtended extends JOptionHelper {
 
 	// PRIVATE METHODS
 	@Override
-	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
+	public Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
 
 		Icon icon = warningType? new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_WARNING) : new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_QUESTION);
 		int options = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;

@@ -48,6 +48,7 @@ import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.manipulation.ArrayHelper;
 import various.common.light.utility.manipulation.ConversionUtils;
 import various.common.light.utility.properties.PropertiesManager;
+import various.common.light.utility.string.StringWorker;
 
 /**
  * This class contains the methods to manage plugins download, verification, and installation.
@@ -68,6 +69,7 @@ public class PluginManager {
 	public static final String installedPluginPropsListKey = "INSTALLED_LIST";
 	public static final String installedPluginPropsListSeparator = ",";
 	public static final String installedPluginPendingDeleteListKey = "PLUGINS_PENDING_DELETE_AT_START";
+	public static final String installedPluginPendingUpdateListKey = "PLUGINS_PENDING_UPDATE_AT_START";
 
 	public static final HashingFunction DEFAULT_HASHING_F_PLUGINS = HashingFunction.SHA512;
 
@@ -172,13 +174,14 @@ public class PluginManager {
 		installedPluginProperties.readFromFile();
 
 		updateCache(plugin);
+		removeFromPendingPluginUpdate(plugin.getName());
 
 		pluginsFreshlyInstalled.addUniqueToTop(plugin.getName());
 
 		return plugin;
 	}
 
-	public boolean removePlugin(PluginDTO pluginToRemove) {
+	public boolean removePlugin(PluginDTO pluginToRemove, boolean updateAfterDelete) {
 
 		logger.info("Starting plugin removal...");
 
@@ -230,6 +233,12 @@ public class PluginManager {
 			// if something went wrong with delete, mark files that weren't deleted to be deleted by launcher at start
 			updatePendingDelete(pendingUndeleted);
 			logger.info("Pending delete list updated: " + pendingUndeleted);
+		}
+
+		if(updateAfterDelete) {
+			updatePendingPluginUpdate(pluginToRemove.getName());
+		} else {
+			removeFromPendingPluginUpdate(pluginToRemove.getName());
 		}
 
 		logger.info("Remove plugin procedure completed, exiting.");
@@ -387,6 +396,7 @@ public class PluginManager {
 		ArrayList<String> installedList = getInstalledPluginsList();
 
 		for(PluginDTO current : plugins) {
+			current.installedVersion = installedPluginProperties.getProperty(PLUGIN_INSTALLED_VERSION_PROP+current.getName(), PluginDTO.DEFAULT_VERSION);
 			if(installedList.contains(current.getName())) {
 				current.installationCompleted = true;
 			}
@@ -441,7 +451,9 @@ public class PluginManager {
 
 		String stringList = PropertiesManager.listToString(installedPluginNames, installedPluginPropsListSeparator);
 		installedPluginProperties.saveCommentedProperty(installedPluginPropsListKey, stringList);
-		installedPluginProperties.removeProperty(plugin.getName());
+		installedPluginProperties.removeProperty(plugin.getName(), false);
+		installedPluginProperties.removeProperty(PLUGIN_INSTALLED_VERSION_PROP+plugin.getName(), true);
+
 
 		plugin.installationCompleted = false;
 	}
@@ -536,6 +548,48 @@ public class PluginManager {
 
 		installedPluginProperties.savePropertyChecked(
 				installedPluginPendingDeleteListKey,
+				PropertiesManager.listToString(currentlyPending, ";"));
+	}
+
+	public void updatePendingPluginUpdate(String pendingPluginName) {
+		ArrayList<String> currentlyPending = installedPluginProperties.getStringList(installedPluginPendingUpdateListKey, ";");
+
+		if (!StringWorker.isEmpty(pendingPluginName) && !currentlyPending.contains(pendingPluginName)) {
+			currentlyPending.add(pendingPluginName);
+		} else {
+			return;
+		}
+
+		installedPluginProperties.savePropertyChecked(
+				installedPluginPendingUpdateListKey,
+				PropertiesManager.listToString(currentlyPending, ";"));
+	}
+
+	public ArrayList<String> getPendingPluginUpdates() {
+		ArrayList<String> currentlyPending = installedPluginProperties.getStringList(installedPluginPendingUpdateListKey, ";");
+		if(currentlyPending == null)
+			return new ArrayList<>();
+		else
+			return currentlyPending;
+	}
+
+	public void removeFromPendingPluginUpdate(List<String> pendingPluginName) {
+		for(String name : pendingPluginName) {
+			removeFromPendingPluginUpdate(name);
+		}
+	}
+
+	public void removeFromPendingPluginUpdate(String pendingPluginName) {
+		ArrayList<String> currentlyPending = installedPluginProperties.getStringList(installedPluginPendingUpdateListKey, ";");
+
+		if (!StringWorker.isEmpty(pendingPluginName) && currentlyPending.contains(pendingPluginName)) {
+			currentlyPending.remove(pendingPluginName);
+		} else {
+			return;
+		}
+
+		installedPluginProperties.savePropertyChecked(
+				installedPluginPendingUpdateListKey,
 				PropertiesManager.listToString(currentlyPending, ";"));
 	}
 

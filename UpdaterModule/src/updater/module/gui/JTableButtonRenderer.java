@@ -44,7 +44,7 @@ class JTableButtonRenderer extends JButton implements TableCellRenderer {
 		boolean installed = plugin.installationCompleted;
 		setForeground((installed) ? Color.LIGHT_GRAY : Color.BLACK);
 		setBackground((installed) ? Color.BLACK : Color.LIGHT_GRAY);
-		setText((installed) ? "Uninstall " + pluginName : "Install " + pluginName);
+		setText(ButtonEditor.getButtonString(plugin, false));
 
 		return this;
     }

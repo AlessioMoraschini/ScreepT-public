@@ -72,8 +72,9 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	TableRowSorter<DefaultTableModel> sorter;
 	private JLabel lblTitleHeaderMessage;
 
-	private static final String BUTTON_INSTALL = "Install";
-	private static final String BUTTON_UNINSTALL = "Uninstall";
+	public static final String BUTTON_INSTALL = "Install";
+	public static final String BUTTON_UNINSTALL = "Uninstall";
+	public static final String BUTTON_UPDATE_UNINSTALL = "Uninstall/Update";
 
 	// String name <-> string description <-> boolean already installed <-> checkBox select <-> jbutton uninstall (if installed)
 	private static final String[] columnNames = {"Plugin name", "DeScreepTion", "Status", "Plugin Action", "Last Version"};
@@ -85,6 +86,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	public volatile boolean isInstalling = false;
 
 	public Runnable refreshDependencyAction;
+	public Runnable afterExitAction;
 
 	private JTableButtonRenderer renderer;
 	private ButtonEditor btnEditor;
@@ -101,6 +103,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	 * @param pluginManager
 	 */
 	public PluginManagerGUI(JFrame parent, PluginManager pluginManager, Runnable refreshDependencyCheck){
+		afterExitAction = ()->{};
 		init(parent, pluginManager, refreshDependencyCheck);
 	}
 
@@ -222,6 +225,16 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 	private void addHandlers() {
 
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+
+	        	logger.debug("Closing Frame: " + getClass().getName());
+	        	afterExitAction.run();
+	        	dispose();
+		    }
+		});
+
 		// default close operation(same as reset)
 		thisPanel.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
@@ -322,6 +335,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	public void restart() throws TimeoutException, Throwable {
 		if (!isInstalling) {
 			final Image icon = this.getIconImage();
+			final Runnable afterActionBackup = afterExitAction;
+			afterExitAction = () -> {};
 			dispose();
 			pluginManager.discoverLatestPlugins();
 			GuiUtils.launchThreadSafeSwing(() -> {
@@ -329,6 +344,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 				gui.setIconImage(icon);
 				gui.setVisible(true);
 				gui.toFront();
+				gui.setAfterExitAction(afterActionBackup);
 			});
 		}
 	}
@@ -374,7 +390,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 		@Override
 		public boolean isCellEditable(int row, int column) {
-			return column == 3;
+			return column == 3 || column == 1;
 		}
 	}
 
@@ -402,6 +418,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		table.setSelectionBackground(new Color(3, 127, 252, 30));
 		table.setSelectionForeground(Color.BLACK);
 
+		table.getColumn(columnNames[1]).setCellRenderer(new NormalStringCellRenderer());
+
 		table.getColumn(columnNames[3]).setCellRenderer(renderer);
 		table.getColumn(columnNames[3]).setCellEditor(btnEditor);
 
@@ -409,10 +427,10 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 		table.getColumnModel().getColumn(0).setPreferredWidth(110);
 		table.getColumnModel().getColumn(0).setMinWidth(110);
-		table.getColumnModel().getColumn(1).setPreferredWidth(500);
+		table.getColumnModel().getColumn(1).setPreferredWidth(450);
 		table.getColumnModel().getColumn(2).setPreferredWidth(250);
-		table.getColumnModel().getColumn(3).setPreferredWidth(150);
-		table.getColumnModel().getColumn(3).setMinWidth(150);
+		table.getColumnModel().getColumn(3).setPreferredWidth(200);
+		table.getColumnModel().getColumn(3).setMinWidth(200);
 		table.getColumnModel().getColumn(4).setPreferredWidth(40);
 		table.getColumnModel().getColumn(4).setMinWidth(40);
 	}
@@ -434,10 +452,9 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	        		: GuiUtils.encapsulateInHtml("<b>Warnings found:</b> <br><br>" + GuiUtils.getAsHtmlList(plugin.getWarnings())); // Could be value.toString()
 
 //	        warningHtml = GuiUtils.encapsulateInHtml("<b>This is a test:</b> <br>" + plugin.getName()); // TEST
+	        labelItem.setOpaque(false);
 	        if(warningHtml != null) {
 	        	labelItem.setToolTipText(warningHtml);
-	        	labelItem.setBackground(Color.BLACK);
-	        	labelItem.setForeground(Color.WHITE);
 	        	labelItem.setFont(labelItem.getFont().deriveFont(Font.BOLD));
 	        	try {
 					labelItem.setIcon(GuiUtils.getDefaultSystemIcon(DefaultSysIcons.WARN, 16, 16));
@@ -446,14 +463,28 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 				}
 	        } else {
 	        	labelItem.setToolTipText(null);
-	        	labelItem.setBackground(Color.WHITE);
-	        	labelItem.setForeground(Color.BLACK);
 	        	labelItem.setFont(labelItem.getFont().deriveFont(Font.PLAIN));
 				labelItem.setIcon(new ImageIcon());
 	        }
 	        labelItem.setHorizontalAlignment(JLabel.CENTER);
 	        return labelItem;
 	    }
+	}
+
+	public class NormalStringCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 1453358225111362742L;
+
+		@Override
+		public Component getTableCellRendererComponent(
+				JTable table, Object value,
+				boolean isSelected, boolean hasFocus,
+				int row, int column) {
+
+			String description = (String)table.getValueAt(row, 1);
+			JLabel labelItem = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			labelItem.setToolTipText(description);
+			return labelItem;
+		}
 	}
 
 	@Override
@@ -495,7 +526,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 			alreadyInstalledStr = current.isUpToDate() ? alreadyInstalledStr : notUpToDateStr;
 			String installedText = (installed) ? alreadyInstalledStr : "Not yet Installed";
 
-			JButton installOrRemoveBtn = (installed) ? new JButton(BUTTON_UNINSTALL) : new JButton(BUTTON_INSTALL);
+			JButton installOrRemoveBtn = new JButton(ButtonEditor.getButtonString(current, false));
+
 			installOrRemoveBtn.setEnabled(true);
 			model.addRow(new Object[]{noExtensionName, description, installedText, installOrRemoveBtn, current.getLastVersion()});
 		}
@@ -553,6 +585,14 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	@Override
 	public JTable getTable() {
 		return table;
+	}
+
+	public Runnable getAfterExitAction() {
+		return afterExitAction;
+	}
+
+	public void setAfterExitAction(Runnable afterExitAction) {
+		this.afterExitAction = afterExitAction;
 	}
 
 }

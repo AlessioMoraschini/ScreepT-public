@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import updater.module.plugins.PluginDTO;
@@ -29,6 +30,7 @@ import various.common.light.gui.GuiUtils;
 import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.om.exception.ProgressBarInterruptedException;
 import various.common.light.utility.log.SafeLogger;
+import various.common.light.utility.string.StringWorker;
 
 class ButtonEditor extends DefaultCellEditor {
 	private static final long serialVersionUID = 2322648608181904669L;
@@ -67,11 +69,22 @@ class ButtonEditor extends DefaultCellEditor {
     	GuiUtils.launchThreadSafeSwing(getActionOnClick(pluginName));
     	PluginDTO clickedButtonPlugin = pluginManagerInterface.getPluginDTO(pluginName);
 
-    	String installStr = clickedButtonPlugin.installationCompleted ? "Uninstall " : "Install ";
-    	label = installStr + pluginName;
+    	label = getButtonString(clickedButtonPlugin, false);
         button.setText(label);
         isPushed = true;
         return button;
+    }
+
+    public static String getButtonString(PluginDTO clickedButtonPlugin, boolean prefixOnly) {
+    	String base = clickedButtonPlugin.installationCompleted
+			? clickedButtonPlugin.isUpToDate()
+					? PluginManagerGUI.BUTTON_UNINSTALL
+					: PluginManagerGUI.BUTTON_UPDATE_UNINSTALL
+			: PluginManagerGUI.BUTTON_INSTALL;
+
+    	base += " ";
+
+    	return prefixOnly ? base : (base + clickedButtonPlugin.getName());
     }
 
     @Override
@@ -100,6 +113,7 @@ class ButtonEditor extends DefaultCellEditor {
 				logger.info("Starting plugin installation: " + pluginName);
 
 				boolean confirm = false;
+				boolean updateChoice = false;
 				if (!pluginManagerInterface.isInstalling()) {
 					pluginManagerInterface.setInstalling(true);
 
@@ -112,13 +126,25 @@ class ButtonEditor extends DefaultCellEditor {
 
 						PluginDTO refreshedPlugin = pluginManager.retrieveFromCache(clickedButtonPlugin.getName());
 
-						String dynaMsg = installed ? "Uninstall " : "Install ";
-						confirm = PluginManagerGUI.dialogHelper.yesOrNo(dynaMsg + refreshedPlugin.getName() + " ?");
+						String dynaMsg = getButtonString(refreshedPlugin, true);
+
+						if(!installed || refreshedPlugin.isUpToDate()) {
+							confirm = PluginManagerGUI.dialogHelper.yesOrNo(dynaMsg + refreshedPlugin.getName() + " ?");
+						} else {
+							String option = PluginManagerGUI.dialogHelper.showYNMessageCommon(
+									"Choose an option for " + refreshedPlugin.getName(),
+									"Update or remove " + refreshedPlugin.getName(),
+									JOptionPane.QUESTION_MESSAGE,
+									false,
+									new String[] {"Update", PluginManagerGUI.BUTTON_UNINSTALL},
+									0);
+							confirm = !StringWorker.isEmpty(option);
+							updateChoice = "Update".equals(option);
+						}
 
 						if (confirm && installed) {
 
-
-							boolean uninstalled = pluginManager.removePlugin(refreshedPlugin);
+							boolean uninstalled = pluginManager.removePlugin(refreshedPlugin, updateChoice);
 							if (uninstalled) {
 								String message = "Plugin uninstalled correctly. Files are marked for delete and will be removed at next restart ;)";
 								logger.info(message);

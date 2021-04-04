@@ -600,7 +600,7 @@ public class JOptionHelper {
 		return scrollPane;
 	}
 
-	protected Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
+	public Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
 
 		Icon icon = warningType? ICON_WARN_REF : ICON_QUESTION_REF;
 		int option = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
@@ -632,6 +632,32 @@ public class JOptionHelper {
 		} else {
 			return (allowNull) ? null : false;
 		}
+	}
+
+	public String showYNMessageCommon(Object msg, String title, int msgType, boolean warningType, String[] optionsAvailable, int initialOptionIndex) {
+
+		Icon icon = warningType? ICON_WARN_REF : ICON_QUESTION_REF;
+
+		final JOptionPane optionPane = new JOptionPane(
+				msg instanceof String ? getLabelStyledText((String)msg) : msg,
+						msgType,
+						YES_OR_NO_CANC,
+						icon,
+						optionsAvailable,
+						optionsAvailable[initialOptionIndex]);
+
+		final JDialog dialog = optionPane.createDialog(title);
+		try {
+			dialog.setAlwaysOnTop(true);
+			dialog.enableInputMethods(true);
+			dialog.setLocationRelativeTo(parentComponent);
+			dialog.toFront();
+			dialog.setVisible(true);
+			dialog.dispose();
+		} catch (Exception e) {
+		}
+
+		return (String) optionPane.getValue();
 	}
 
 	// Used internally to create other various dialogs without user input
