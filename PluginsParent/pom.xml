@@ -49,6 +49,10 @@
 		<code.compare.export.name>CODE_COMPARE</code.compare.export.name>
 		<code.compare.export.destination>${export.plugins.folder}/${code.compare.export.name}/${plugin.common.root.dir}/${code.compare.export.name}</code.compare.export.destination>
 
+		<markdown.viewer.export.skip>false</markdown.viewer.export.skip>
+		<markdown.viewer.export.name>MARKDOWN_VIEWER</markdown.viewer.export.name>
+		<markdown.viewer.export.destination>${export.plugins.folder}/${markdown.viewer.export.name}/${plugin.common.root.dir}/${markdown.viewer.export.name}</markdown.viewer.export.destination>
+
 		<hacks.project.export.skip>false</hacks.project.export.skip>
 		<hacks.project.export.name>Tricks_Project</hacks.project.export.name>
 		<hacks.project.export.destination>${export.plugins.folder}/${hacks.project.export.name}/${plugin.common.root.dir}/${hacks.project.export.name}</hacks.project.export.destination>
@@ -58,6 +62,7 @@
 		<module>${common.local.repository.folder}/CommonParentGlobal</module>
 		<module>${common.local.repository.folder}/VariousCommonsLight</module>
 		<module>${common.local.repository.folder}/ExternalPluginInterface</module>
+		<module>${common.local.repository.folder}/MarkdownViewer</module>
 		<module>${common.local.repository.folder}/CodeComparator</module>
 		<module>${common.local.repository.folder}/Hacks_Project</module>
 	</modules>
@@ -78,6 +83,7 @@
 								<mkdir dir="${export.plugins.folder}" />
 								<mkdir dir="${code.compare.export.destination}" />
 								<mkdir dir="${hacks.project.export.destination}" />
+								<mkdir dir="${markdown.viewer.export.destination}" />
 							</tasks>
 						</configuration>
 						<goals>

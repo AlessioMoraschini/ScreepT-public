@@ -55,6 +55,7 @@
 		<screept.crypter.version>1.0</screept.crypter.version>
 		<puppynoid.version>1.0</puppynoid.version>
 		<codecomparator.version>0.0.1-SNAPSHOT</codecomparator.version>
+		<markdownviewer.version>0.0.1-SNAPSHOT</markdownviewer.version>
 		<ext.plugin.interface.version>1.0-SNAPSHOT</ext.plugin.interface.version>
 		<general.resources.version>1.0</general.resources.version>
 		<gui.commons.version>1.0</gui.commons.version>

@@ -1,0 +1,176 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>MarkdownViewer</groupId>
+	<artifactId>MarkdownViewer</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>MarkdownViewer</name>
+
+	<parent>
+		<groupId>PluginsParent</groupId>
+		<artifactId>PluginsParent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../ScreepT-Common-Repository/PluginsParent</relativePath>
+	</parent>
+
+	<!-- MIT LICENSE -->
+	<inceptionYear>${screept.start.year}</inceptionYear>
+	<licenses>
+		<license>
+			<name>${mit.license.name}</name>
+			<url>${mit.license.url}</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>${developer.name}</name>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ExternalPluginInterface</groupId>
+			<artifactId>external.plugin.interface</artifactId>
+			<version>${ext.plugin.interface.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.tautua.markdownpapers/markdownpapers-core -->
+		<dependency>
+		    <groupId>org.tautua.markdownpapers</groupId>
+		    <artifactId>markdownpapers-core</artifactId>
+		    <version>1.4.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.rjeschke/txtmark -->
+		<dependency>
+		    <groupId>com.github.rjeschke</groupId>
+		    <artifactId>txtmark</artifactId>
+		    <version>0.13</version>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<outdir>${markdown.viewer.export.destination}</outdir>
+	</properties>
+
+	<build>
+		<finalName>MarkdownViewer</finalName>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${jdk.source.level}</source>
+					<target>${jdk.target.level}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+
+					<!-- FATJAR BUILD -->
+					<execution>
+						<id>make-assembly - main fatjar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<skipAssembly>${markdown.viewer.export.skip}</skipAssembly>
+							<overwrite>true</overwrite>
+							<outputDirectory>${outdir}</outputDirectory>
+							<appendAssemblyId>false</appendAssemblyId>
+							<exclude>/**/*humbs.db</exclude>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-resources -> ${outdir}</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>${sourceEncoding}</encoding>
+							<overwrite>true</overwrite>
+							<outputDirectory>${outdir}</outputDirectory>
+							<name>timestamp</name>
+							<pattern>yyyy-MM-dd_HH:mm:ss</pattern>
+							<timeZone>CTE</timeZone>
+							<resources>
+								<resource>
+									<filtering>false</filtering>
+									<directory>./</directory>
+									<includes>
+										<include>${mit.license.url}</include>
+									</includes>
+									<excludes>/**/*humbs.db</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- LICENSE REPORT GENERATOR -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+							<generateBundle>true</generateBundle>
+							<bundleThirdPartyPath>${project.build.directory}</bundleThirdPartyPath>
+							<excludedScopes>${report.excluded.scopes}</excludedScopes>
+						</configuration>
+						<goals>
+							<goal>third-party-report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>download-licenses</id>
+						<phase>install</phase>
+						<goals>
+							<goal>download-licenses</goal>
+						</goals>
+						<configuration>
+							<licensesOutputFileEncoding>UTF-8</licensesOutputFileEncoding>
+							<includeTransitiveDependencies>true</includeTransitiveDependencies>
+							<forceDownload>true</forceDownload>
+							<excludedScopes>test</excludedScopes>
+							<licensesOutputFile>${report.licenses.raw.dir}/license_list_${project.artifactId}.xml</licensesOutputFile>
+							<overrideFile>true</overrideFile>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<skipThirdPartyReport>${report.licenses.update.skip}</skipThirdPartyReport>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
