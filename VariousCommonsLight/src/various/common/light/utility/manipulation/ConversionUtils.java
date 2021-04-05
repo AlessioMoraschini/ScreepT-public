@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,24 +26,24 @@ import various.common.light.om.HslColor;
 import various.common.light.utility.string.StringWorker;
 
 public class ConversionUtils {
-	
+
 	private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
-	
+
 	public static final String baseUppercaseString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	public static final char[] baseUppercase = baseUppercaseString.toCharArray();
-	
+
 	public static final String baseLowercaseString = "abcdefghijklmnopqrstuvwxyz";
 	public static final char[] baseLowercase = baseLowercaseString.toCharArray();
-	
+
 	public static final String baseString = baseUppercaseString.concat(baseLowercaseString);
 	public static final char[] baseCharacters = baseString.toCharArray();
-	
+
 	public static final String numberString = "0123456789";
 	public static final char[] numberCharacters = numberString.toCharArray();
-	
+
 	public static final String symbolString = "@&#$%";
 	public static final char[] symbolCharacters = symbolString.toCharArray();
-	
+
 	public static final String specialString = "`!\\\"'()*+,-./:;<=>?[]^_`{|}~";
 	public static final char[] specialCharacters = specialString.toCharArray();
 
@@ -57,7 +58,7 @@ public class ConversionUtils {
 	public static long getPercent(long part, long total) {
 		return (long)((float)part/total * 100.0f);
 	}
-	
+
 	/**
 	 * Convert double given in range 0.0 - 1.0 -> 0-100%
 	 * @param percentDecimal
@@ -66,7 +67,7 @@ public class ConversionUtils {
 	public static String getPercentString(double percentDecimal) {
 		return String.valueOf((int)(percentDecimal * 100.0f)) + "%";
 	}
-	
+
 	public static String getPercentString(int part, int total) {
 		return getPercent(part, total) + "%";
 	}
@@ -74,7 +75,7 @@ public class ConversionUtils {
 	public static String getPercentString(long part, long total) {
 		return getPercent(part, total) + "%";
 	}
-	
+
 	/**
 	 *  return a string containing the frequency in hertx formatted correctly
 	 * @param size is the size in bytes to represent in cool way
@@ -89,7 +90,7 @@ public class ConversionUtils {
 
 	/**
 	 *  return a string containing the size of the file formatted correctly according to his size
-	 * 
+	 *
 	 * @return cool formatted string representing the file size with correct measure unit
 	 */
 	public static String coolFileSize(File file){
@@ -137,6 +138,34 @@ public class ConversionUtils {
 	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
 
+	public static String coolTimeFromMsOrNs(Long timeElapsed, boolean nanoseconds){
+		Duration ms = nanoseconds ? Duration.ofNanos(timeElapsed) : Duration.ofMillis(timeElapsed);
+		return format(ms);
+	}
+
+	public static String format(Duration duration) {
+	    long days = duration.toDays();
+	    duration = duration.minusDays(days);
+	    long hours = duration.toHours();
+	    duration = duration.minusHours(hours);
+	    long minutes = duration.toMinutes();
+	    duration = duration.minusMinutes(minutes);
+	    long seconds = duration.getSeconds() ;
+	    duration = duration.minusSeconds(seconds);
+	    long mseconds = duration.toMillis() ;
+	    duration = duration.minusMillis(mseconds);
+	    long nanos = duration.toMillis() ;
+	    String resultRaw =
+	            (days ==  0 ? "" : days + " d, ") +
+	            (hours == 0 ? "" : hours + " h, ") +
+	            (minutes ==  0 ? "" : minutes + " m, ") +
+	            (seconds == 0 ? "" : seconds + " s, ") +
+	            (mseconds == 0 ? "" : mseconds + " ms, ") +
+	            (nanos == 0 ? "" : nanos + " ns, ");
+
+	    return resultRaw.isEmpty() ? resultRaw : resultRaw.substring(0, resultRaw.length() - 2);
+	}
+
 	/**
 	 * parse font from a representing string
 	 */
@@ -155,7 +184,7 @@ public class ConversionUtils {
 		} catch (Exception e) {
 			return new Font("Segoe UI", Font.PLAIN, 18);
 		}
-		
+
 		return new Font(type, style, size);
 	}
 
@@ -177,7 +206,7 @@ public class ConversionUtils {
 		} catch (Exception e) {
 			return defaultFont;
 		}
-		
+
 		return new Font(type, style, size);
 	}
 
@@ -189,7 +218,7 @@ public class ConversionUtils {
 		String stringFont = srcFont.getFontName()+"-"+srcFont.getStyle()+"-"+srcFont.getSize();
 		return stringFont;
 	}
-	
+
 	/**
 	 * Convert color to string RGB with custom separator
 	 */
@@ -221,10 +250,10 @@ public class ConversionUtils {
 		int red = Integer.parseInt(rgb[0]);
 		int green = Integer.parseInt(rgb[1]);
 		int blue = Integer.parseInt(rgb[2]);
-		
+
 		return new Color(red, green, blue);
 	}
-	
+
 	/**
 	 * create color from String RGB separed with "-" representation (red-green-blue)
 	 */
@@ -244,28 +273,28 @@ public class ConversionUtils {
 		}
 		if (result.length() > 0) {
 			result = result.substring(0, result.length()-1);
-		}    	
+		}
 		return result;
 	}
-	
+
 	public static Color getColorFromHslString(String hslColorString, String separator, Color defaultFallback) {
 		String elabored = StringWorker.trimToEmpty(hslColorString).replaceAll("\\s", "");
-		
+
 		try {
-			
+
 			String[] hsl = elabored.split(separator);
 			float[] hslFloat = new float[3];
-			
+
 			for(int i = 0; i < hsl.length; i++) {
 				hslFloat[i] = Float.parseFloat(hsl[i].replaceAll(",", "."));
 			}
-			
+
 			return HslColor.toRGB(hslFloat);
 		} catch(Exception e) {
 			return defaultFallback;
 		}
 	}
-	
+
 	/**
 	 * Convert color to string HSB (where B is brightness, same as Value where referred as HSV)
 	 */
@@ -282,25 +311,25 @@ public class ConversionUtils {
 		}
 		return result;
 	}
-	
+
 	public static Color getColorFromHsbString(String rawHsbColorStr, String separator, Color defaultFallBack) {
 		String elabored = StringWorker.trimToEmpty(rawHsbColorStr).replaceAll("\\s", "");
-		
+
 		try {
-			
+
 			String[] hsb = elabored.split(separator);
 			float[] hsbFloat = new float[3];
-			
+
 			for(int i = 0; i < hsb.length; i++) {
 				hsbFloat[i] = Float.parseFloat(hsb[i].replaceAll(",", "."));
 			}
-			
+
 			return new Color(Color.HSBtoRGB(hsbFloat[0], hsbFloat[1], hsbFloat[2]));
 		} catch(Exception e) {
 			return defaultFallBack;
 		}
 	}
-	
+
 	/**
 	 * REMEMBER: hsv is the same as HSB, while hsl is another format
 	 * @param hue
@@ -310,14 +339,14 @@ public class ConversionUtils {
 	 * @throws RuntimeException
 	 */
 	public static Color hsbToRgb(float hue, float saturation, float value) throws RuntimeException{
-	
+
 	    int h = (int)(hue * 6);
 	    value = value * 256;
 	    int f = (int)hue * 6 - h * 256;
 	    int p = (int)(value * (1 - saturation) * 256);
 	    int q = (int)(value * (1 - f * saturation) * 256);
 	    int t = (int)(value * (1 - (1 - f) * saturation) * 256);
-	
+
 	    switch (h) {
 	      case 0: return new Color(value, t, p);
 	      case 1: return new Color(q, value, p);
@@ -328,31 +357,31 @@ public class ConversionUtils {
 	      default: throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
 	    }
 	}
-	
+
 	/**
 	 * Convert color to string Hexadecimal
 	 */
 	public static String getHexString(Color sourceColor) {
 		return String.format("#%02x%02x%02x", sourceColor.getRed(), sourceColor.getGreen(), sourceColor.getBlue());
 	}
-	
+
 	public static Color getColorFromHexString(String rawColorStr, Color defaultFallback) {
 		String elabored = StringWorker.trimToEmpty(rawColorStr).replaceAll("#", "");
-		
+
 		try {
 			int red = Integer.valueOf(elabored.substring(0,2), 16);
 			int green = Integer.valueOf(elabored.substring(2,4), 16);
 			int blue = Integer.valueOf(elabored.substring(4,6), 16);
-			
+
 			return new Color(red, green, blue);
 		} catch (Exception e) {
 			return defaultFallback;
 		}
 	}
-	
+
 	public static String updateColorComponentInString(String textColor, String newCompValue, String separator, int componentToChange) {
 		String newVal = "";
-		
+
 		try {
 			String[] parts = textColor.split(separator);
 			for(int i = 0; i < parts.length; i++) {
@@ -364,7 +393,7 @@ public class ConversionUtils {
 		}
 		return newVal;
 	}
-	
+
 	public static String getComponentI(String source, String separator, int i) {
 		String [] parts = source.split(separator);
 		try {
@@ -373,10 +402,10 @@ public class ConversionUtils {
 			return parts[0];
 		}
 	}
-	
+
 	public static String updateStringInt(String source, int increment, int max, int min) {
 		String newVal = source;
-		
+
 		try {
 			int sourceInt = Integer.parseInt(source) + increment;
 			if (sourceInt >= min && sourceInt <= max) {
@@ -385,13 +414,13 @@ public class ConversionUtils {
 		} catch (NumberFormatException e) {
 			newVal = source;
 		}
-		
+
 		return newVal;
 	}
-	
+
 	public static String updateStringFloat(String source, float increment, float max, float min) {
 		String newVal = source;
-		
+
 		try {
 			boolean containsComma = source.contains(",");
 			String dotSource = source.replaceAll(",", ".");
@@ -400,23 +429,23 @@ public class ConversionUtils {
 			if (sourceFloat >= min && sourceFloat <= max) {
 				newVal = String.format("%." + decimals + "f", sourceFloat);
 			}
-			
+
 			if(containsComma)
 				newVal.replaceAll("[.]", ",");
 			else
 				newVal.replaceAll(",", ".");
-				
-			
+
+
 		} catch (NumberFormatException e) {
 			newVal = source;
 		}
-		
+
 		return newVal;
 	}
-	
+
 	public static String updateStringHex(String source, int increment, int min, int max) {
 		String newVal = source;
-		
+
 		try {
 			String temp = source.replaceAll("#", "");
 			int parsed = Integer.parseInt(temp, 16);
@@ -426,10 +455,10 @@ public class ConversionUtils {
 		} catch (NumberFormatException e) {
 			newVal = source;
 		}
-		
+
 		return newVal;
 	}
-	
+
 	public static int getIndexOfCaretPositionWithSeparator(JTextComponent textComponent, String separator) {
 		int position = 0;
 		try {
@@ -446,15 +475,15 @@ public class ConversionUtils {
 		} catch (Exception e) {
 			position = 0;
 		}
-		
+
 		return position;
 	}
-	
+
 	public static Double getAvgValue(List<Double> valueList) {
 		double sum = valueList.stream().mapToDouble(Double::doubleValue).sum();
 		int size = valueList.size();
 		return (sum/size);
-		
+
 	}
 
 	/**
@@ -467,10 +496,10 @@ public class ConversionUtils {
 		ArrayList<String> result = new ArrayList<String>();
 		String[] elements = rawList.split(separator);
 		result.addAll(Arrays.asList(elements));
-		
+
 		return result;
 	}
-	
+
 	public static String printHexBinary(byte[] data) {
         StringBuilder r = new StringBuilder(data.length * 2);
         for (byte b : data) {

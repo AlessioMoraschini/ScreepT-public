@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -27,10 +27,10 @@ import various.common.light.files.CustomFileFilters;
 import various.common.light.files.FileWorker;
 
 public class JsRunner {
-	
+
 	public ScriptEngineManager manager;
 	public ScriptEngine engine;
-	
+
 	public JsRunner() {
 		manager = new ScriptEngineManager();
 		engine = manager.getEngineByName("JavaScript");
@@ -49,14 +49,14 @@ public class JsRunner {
 		if(!file.isDirectory() || file == null || !file.exists()) {
 			file = new File("./");
 		}
-		
-		ArrayList<File> librariesToLoad = FileWorker.getAllContent(file, CustomFileFilters.FILE_ONLY);
+
+		List<File> librariesToLoad = FileWorker.getAllContent(file, CustomFileFilters.FILE_ONLY);
 		for (File lib : librariesToLoad) {
 			try {
 				engine.eval(Files.newBufferedReader(Paths.get(lib.getAbsolutePath()), StandardCharsets.UTF_8));
 			} catch (Exception e) {
-			} 
-		} 
+			}
+		}
 	}
 
 	public void initRunnerFromFolderLib(String librayRootPath) {
@@ -64,22 +64,22 @@ public class JsRunner {
 		if(!file.isDirectory() || file == null || !file.exists()) {
 			file = new File("./");
 		}
-		
-		ArrayList<File> librariesToLoad = FileWorker.getAllContent(file, CustomFileFilters.FILE_ONLY);
+
+		List<File> librariesToLoad = FileWorker.getAllContent(file, CustomFileFilters.FILE_ONLY);
 		for (File lib : librariesToLoad) {
 			try {
 				engine.eval(Files.newBufferedReader(Paths.get(lib.getAbsolutePath()), StandardCharsets.UTF_8));
 			} catch (Exception e) {
-			} 
-		} 
+			}
+		}
 	}
 
 	public Object invokeFunction(String function, Object... params) throws NoSuchMethodException, ScriptException {
 		Invocable inv = (Invocable) engine;
 		// call function from script file
 		Object result = inv.invokeFunction(function, params);
-		
+
 		return result;
 	}
-	
+
 }

@@ -9,7 +9,7 @@ import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -267,7 +267,7 @@ public class LightLicenseViewer extends JDialog {
 		mnLibrariesDetailPlugins.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		mnLibrariesDetail.add(mnLibrariesDetailPlugins);
 
-		ArrayList<File> details = FileWorker.getAllContent(MAIN_LIBRARIES_FOLDER_DETAIL, CustomFileFilters.FILE_ONLY);
+		List<File> details = FileWorker.getAllContent(MAIN_LIBRARIES_FOLDER_DETAIL, CustomFileFilters.FILE_ONLY);
 		if(details != null)
 			for(File libraryLicense : details) {
 				JMenuItem licenseFileMenuItem = new JMenuItem(libraryLicense.getName());

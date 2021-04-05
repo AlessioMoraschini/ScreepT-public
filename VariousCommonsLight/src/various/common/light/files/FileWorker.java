@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -794,8 +795,8 @@ public class FileWorker {
 	 * @param filterType
 	 * @return
 	 */
-	public static ArrayList<File> getAllContent(File sourceDir, String filterType) {
-		ArrayList<File> result = new ArrayList<>();
+	public static List<File> getAllContent(File sourceDir, String filterType) {
+		List<File> result = new ArrayList<>();
 		for(File found : sourceDir.listFiles()) {
 			if(found.isDirectory()) {
 				result.addAll(getAllContent(found, filterType));

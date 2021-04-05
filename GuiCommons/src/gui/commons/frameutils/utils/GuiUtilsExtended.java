@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 
 import gui.commons.dialogutils.JOptionHelperExtended;
 import resources.GeneralConfig;
-import resources.IconsPathConfigurator;
 import resources.SoundsConfigurator;
 import resources.SoundsManagerExtended;
 import various.common.light.gui.GuiUtils;
@@ -46,7 +45,7 @@ public class GuiUtilsExtended extends GuiUtils {
 	public static final Cursor CURSOR_CROSS = new Cursor(Cursor.CROSSHAIR_CURSOR);
 
 	public static final Dimension DEF_CUSTOM_CURSOR_SIZE = new Dimension(8,8);
-	public static Cursor CURSOR_COLOR_PICK;
+//	public static Cursor CURSOR_COLOR_PICK;
 
 	public static JOptionHelperExtended dialogHelper = new JOptionHelperExtended(null);
 	public static CustomCodeFormatter codeFormatter;
@@ -64,7 +63,7 @@ public class GuiUtilsExtended extends GuiUtils {
 
 	public static void init() {
 		codeFormatter = new CustomCodeFormatter(GeneralConfig.JS_LIB_FOLDER);
-		CURSOR_COLOR_PICK = GuiUtils.getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER, DEF_CUSTOM_CURSOR_SIZE);
+//		CURSOR_COLOR_PICK = GuiUtils.getCustomCursor(IconsPathConfigurator.ICON_COLOR_SAMPLER, DEF_CUSTOM_CURSOR_SIZE);
 	}
 
 	public static void formatTextLater(JTextArea sourceArea, String extension, int tabSize) {

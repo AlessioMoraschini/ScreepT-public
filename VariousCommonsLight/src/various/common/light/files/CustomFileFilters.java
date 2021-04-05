@@ -28,12 +28,12 @@ public class CustomFileFilters {
 
 	public static boolean fileAccepted(String filter) {
 		return filter != null &&
-				(filter.contains("ALL") || filter.contains("FILE"));
+				(filter.contains("FILE") || filter.contains("ALL"));
 	}
 
 	public static boolean dirAccepted(String filter) {
 		return filter != null &&
-				(filter.contains("ALL") || filter.contains("DIR"));
+				(filter.contains("DIR") || filter.contains("ALL"));
 	}
 
 	/**
