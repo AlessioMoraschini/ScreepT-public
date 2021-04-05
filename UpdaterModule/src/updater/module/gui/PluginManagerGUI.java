@@ -142,7 +142,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		UIManager.put("ToolTip.background", new Color(255, 250, 205));
 		this.setAlwaysOnTop(true);
 		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[32px:40px][60px:60px:60px][40px][grow]"));
+		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[32px:40px][40px:40px:40px][20px][grow]"));
 
 		lblTitleHeaderMessage = new JLabel("Welcome to Plugin Manager, choose and install your preferred add-ons ;)");
 		lblTitleHeaderMessage.setForeground(new Color(211, 211, 211));
