@@ -29,6 +29,7 @@ import gui.commons.frameutils.utils.GuiUtilsExtended;
 import net.miginfocom.swing.MigLayout;
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
+import various.common.light.utility.primitive.DynaBoolean;
 
 public class ShellFrame extends ParentFrame {
 	private static final long serialVersionUID = 7066597918430250412L;
@@ -38,7 +39,6 @@ public class ShellFrame extends ParentFrame {
 	JFrame thisFrame;
 	public ParentPanel payloadPanel;
 	public boolean writeMode = false;
-	private Runnable closeAction;
 
 	public ShellFrame(JFrame parentFrame) {
 		this(parentFrame, false);
@@ -55,7 +55,6 @@ public class ShellFrame extends ParentFrame {
 	public ShellFrame(JTextArea cmdAreaToEnrich, JFrame parentFrame, boolean writeMode, File preloadFile) {
 
 		this.writeMode = writeMode;
-		this.closeAction = () -> {};
 
 		logger.info(this.getClass().getName() + " - Starting...");
 
@@ -129,19 +128,21 @@ public class ShellFrame extends ParentFrame {
 				}
 				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				logger.debug("Closing "+getClass().getName());
-				closeAction.run();
+				closeAction.isTrue();
 				isActive.set(false);
 				singletonInstance = null;
 		    }
 		});
 	}
 
-	public Runnable getCloseAction() {
+	@Override
+	public DynaBoolean getCloseAction() {
 		return closeAction;
 	}
 
-	public void setCloseAction(Runnable closeAction) {
-		this.closeAction = closeAction == null ? () -> {} : closeAction;
+	@Override
+	public void setCloseAction(DynaBoolean closeAction) {
+		this.closeAction = closeAction == null ? () -> {return true;} : closeAction;
 	}
 
 	@Override

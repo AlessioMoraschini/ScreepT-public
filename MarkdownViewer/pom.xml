@@ -47,13 +47,22 @@
 		<dependency>
 		    <groupId>org.tautua.markdownpapers</groupId>
 		    <artifactId>markdownpapers-core</artifactId>
-		    <version>1.4.4</version>
+		    <version>${markdown.core.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.github.rjeschke/txtmark -->
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
-		    <groupId>com.github.rjeschke</groupId>
-		    <artifactId>txtmark</artifactId>
-		    <version>0.13</version>
+		    <groupId>org.jsoup</groupId>
+		    <artifactId>jsoup</artifactId>
+		    <!-- <version>${jsoup.version}</version> -->
+		    <version>1.12.2</version>
+		</dependency>
+		
+				
+		<dependency>
+			<groupId>GuiTextEditorCommons</groupId>
+			<artifactId>GuiTextEditorCommons</artifactId>
+			<version>${gui.txt.commons.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

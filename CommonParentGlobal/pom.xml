@@ -97,6 +97,9 @@
 		<jackson.version>2.9.8</jackson.version>
 		<jfontchooser.version>1.0.5-3</jfontchooser.version>
 		<javax.validation.api.version>2.0.1.Final</javax.validation.api.version>
+		<markdown.core.version>1.4.4</markdown.core.version>
+		<textmark.version>0.13</textmark.version>
+		<jsoup.version>1.13.1</jsoup.version>
 
 		<!-- Maven plugins -->
 		<maven.compiler.version>3.8.0</maven.compiler.version>
