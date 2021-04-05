@@ -50,6 +50,10 @@ public interface IPlugin extends IPluginParentExecutor<IPlugin> {
 
 	public default String getTooltip() {return "";};
 
+	public String getDescription();
+
+	public List<String> getWarnings();
+
 	/**
 	 * Without dots (txt, jpg, pdf, ecc...)
 	 * if (*) then all extensions are managed

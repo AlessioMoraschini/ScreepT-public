@@ -102,7 +102,7 @@ public class PluginManager {
 				pluginsDir.mkdir();
 			}
 		} catch (Exception e) {
-			logger.warn("Cannot create updates dir (Resources_ScreepT/UPDATES)", e);
+			logger.warn("Cannot create plugins dir: " + LOCAL_PLUGINS_DIR, e);
 		}
 	}
 
@@ -170,6 +170,7 @@ public class PluginManager {
 		String installedList = PropertiesManager.listToString(relativeNewCopied, installedPluginPropsListSeparator);
 		installedPluginProperties.commentedProperties.setProperty(plugin.getName(), installedList);
 		installedPluginProperties.savePropertyChecked(plugin.getName(), installedList);
+		installedPluginProperties.savePropertyChecked(PLUGIN_INSTALLED_VERSION_PROP+plugin.getName(), plugin.getLastVersion());
 		logger.info(installedPluginPropsFileName + " -> Installed files list saved for current plugin (" + plugin.getName() + ") :" + installedList);
 		installedPluginProperties.readFromFile();
 

@@ -55,6 +55,11 @@ public class AntilockerPlugin extends PluginAbstractParent implements IPlugin {
 	}
 
 	@Override
+	public String getDescription() {
+		return "A tool to move the mouse and click ctrl key each N seconds. Useful to avoid get kicked out from softwares if idle ;)";
+	}
+
+	@Override
 	public boolean openFrame(List<File> files) {
 		AntilockerGui.main(FileVarious.filesToStrings(files));
 		SwingUtilities.invokeLater(()->{

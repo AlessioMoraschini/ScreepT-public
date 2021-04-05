@@ -57,8 +57,8 @@ public class PDFReaderPlugin extends PluginAbstractParent implements IPluginText
 	}
 
 	@Override
-	public void kill() {
-		// TODO Auto-generated method stub
+	public String getDescription() {
+		return "[Embedded] Parse images and PDF to extract contained text (A.K.A. OCR). Includes a basic PDF viewer";
 	}
 
 	@Override

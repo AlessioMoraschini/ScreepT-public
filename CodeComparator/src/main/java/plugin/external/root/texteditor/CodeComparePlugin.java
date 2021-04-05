@@ -36,6 +36,11 @@ public class CodeComparePlugin extends PluginAbstractParent implements IPluginTe
 	}
 
 	@Override
+	public String getVersion() {
+		return "1.0.1";
+	}
+
+	@Override
 	public boolean isTestPlugin() {
 		return false;
 	}
@@ -48,6 +53,18 @@ public class CodeComparePlugin extends PluginAbstractParent implements IPluginTe
 	@Override
 	public String getPluginName() {
 		return "Code Compare Plugin";
+	}
+
+	@Override
+	public String getDescription() {
+		return "A tool for comparing text between files and folders content!";
+	}
+
+	@Override
+	public List<String> getWarnings() {
+		List<String> warnings = new ArrayList<>();
+		warnings.add("This plugin can have compatibility issues with PDF reader. In case of problems just uninstall one of the two.");
+		return warnings;
 	}
 
 	@Override

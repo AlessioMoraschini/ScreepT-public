@@ -1,6 +1,7 @@
 package plugin.external.root.embedded.test;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -59,6 +60,16 @@ public class HellowordTextEditorPlugin implements IPluginTextEditor {
 	public String getID() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getDescription() {
+		return "";
+	}
+
+	@Override
+	public List<String> getWarnings() {
+		return new ArrayList<String>();
 	}
 
 	@Override

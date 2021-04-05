@@ -11,20 +11,29 @@
  */
 package various.common.light.utility.properties;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.TreeSet;
+import java.util.Vector;
 
 /**
  * The CommentedProperties class is an extension of java.util.Properties
  * to allow retention of comment lines and blank (whitespace only) lines
  * in the properties file.
- * 
+ *
  * Written for Java version 1.4
  */
 public class CommentedProperties extends java.util.Properties {
 	private static final long serialVersionUID = 6193614529091226425L;
-	
+
 	private static final String defaultCharsetName = Charset.defaultCharset().name();
 
 	/**
@@ -37,11 +46,17 @@ public class CommentedProperties extends java.util.Properties {
 	 */
 	public Vector<String> keyData = new Vector<>(0, 1);
 
+	@Override
+    public synchronized Enumeration<Object> keys() {
+        return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+    }
+
 	/**
-	 * Load properties from the specified InputStream. 
+	 * Load properties from the specified InputStream.
 	 * Overload the load method in Properties so we can keep comment and blank lines.
 	 * @param   inStream   The InputStream to read.
 	 */
+	@Override
 	public void load(InputStream inStream) throws IOException
 	{
 		// The spec says that the file must be encoded using ISO-8859-1.
@@ -208,15 +223,16 @@ public class CommentedProperties extends java.util.Properties {
 
 	/**
 	 * Write the properties to the specified OutputStream.
-	 * 
-	 * Overloads the store method in Properties so we can put back comment	
-	 * and blank lines.													  
-	 * 
+	 *
+	 * Overloads the store method in Properties so we can put back comment
+	 * and blank lines.
+	 *
 	 * @param out	The OutputStream to write to.
 	 * @param header Ignored, here for compatability w/ Properties.
-	 * 
+	 *
 	 * @exception IOException
 	 */
+	@Override
 	public void store(OutputStream out, String header) throws IOException
 	{
 		// The spec says that the file must be encoded using ISO-8859-1.
@@ -232,8 +248,8 @@ public class CommentedProperties extends java.util.Properties {
 		StringBuffer s = new StringBuffer ();
 
 		for (int i=0; i<lineData.size(); i++) {
-			line = (String) lineData.get(i);
-			key = (String) keyData.get(i);
+			line = lineData.get(i);
+			key = keyData.get(i);
 			if (key.length() > 0) {  // This is a 'property' line, so rebuild it
 				formatForOutput (key, s, true);
 				s.append ('=');
@@ -242,7 +258,7 @@ public class CommentedProperties extends java.util.Properties {
 			} else {  // was a blank or comment line, so just restore it
 				writer.println (line);
 			}
-		} 
+		}
 		writer.flush ();
 	}
 
@@ -250,7 +266,7 @@ public class CommentedProperties extends java.util.Properties {
 	 * Need this method from Properties because original code has StringBuilder,
 	 * which is an element of Java 1.5, used StringBuffer instead (because
 	 * this code was written for Java 1.4)
-	 * 
+	 *
 	 * @param str	- the string to format
 	 * @param buffer - buffer to hold the string
 	 * @param key	- true if str the key is formatted, false if the value is formatted
@@ -300,8 +316,8 @@ public class CommentedProperties extends java.util.Properties {
 	}
 
 	/**
-	 * Add a Property to the end of the CommentedProperties. 
-	 * 
+	 * Add a Property to the end of the CommentedProperties.
+	 *
 	 * @param   keyString	 The Property key.
 	 * @param   value		 The value of this Property.
 	 */
@@ -313,8 +329,8 @@ public class CommentedProperties extends java.util.Properties {
 	}
 
 	/**
-	 * Add a comment or blank line or comment to the end of the CommentedProperties. 
-	 * 
+	 * Add a comment or blank line or comment to the end of the CommentedProperties.
+	 *
 	 * @param   line The string to add to the end, make sure this is a comment
 	 *			   or a 'whitespace' line.
 	 */

@@ -22,9 +22,12 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.TreeSet;
 
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.manipulation.ArrayHelper;
@@ -52,7 +55,14 @@ public class PropertiesManager {
 	 */
 	public PropertiesManager(String bindingsFileDefinitionSource) {
 		dynamicFileBindingsDefSource = new File(bindingsFileDefinitionSource);
-		dynamicFileBindingsDef = new Properties();
+		dynamicFileBindingsDef = new Properties() {
+			private static final long serialVersionUID = 2357857735678865627L;
+
+			@Override
+		    public synchronized Enumeration<Object> keys() {
+		        return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+		    }
+		};
 
 		if (!readFromFile()) {
 			dynamicFileBindingsDefSource = null;
@@ -215,23 +225,31 @@ public class PropertiesManager {
 	 * @param value
 	 */
 	public void saveCommentedProperty(String propertyName, String value) {
+		saveCommentedProperty(propertyName, value, true);
+	}
+
+	public void saveCommentedProperty(String propertyName, String value, boolean saveToFile) {
 
 		java.io.OutputStream out = null;
 		try {
-			out = new FileOutputStream(dynamicFileBindingsDefSource);
 			dynamicFileBindingsDef.setProperty(propertyName, value);
         	logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);
         	commentedProperties.setProperty(propertyName, value);
-        	commentedProperties.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));
-        	logger.info("Saved!");
+        	if (saveToFile) {
+				out = new FileOutputStream(dynamicFileBindingsDefSource);
+				commentedProperties.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));
+				logger.info("Saved!");
+			}
 		} catch (Throwable e) {
 			logger.error("Cannot save commented properties", e);
 		} finally {
-			try {
-				out.flush();
-				out.close();
-			} catch (Exception e1) {
-				logger.error("Cannot close streams", e1);
+			if (saveToFile && out != null) {
+				try {
+					out.flush();
+					out.close();
+				} catch (Exception e1) {
+					logger.error("Cannot close streams", e1);
+				}
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -56,6 +57,11 @@ public class PluginAbstractParent implements IPlugin {
 	@Override
 	public boolean openFrame(List<File> files) {
 		return false;
+	}
+
+	@Override
+	public List<String> getWarnings() {
+		return new ArrayList<String>();
 	}
 
 	// UTILITY METHODS //
@@ -152,6 +158,11 @@ public class PluginAbstractParent implements IPlugin {
 			return 0;
 
 		return getPluginName().compareTo(o.getPluginName());
+	}
+
+	@Override
+	public String getDescription() {
+		return "Plugin's description undefined";
 	}
 
 }
