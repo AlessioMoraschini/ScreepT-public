@@ -1,6 +1,7 @@
 package plugin.external.root.texteditor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import plugin.api.AbstractPluginApplicationApi;
 import plugin.external.arch.IPluginTextEditor;
 import plugin.external.arch.PluginAbstractParent;
 import various.common.light.files.FileVarious;
+import various.common.light.om.SelectionDtoFull;
 
 public class MarkdownViewerPlugin extends PluginAbstractParent implements IPluginTextEditor {
 
@@ -51,6 +53,13 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 	@Override
 	public String getDescription() {
 		return "A tool to view markdown files and convert from/to html";
+	}
+
+	@Override
+	public List<String> getWarnings() {
+		List<String> warnings = new ArrayList<>();
+		warnings.add("This plugin is only compatible from ScreepT version 0.9.51");
+		return warnings;
 	}
 
 	@Override
@@ -115,6 +124,28 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 
 	@Override
 	public Map<String, FunctionExecutor> getTextAreaExecutorMap() {
-		return getFileTreeExecutorMap();
+		Map<String, FunctionExecutor> fileTreeExecutorMap = new HashMap<>();
+
+		// Compare selected
+		fileTreeExecutorMap.put(availableFunctionsRightTextAreaClick[0], new FunctionExecutor(this) {
+			@Override
+			public SelectionDtoFull executeSelectionDto(SelectionDtoFull dto) {
+				String markdown = dto.file != null ? FileVarious.getCanonicalPathSafe(dto.file) : null;
+				launchMain(new String[] {null, markdown});
+				return super.executeSelectionDto(dto);
+			}
+		});
+
+		// Compare empty sources
+		fileTreeExecutorMap.put(availableFunctionsRightTextAreaClick[1], new FunctionExecutor(this) {
+			@Override
+			public SelectionDtoFull executeSelectionDto(SelectionDtoFull dto) {
+				String markdown = dto.file != null ? FileVarious.getCanonicalPathSafe(dto.file) : null;
+				launchMain(new String[] {markdown, null});
+				return super.executeSelectionDto(dto);
+			}
+		});
+
+		return fileTreeExecutorMap;
 	}
 }

@@ -66,6 +66,7 @@ public class MainStandAloneUpdater {
 	private static final String KEY_ROOT_FILES_UPDATES_DIR = "ROOT_DIR_APP_FILES";
 	private static final String KEY_FOLDER_ZIP_TO_ELABORATE = "RELEASE_FOLDER-OR-ZIP_TO_ELABORATE";
 	private static final String KEY_FOLDERS_TO_SKIP = "FOLDERS_TO_SKIP";
+	private static final String KEY_FOLDERS_TO_KEEP = "FOLDERS_TO_KEEP";
 
 
 	private static final JOptionHelper dialogHelper = new JOptionHelper(null);
@@ -353,12 +354,19 @@ public class MainStandAloneUpdater {
 		List<File> zipErrorFolders = new ArrayList<>();
 
 		List<File> foldersToSkip = new PropertiesManager(UPDATES_PROPERTIES_FILE).getFileList(KEY_FOLDERS_TO_SKIP, ",", true);
+		List<File> foldersToKeep = new PropertiesManager(UPDATES_PROPERTIES_FILE).getFileList(KEY_FOLDERS_TO_KEEP, ",", true);
 
 		if(subFolders != null) {
 			for (File folder : subFolders) {
 
-				if(FileVarious.containedInList(foldersToSkip, folder))
+				boolean toKeep = FileVarious.containedInList(foldersToKeep, folder);
+				boolean toSkip = FileVarious.containedInList(foldersToSkip, folder);
+				if(!toKeep && toSkip)
 					continue;
+
+				if(!foldersToKeep.isEmpty() && !toKeep)
+					continue;
+
 
 				try {
 					// zip the wanted folder and place the zipped file into current directory
