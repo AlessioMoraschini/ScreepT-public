@@ -201,9 +201,9 @@ public class GuiUtils {
 			target.setAlwaysOnTop(alwayOnTopBackup);
 
 			if (mouseMouseOn != null) {
-				mouseClick(target.getX() + 1, target.getY() + 1);
 				SwingUtilities.invokeLater(() -> {
 					mouseMove(getCenter(mouseMouseOn));
+					mouseClick(target.getX() + 1, target.getY() + 1);
 				});
 			}
 		}

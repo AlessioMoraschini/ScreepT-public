@@ -1,9 +1,13 @@
 package gui.test;
 
+import java.io.File;
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import markdown.viewer.MarkdownViewerFrame;
+import various.common.light.files.FileVarious;
 
 public class MarkdownViewerTest {
 
@@ -44,6 +48,15 @@ public class MarkdownViewerTest {
 			frame.setVisible(true);
 			frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE;
 		});
+	}
+
+	public static void testFiles(List<File> files, boolean markdownType) {
+		String markdown = files!= null && files.size() > 0 ? FileVarious.getCanonicalPathSafe(files.get(0)) : null;
+		if(markdownType)
+			main(new String[] {null, markdown});
+		else
+			main(new String[] {markdown, null});
+
 	}
 
 }

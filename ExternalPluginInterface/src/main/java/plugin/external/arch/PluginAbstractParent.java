@@ -70,7 +70,7 @@ public class PluginAbstractParent implements IPlugin {
 
 		String[] argsValid = new String[args.length > 2 ? args.length : 2];
 
-		if (args != null && args.length == 0) {
+		if (args == null || args.length == 0) {
 			argsValid[0] = createTempFile(tempName, currentUserTempFolder).getAbsolutePath();
 			argsValid[1] = createTempFile(tempName, currentUserTempFolder).getAbsolutePath();
 
@@ -83,7 +83,60 @@ public class PluginAbstractParent implements IPlugin {
 			argsValid[1] = args[1];
 		}
 
+		if(args.length > 2) {
+			for(int i = 2; i < args.length; i++) {
+				argsValid[i] = args[i];
+			}
+		}
+
 		return argsValid;
+	}
+
+	protected String[] ensureTwoArgs(String args[]) {
+
+		String[] argsValid = new String[args.length > 2 ? args.length : 2];
+
+		if (args == null || args.length == 0) {
+			argsValid[0] = null;
+			argsValid[1] = null;
+
+		} else if (args != null && args.length == 1) {
+			argsValid[0] = args[0];
+			argsValid[1] = null;
+
+		} else {
+			argsValid[0] = args[0];
+			argsValid[1] = args[1];
+		}
+
+		if(args.length > 2) {
+			for(int i = 2; i < args.length; i++) {
+				argsValid[i] = args[i];
+			}
+		}
+
+		return argsValid;
+	}
+
+	protected List<File> ensureTwoFiles(List<File> files) {
+
+		List<File> filesValid = new ArrayList<>();
+
+		if (files == null || files.isEmpty()) {
+			filesValid.add(null);
+			filesValid.add(null);
+
+		} else if (files != null && files.size() == 1) {
+			filesValid.add(files.get(0));
+			filesValid.add(null);
+
+		} else {
+			for(File file : files) {
+				filesValid.add(file);
+			}
+		}
+
+		return filesValid;
 	}
 
 	public static File createTempFile(String name, String currentUserTempFolder) {

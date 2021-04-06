@@ -31,16 +31,16 @@
 	<!-- MODULES BUILD -->
 	<modules>
 		<module>${common.local.repository.folder}/AM_Rkanoid</module>
-		<!-- Added --><module>${common.local.repository.folder}/PluginsParent</module>
-		<module>${common.local.repository.folder}/GeneralResources</module>
-		<module>${common.local.repository.folder}/OsCommons</module>
+		<module>${common.local.repository.folder}/PluginsParent</module>
+		<!-- <module>${common.local.repository.folder}/GeneralResources</module> -->
+		<!-- <module>${common.local.repository.folder}/OsCommons</module> -->
 		<module>${screept.local.repository.folder}/ScreepT_Crypter</module>
-		<module>${common.local.repository.folder}/Initializer_Configs</module>
-		<module>${common.local.repository.folder}/GuiCommons</module>
+		<!-- <module>${common.local.repository.folder}/Initializer_Configs</module> -->
+		<!-- <module>${common.local.repository.folder}/GuiCommons</module> -->
 		<module>${screept.local.repository.folder}/NetworkCommons</module>
-		<module>${common.local.repository.folder}/UpdaterModule</module>
+		<!-- <module>${common.local.repository.folder}/UpdaterModule</module> -->
 		<module>${common.local.repository.folder}/HardwareCommons</module>
-		<module>${screept.local.repository.folder}/GuiTextEditorCommons</module>
+		<!-- <module>${screept.local.repository.folder}/GuiTextEditorCommons</module> -->
 		<module>${common.local.repository.folder}/MultimediaConversion</module>
 		<module>${common.local.repository.folder}/UltimateCalculator</module>
 		<module>${screept.local.repository.folder}/ScreepT_Launcher</module>

@@ -97,23 +97,6 @@ public class MarkdownViewerFrame extends ParentFrame {
 	public MarkdownViewerFrame(String html, String markdown) {
 		super();
 		init(html, markdown);
-		setCloseAction(()->{
-			int choice = dialogHelper.yesNoOrCanc("Every unsaved file will be lost. Do you want to save before to close?", "close Markdown Viewer?");
-			if(JOptionHelper.CANC == choice) {
-				return false;
-
-			} else if(JOptionHelper.NO == choice) {
-				return true;
-			}
-
-			boolean[] saved = save();
-			boolean askConfirm = !saved[0] || !saved[1];
-			if(askConfirm && !dialogHelper.yesOrNo("An error occurred while saving, do you want to exit anyway?", "Save failed!")) {
-				return false;
-			} else {
-				return true;
-			}
-		});
 	}
 
 	public boolean[] save() {
@@ -160,7 +143,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 		String htmlFileStrFull =  htmlFile != null ? FileVarious.getCanonicalPathSafe(htmlFile) : "Undefined file";
 		String markdownFileStr = markdownFile != null ? markdownFile.getName() : " - ";
 		String markdownFileStrFull = markdownFile != null ? FileVarious.getCanonicalPathSafe(markdownFile) : "Undefined file";
-		String title = "Markdown Viewer (markdown: " + markdownFileStr + "  ##  html: " + htmlFileStr;
+		String title = "Markdown Viewer (markdown: " + markdownFileStr + "  ##  html: " + htmlFileStr + ")";
 		setTitle(title);
 
 		lblHtmlView.setText("Html view (" + htmlFileStr + ")");
@@ -275,8 +258,9 @@ public class MarkdownViewerFrame extends ParentFrame {
 		loadMarkdown(markdown, !StringWorker.isEmpty(markdown));
 
 		SwingUtilities.invokeLater(()->{
-			splitPaneCode.setDividerLocation(0.5d);
-			splitPaneMain.setDividerLocation(0.5d);
+			splitPaneCode.setDividerLocation(getDefaultDimension().width/2);
+			splitPaneMain.setDividerLocation(getDefaultDimension().height/2);
+			updateTitle();
 		});
 	}
 
@@ -318,6 +302,24 @@ public class MarkdownViewerFrame extends ParentFrame {
 
 		btnSaveMarkdown.addActionListener((e) -> {
 			saveMarkdown(true);
+		});
+
+		setCloseAction(()->{
+			int choice = dialogHelper.yesNoOrCanc("Every unsaved file will be lost. Do you want to save before to close?", "close Markdown Viewer?");
+			if(JOptionHelper.CANC == choice) {
+				return false;
+
+			} else if(JOptionHelper.NO == choice) {
+				return true;
+			}
+
+			boolean[] saved = save();
+			boolean askConfirm = !saved[0] || !saved[1];
+			if(askConfirm && !dialogHelper.yesOrNo("An error occurred while saving, do you want to exit anyway?", "Save failed!")) {
+				return false;
+			} else {
+				return true;
+			}
 		});
 	}
 

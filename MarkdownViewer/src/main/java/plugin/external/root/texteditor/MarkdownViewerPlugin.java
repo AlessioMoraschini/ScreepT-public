@@ -13,7 +13,6 @@ import markdown.viewer.MarkdownViewerFrame;
 import plugin.api.AbstractPluginApplicationApi;
 import plugin.external.arch.IPluginTextEditor;
 import plugin.external.arch.PluginAbstractParent;
-import various.common.light.files.FileVarious;
 import various.common.light.om.SelectionDtoFull;
 
 public class MarkdownViewerPlugin extends PluginAbstractParent implements IPluginTextEditor {
@@ -69,9 +68,7 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 	@Override
 	public boolean launchMain(final String[] args) {
 		new Thread(()-> {
-			MarkdownViewerFrame frame = new MarkdownViewerFrame(
-					args.length > 0 ? new File(args[0]) : null,
-					args.length > 1 ? new File(args[1]) : null);
+			MarkdownViewerFrame frame = new MarkdownViewerFrame((File)null, (File)null);
 			frame.setVisible(true);
 		}).start();
 		return true;
@@ -79,7 +76,12 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 
 	@Override
 	public boolean openFrame(List<File> files) {
-		launchMain(FileVarious.filesToStrings(files));
+		new Thread(()-> {
+			List<File> safeFiles = ensureTwoFiles(files);
+			MarkdownViewerFrame frame = new MarkdownViewerFrame(safeFiles.get(0), safeFiles.get(1));
+			frame.setVisible(true);
+		}).start();
+
 		return true;
 	}
 
@@ -103,8 +105,11 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 		fileTreeExecutorMap.put(availableFunctionsRightFileTreeClick[0], new FunctionExecutor(this) {
 			@Override
 			public boolean executeFiles(List<File> files) {
-				String markdown = files!= null && files.size() > 0 ? FileVarious.getCanonicalPathSafe(files.get(0)) : null;
-				launchMain(new String[] {null, markdown});
+				List<File> safeFiles = ensureTwoFiles(files);
+				List<File> safeFilesMarkdownOnly = new ArrayList<>();
+				safeFilesMarkdownOnly.add(null);
+				safeFilesMarkdownOnly.add(safeFiles.get(0));
+				openFrame(safeFilesMarkdownOnly);
 				return true;
 			}
 		});
@@ -113,8 +118,11 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 		fileTreeExecutorMap.put(availableFunctionsRightFileTreeClick[1], new FunctionExecutor(this) {
 			@Override
 			public boolean executeFiles(List<File> files) {
-				String html = files!= null && files.size() > 0 ? FileVarious.getCanonicalPathSafe(files.get(0)) : null;
-				launchMain(new String[] {html, null});
+				List<File> safeFiles = ensureTwoFiles(files);
+				List<File> safeFilesMarkdownOnly = new ArrayList<>();
+				safeFilesMarkdownOnly.add(safeFiles.get(0));
+				safeFilesMarkdownOnly.add(null);
+				openFrame(safeFilesMarkdownOnly);
 				return true;
 			}
 		});
@@ -130,8 +138,11 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 		fileTreeExecutorMap.put(availableFunctionsRightTextAreaClick[0], new FunctionExecutor(this) {
 			@Override
 			public SelectionDtoFull executeSelectionDto(SelectionDtoFull dto) {
-				String markdown = dto.file != null ? FileVarious.getCanonicalPathSafe(dto.file) : null;
-				launchMain(new String[] {null, markdown});
+				List<File> safeFilesMarkdownOnly = new ArrayList<>();
+				safeFilesMarkdownOnly.add(null);
+				safeFilesMarkdownOnly.add(dto.file);
+				openFrame(safeFilesMarkdownOnly);
+
 				return super.executeSelectionDto(dto);
 			}
 		});
@@ -140,8 +151,11 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 		fileTreeExecutorMap.put(availableFunctionsRightTextAreaClick[1], new FunctionExecutor(this) {
 			@Override
 			public SelectionDtoFull executeSelectionDto(SelectionDtoFull dto) {
-				String markdown = dto.file != null ? FileVarious.getCanonicalPathSafe(dto.file) : null;
-				launchMain(new String[] {markdown, null});
+				List<File> safeFilesMarkdownOnly = new ArrayList<>();
+				safeFilesMarkdownOnly.add(dto.file);
+				safeFilesMarkdownOnly.add(null);
+				openFrame(safeFilesMarkdownOnly);
+
 				return super.executeSelectionDto(dto);
 			}
 		});
