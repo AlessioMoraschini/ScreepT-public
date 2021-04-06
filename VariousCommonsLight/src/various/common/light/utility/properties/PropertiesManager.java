@@ -232,9 +232,9 @@ public class PropertiesManager {
 
 		java.io.OutputStream out = null;
 		try {
-			dynamicFileBindingsDef.setProperty(propertyName, value);
+			dynamicFileBindingsDef.put(propertyName, value);
         	logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);
-        	commentedProperties.setProperty(propertyName, value);
+        	commentedProperties.put(propertyName, value);
         	if (saveToFile) {
 				out = new FileOutputStream(dynamicFileBindingsDefSource);
 				commentedProperties.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));
@@ -265,7 +265,7 @@ public class PropertiesManager {
 
 		try {
 			out = new FileOutputStream(dynamicFileBindingsDefSource);
-			dynamicFileBindingsDef.setProperty(key, value);
+			dynamicFileBindingsDef.put(key, value);
 			dynamicFileBindingsDef.store(out, null);
 		} catch (Exception e) {
 			return false;
@@ -375,7 +375,7 @@ public class PropertiesManager {
 
 		String rawList = dynamicFileBindingsDef.getProperty(key);
 
-		if(rawList == null || "".equals(rawList)) {
+		if(rawList == null || StringWorker.isEmpty(rawList)) {
 			return list;
 		}
 

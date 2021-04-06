@@ -32,6 +32,7 @@
 	<modules>
 		<module>${common.local.repository.folder}/CommonParentGlobal</module>
 		<module>${common.local.repository.folder}/CodeComparator</module>
+		<module>${common.local.repository.folder}/MarkdownViewer</module>
 		<module>${common.local.repository.folder}/AM_Rkanoid</module>
 		<module>${common.local.repository.folder}/ExternalPluginInterface</module>
 		<module>${common.local.repository.folder}/VariousCommonsLight</module>

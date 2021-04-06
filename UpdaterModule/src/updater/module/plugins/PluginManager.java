@@ -16,8 +16,6 @@ import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -195,31 +193,36 @@ public class PluginManager {
 		}
 
 		ArrayList<String> strPluginFilesList = installedPluginProperties.getStringList(pluginToRemove.getName(), installedPluginPropsListSeparator);
+		logger.info("List of installed files to remove before to filter shared ones: " + strPluginFilesList.toString());
 		strPluginFilesList = filterSharedFiles(strPluginFilesList, pluginToRemove);
+		logger.info("List of installed files to remove after shared ones filtering: " + strPluginFilesList.toString());
 
 		for(String toDelete : strPluginFilesList) {
+			logger.debug("Starting delete phase for file: " + toDelete);
 			File filePending = new File(toDelete);
+			boolean currentUninstalled = false;
 			try {
 				// Delete only if contained in current application DIR (Avoid accidental deletes of other files unrelated to ScreepT)
-				if (FileUtils.directoryContains(APPLICATION_ROOT_DIR, filePending)) {
-					if (toDelete != null && !"".equals(toDelete.trim()) && filePending.exists() && filePending.isFile()) {
-						FileUtils.forceDelete(filePending);
+				if (FileVarious.checkIfContainedInDir(filePending, APPLICATION_ROOT_DIR)) {
+					if (toDelete != null && !"".equals(toDelete.trim()) && filePending.exists()) {
+						currentUninstalled = FileUtils.deleteQuietly(filePending);
+						uninstallOK = uninstallOK && currentUninstalled;
 						logger.info(filePending + " uninstall result (deleted = true): " + uninstallOK);
 					}
 				} else {
 					logger.warn("Directory " + APPLICATION_ROOT_DIR + " does not contain the given file path: " + filePending + " => it's not possible to delete files that reside outside ScreepT's folder!");
 				}
 			} catch (Throwable e) {
-				logger.warn("An error occurred while tryin' to uninstall " + pluginToRemove + " => file will be deleted on exit.", e);
-				pendingUndeleted.add(toDelete);
 				uninstallOK = false;
+				logger.warn("An error occurred while tryin' to uninstall " + pluginToRemove + " => file will be deleted at restart.", e);
+				pendingUndeleted.add(toDelete);
 				logger.warn("Delete will be tried when JVM will exit (or during next restart by launcher)");
+			}
 
-				try {
-					Files.newOutputStream(filePending.toPath(), StandardOpenOption.DELETE_ON_CLOSE);
-				} catch (Throwable e1) {
-					logger.warn("forceDeleteOnExit not possible, an error occurred :( -> files will be deleted at next restart by Launcher", e1);
-				}
+			if(!currentUninstalled) {
+				logger.warn("An error occurred while tryin' to remove " + filePending + " => file will be deleted at restart.");
+				pendingUndeleted.add(toDelete);
+				logger.warn("Delete will be tried when JVM will exit (or during next restart by launcher)");
 			}
 		}
 
@@ -460,12 +463,17 @@ public class PluginManager {
 	}
 
 	public List<File> filterFilesSharedWithOthers(List<File> files, PluginDTO dto){
+		logger.debug("Filtering files to exclude the ones used by " + dto.getName() + " - from list:\n" + files);
 		List<File> filtered = getAllInstalledFilesExceptPlugin(dto);
+		logger.debug("Filtered files to exclude the ones used by " + dto.getName() + ": " + filtered);
 		List<File> output = new ArrayList<>();
 
 		for(File file : files) {
 			if(!FileVarious.containedInList(filtered, file)) {
+				logger.debug("File added because not present in filtered list:" + file);
 				output.add(file);
+			} else {
+				logger.debug("File skipped because present in filtered list:" + file);
 			}
 		}
 
@@ -481,14 +489,21 @@ public class PluginManager {
 	}
 
 	public List<File> getAllInstalledFilesExceptPlugin(PluginDTO plugin){
+		logger.debug("loading installed plugin files map...");
 		Map<String, List<File>> allFiles = getAllInstalledFiles();
+		logger.debug("Loaded installed plugin files map:" + StringWorker.getMapToString(allFiles));
 		Iterator<String> it = allFiles.keySet().iterator();
 		Set<File> filesFiltered = new HashSet<>();
 
 		while(it.hasNext()) {
 			String pluginName = it.next();
-			if(!pluginName.equals(plugin.getName()))
+			logger.debug("Checking plugin from installed list: " + pluginName);
+			if(!pluginName.trim().equals(plugin.getName().trim())) {
+				logger.debug(plugin.getName() + " Not contained in installed list for: " + pluginName);
 				filesFiltered.addAll(allFiles.get(pluginName));
+			} else {
+				logger.debug(pluginName + " filtered. Not matching plugin exception: " + plugin.getName());
+			}
 		}
 
 		return ArrayHelper.setToList(filesFiltered);
@@ -500,7 +515,7 @@ public class PluginManager {
 		Map<String, List<File>> installedMap = new HashMap<>();
 
 		for(String pluginName : installed) {
-			List<File> installedFiles = installedPluginProperties.getFileList(pluginName, ";", true);
+			List<File> installedFiles = installedPluginProperties.getFileList(pluginName, installedPluginPropsListSeparator, true);
 			installedMap.put(pluginName, installedFiles);
 		}
 
@@ -515,12 +530,12 @@ public class PluginManager {
 	 */
 	public ArrayList<String> filterSharedFiles(ArrayList<String> pendingRelativePaths, PluginDTO toRemove) {
 
-		List<File> filteredToRemove = FileVarious.pathsToFileList(pendingRelativePaths, true);
-		filteredToRemove = filterFilesSharedWithOthers(filteredToRemove, toRemove);
+		List<File> toRemoveList = FileVarious.pathsToFileList(pendingRelativePaths, true);
+		List<File> filtered = filterFilesSharedWithOthers(toRemoveList, toRemove);
 
 		ArrayList<String> filteredStr = new ArrayList<>();
 		for(String s : pendingRelativePaths) {
-			if(!FileVarious.containedInList(filteredToRemove, FileVarious.getCanonicalFileSafe(s))) {
+			if(FileVarious.containedInList(filtered, FileVarious.getCanonicalFileSafe(s))) {
 				filteredStr.add(s);
 			}
 		}
@@ -576,6 +591,11 @@ public class PluginManager {
 
 	public void removeFromPendingPluginUpdate(List<String> pendingPluginName) {
 		for(String name : pendingPluginName) {
+			removeFromPendingPluginUpdate(name);
+		}
+	}
+	public void removeAllFromPendingPluginUpdate() {
+		for(String name : getPendingPluginUpdates()) {
 			removeFromPendingPluginUpdate(name);
 		}
 	}

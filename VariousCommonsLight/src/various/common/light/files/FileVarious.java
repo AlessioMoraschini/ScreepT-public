@@ -523,9 +523,9 @@ public class FileVarious {
 		List<File> filePaths = new ArrayList<>();
 		if(paths != null) {
 			for(int i = 0; i < paths.size(); i++) {
-				File file = getCanonicalFileSafe(paths.get(0));
+				File file = getCanonicalFileSafe(paths.get(i));
 				if(!filterUnexisting || file.exists())
-					filePaths.add(getCanonicalFileSafe(paths.get(0)));
+					filePaths.add(getCanonicalFileSafe(paths.get(i)));
 			}
 		}
 
@@ -744,9 +744,10 @@ public class FileVarious {
 	public static boolean checkIfContainedInDir(File fileToCheck, File suspectParentFolder) {
 		boolean areRelated = true;
 		try {
-			areRelated = fileToCheck.getCanonicalPath().contains(suspectParentFolder.getCanonicalPath() + File.separator);
-		} catch (IOException e) {
+			areRelated = getCanonicalPathSafeNormalized(fileToCheck, "/").contains(getCanonicalPathSafeNormalized(suspectParentFolder, "/") + "/");
+		} catch (Exception e) {
 			logger.error("", e);
+			return false;
 		}
 	    return areRelated;
 	}
@@ -755,8 +756,23 @@ public class FileVarious {
 		if(files != null) {
 			for(File file : files) {
 				try {
-					if(getCanonicalPathSafe(file).equals(getCanonicalPathSafe(match)))
+					if(checkIfSameFile(file, match))
 						return true;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public static boolean removeFileFromListByCanonicalEquals(List<File> files, File match) {
+		if(files != null) {
+			for(File file : files) {
+				try {
+					if(checkIfSameFile(file, match))
+						return files.remove(file);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
