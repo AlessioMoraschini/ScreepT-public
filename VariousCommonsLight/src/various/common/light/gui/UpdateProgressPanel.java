@@ -351,15 +351,14 @@ public class UpdateProgressPanel {
     	try {
     		GuiUtils.setDialogModalType(dialog,  ModalityType.MODELESS);
 			forceDispose.set(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 			if(getGeneralBar() != null) {
 				update(100, "Completed! Closing progress bar monitor...", true);
 			} else {
 				update(100, "Completed! Closing progress bar monitor...", false);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			dialog.dispose();
 		}
     }
 
@@ -369,7 +368,7 @@ public class UpdateProgressPanel {
      */
     public void forceCloseNExceptionSignal() throws ProgressBarInterruptedException {
     	stopProcess.set(true);
-    	dialog.dispose();
+    	forceClose();
     	throw new ProgressBarInterruptedException("Forcing process stop: user called forceCloseNExceptionSignal()");
     }
 

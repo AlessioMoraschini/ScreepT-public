@@ -203,7 +203,7 @@ public class GuiUtils {
 			if (mouseMouseOn != null) {
 				SwingUtilities.invokeLater(() -> {
 					mouseMove(getCenter(mouseMouseOn));
-					mouseClick(target.getX() + 1, target.getY() + 1);
+					mouseClick();
 				});
 			}
 		}
@@ -248,6 +248,17 @@ public class GuiUtils {
 		try {
 			bot = new Robot();
 			bot.mouseMove(x, y);
+			bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+			bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		} catch (AWTException e) {
+			logger.error("Cannot click mouse", e);
+		}
+	}
+
+	public static void mouseClick() {
+		Robot bot;
+		try {
+			bot = new Robot();
 			bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 			bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 		} catch (AWTException e) {

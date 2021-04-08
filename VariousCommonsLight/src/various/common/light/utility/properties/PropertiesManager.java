@@ -204,7 +204,9 @@ public class PropertiesManager {
         	synchronized (dynamicFileBindingsDefSource) {
 				try (InputStream input = new FileInputStream(dynamicFileBindingsDefSource)) {
 
-					dynamicFileBindingsDef.load(input);
+					synchronized (dynamicFileBindingsDef) {
+						dynamicFileBindingsDef.load(input);
+					}
 					return true;
 
 				} catch (IOException ex) {
