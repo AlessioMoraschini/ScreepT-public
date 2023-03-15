@@ -11,7 +11,7 @@
 		<groupId>CommonParentGlobal</groupId>
 		  <artifactId>CommonParentGlobal</artifactId>
 		  <version>1.0-SNAPSHOT</version>
-		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+		<relativePath>../../ScreepT-public/CommonParentGlobal</relativePath>
 	</parent>
 	
 	<!-- SCREEPT LICENSE -->
@@ -35,6 +35,7 @@
 		<module>${common.local.repository.folder}/MarkdownViewer</module>
 		<module>${common.local.repository.folder}/AM_Rkanoid</module>
 		<module>${common.local.repository.folder}/ExternalPluginInterface</module>
+		<module>${common.local.repository.folder}/TestUtils</module>
 		<module>${common.local.repository.folder}/VariousCommonsLight</module>
 		<module>${common.local.repository.folder}/GeneralResources</module>
 		<module>${common.local.repository.folder}/OsCommons</module>

@@ -39,11 +39,11 @@
 		
 		<!-- Local repositories -->
 		<screept.local.repository.folder>../../ScreepT_Repository</screept.local.repository.folder>
-		<common.local.repository.folder>../../ScreepT-Common-Repository</common.local.repository.folder>
+		<common.local.repository.folder>../../ScreepT-public</common.local.repository.folder>
 
 		<!-- ScreepT specific versions -->
 		<!-- Used also for export and project pom version -->
-		<screept.version>0.9.52</screept.version>
+		<screept.version>0.9.53</screept.version>
 		<screept.launcher.version>1.1-SNAPSHOT</screept.launcher.version>
 
 		<!-- Parent modules versions -->
@@ -131,19 +131,13 @@
 		<repository>
 			<id>Local-repository-Main</id>
 			<name>Main LOCAL Repository</name>
-			<url>file:C:/Users/xx/.m2/repository</url>
+			<url>file:${user.home}/.m2/repository</url>
 		</repository>
 
 		<repository>
 			<id>central</id>
 			<name>jcenter</name>
-			<url>http://jcenter.bintray.com</url>
+			<url>https://jcenter.bintray.com</url>
 		</repository>
-
-		<!-- <repository>
-			<id>Local-repository-Two</id>
-			<name>Second LOCAL Repository</name>
-			<url>file:C:/Users/amoraschini/.m2/repository</url>
-		</repository> -->
 	</repositories>
 </project>

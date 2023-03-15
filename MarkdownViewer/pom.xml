@@ -13,7 +13,7 @@
 		<groupId>PluginsParent</groupId>
 		<artifactId>PluginsParent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../../ScreepT-Common-Repository/PluginsParent</relativePath>
+		<relativePath>../../ScreepT-public/PluginsParent</relativePath>
 	</parent>
 
 	<!-- MIT LICENSE -->

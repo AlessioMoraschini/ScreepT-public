@@ -32,6 +32,7 @@
 	<modules>
 		<module>${common.local.repository.folder}/AM_Rkanoid</module>
 		<module>${common.local.repository.folder}/PluginsParent</module>
+		<module>${common.local.repository.folder}/TestUtils</module>
 		<!-- <module>${common.local.repository.folder}/GeneralResources</module> -->
 		<!-- <module>${common.local.repository.folder}/OsCommons</module> -->
 		<module>${screept.local.repository.folder}/ScreepT_Crypter</module>

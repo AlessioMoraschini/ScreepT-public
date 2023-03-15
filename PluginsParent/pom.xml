@@ -11,7 +11,7 @@
 		<groupId>CommonParentGlobal</groupId>
 		<artifactId>CommonParentGlobal</artifactId>
 		<version>${parent.common.version}</version>
-		<relativePath>../../ScreepT-Common-Repository/CommonParentGlobal</relativePath>
+		<relativePath>../../ScreepT-public/CommonParentGlobal</relativePath>
 	</parent>
 
 	<name>PluginsParent</name>
@@ -34,14 +34,14 @@
 		<plugin.common.root.dir>EXTERNAL_PLUGINS</plugin.common.root.dir>
 	
 		<project.build.sourceEncoding>${sourceEncoding}</project.build.sourceEncoding>
-		<root.directory>C:/Users/xx/Desktop/Documenti&amp;Utili/Informatica varie/</root.directory>
+		<root.directory>../../</root.directory>
 		<export.plugins.folder>
 			${root.directory}ScreepT_Build/LATEST_PLUGINS_DATA/EXTERNAL_PLUGINS
 		</export.plugins.folder>
 		
 		<!-- Modules dependencies -->
 		<jmeld.jar.location>
-			${root.directory}ScreepT-Common-Repository/CodeComparator/jmeld-3.4.jar
+			${root.directory}ScreepT-public/CodeComparator/jmeld-3.4.jar
 		</jmeld.jar.location>
 		
 		<!-- Modules data -->
@@ -60,6 +60,7 @@
 
 	<modules>
 		<module>${common.local.repository.folder}/CommonParentGlobal</module>
+		<module>${common.local.repository.folder}/TestUtils</module>
 		<module>${common.local.repository.folder}/VariousCommonsLight</module>
 		<module>${common.local.repository.folder}/GeneralResources</module>
 		<module>${common.local.repository.folder}/OsCommons</module>

@@ -410,7 +410,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		File selected = dataMap.get(target);
 		if(selected != null) {
 			selected = new File(GeneralConfig.PANEL_FILES_FOLDER+selected.getName());
-			selected.mkdirs();
+			selected.getParentFile().mkdirs();
 			if(!selected.exists()) {
 				selected.createNewFile();
 			}

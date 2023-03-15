@@ -9,7 +9,7 @@
 		<groupId>ScreepT_Parent</groupId>
 		<artifactId>ScreepT_Parent</artifactId>
 		<version>${screept.parent.version}</version>
-		<relativePath>../../ScreepT-Common-Repository/ScreepT_Parent</relativePath>
+		<relativePath>../../ScreepT-public/ScreepT_Parent</relativePath>
 	</parent>
 
 	<packaging>jar</packaging>
