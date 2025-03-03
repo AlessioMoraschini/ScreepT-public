@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>CommonParentGlobal</groupId>
 		<artifactId>CommonParentGlobal</artifactId>
-		<version>${parent.common.version}</version>
+		<version>1.0-SNAPSHOT</version>
 		<relativePath>../../ScreepT-public/CommonParentGlobal</relativePath>
 	</parent>
 	

@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>ScreepT_Parent</groupId>
 		<artifactId>ScreepT_Parent</artifactId>
-		<version>${screept.parent.version}</version>
+		<version>1.0</version>
 		<relativePath>../../ScreepT-public/ScreepT_Parent</relativePath>
 	</parent>
 

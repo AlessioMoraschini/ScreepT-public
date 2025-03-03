@@ -4,7 +4,7 @@
 
 	<groupId>CommonParentGlobal</groupId>
 	<artifactId>CommonParentGlobal</artifactId>
-	<version>${parent.common.version}</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>common.parent.global</name>
@@ -43,7 +43,7 @@
 
 		<!-- ScreepT specific versions -->
 		<!-- Used also for export and project pom version -->
-		<screept.version>0.9.53</screept.version>
+		<screept.version>0.9.54</screept.version>
 		<screept.launcher.version>1.1-SNAPSHOT</screept.launcher.version>
 
 		<!-- Parent modules versions -->

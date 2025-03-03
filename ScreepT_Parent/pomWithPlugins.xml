@@ -4,7 +4,7 @@
 	<groupId>ScreepT_Parent</groupId>
 	<artifactId>ScreepT_Parent</artifactId>
 	<!-- Version is Defined in this file as custom property -->
-	<version>${screept.parent.version}</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
 	
 	<parent>
