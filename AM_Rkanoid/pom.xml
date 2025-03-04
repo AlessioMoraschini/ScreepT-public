@@ -34,7 +34,6 @@
 
 	<build>
 		<finalName>Puppynoid</finalName>
-		<sourceDirectory>src</sourceDirectory>
 
 		<plugins>
 			<plugin>
@@ -111,6 +110,14 @@
 			<groupId>VariousCommonsLight</groupId>
 			<artifactId>VariousCommonsLight</artifactId>
 			<version>${various.common.version}</version>
+		</dependency>
+		
+		<!-- Exclude test only dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

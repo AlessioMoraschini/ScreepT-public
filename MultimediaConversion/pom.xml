@@ -33,7 +33,6 @@
 	</developers>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -120,6 +119,7 @@
 			<groupId>ExternalPluginInterface</groupId>
 			<artifactId>external.plugin.interface</artifactId>
 			<version>${ext.plugin.interface.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- Modules dependencies -->
@@ -129,7 +129,13 @@
 			<artifactId>GuiCommons</artifactId>
 			<version>${gui.commons.version}</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>testUtils</groupId>
+			<artifactId>testUtils</artifactId>
+			<version>${test.utils.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 

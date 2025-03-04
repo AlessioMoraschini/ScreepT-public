@@ -72,7 +72,6 @@
 
 	<build>
 		<finalName>MarkdownViewer</finalName>
-		<sourceDirectory>src/main/java</sourceDirectory>
 		<plugins>
 
 			<plugin>
