@@ -43,7 +43,7 @@
 
 		<!-- ScreepT specific versions -->
 		<!-- Used also for export and project pom version -->
-		<screept.version>0.9.54</screept.version>
+		<screept.version>0.9.55</screept.version>
 		<screept.launcher.version>1.1-SNAPSHOT</screept.launcher.version>
 
 		<!-- Parent modules versions -->
@@ -80,9 +80,9 @@
 		<freetts.version>1.2.2</freetts.version>
 		<icepdf.version>6.2.2</icepdf.version>
 		<oshi.version>3.13.0</oshi.version>
-		<http.client.version>4.5.7</http.client.version>
+		<http.client.version>4.5.14</http.client.version>
 		<log4j.version>1.2.17</log4j.version>
-		<rsyntax.textarea.version>3.1.2</rsyntax.textarea.version>
+		<rsyntax.textarea.version>3.5.4</rsyntax.textarea.version>
 		<rsyntax.textarea.utils.version>3.0.0</rsyntax.textarea.utils.version>
 		<jmeld.version>3.2</jmeld.version>
 		<reflections.version>0.9.12</reflections.version>
