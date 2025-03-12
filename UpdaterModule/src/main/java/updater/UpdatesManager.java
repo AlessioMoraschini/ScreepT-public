@@ -123,7 +123,7 @@ public class UpdatesManager {
 			}
 		} finally {
 			if(updateManagerProgbar != null) {
-				updateManagerProgbar.forceClose();
+				updateManagerProgbar.getDialog().dispose();
 			}
 		}
 		
