@@ -14,10 +14,13 @@ package various.common.light.gui.dialogs.msg;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsConfiguration;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.File;
 import java.util.Arrays;
 
@@ -31,6 +34,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import various.common.light.gui.GuiUtils;
@@ -94,6 +98,7 @@ public class JOptionHelper {
 
 	// Parent component to center and refer to
 	protected Component parentComponent;
+	protected Point lastKnownLocation;
 
 	public static void init() {
 		ICON_ERR_REF = UIManager.getIcon("OptionPane.errorIcon");
@@ -115,6 +120,11 @@ public class JOptionHelper {
 
 	public void setParentComponent(Component parent) {
 		this.parentComponent = (parentComponent != null) ? parentComponent : new JFrame();
+	}
+	public void setLastKnownLocation(Point location) {
+		this.lastKnownLocation = location;
+		lastKnownLocation.x += 10;
+		lastKnownLocation.y += 10;
 	}
 
 	/**
@@ -600,7 +610,7 @@ public class JOptionHelper {
 		return scrollPane;
 	}
 
-	public Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
+	public Boolean showYNMessageCommonOld(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
 
 		Icon icon = warningType? ICON_WARN_REF : ICON_QUESTION_REF;
 		int option = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
@@ -614,11 +624,12 @@ public class JOptionHelper {
         		optionsAvailable,
         		allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]);
 
-		final JDialog dialog = optionPane.createDialog(title);
+		final JDialog dialog = optionPane.createDialog(parentComponent, title);
 		try {
 			dialog.setAlwaysOnTop(true);
 			dialog.enableInputMethods(true);
 			dialog.setLocationRelativeTo(parentComponent);
+			centerOnParentMonitor(dialog, parentComponent);
 //			GuiUtils.moveRelativeTo(dialog, parentComponent);
 			dialog.toFront();
 			dialog.setVisible(true);
@@ -633,6 +644,70 @@ public class JOptionHelper {
 			return (allowNull) ? null : false;
 		}
 	}
+	
+	public Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
+
+	    Icon icon = warningType ? ICON_WARN_REF : ICON_QUESTION_REF;
+	    int option = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
+	    Object[] optionsAvailable = cancEnabled ? defaultOptionsExtended : defaultOptions;
+
+	    final JOptionPane optionPane = new JOptionPane(
+	            msg instanceof String ? getLabelStyledText((String) msg) : msg,
+	            msgType,
+	            option,
+	            icon,
+	            optionsAvailable,
+	            allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]
+	    );
+
+	    // *** FIX MULTI-MONITOR ***
+	    // Usa la GraphicsConfiguration CORRETTA del parent (monitor attuale)
+	    GraphicsConfiguration gc = parentComponent.getGraphicsConfiguration();
+
+	    final JDialog dialog = new JDialog(
+	            SwingUtilities.getWindowAncestor(parentComponent),
+	            title,
+	            Dialog.ModalityType.APPLICATION_MODAL,
+	            gc
+	    );
+
+	    dialog.setContentPane(optionPane);
+	    dialog.pack();
+
+	    dialog.setAlwaysOnTop(true);
+	    dialog.enableInputMethods(true);
+
+	    // Centra sul monitor corretto
+	    Rectangle bounds = gc.getBounds();
+	    dialog.setLocation(
+	            bounds.x + (bounds.width - dialog.getWidth()) / 2,
+	            bounds.y + (bounds.height - dialog.getHeight()) / 2
+	    );
+
+	    dialog.toFront();
+	    dialog.setVisible(true);
+	    dialog.dispose();
+
+	    final Object value = optionPane.getValue();
+	    if (value != null) {
+	        return (cancEnabled && value.equals(defaultOptionsExtended[2]))
+	                ? null
+	                : (value.equals(optionsAvailable[0]));
+	    } else {
+	        return allowNull ? null : false;
+	    }
+	}
+
+	
+	public static void centerOnParentMonitor(Component dialog, Component parent) {
+		GraphicsConfiguration gc = parent.getGraphicsConfiguration();
+		Rectangle bounds = gc.getBounds();
+		int W = dialog.getWidth();
+		int H = dialog.getHeight();
+		int x = bounds.x + (bounds.width - W) / 2;
+		int y = bounds.y + (bounds.height - H) / 2;
+		dialog.setLocation(x, y);
+	}
 
 	public String showYNMessageCommon(Object msg, String title, int msgType, boolean warningType, String[] optionsAvailable, int initialOptionIndex) {
 
@@ -646,7 +721,7 @@ public class JOptionHelper {
 						optionsAvailable,
 						optionsAvailable[initialOptionIndex]);
 
-		final JDialog dialog = optionPane.createDialog(title);
+		final JDialog dialog = optionPane.createDialog(parentComponent, title);
 		try {
 			dialog.setAlwaysOnTop(true);
 			dialog.enableInputMethods(true);
@@ -681,7 +756,7 @@ public class JOptionHelper {
 					choiceOptions,
 					defaultOption);
 
-			JDialog dialog = optionPane.createDialog(title);
+			JDialog dialog = optionPane.createDialog(parentComponent, title);
 			dialog.setAlwaysOnTop(true);
 			dialog.setLocationRelativeTo(parentComponent);
 			dialog.toFront();

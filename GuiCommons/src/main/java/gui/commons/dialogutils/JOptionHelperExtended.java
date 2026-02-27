@@ -12,11 +12,19 @@
 package gui.commons.dialogutils;
 
 import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import resources.GeneralConfig;
 import resources.IconsPathConfigurator;
@@ -32,58 +40,90 @@ public class JOptionHelperExtended extends JOptionHelper {
 		DEFAULT_FONT = GeneralConfig.DEFAULT_DIALOGS_FONT;
 	}
 
-	public JOptionHelperExtended (Component parentComponent) {
+	public JOptionHelperExtended(Component parentComponent) {
 		super(parentComponent);
 		this.enabledAdvices = true;
 	}
 
-	public JOptionHelperExtended (Component parentComponent, boolean enableAdvices) {
+	public JOptionHelperExtended(Component parentComponent, boolean enableAdvices) {
 		this(parentComponent);
 		this.enabledAdvices = enableAdvices;
 	}
 
+	private GraphicsConfiguration getCurrentMonitor(Component parent) {
+		if (lastKnownLocation == null) {
+			return GraphicsEnvironment
+					.getLocalGraphicsEnvironment()
+					.getDefaultScreenDevice()
+					.getDefaultConfiguration();
+		}
+
+		GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		for (GraphicsDevice gd : devices) {
+			GraphicsConfiguration gc = gd.getDefaultConfiguration();
+			Rectangle bounds = gc.getBounds();
+			if (bounds.contains(lastKnownLocation)) {
+				return gc;
+			}
+		}
+		return parent.getGraphicsConfiguration();
+	}
+
 	// PRIVATE METHODS
 	@Override
-	public Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
+	public Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType,
+			boolean cancEnabled) {
 
-		Icon icon = warningType? new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_WARNING) : new ImageIcon(IconsPathConfigurator.ICON_BIG_GEN_QUESTION);
-		int options = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
+		Icon icon = warningType ? ICON_WARN_REF : ICON_QUESTION_REF;
+		int option = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
 		Object[] optionsAvailable = cancEnabled ? defaultOptionsExtended : defaultOptions;
 
-		final JOptionPane optionPane = new JOptionPane(
-				msg instanceof String ? getLabelStyledText((String)msg) : msg,
-        		msgType,
-        		options,
-        		icon,
-        		optionsAvailable,
-        		optionsAvailable[0]);
+		final JOptionPane optionPane = new JOptionPane(msg instanceof String ? getLabelStyledText((String) msg) : msg,
+				msgType, option, icon, optionsAvailable,
+				allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]);
 
-		final JDialog dialog = optionPane.createDialog(title);
+		// *** MONITOR CORRETTO ***
+		GraphicsConfiguration gc = getCurrentMonitor(parentComponent);
+
+		final JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), title,
+				Dialog.ModalityType.APPLICATION_MODAL, gc);
+
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setContentPane(optionPane);
+		dialog.pack();
+
+		// Chiudi quando cambia il valore
+		optionPane.addPropertyChangeListener(evt -> {
+			String prop = evt.getPropertyName();
+			if (dialog.isVisible() && evt.getSource() == optionPane
+					&& (prop.equals(JOptionPane.VALUE_PROPERTY) || prop.equals(JOptionPane.INPUT_VALUE_PROPERTY))) {
+				dialog.setVisible(false);
+			}
+		});
+
+		// Centra sul monitor corretto
+		Rectangle bounds = gc.getBounds();
+		dialog.setLocation(bounds.x + (bounds.width - dialog.getWidth()) / 2,
+				bounds.y + (bounds.height - dialog.getHeight()) / 2);
+
 		dialog.setAlwaysOnTop(true);
-		dialog.setIconImage(new ImageIcon(IconsPathConfigurator.ICON_GEN_QUESTION).getImage());
-		dialog.enableInputMethods(true);
 		dialog.toFront();
-
-		try {
-			dialog.setLocationRelativeTo(parentComponent);
-//			GuiUtils.moveRelativeTo(dialog, parentComponent);
-			dialog.toFront();
-			dialog.setVisible(true);
-			dialog.dispose();
-		} catch (Exception e) {
-		}
+		dialog.setVisible(true);
+		dialog.dispose();
 
 		final Object value = optionPane.getValue();
 		if (value != null) {
-			return (cancEnabled && value.equals(defaultOptionsExtended[2])) ? null : (value.equals(optionsAvailable[0]));
+			return (cancEnabled && value.equals(defaultOptionsExtended[2])) ? null
+					: (value.equals(optionsAvailable[0]));
 		} else {
-			return (allowNull) ? null : false;
+			return allowNull ? null : false;
 		}
 	}
 
 	// Used internally to create other various dialogs without user input
 	@Override
-	protected void showMessageCommon(Object msg, String title, int msgType, Object[] choiceOptions, Object defaultOption) {
+	protected void showMessageCommon(Object msg, String title, int msgType, Object[] choiceOptions,
+			Object defaultOption) {
 		if (enabledAdvices) {
 
 			ImageIcon icon = new ImageIcon();
@@ -103,11 +143,7 @@ public class JOptionHelperExtended extends JOptionHelper {
 			}
 
 			final JOptionPane optionPane = new JOptionPane(
-					msg instanceof String ? getLabelStyledText((String) msg) : msg,
-					msgType,
-					OK,
-					iconBig,
-					choiceOptions,
+					msg instanceof String ? getLabelStyledText((String) msg) : msg, msgType, OK, iconBig, choiceOptions,
 					defaultOption);
 
 			JDialog dialog = optionPane.createDialog(title);

@@ -732,9 +732,13 @@ public class GuiUtils {
 	}
 
 	public static Dimension getScreenSize(Component frame) {
-		DisplayMode mode = frame.getGraphicsConfiguration().getDevice().getDisplayMode();
-		return new Dimension(mode.getWidth(), mode.getHeight());
+		return getRealScreenSize(frame);
 	}
+	public static Dimension getRealScreenSize(Component frame) {
+	    Rectangle bounds = frame.getGraphicsConfiguration().getBounds();
+	    return new Dimension(bounds.width, bounds.height);
+	}
+
 
 	public static Dimension getScreenSizePerc(int factorPerc, JFrame frame) {
 		Dimension screen = getScreenSize(frame);
@@ -768,9 +772,12 @@ public class GuiUtils {
 
 	public static void centerComponent(Component targetFrame, int W, int H) {
 		if (targetFrame != null) {
-			Dimension screenSize = (targetFrame instanceof JFrame) ? getScreenSize(targetFrame) : getScreenSize();
+			GraphicsConfiguration gc = targetFrame.getGraphicsConfiguration();
+			Rectangle bounds = gc.getBounds(); 
+			int x = bounds.x + (bounds.width - W) / 2; 
+			int y = bounds.y + (bounds.height - H) / 2;
 			targetFrame.setSize(W, H);
-			targetFrame.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+			targetFrame.setBounds(x, y, W, H);
 		}
 	}
 
