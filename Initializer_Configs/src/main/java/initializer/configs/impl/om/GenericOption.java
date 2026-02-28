@@ -21,6 +21,8 @@ public class GenericOption {
 	public final static String DEFAULT_USERNAME = "";
 	public final static String DEFAULT_CHARSET = "UTF-8";
 	public final static float DEFAULT_VOLUME = 0.6F;
+	public final static Integer DEFAULT_POS_X = 1;
+	public final static Integer DEFAULT_POS_Y = 1;
 	public final static boolean DEF_TxtEditorFileMonitorActive = true;
 	public final static boolean DEF_exceptionAdvicesEnabled = false;
 	public final static boolean DEF_automaticUpdateOn = true;
@@ -31,6 +33,8 @@ public class GenericOption {
 	// FILEDS
 	private String userName;
 	private String charset;
+	private Integer lastKnownPositionX;
+	private Integer lastKnownPositionY;
 	private float generalVolume;
 	private boolean TxtEditorFileMonitorActive;
 	private boolean exceptionAdvicesEnabled;
@@ -42,6 +46,8 @@ public class GenericOption {
 	public GenericOption() {
 		userName = DEFAULT_USERNAME;
 		charset = DEFAULT_CHARSET;
+		lastKnownPositionX = DEFAULT_POS_X;
+		lastKnownPositionY = DEFAULT_POS_Y;
 		generalVolume = DEFAULT_VOLUME;
 		TxtEditorFileMonitorActive = DEF_TxtEditorFileMonitorActive;
 		lastPanelOpened = DEFAULT_PANEL_CLASS_AT_START;
@@ -112,6 +118,22 @@ public class GenericOption {
 
 	public void setCharset(String charset) {
 		this.charset = charset;
+	}
+	
+	public Integer getLastKnownPositionX() {
+		return lastKnownPositionX;
+	}
+
+	public void setLastKnownPositionX(Integer lastKnownPositionX) {
+		this.lastKnownPositionX = lastKnownPositionX;
+	}
+
+	public Integer getLastKnownPositionY() {
+		return lastKnownPositionY;
+	}
+
+	public void setLastKnownPositionY(Integer lastKnownPositionY) {
+		this.lastKnownPositionY = lastKnownPositionY;
 	}
 
 	public float getGeneralVolume() {

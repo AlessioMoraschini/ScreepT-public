@@ -30,6 +30,8 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import various.common.light.om.SelectionDtoFull;
 import various.common.light.utility.log.SafeLogger;
@@ -935,11 +937,35 @@ public class StringWorker {
 	 * @return
 	 */
 	public static String keepOnlyDotsAndDigits(String source) {
-		String dotsOnly = source.replaceAll("_", ".");
-		dotsOnly = dotsOnly.replaceAll("-", "");
-		// remove non dots chars
-		return dotsOnly.replaceAll("[a-zA-Z!#$%&'*+=?^`{|}+]|[_]\\-", "");
+	    if (source == null || source.isEmpty()) {
+	        return "";
+	    }
+
+	    // Normalizza separatori
+	    String normalized = source.replace('_', '.')
+	                              .replace('-', '.')
+	                              .replace('+', '.');
+
+	    // Tieni solo cifre e punti, il resto diventa punto
+	    normalized = normalized.replaceAll("[^0-9.]", ".");
+
+	    // Collassa punti multipli
+	    normalized = normalized.replaceAll("\\.+", ".");
+
+	    // Rimuovi punti iniziali/finali
+	    normalized = normalized.replaceAll("^\\.|\\.$", "");
+
+	    // Cerca la prima versione con almeno un punto (es: 17.44.15)
+	    Matcher m = Pattern.compile("(\\d+\\.\\d+(?:\\.\\d+)*)").matcher(normalized);
+	    if (m.find()) {
+	        return m.group(1);
+	    }
+
+	    // Se non c'è nemmeno un punto, restituisci un numero singolo (es: "17")
+	    m = Pattern.compile("(\\d+)").matcher(normalized);
+	    return m.find() ? m.group(1) : "";
 	}
+
 
 	/**
 	 * Dotted version format compare - if version not matches format

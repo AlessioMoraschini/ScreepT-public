@@ -276,6 +276,14 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		if(genOpt.getCharset().equals("")) {
 			genOpt.setCharset(GenericOption.DEFAULT_CHARSET);
 		}
+		genOpt.setLastKnownPositionX(Integer.valueOf(iniReadFile.get(GEN_OPT, "lastKnownPositionX")));
+		if(genOpt.getLastKnownPositionX() == null) {
+			genOpt.setLastKnownPositionX(GenericOption.DEFAULT_POS_X);
+		}
+		genOpt.setLastKnownPositionY(Integer.valueOf(iniReadFile.get(GEN_OPT, "lastKnownPositionY")));
+		if(genOpt.getLastKnownPositionY() == null) {
+			genOpt.setLastKnownPositionY(GenericOption.DEFAULT_POS_Y);
+		}
 
 		try {
 			genOpt.setLastPanelOpened(Class.forName(iniReadFile.get(GEN_OPT, "lastPanelOpened")));
@@ -546,6 +554,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		}
 		iniFile.put(GEN_OPT, "userName", genOpt.getUserName());
 		iniFile.put(GEN_OPT, "charset", genOpt.getCharset());
+		iniFile.put(GEN_OPT, "lastKnownPositionX", genOpt.getLastKnownPositionX());
+		iniFile.put(GEN_OPT, "lastKnownPositionY", genOpt.getLastKnownPositionY());
 		iniFile.put(GEN_OPT, "generalVolume", genOpt.getGeneralVolume());
 		iniFile.put(GEN_OPT, "lastPanelOpened", genOpt.getLastPanelOpened().getName());
 		iniFile.put(GEN_OPT, "txtEditorFileMonitorActive", genOpt.isTxtEditorFileMonitorActive());
@@ -669,7 +679,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nIs current first access? ").append(genOpt.isFirstAccess())
 			   .append("\nAutomatic check for updates at start -> ").append(genOpt.isAutomaticUpdateOn())
 			   .append("\nPreferred Locale: ").append(genOpt.getLocale())
-			   .append("\nCHARSET: ").append(genOpt.getCharset());
+			   .append("\nCHARSET: ").append(genOpt.getCharset())
+			   .append("\nLAST POS X: ").append(genOpt.getLastKnownPositionX())	
+			   .append("\nLAST POS Y: ").append(genOpt.getLastKnownPositionY());
 
 		// concat GUI_OPTION
 		builder.append("\n\n ---- GUI OPTIONS -----\n\n")

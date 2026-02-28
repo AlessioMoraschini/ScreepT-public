@@ -18,6 +18,8 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -645,57 +647,71 @@ public class JOptionHelper {
 		}
 	}
 	
+	protected GraphicsConfiguration getCurrentMonitor(Component parent) {
+		if (lastKnownLocation == null) {
+			return GraphicsEnvironment
+					.getLocalGraphicsEnvironment()
+					.getDefaultScreenDevice()
+					.getDefaultConfiguration();
+		}
+
+		GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		for (GraphicsDevice gd : devices) {
+			GraphicsConfiguration gc = gd.getDefaultConfiguration();
+			Rectangle bounds = gc.getBounds();
+			if (bounds.contains(lastKnownLocation)) {
+				return gc;
+			}
+		}
+		return parent.getGraphicsConfiguration();
+	}
+	
 	public Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
 
-	    Icon icon = warningType ? ICON_WARN_REF : ICON_QUESTION_REF;
-	    int option = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
-	    Object[] optionsAvailable = cancEnabled ? defaultOptionsExtended : defaultOptions;
+		Icon icon = warningType ? ICON_WARN_REF : ICON_QUESTION_REF;
+		int option = cancEnabled ? YES_OR_NO_CANC : YES_OR_NO;
+		Object[] optionsAvailable = cancEnabled ? defaultOptionsExtended : defaultOptions;
 
-	    final JOptionPane optionPane = new JOptionPane(
-	            msg instanceof String ? getLabelStyledText((String) msg) : msg,
-	            msgType,
-	            option,
-	            icon,
-	            optionsAvailable,
-	            allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]
-	    );
+		final JOptionPane optionPane = new JOptionPane(msg instanceof String ? getLabelStyledText((String) msg) : msg,
+				msgType, option, icon, optionsAvailable,
+				allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]);
 
-	    // *** FIX MULTI-MONITOR ***
-	    // Usa la GraphicsConfiguration CORRETTA del parent (monitor attuale)
-	    GraphicsConfiguration gc = parentComponent.getGraphicsConfiguration();
+		// *** MONITOR CORRETTO ***
+		GraphicsConfiguration gc = getCurrentMonitor(parentComponent);
 
-	    final JDialog dialog = new JDialog(
-	            SwingUtilities.getWindowAncestor(parentComponent),
-	            title,
-	            Dialog.ModalityType.APPLICATION_MODAL,
-	            gc
-	    );
+		final JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), title,
+				Dialog.ModalityType.APPLICATION_MODAL, gc);
 
-	    dialog.setContentPane(optionPane);
-	    dialog.pack();
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setContentPane(optionPane);
+		dialog.pack();
 
-	    dialog.setAlwaysOnTop(true);
-	    dialog.enableInputMethods(true);
+		// Chiudi quando cambia il valore
+		optionPane.addPropertyChangeListener(evt -> {
+			String prop = evt.getPropertyName();
+			if (dialog.isVisible() && evt.getSource() == optionPane
+					&& (prop.equals(JOptionPane.VALUE_PROPERTY) || prop.equals(JOptionPane.INPUT_VALUE_PROPERTY))) {
+				dialog.setVisible(false);
+			}
+		});
 
-	    // Centra sul monitor corretto
-	    Rectangle bounds = gc.getBounds();
-	    dialog.setLocation(
-	            bounds.x + (bounds.width - dialog.getWidth()) / 2,
-	            bounds.y + (bounds.height - dialog.getHeight()) / 2
-	    );
+		// Centra sul monitor corretto
+		Rectangle bounds = gc.getBounds();
+		dialog.setLocation(bounds.x + (bounds.width - dialog.getWidth()) / 2,
+				bounds.y + (bounds.height - dialog.getHeight()) / 2);
 
-	    dialog.toFront();
-	    dialog.setVisible(true);
-	    dialog.dispose();
+		dialog.setAlwaysOnTop(true);
+		dialog.toFront();
+		dialog.setVisible(true);
+		dialog.dispose();
 
-	    final Object value = optionPane.getValue();
-	    if (value != null) {
-	        return (cancEnabled && value.equals(defaultOptionsExtended[2]))
-	                ? null
-	                : (value.equals(optionsAvailable[0]));
-	    } else {
-	        return allowNull ? null : false;
-	    }
+		final Object value = optionPane.getValue();
+		if (value != null) {
+			return (cancEnabled && value.equals(defaultOptionsExtended[2])) ? null
+					: (value.equals(optionsAvailable[0]));
+		} else {
+			return allowNull ? null : false;
+		}
 	}
 
 	

@@ -20,7 +20,6 @@ import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
-import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -122,7 +121,8 @@ public class GuiUtils {
 	}
 
 	public static Icon getDefaultSystemIcon(DefaultSysIcons icon, int width, int height) throws IOException {
-		ImageIcon imgIcon = new ImageIcon(ImageWorker.scaleImage(iconToImage(icon.getIcon()),width, height, Image.SCALE_SMOOTH));
+		ImageIcon imgIcon = new ImageIcon(
+				ImageWorker.scaleImage(iconToImage(icon.getIcon()), width, height, Image.SCALE_SMOOTH));
 		return imgIcon;
 	}
 
@@ -674,8 +674,7 @@ public class GuiUtils {
 	 * this method makes the current frame that's invoking this method to move on
 	 * same monitor as the given frame
 	 *
-	 * @param frame
-	 *            his monitor will be the target for the current window
+	 * @param frame his monitor will be the target for the current window
 	 * @return the found graphicsDevice obj of target frame
 	 */
 	public static GraphicsDevice showOnSameScreen(JFrame son, Window frame) {
@@ -731,14 +730,42 @@ public class GuiUtils {
 		return returnDim;
 	}
 
+	/**
+	 * Maximizes a JFrame, using given coordinates matching the right screen,
+	 * fallbacks on the default.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public static void maximizeOnScreen(Point pointToRestore, JFrame frame) {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] devices = ge.getScreenDevices();
+		GraphicsDevice targetDevice = null;
+		for (GraphicsDevice device : devices) {
+			Rectangle bounds = device.getDefaultConfiguration().getBounds();
+			if (bounds.contains(pointToRestore)) {
+				targetDevice = device;
+				break;
+			}
+		} // Se non trovato, usa monitor principale 
+		if (targetDevice == null) {
+			targetDevice = ge.getDefaultScreenDevice(); } // Ottieni i bounds del monitor
+			// scelto 
+			Rectangle screenBounds = targetDevice.getDefaultConfiguration().getBounds();
+			// Posiziona la finestra sul monitor corretto 
+			frame.setLocation(screenBounds.x, screenBounds.y);
+			// Massimizza su quel monitor
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	}
+
 	public static Dimension getScreenSize(Component frame) {
 		return getRealScreenSize(frame);
 	}
-	public static Dimension getRealScreenSize(Component frame) {
-	    Rectangle bounds = frame.getGraphicsConfiguration().getBounds();
-	    return new Dimension(bounds.width, bounds.height);
-	}
 
+	public static Dimension getRealScreenSize(Component frame) {
+		Rectangle bounds = frame.getGraphicsConfiguration().getBounds();
+		return new Dimension(bounds.width, bounds.height);
+	}
 
 	public static Dimension getScreenSizePerc(int factorPerc, JFrame frame) {
 		Dimension screen = getScreenSize(frame);
@@ -762,7 +789,8 @@ public class GuiUtils {
 	public static void centerComponent(Component targetComponent, int percentSize) {
 		if (targetComponent != null) {
 			float percent = (float) percentSize / 100;
-			Dimension screenSize = (targetComponent instanceof JFrame) ? getScreenSize(targetComponent) : getScreenSize();
+			Dimension screenSize = (targetComponent instanceof JFrame) ? getScreenSize(targetComponent)
+					: getScreenSize();
 			int W = (int) (screenSize.width * percent);
 			int H = (int) (screenSize.height * percent);
 			targetComponent.setSize(W, H);
@@ -773,8 +801,8 @@ public class GuiUtils {
 	public static void centerComponent(Component targetFrame, int W, int H) {
 		if (targetFrame != null) {
 			GraphicsConfiguration gc = targetFrame.getGraphicsConfiguration();
-			Rectangle bounds = gc.getBounds(); 
-			int x = bounds.x + (bounds.width - W) / 2; 
+			Rectangle bounds = gc.getBounds();
+			int x = bounds.x + (bounds.width - W) / 2;
 			int y = bounds.y + (bounds.height - H) / 2;
 			targetFrame.setSize(W, H);
 			targetFrame.setBounds(x, y, W, H);
@@ -968,10 +996,14 @@ public class GuiUtils {
 	 * @return
 	 * @throws BadLocationException
 	 */
-	public static boolean duplicateTextAreaCurrentLine(JTextArea textArea, boolean upDirection) throws BadLocationException {
+	public static boolean duplicateTextAreaCurrentLine(JTextArea textArea, boolean upDirection)
+			throws BadLocationException {
 
-		int offsetFromStart = (textArea.getSelectionStart() <= textArea.getSelectionEnd()) ? textArea.getSelectionStart() : textArea.getSelectionEnd();
-		int selectionEnd = (textArea.getSelectionStart() <= textArea.getSelectionEnd()) ? textArea.getSelectionEnd() : textArea.getSelectionStart();
+		int offsetFromStart = (textArea.getSelectionStart() <= textArea.getSelectionEnd())
+				? textArea.getSelectionStart()
+				: textArea.getSelectionEnd();
+		int selectionEnd = (textArea.getSelectionStart() <= textArea.getSelectionEnd()) ? textArea.getSelectionEnd()
+				: textArea.getSelectionStart();
 
 		int currLine = textArea.getLineOfOffset(offsetFromStart);
 		int startOffset = textArea.getLineStartOffset(currLine);
@@ -1032,12 +1064,9 @@ public class GuiUtils {
 	/**
 	 * Insert a the given string at the given caret position offset.
 	 *
-	 * @param caretPosStart
-	 *            the caret start position
-	 * @param newLine
-	 *            the string to insert
-	 * @param textArea
-	 *            the target textarea to insert into
+	 * @param caretPosStart the caret start position
+	 * @param newLine       the string to insert
+	 * @param textArea      the target textarea to insert into
 	 *
 	 * @return true if line has been inserted, false if not
 	 */
@@ -1046,7 +1075,8 @@ public class GuiUtils {
 			textArea.getDocument().insertString(caretPosStart, newLine, null);
 			return true;
 		} catch (Exception e) {
-			logger.error("Cannot insert line at caret n°: " + caretPosStart + "TextArea length is: " + textArea.getText().length());
+			logger.error("Cannot insert line at caret n°: " + caretPosStart + "TextArea length is: "
+					+ textArea.getText().length());
 			return false;
 		}
 	}
@@ -1093,7 +1123,8 @@ public class GuiUtils {
 
 	public static boolean isKeyCodeValidCode(int keyCodeToCheck) {
 		String unknown = Toolkit.getProperty("AWT.unknown", "Unknown");
-		return !KeyEvent.getKeyText(keyCodeToCheck).equals(unknown + " keyCode: 0x" + Integer.toString(keyCodeToCheck, 16));
+		return !KeyEvent.getKeyText(keyCodeToCheck)
+				.equals(unknown + " keyCode: 0x" + Integer.toString(keyCodeToCheck, 16));
 	}
 
 	public static int getFirstIndexMatchFromStringCombo(JComboBox<String> comboBox, String match) {
@@ -1145,7 +1176,8 @@ public class GuiUtils {
 		try {
 			Point hotSpot = new Point(0, 0);
 			BufferedImage cursorImg = ImageIO.read(new File(imgPath));
-			cursorImg = ImageWorker.scaleImage(cursorImg, BufferedImage.TYPE_4BYTE_ABGR_PRE, correctSize.width, correctSize.height);
+			cursorImg = ImageWorker.scaleImage(cursorImg, BufferedImage.TYPE_4BYTE_ABGR_PRE, correctSize.width,
+					correctSize.height);
 			result = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, hotSpot, imgPath);
 		} catch (Exception e) {
 			logger.error("", e);
@@ -1184,7 +1216,8 @@ public class GuiUtils {
 		if (attributes != null)
 			for (KeyVal keyVal : attributes)
 				if (keyVal != null)
-					attributesStr += StringWorker.trimToEmpty(keyVal.key) + "=" + StringWorker.trimToEmpty(keyVal.value) + "\" ";
+					attributesStr += StringWorker.trimToEmpty(keyVal.key) + "=" + StringWorker.trimToEmpty(keyVal.value)
+							+ "\" ";
 
 		return "<" + trimmedTag + attributesStr + ">" + original + "</" + trimmedTag + ">";
 	}

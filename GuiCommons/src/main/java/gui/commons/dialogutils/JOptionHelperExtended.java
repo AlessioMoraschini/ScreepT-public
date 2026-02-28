@@ -14,15 +14,11 @@ package gui.commons.dialogutils;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
 import java.awt.Rectangle;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -48,25 +44,6 @@ public class JOptionHelperExtended extends JOptionHelper {
 	public JOptionHelperExtended(Component parentComponent, boolean enableAdvices) {
 		this(parentComponent);
 		this.enabledAdvices = enableAdvices;
-	}
-
-	private GraphicsConfiguration getCurrentMonitor(Component parent) {
-		if (lastKnownLocation == null) {
-			return GraphicsEnvironment
-					.getLocalGraphicsEnvironment()
-					.getDefaultScreenDevice()
-					.getDefaultConfiguration();
-		}
-
-		GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-		for (GraphicsDevice gd : devices) {
-			GraphicsConfiguration gc = gd.getDefaultConfiguration();
-			Rectangle bounds = gc.getBounds();
-			if (bounds.contains(lastKnownLocation)) {
-				return gc;
-			}
-		}
-		return parent.getGraphicsConfiguration();
 	}
 
 	// PRIVATE METHODS
