@@ -98,7 +98,7 @@ public class JOptionHelper {
 
 	// Parent component to center and refer to
 	protected Component parentComponent;
-	protected Point lastKnownLocation;
+	protected Point lastKnownLocation = new Point(1,1);
 
 	public static void init() {
 		ICON_ERR_REF = UIManager.getIcon("OptionPane.errorIcon");
