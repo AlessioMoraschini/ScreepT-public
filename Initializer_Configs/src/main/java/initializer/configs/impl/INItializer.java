@@ -276,14 +276,17 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		if(genOpt.getCharset().equals("")) {
 			genOpt.setCharset(GenericOption.DEFAULT_CHARSET);
 		}
-		genOpt.setLastKnownPositionX(Integer.valueOf(iniReadFile.get(GEN_OPT, "lastKnownPositionX")));
+		Integer lastX = Integer.valueOf(iniReadFile.get(GEN_OPT, "lastKnownPositionX"));
+		genOpt.setLastKnownPositionX(lastX != null && lastX.compareTo(0) > 0
+				? lastX + 10
+				: GenericOption.DEFAULT_POS_X);
 		if(genOpt.getLastKnownPositionX() == null) {
 			genOpt.setLastKnownPositionX(GenericOption.DEFAULT_POS_X);
 		}
-		genOpt.setLastKnownPositionY(Integer.valueOf(iniReadFile.get(GEN_OPT, "lastKnownPositionY")));
-		if(genOpt.getLastKnownPositionY() == null) {
-			genOpt.setLastKnownPositionY(GenericOption.DEFAULT_POS_Y);
-		}
+		Integer lastY = Integer.valueOf(iniReadFile.get(GEN_OPT, "lastKnownPositionY"));
+		genOpt.setLastKnownPositionY(lastY != null && lastY.compareTo(0) > 0
+				? lastY + 10
+				: GenericOption.DEFAULT_POS_Y);
 
 		try {
 			genOpt.setLastPanelOpened(Class.forName(iniReadFile.get(GEN_OPT, "lastPanelOpened")));
