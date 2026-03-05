@@ -87,7 +87,6 @@ public class MarkdownViewerFrame extends ParentFrame {
 				markdownStr = "";
 			}
 
-
 		init(htmlStr, markdownStr);
 	}
 

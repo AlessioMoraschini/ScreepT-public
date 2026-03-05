@@ -85,6 +85,7 @@ public class GenericFileChooserDialog {
 	 */
 	public File fileImgRead(JFrame parent) {
 
+		dialogHelper.setLastKnownLocation(parent.getLocation());
 		blockEventsModal.set(true);
 
 		LookAndFeel oldLaf = backupLafNDefaultSystem();

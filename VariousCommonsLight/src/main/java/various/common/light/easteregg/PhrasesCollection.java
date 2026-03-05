@@ -30,7 +30,11 @@ public class PhrasesCollection implements TextRetriever {
 		poetries.add("Mais qu'importe l'éternité de la damnation à qui a trouvé dans une seconde l'infini de la jouissance ! (C.Baudelaire)");
 		poetries.add("Et à quoi bon exécuter des projets, "
 				+ "puisque le projet est en lui-même une jouissance suffisante ? (C.Baudelaire)");
-		poetries.add("Il faut être toujours ivre. "
+		poetries.add("Parcu diu Pitur. (V.Balicco)");
+		poetries.add("Al Dìs che L'è de Nèmber, ma l'è d'albì!");
+		poetries.add("Se al bìf la coca, al vòl dì che al'istà bè!");
+		poetries.add("Code can be poetry, or a nightmare, choice is yours");
+		poetries.add("Il faut être toujours ivre."
 				+ "Pour ne pas sentir l'horrible fardeau du temps qui brise vos épaules, "
 				+ "il faut s’enivrer sans trêve. "
 				+ "De vin, de poésie ou de vertu, à votre guise. Mais enivrez-vous ! (C.Baudelaire)");

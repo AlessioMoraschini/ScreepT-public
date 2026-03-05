@@ -12,6 +12,8 @@
 package gui.commons.frameutils.frame.arch;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import gui.commons.dialogutils.ExtensionFileFilter;
 import gui.commons.dialogutils.GenericFileChooserDialog;
@@ -73,7 +76,7 @@ public class ParentFrame extends JFrame{
 		this.configuration = configuration == null ? new INItializer() : configuration;
 		this.parentFrame = parentFrame;
 
-		this.dialogHelper = new JOptionHelperExtended(this.parentFrame);
+		this.dialogHelper = new JOptionHelperExtended(this);
 		this.fileChooser = new GenericFileChooserDialog(this.configuration);
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -82,6 +85,15 @@ public class ParentFrame extends JFrame{
 
 //		if(addEscAutoClose)
 //			GuiUtils.addEscAdapter(this);
+		
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				SwingUtilities.invokeLater(() -> {
+					dialogHelper.setLastKnownLocation(thisFrame.getLocation());
+				});
+			}
+		});
 	}
 
 	public DynaBoolean getCloseAction() {

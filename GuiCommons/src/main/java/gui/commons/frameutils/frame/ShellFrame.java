@@ -53,7 +53,7 @@ public class ShellFrame extends ParentFrame {
 	}
 
 	public ShellFrame(JTextArea cmdAreaToEnrich, JFrame parentFrame, boolean writeMode, File preloadFile) {
-
+		super(parentFrame, null);
 		this.writeMode = writeMode;
 
 		logger.info(this.getClass().getName() + " - Starting...");
@@ -69,7 +69,6 @@ public class ShellFrame extends ParentFrame {
 		isActive.set(true);
 		thisFrame = this;
 
-		this.dialogHelper = new JOptionHelperExtended(this);
 		this.fileChooser = new GenericFileChooserDialog(null);
 
 		// SW window icon

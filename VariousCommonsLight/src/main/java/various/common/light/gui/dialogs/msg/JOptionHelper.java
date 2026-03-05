@@ -726,9 +726,7 @@ public class JOptionHelper {
 	}
 
 	public String showYNMessageCommon(Object msg, String title, int msgType, boolean warningType, String[] optionsAvailable, int initialOptionIndex) {
-
 		Icon icon = warningType? ICON_WARN_REF : ICON_QUESTION_REF;
-
 		final JOptionPane optionPane = new JOptionPane(
 				msg instanceof String ? getLabelStyledText((String)msg) : msg,
 						msgType,

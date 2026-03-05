@@ -17,7 +17,6 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 import gui.commons.dialogutils.GenericFileChooserDialog;
-import gui.commons.dialogutils.JOptionHelperExtended;
 import gui.commons.frameutils.frame.arch.ParentFrame;
 import gui.commons.frameutils.frame.panels.ClipboardPanelLight;
 import gui.commons.frameutils.utils.GuiUtilsExtended;
@@ -40,6 +39,7 @@ public class ClipboardFrame extends ParentFrame{
 	}
 	
 	public ClipboardFrame(JFrame parentFrame, TextEditorOption options) {
+		super(parentFrame, null);
 		logger.info(this.getClass().getName() + " - Starting...");
 		
 		setTitle("Clipboard Frame - " + GeneralConfig.APPLICATION_NAME);
@@ -53,7 +53,6 @@ public class ClipboardFrame extends ParentFrame{
 		isActive.set(true);
 		thisFrame = this;
 		
-		this.dialogHelper = new JOptionHelperExtended(this);
 		this.fileChooser = new GenericFileChooserDialog(null);
 
 		// SW window icon

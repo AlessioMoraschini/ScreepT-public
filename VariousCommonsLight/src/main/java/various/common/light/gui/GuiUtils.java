@@ -743,8 +743,8 @@ public class GuiUtils {
 		GraphicsDevice targetDevice = null;
 		for (GraphicsDevice device : devices) {
 			Rectangle bounds = device.getDefaultConfiguration().getBounds();
+			targetDevice = device;
 			if (bounds.contains(pointToRestore)) {
-				targetDevice = device;
 				break;
 			}
 		} // Se non trovato, usa monitor principale 
