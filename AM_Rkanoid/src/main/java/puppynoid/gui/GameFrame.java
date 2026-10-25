@@ -146,6 +146,8 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setUndecorated(false);
+		// ESC is a game key: no ESC-to-close (see GuiCommons EscapeToCloseHandler)
+		getRootPane().putClientProperty("screept.escapeToClose.disabled", Boolean.TRUE);
 		this.setResizable(false);
 		this.setSize(gameConfig.SCREEN_WIDTH, gameConfig.SCREEN_HEIGHT);
 		this.setVisible(true);

@@ -45,6 +45,8 @@ public class Snake extends JFrame {
 		setJMenuBar(menuBar);
 
 		board = new Board(this);
+		// ESC is a game key: no ESC-to-close (see GuiCommons EscapeToCloseHandler)
+		getRootPane().putClientProperty("screept.escapeToClose.disabled", Boolean.TRUE);
 		add(board);
 
         setResizable(false);

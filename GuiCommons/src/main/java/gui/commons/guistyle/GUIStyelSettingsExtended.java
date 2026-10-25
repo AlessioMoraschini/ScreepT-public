@@ -30,6 +30,7 @@ import com.jgoodies.looks.plastic.PlasticLookAndFeel;
 import com.jgoodies.looks.plastic.PlasticTheme;
 import com.jgoodies.looks.plastic.theme.LightGray;
 
+import gui.commons.guistyle.laf.ScreepTDarkLaf;
 import gui.commons.treeutils.TreeUtils;
 import gui.commons.utils.ImageWorkerExtended;
 import initializer.configs.impl.om.GuiOption;
@@ -53,6 +54,12 @@ public class GUIStyelSettingsExtended extends GUIStyelSettings {
 	
 	public static synchronized boolean setStyle(String style, int nimbusSize) {
     	try {
+    		
+    		if (ScreepTDarkLaf.isScreepTDark(style)) {
+    			ScreepTDarkLaf.apply();
+    			updateAllWindowsLaf();
+    			return true;
+    		}
     		
     		try {
 				PlasticLookAndFeel.setCurrentTheme(currentTheme);
@@ -176,10 +183,13 @@ public class GUIStyelSettingsExtended extends GUIStyelSettings {
 		}
 		
 		LookAndFeelInfoCustom[] outList = new LookAndFeelInfoCustom
-				[lookNFeelArrayList.size() + jtatooInfo.length + jgoodiesInfo.length]; // modify equals to custom's total
+				[1 + lookNFeelArrayList.size() + jtatooInfo.length + jgoodiesInfo.length]; // modify equals to custom's total
 		
 		int i = 0;
 		
+		outList[i] = ScreepTDarkLaf.getInfo();
+		i++;
+
 		for(LookAndFeelInfo current : lookNFeelArrayList) {
 			outList[i] = new LookAndFeelInfoCustom(current.getName(), current.getClassName());
 			i++;

@@ -73,6 +73,20 @@
 			<version>${pngtastic.version}</version>
 		</dependency>
 
+		<!-- Native Windows file dialog (NativeFileChooser): same version shipped with HardwareInfo/Tesseract plugins -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.2.0</version>
+		</dependency>
+
+		<!-- Base of ScreepT Dark LAF (gui.commons.guistyle.laf), Java 8 compatible, no transitive deps -->
+		<dependency>
+			<groupId>com.formdev</groupId>
+			<artifactId>flatlaf</artifactId>
+			<version>3.7.2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

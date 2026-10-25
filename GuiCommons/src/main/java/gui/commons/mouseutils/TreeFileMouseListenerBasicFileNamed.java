@@ -270,7 +270,7 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 	            }else {
 	            	String msg = "Skipped after user request!";
 			    	logger.debug(msg);
-			    	dialogHelper.info(msg, "Delete Skipped!");
+			    	// cancelled by user: no message needed
 	            }
 
             	refreshTree();

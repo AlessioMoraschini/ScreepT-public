@@ -30,6 +30,7 @@ import initializer.configs.impl.om.GuiOption;
 import initializer.configs.impl.om.ImgConverterOption;
 import initializer.configs.impl.om.SteganOption;
 import initializer.configs.impl.om.TextEditorOption;
+import initializer.configs.impl.om.UiSizePreset;
 import resources.GeneralConfig;
 import various.common.light.files.FileVarious;
 import various.common.light.files.om.FileNamed;
@@ -232,6 +233,20 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// boolean
 		guiOpt.setDarkGuiNimbus(Boolean.parseBoolean(iniReadFile.get(GUI_OPT, "darkGuiNimbus")));
 
+		// interface size: values are stored only for the CUSTOM preset
+		guiOpt.applyUiSizePreset(UiSizePreset.fromName(getSafeStringConf(GUI_OPT, "uiSizePreset", GuiOption.DEFAULT_UI_SIZE_PRESET.name())));
+		if (guiOpt.getUiSizePreset() == UiSizePreset.CUSTOM) {
+			try {
+				guiOpt.setUiFontFamily(getSafeStringConf(GUI_OPT, "uiFontFamily", GuiOption.DEFAULT_UI_FONT_FAMILY));
+				guiOpt.setUiGeneralFontScale(Integer.valueOf(iniReadFile.get(GUI_OPT, "uiGeneralFontScale")));
+				guiOpt.setUiMenuFontScale(Integer.valueOf(iniReadFile.get(GUI_OPT, "uiMenuFontScale")));
+				guiOpt.setUiToolbarFontScale(Integer.valueOf(iniReadFile.get(GUI_OPT, "uiToolbarFontScale")));
+				guiOpt.setUiComponentScale(Integer.valueOf(iniReadFile.get(GUI_OPT, "uiComponentScale")));
+			} catch (NumberFormatException e) {
+				guiOpt.applyUiSizePreset(GuiOption.DEFAULT_UI_SIZE_PRESET);
+			}
+		}
+
 	}
 
 	/**
@@ -263,6 +278,14 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 
 	}
 
+	private static Integer parseIntegerOrNull(String value) {
+		try {
+			return Integer.valueOf(value.trim());
+		} catch (RuntimeException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * Load Generic properties from file into volatile memory
 	 */
@@ -276,14 +299,15 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		if(genOpt.getCharset().equals("")) {
 			genOpt.setCharset(GenericOption.DEFAULT_CHARSET);
 		}
-		Integer lastX = Integer.valueOf(iniReadFile.get(GEN_OPT, "lastKnownPositionX"));
+		// missing in a new ini file: must not stop the loading of the following options
+		Integer lastX = parseIntegerOrNull(iniReadFile.get(GEN_OPT, "lastKnownPositionX"));
 		genOpt.setLastKnownPositionX(lastX != null && lastX.compareTo(0) > 0
 				? lastX + 10
 				: GenericOption.DEFAULT_POS_X);
 		if(genOpt.getLastKnownPositionX() == null) {
 			genOpt.setLastKnownPositionX(GenericOption.DEFAULT_POS_X);
 		}
-		Integer lastY = Integer.valueOf(iniReadFile.get(GEN_OPT, "lastKnownPositionY"));
+		Integer lastY = parseIntegerOrNull(iniReadFile.get(GEN_OPT, "lastKnownPositionY"));
 		genOpt.setLastKnownPositionY(lastY != null && lastY.compareTo(0) > 0
 				? lastY + 10
 				: GenericOption.DEFAULT_POS_Y);
@@ -525,6 +549,12 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(GUI_OPT, "logFontSize", guiOpt.getLogFontSize());
 		iniFile.put(GUI_OPT, "darkGuiNimbus", guiOpt.isDarkGuiNimbus());
 		iniFile.put(GUI_OPT, "nimbusSize", guiOpt.getNimbusSize());
+		iniFile.put(GUI_OPT, "uiSizePreset", guiOpt.getUiSizePreset().name());
+		iniFile.put(GUI_OPT, "uiFontFamily", guiOpt.getUiFontFamily());
+		iniFile.put(GUI_OPT, "uiGeneralFontScale", guiOpt.getUiGeneralFontScale());
+		iniFile.put(GUI_OPT, "uiMenuFontScale", guiOpt.getUiMenuFontScale());
+		iniFile.put(GUI_OPT, "uiToolbarFontScale", guiOpt.getUiToolbarFontScale());
+		iniFile.put(GUI_OPT, "uiComponentScale", guiOpt.getUiComponentScale());
 	}
 
 	public void writeSteganoOptions() {

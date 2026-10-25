@@ -442,7 +442,7 @@ public class GenericFileChooserDialog {
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
         	}
         }else {
-        	dialogHelper.info("Skipped after user request.", "Skipped");
+        	// cancelled by user: no message needed
         }
 
         blockEventsModal.set(false);
@@ -477,7 +477,7 @@ public class GenericFileChooserDialog {
     		correctFile = selectedFile;
     		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
         }else {
-        	dialogHelper.info("Skipped after user request.", "Skipped");
+        	// cancelled by user: no message needed
         }
 
         blockEventsModal.set(false);
@@ -517,7 +517,7 @@ public class GenericFileChooserDialog {
 
 			currentConf.getFileOpt().setLastDstFolderPath(correctFile.getParentFile().getAbsolutePath());
 		}else {
-			dialogHelper.info("Skipped after user request.", "Skipped");
+			// cancelled by user: no message needed
 		}
 
 		blockEventsModal.set(false);
@@ -635,7 +635,7 @@ public class GenericFileChooserDialog {
         return correctFile;
 	}
 
-	private class CustomFileChooserOnTop extends JFileChooser{
+	private class CustomFileChooserOnTop extends NativeFileChooser{
 		private static final long serialVersionUID = -1504918820583535391L;
 
 		@Override
