@@ -16,6 +16,10 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.Window;
 
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -32,6 +36,12 @@ import various.common.light.gui.dialogs.msg.JOptionHelper;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 
@@ -167,25 +177,73 @@ public class HeaderPanelSearch extends JPanel{
 			}
 		});
 		
+		// LIVE SEARCH: first match from the top while typing
 		textFieldSearch.getDocument().addDocumentListener(new DocumentListener() {
-			
+
 			public void removeUpdate(DocumentEvent e) {
-				panelFxHtml.deselectAll();
+				panelFxHtml.findText(textFieldSearch.getText(), false, true);
 			}
 			public void insertUpdate(DocumentEvent e) {
-				panelFxHtml.deselectAll();
+				panelFxHtml.findText(textFieldSearch.getText(), false, true);
 			}
 			public void changedUpdate(DocumentEvent e) {
-				panelFxHtml.deselectAll();
+				panelFxHtml.findText(textFieldSearch.getText(), false, true);
 			}
 		});
-		
+
+		addSearchKeys();
+
 		ButtonDefaults.setDefaultOnFocus(btnFind, headerPaneThis);
 		ButtonDefaults.setDefaultOnFocus(btnGoBack, headerPaneThis);
 		ButtonDefaults.setDefaultOnFocus(btnGoNext, headerPaneThis);
 		ButtonDefaults.setDefaultOnFocus(btnOpenInBrowser, headerPaneThis);
 		ButtonDefaults.setDefaultOnFocus(btnIndex, headerPaneThis);
 		ButtonDefaults.setDefaultOnFocus(btnReload, headerPaneThis);
+	}
+
+	/** Enter: next match, Shift+Enter: previous, Esc: clear search (then close the window), Ctrl+F: focus search */
+	private void addSearchKeys() {
+
+		textFieldSearch.putClientProperty("JTextField.placeholderText", "Search (Ctrl+F)  -  Enter: next, Shift+Enter: previous");
+		textFieldSearch.setToolTipText("Search in the page: Enter = next match, Shift+Enter = previous match, Esc = clear");
+
+		InputMap inputMap = textFieldSearch.getInputMap();
+		ActionMap actionMap = textFieldSearch.getActionMap();
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "findNext");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK), "findPrevious");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "clearOrClose");
+		actionMap.put("findNext", action(() -> panelFxHtml.findText(textFieldSearch.getText(), false, false)));
+		actionMap.put("findPrevious", action(() -> panelFxHtml.findText(textFieldSearch.getText(), true, false)));
+		actionMap.put("clearOrClose", action(() -> {
+			if (!textFieldSearch.getText().isEmpty()) {
+				textFieldSearch.setText("");
+			} else {
+				Window window = SwingUtilities.getWindowAncestor(this);
+				if (window != null) {
+					window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+				}
+			}
+		}));
+
+		// Ctrl+F from the Swing controls and from inside the page
+		registerKeyboardAction(e -> focusSearch(), KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK),
+				JComponent.WHEN_IN_FOCUSED_WINDOW);
+		panelFxHtml.onFindShortcut = this::focusSearch;
+	}
+
+	public void focusSearch() {
+		textFieldSearch.requestFocusInWindow();
+		textFieldSearch.selectAll();
+	}
+
+	private static AbstractAction action(Runnable runnable) {
+		return new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				runnable.run();
+			}
+		};
 	}
 	
 }

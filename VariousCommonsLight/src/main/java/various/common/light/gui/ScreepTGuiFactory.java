@@ -18,6 +18,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
@@ -56,7 +57,19 @@ public class ScreepTGuiFactory {
 	}
 
 	public static JTextArea getFileTextArea(FileDropListener listener) {
-		JTextArea txtFieldSelectedFiles = new JTextArea("\n Nothing selected (drop your files here to add them)");
+		JTextArea txtFieldSelectedFiles = new JTextArea("\n Nothing selected (drop your files here to add them)") {
+			private static final long serialVersionUID = 1L;
+
+			// look and feel switch: restyle for the new light/dark theme
+			@Override
+			public void updateUI() {
+				super.updateUI();
+				Object empty = getClientProperty(FILES_EMPTY_PROPERTY);
+				if (empty instanceof Boolean) {
+					styleSelectedFilesArea(this, (Boolean) empty);
+				}
+			}
+		};
 		txtFieldSelectedFiles.setMargin(new Insets(8, 8, 8, 8));
 		txtFieldSelectedFiles.setMinimumSize(new Dimension(320, 70));
 		txtFieldSelectedFiles.setPreferredSize(new Dimension(320, 70));
@@ -72,7 +85,7 @@ public class ScreepTGuiFactory {
 	public static void setSelectedFileLbl(List<File> selected, JTextArea txtFieldSelectedFiles) {
 		if (selected == null || selected.isEmpty() || !selected.get(0).exists()) {
 			txtFieldSelectedFiles.setText("\n Nothing selected (drag your files here)");
-			txtFieldSelectedFiles.setBackground(new Color(252, 240, 146));
+			styleSelectedFilesArea(txtFieldSelectedFiles, true);
 		} else {
 			String fileConcatNames = "";
 			for(File iterator : selected) {
@@ -80,10 +93,37 @@ public class ScreepTGuiFactory {
 				fileConcatNames += identifier + iterator + "<br>";
 			}
 
-			txtFieldSelectedFiles.setBackground(new Color(208, 252, 146));
+			styleSelectedFilesArea(txtFieldSelectedFiles, false);
 			txtFieldSelectedFiles.setText(getStringSourcesSummary(selected));
 			txtFieldSelectedFiles.setToolTipText(GuiUtils.encapsulateInHtml(fileConcatNames));
 		}
+	}
+
+	// selected files box: yellow = nothing selected, green = selection; muted variants on dark themes
+	private static final Color FILES_EMPTY_LIGHT = new Color(252, 240, 146);
+	private static final Color FILES_SELECTED_LIGHT = new Color(208, 252, 146);
+	private static final Color FILES_EMPTY_DARK = new Color(77, 68, 31);
+	private static final Color FILES_SELECTED_DARK = new Color(47, 71, 36);
+	private static final Color FILES_TEXT_DARK = new Color(223, 225, 229);
+
+	private static final String FILES_EMPTY_PROPERTY = "screept.selectedFiles.empty";
+
+	private static void styleSelectedFilesArea(JTextArea area, boolean empty) {
+		area.putClientProperty(FILES_EMPTY_PROPERTY, empty);
+		boolean dark = isDarkTheme();
+		if (dark) {
+			area.setBackground(empty ? FILES_EMPTY_DARK : FILES_SELECTED_DARK);
+			area.setForeground(FILES_TEXT_DARK);
+		} else {
+			area.setBackground(empty ? FILES_EMPTY_LIGHT : FILES_SELECTED_LIGHT);
+			area.setForeground(Color.BLACK);
+		}
+	}
+
+	/** Current LAF has a dark panel background */
+	private static boolean isDarkTheme() {
+		Color panel = UIManager.getColor("Panel.background");
+		return panel != null && (0.299 * panel.getRed() + 0.587 * panel.getGreen() + 0.114 * panel.getBlue()) < 128;
 	}
 
 	protected static String getStringSourcesSummary(List<File> selected) {

@@ -60,6 +60,8 @@ public final class DarkColorAdapter {
 	private static final double MIN_CONTRAST = 3.0;
 	private static final float MAX_NEUTRAL_SATURATION = 0.2f;
 	private static final float MIN_LIGHT_BRIGHTNESS = 0.6f;
+	private static final float MAX_PASTEL_SATURATION = 0.6f;
+	private static final float MIN_PASTEL_BRIGHTNESS = 0.85f;
 	private static final Color DARK_TEXT = new Color(0x1E1F22);
 
 	private static boolean installed;
@@ -188,6 +190,10 @@ public final class DarkColorAdapter {
 		Object foreground = component.getClientProperty(ORIGINAL_FOREGROUND);
 		if (foreground instanceof Color && component.getForeground() instanceof UIResource) {
 			component.setForeground((Color) foreground);
+		} else if (foreground == LAF_FOREGROUND) {
+			// not every LAF (e.g. Nimbus) replaces a UIResource foreground: reinstall the new LAF default explicitly
+			component.setForeground(null);
+			component.updateUI();
 		}
 		component.putClientProperty(ORIGINAL_FOREGROUND, null);
 	}
@@ -226,12 +232,15 @@ public final class DarkColorAdapter {
 		return contrast(Color.WHITE, background) >= contrast(DARK_TEXT, background) ? Color.WHITE : DARK_TEXT;
 	}
 
+	/** Light grays/whites, and light pastels (yellow, khaki, pink...) that would host light theme text */
 	private static boolean isLightNeutral(Color color) {
 		if (color.getAlpha() < 200) {
 			return false;
 		}
 		float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
-		return hsb[1] <= MAX_NEUTRAL_SATURATION && hsb[2] >= MIN_LIGHT_BRIGHTNESS;
+		boolean lightGray = hsb[1] <= MAX_NEUTRAL_SATURATION && hsb[2] >= MIN_LIGHT_BRIGHTNESS;
+		boolean lightPastel = hsb[1] <= MAX_PASTEL_SATURATION && hsb[2] >= MIN_PASTEL_BRIGHTNESS;
+		return lightGray || lightPastel;
 	}
 
 	private static boolean isExcluded(JComponent component) {

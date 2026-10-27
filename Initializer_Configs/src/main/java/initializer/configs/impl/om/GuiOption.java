@@ -17,7 +17,8 @@ public class GuiOption {
 	// DEFAULT VALUES (usfeul to keep valid object during iniLoad, in case of null read or exception)
 	public final static int DEFAULT_MENU_FONT_SIZE = 12; 
 	public final static int DEFAULT_LOG_FONT_SIZE = 12; 
-	public final static String DEFAULT_GUI_STYLE ="com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+	/** ScreepT Dark (GuiCommons, gui.commons.guistyle.laf.ScreepTDarkLaf) */
+	public final static String DEFAULT_GUI_STYLE ="gui.commons.guistyle.laf.ScreepTDarkLaf";
 	public final static String DEFAULT_GUI_PREF_THEME ="DarkStar";
 	public final static boolean DEFAULT_GUI_DARK_NIMBUS = false;
 	public final static int DEFAULT_NIMBUS_SIZE = 1;

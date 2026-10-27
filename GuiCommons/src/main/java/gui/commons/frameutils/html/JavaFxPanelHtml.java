@@ -24,6 +24,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -38,6 +39,7 @@ import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -56,7 +58,9 @@ public class JavaFxPanelHtml extends JPanel {
 	private int W = 1200;
 	private int H = 700;
 	public String URL_Loaded;
-	public HTMLElementImpl indexElement = null; 
+	public HTMLElementImpl indexElement = null;
+	/** Ctrl+F pressed inside the page (run on the EDT) */
+	public volatile Runnable onFindShortcut; 
 	public static final String DESELECT_NSTART = " if (window.getSelection) {window.getSelection().removeAllRanges();}\r\n" + 
 												 " else if (document.selection) {document.selection.empty();}";
 	
@@ -148,6 +152,13 @@ public class JavaFxPanelHtml extends JPanel {
 									}
 								}
 								
+							// CTRL + F: go to the search field
+							}else if (event.isControlDown() && !event.isShiftDown() && event.getCode() == KeyCode.F) {
+								Runnable findShortcut = onFindShortcut;
+								if (findShortcut != null) {
+									SwingUtilities.invokeLater(findShortcut);
+								}
+
 							// CTRL + SHIFT + 0 PRESSED
 							}else if (event.isControlDown() && event.isShiftDown()) {
 								switch (event.getCode()) {
@@ -230,15 +241,26 @@ public class JavaFxPanelHtml extends JPanel {
     }
     
     public void findTextNHighLight(String targetText) {
-    	Platform.runLater(new Runnable() {
+    	SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
+    	findText(targetText, false, false);
+    }
 
-            @Override
-            public void run() {
-            	
-        		SoundsManagerExtended.playSound(SoundsConfigurator.CLICK_2, null);
-        		webEngine.executeScript("window.find('" + targetText + "')");            		
-            }
-    	});
+    /**
+     * Selects and scrolls to the next (or previous) match, wrapping around the page
+     * @param fromStart restart from the top of the page (used while typing)
+     */
+    public void findText(String targetText, boolean backwards, boolean fromStart) {
+    	if (targetText == null || targetText.isEmpty()) {
+    		deselectAll();
+    		return;
+    	}
+    	String script = (fromStart ? DESELECT_NSTART : "")
+    			+ "window.find('" + escapeJs(targetText) + "', false, " + backwards + ", true, false, false, false);";
+    	Platform.runLater(() -> webEngine.executeScript(script));
+    }
+
+    private static String escapeJs(String text) {
+    	return text.replace("\\", "\\\\").replace("'", "\\'").replace("\r", " ").replace("\n", " ");
     }
     
     public void deselectAll() {

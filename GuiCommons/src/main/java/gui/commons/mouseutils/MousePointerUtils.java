@@ -45,6 +45,7 @@ public class MousePointerUtils {
 	public Component disabledTarget;
 	
 	public AtomicBoolean enabled = new AtomicBoolean(false);
+	private volatile boolean altPressed;
 	
 	public MousePointerUtils(Runnable onClickAction, MousePointerCaller owner, Component disabledTarget) {
 		this.onClickAction = (onClickAction != null)? onClickAction : () -> {};
@@ -94,7 +95,12 @@ public class MousePointerUtils {
 				
 				if (event instanceof KeyEvent) {
 					KeyEvent keyEvent = (KeyEvent) event;
-					
+
+					// Alt held: the user may be switching application (Alt+Tab), see focus handling below
+					if (keyEvent.getKeyCode() == KeyEvent.VK_ALT) {
+						altPressed = keyEvent.getID() == KeyEvent.KEY_PRESSED;
+					}
+
 					if (keyEvent.isControlDown() && keyEvent.isShiftDown()) {
 						if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
 							logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
@@ -119,6 +125,14 @@ public class MousePointerUtils {
 
 					}
 				} else if (event instanceof FocusEvent) {
+					if (event.getID() == FocusEvent.FOCUS_GAINED) {
+						// back in the application: the Alt release happened elsewhere
+						altPressed = false;
+					}
+					if (altPressed) {
+						// Alt+Tab: no pick and no focus stealing, let the user switch application
+						return;
+					}
 					if(!MousePointerCaller.hasFocus.get()) {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override

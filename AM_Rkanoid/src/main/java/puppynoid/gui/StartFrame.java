@@ -19,14 +19,12 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 import puppynoid.om.Difficulty;
 import puppynoid.utils.LevelLoader;
 import puppynoid.utils.config.GameConfigs;
 import puppynoid.utils.config.GeneralConfig;
-import various.common.light.gui.GUIStyelSettings;
 
 public class StartFrame extends JFrame {
 	private static final long serialVersionUID = -8026416994513756565L;
@@ -113,11 +111,6 @@ public class StartFrame extends JFrame {
 		});
 
 		setupMenuBar();
-
-		SwingUtilities.invokeLater(()->{
-			GUIStyelSettings.setLightNimbus(3);
-			GUIStyelSettings.updateAllWindowsLaf();
-		});
 
 		addWindowListener(new WindowAdapter() {
 
