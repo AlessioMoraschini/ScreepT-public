@@ -160,6 +160,10 @@ public class JOptionHelper {
 	/** Window owning the dialogs: the parent itself when it is a window (getWindowAncestor skips it) */
 	protected Window getDialogWindow() {
 		Component parent = getDialogParent();
+		if (parent == null) {
+			// standalone tools (e.g. the updater) may have no window at all
+			return null;
+		}
 		return parent instanceof Window ? (Window) parent : SwingUtilities.getWindowAncestor(parent);
 	}
 	public void setLastKnownLocation(Point location) {
