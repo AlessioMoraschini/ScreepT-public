@@ -263,6 +263,7 @@ public class SimpleCalculator extends UltimateCalculatorFrame{
 		super.gui.setTitle("Simple Calculator");
 		super.gui.setMinimumSize(new Dimension(276, 420));
 		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
+		com.minhasKamal.ultimateCalculator.utils.CalculatorKeyboard.install(super.gui, false);
 	}
 
 	//**

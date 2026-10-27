@@ -44,7 +44,7 @@ public class TextEditorOption {
 	public static final EOL DEF_eol = EOL.defaultEol;
 
 	//TEXT AREA
-	public static final String DEFAULT_SELECTED_THEME = GeneralConfig.THEMES_FOLDER_DEFAULT + "dark.xml";
+	public static final String DEFAULT_SELECTED_THEME = GeneralConfig.THEMES_FOLDER_DEFAULT + "screept-dark.xml";
 	public static final boolean DEF_headerVisible = true;
 	public static final boolean DEF_subHeaderVisible = true;
 	public static final boolean DEF_footerVisible = true;

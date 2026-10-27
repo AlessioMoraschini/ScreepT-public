@@ -115,13 +115,13 @@ public class EquationCalculatorGui extends JTabbedPane{
 			jLabelMain[i].setLayout(null);
 			jLabelMain[i].setBounds(0, 0, 276, 420);
 		}
-		jLabelMain[0].setIcon(new ImageIcon(getClass().getResource("/res/imgs/" +
+		jLabelMain[0].setIcon(com.minhasKamal.ultimateCalculator.utils.CalculatorTheme.background(getClass().getResource("/res/imgs/" +
 				"EquationCalculatorBackground1.jpg")));
-		jLabelMain[1].setIcon(new ImageIcon(getClass().getResource("/res/imgs/" +
+		jLabelMain[1].setIcon(com.minhasKamal.ultimateCalculator.utils.CalculatorTheme.background(getClass().getResource("/res/imgs/" +
 				"EquationCalculatorBackground2.jpg")));
-		jLabelMain[2].setIcon(new ImageIcon(getClass().getResource("/res/imgs/" +
+		jLabelMain[2].setIcon(com.minhasKamal.ultimateCalculator.utils.CalculatorTheme.background(getClass().getResource("/res/imgs/" +
 				"EquationCalculatorBackground3.jpg")));
-		jLabelMain[3].setIcon(new ImageIcon(getClass().getResource("/res/imgs/" +
+		jLabelMain[3].setIcon(com.minhasKamal.ultimateCalculator.utils.CalculatorTheme.background(getClass().getResource("/res/imgs/" +
 				"EquationCalculatorBackground4.jpg")));
 
 		//Equation Ax+By=C												***

@@ -139,7 +139,7 @@ public class UnitConverterGui extends JLabel {
 		//**Setting Criterion of the Frame**//
 		//Main label
 		setBounds(0, 0, 350, 400);
-		setIcon(new ImageIcon(getClass().getResource("/res/imgs/" +
+		setIcon(com.minhasKamal.ultimateCalculator.utils.CalculatorTheme.background(getClass().getResource("/res/imgs/" +
 				"UnitConverterBackground.jpg")));
 		setLayout(null);
 	}

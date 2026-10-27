@@ -10,6 +10,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import various.common.light.easteregg.games.snake.Board.Level;
+import various.common.light.gui.ScreenMemory;
 
 public class Snake extends JFrame {
 	private static final long serialVersionUID = -2575763564390459298L;
@@ -52,7 +53,7 @@ public class Snake extends JFrame {
         setResizable(false);
         pack();
 
-        setLocationRelativeTo(null);
+        ScreenMemory.centerOnLastScreen(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         setAlwaysOnTop(true);

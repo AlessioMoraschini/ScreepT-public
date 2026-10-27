@@ -217,7 +217,7 @@ public class BaseCalculatorGui extends JLabel {
 
 		//**Setting Criterion of the Frame**//
 		setBounds(0, 0, 327, 475);
-		setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/imgs/" +
+		setIcon(com.minhasKamal.ultimateCalculator.utils.CalculatorTheme.background(getClass().getResource("/res/imgs/" +
 				"BaseCalculatorBackground.jpg")));
 			
 	}

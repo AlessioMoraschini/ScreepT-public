@@ -25,6 +25,7 @@ import puppynoid.om.Difficulty;
 import puppynoid.utils.LevelLoader;
 import puppynoid.utils.config.GameConfigs;
 import puppynoid.utils.config.GeneralConfig;
+import various.common.light.gui.ScreenMemory;
 
 public class StartFrame extends JFrame {
 	private static final long serialVersionUID = -8026416994513756565L;
@@ -36,7 +37,7 @@ public class StartFrame extends JFrame {
 	GameFrame gamePanel;
 	StartFrame thisFrame;
 
-	public static Dimension size = new Dimension(400,150);
+	public static Dimension size = new Dimension(520,230);
 
 	public StartFrame() throws IOException {
 
@@ -63,6 +64,8 @@ public class StartFrame extends JFrame {
 			generalConfig.setProperty(GeneralConfig.KEY_DIFFICULTY, selected.name(), true);
 		});
 
+		addControlsGuide();
+
 		styleComponent(label, 0, 30, 50);
 		label.setHorizontalAlignment(SwingConstants.LEFT);
 		styleComponent(comboDifficulty, 35, 120, 50);
@@ -76,7 +79,7 @@ public class StartFrame extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(Color.BLACK);
 		this.setVisible(true);
-		this.setLocationRelativeTo(null);
+		ScreenMemory.centerOnLastScreen(this);
 		this.setTitle(GameConfigs.GAME_TITLE);
 		this.setIconImage(new ImageIcon(GameConfigs.IMG_FOLDER + "mainIcon.png").getImage());
 
@@ -122,6 +125,30 @@ public class StartFrame extends JFrame {
 		});
 
 		instance = this;
+	}
+
+	/** Keys guide shown on top of the start window */
+	private void addControlsGuide() {
+		JLabel guide = new JLabel("<html><div style='text-align:center'><b style='color:#FFCD3C'>HOW TO PLAY</b><br>"
+				+ "<b>\u2190 / \u2192</b> move paddle &nbsp;&middot;&nbsp; <b>CTRL</b> launch ball &nbsp;&middot;&nbsp; <b>SPACE</b> pause<br>"
+				+ "<b>ESC</b> quit &nbsp;&middot;&nbsp; <b>ENTER</b> retry &nbsp;&middot;&nbsp; <b>N</b> next level</div></html>");
+		guide.setForeground(Color.WHITE);
+		guide.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		guide.setHorizontalAlignment(SwingConstants.CENTER);
+		guide.setOpaque(true);
+		guide.setBackground(new Color(30, 34, 48));
+		guide.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+				javax.swing.BorderFactory.createLineBorder(new Color(255, 205, 60), 1),
+				javax.swing.BorderFactory.createEmptyBorder(8, 12, 8, 12)));
+
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 230;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.insets = new java.awt.Insets(8, 10, 12, 10);
+		constraints.anchor = GridBagConstraints.NORTH;
+		this.add(guide, constraints);
 	}
 
 	private void setupMenuBar() {

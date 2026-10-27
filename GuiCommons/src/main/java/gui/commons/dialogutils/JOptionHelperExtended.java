@@ -58,9 +58,9 @@ public class JOptionHelperExtended extends JOptionHelper {
 				allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]);
 
 		// *** MONITOR CORRETTO ***
-		GraphicsConfiguration gc = getCurrentMonitor(parentComponent);
+		GraphicsConfiguration gc = getCurrentMonitor(getDialogParent());
 
-		final JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), title,
+		final JDialog dialog = new JDialog(getDialogWindow(), title,
 				Dialog.ModalityType.APPLICATION_MODAL, gc);
 
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -121,9 +121,9 @@ public class JOptionHelperExtended extends JOptionHelper {
 					defaultOption);
 			
 			// *** MONITOR CORRETTO ***
-			GraphicsConfiguration gc = getCurrentMonitor(parentComponent);
+			GraphicsConfiguration gc = getCurrentMonitor(getDialogParent());
 
-			final JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), title,
+			final JDialog dialog = new JDialog(getDialogWindow(), title,
 					Dialog.ModalityType.APPLICATION_MODAL, gc);
 
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

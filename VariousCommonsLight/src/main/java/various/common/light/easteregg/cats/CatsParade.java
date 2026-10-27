@@ -16,6 +16,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsDevice.WindowTranslucency;
 import java.awt.GraphicsEnvironment;
@@ -31,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JWindow;
 import javax.swing.Timer;
 
+import various.common.light.gui.ScreenMemory;
 import various.common.light.utility.log.SafeLogger;
 
 /**
@@ -127,12 +129,14 @@ public final class CatsParade extends JWindow {
 		if (instance != null) {
 			return;
 		}
-		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		GraphicsConfiguration overConfiguration = over != null && over.isShowing() ? over.getGraphicsConfiguration() : null;
+		GraphicsDevice device = overConfiguration != null ? overConfiguration.getDevice()
+				: GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		if (!device.isWindowTranslucencySupported(WindowTranslucency.PERPIXEL_TRANSLUCENT)) {
 			logger.info("Cats parade skipped: transparent windows not supported");
 			return;
 		}
-		Rectangle area = over != null && over.isShowing() ? over.getBounds() : device.getDefaultConfiguration().getBounds();
+		Rectangle area = over != null && over.isShowing() ? over.getBounds() : ScreenMemory.getLastScreenBounds();
 		instance = new CatsParade(area);
 		instance.setVisible(true);
 		instance.timer.start();

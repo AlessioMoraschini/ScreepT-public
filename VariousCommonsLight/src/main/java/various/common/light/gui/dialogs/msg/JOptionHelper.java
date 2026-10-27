@@ -17,18 +17,20 @@ import java.awt.ComponentOrientation;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.io.File;
 import java.util.Arrays;
 
 import javax.swing.Icon;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -40,6 +42,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.ScreenMemory;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.string.StringWorker;
 
@@ -100,7 +103,7 @@ public class JOptionHelper {
 
 	// Parent component to center and refer to
 	protected Component parentComponent;
-	protected Point lastKnownLocation = new Point(1,1);
+	protected Point lastKnownLocation;
 
 	public static void init() {
 		ICON_ERR_REF = UIManager.getIcon("OptionPane.errorIcon");
@@ -121,7 +124,43 @@ public class JOptionHelper {
 	}
 
 	public void setParentComponent(Component parent) {
-		this.parentComponent = (parentComponent != null) ? parentComponent : new JFrame();
+		this.parentComponent = parent;
+	}
+
+	/**
+	 * Component the dialogs refer to, resolved when the dialog is shown: the given parent if visible,
+	 * else the active window, else the first visible frame (null if the application has no window yet).
+	 */
+	protected Component getDialogParent() {
+		if (parentComponent != null && parentComponent.isShowing()) {
+			return parentComponent;
+		}
+		Window active = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+		if (active != null && active.isShowing()) {
+			return active;
+		}
+		for (Window window : Window.getWindows()) {
+			if (window instanceof Frame && window.isShowing()) {
+				return window;
+			}
+		}
+		return parentComponent;
+	}
+
+	/** Centers the dialog on its parent, or on the monitor last used by the application when no window is visible */
+	protected void placeDialog(JDialog dialog) {
+		Component parent = getDialogParent();
+		if (parent != null) {
+			dialog.setLocationRelativeTo(parent);
+		} else {
+			ScreenMemory.centerOnLastScreen(dialog);
+		}
+	}
+
+	/** Window owning the dialogs: the parent itself when it is a window (getWindowAncestor skips it) */
+	protected Window getDialogWindow() {
+		Component parent = getDialogParent();
+		return parent instanceof Window ? (Window) parent : SwingUtilities.getWindowAncestor(parent);
 	}
 	public void setLastKnownLocation(Point location) {
 		this.lastKnownLocation = location;
@@ -257,7 +296,7 @@ public class JOptionHelper {
 			String newMsg = msg + "\n\n" + exception;
 			JScrollPane scroller = getScrollableDialogPanel(newMsg);
 			GuiUtils.scrollJScrollPane(scroller, false);
-			res = JEnhancedOptionPane.showInputDialog(title, false, parentComponent, scroller, msgOption, options, ERR, ICON_ERR_REF, null);
+			res = JEnhancedOptionPane.showInputDialog(title, false, getDialogParent(), scroller, msgOption, options, ERR, ICON_ERR_REF, null);
 		} catch (Exception e2) {
 		}
 
@@ -321,7 +360,7 @@ public class JOptionHelper {
 			String newMsg = msg + "\n\n" + exception;
 			JScrollPane scroller = getScrollableDialogPanel(newMsg);
 			GuiUtils.scrollJScrollPane(scroller, false);
-			res = JEnhancedOptionPane.showInputDialog(title, false, parentComponent, scroller, msgOption, options, ERR, ICON_WARN_REF, null);
+			res = JEnhancedOptionPane.showInputDialog(title, false, getDialogParent(), scroller, msgOption, options, ERR, ICON_WARN_REF, null);
 		} catch (Exception e2) {
 		}
 
@@ -521,9 +560,8 @@ public class JOptionHelper {
 		pane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		pane.selectInitialValue();
 		pane.setInitialSelectionValue(initialValue);
-		final JDialog dialog = parentComponent != null ? pane.createDialog(parentComponent, title) : pane.createDialog(title);
-		if(parentComponent != null)
-			dialog.setLocationRelativeTo(parentComponent);
+		final JDialog dialog = pane.createDialog(getDialogParent(), title);
+		placeDialog(dialog);
 		dialog.setAutoRequestFocus(true);
 		dialog.setModal(true);
 
@@ -562,7 +600,7 @@ public class JOptionHelper {
 		panel.add(label);
 		panel.add(pass);
 
-		int option = JOptionPane.showOptionDialog(parentComponent, panel, title,
+		int option = JOptionPane.showOptionDialog(getDialogParent(), panel, title,
 				JOptionPane.NO_OPTION, QUESTION,
 				null, options, options[0]);
 
@@ -626,13 +664,13 @@ public class JOptionHelper {
         		optionsAvailable,
         		allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]);
 
-		final JDialog dialog = optionPane.createDialog(parentComponent, title);
+		final JDialog dialog = optionPane.createDialog(getDialogParent(), title);
 		try {
 			dialog.setAlwaysOnTop(true);
 			dialog.enableInputMethods(true);
-			dialog.setLocationRelativeTo(parentComponent);
-			centerOnParentMonitor(dialog, parentComponent);
-//			GuiUtils.moveRelativeTo(dialog, parentComponent);
+			placeDialog(dialog);
+			centerOnParentMonitor(dialog, getDialogParent());
+//			GuiUtils.moveRelativeTo(dialog, getDialogParent());
 			dialog.toFront();
 			dialog.setVisible(true);
 			dialog.dispose();
@@ -648,22 +686,24 @@ public class JOptionHelper {
 	}
 	
 	protected GraphicsConfiguration getCurrentMonitor(Component parent) {
-		if (lastKnownLocation == null) {
-			return GraphicsEnvironment
-					.getLocalGraphicsEnvironment()
-					.getDefaultScreenDevice()
-					.getDefaultConfiguration();
+		if (parent != null && parent.isShowing() && parent.getGraphicsConfiguration() != null) {
+			return parent.getGraphicsConfiguration();
 		}
 
-		GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-		for (GraphicsDevice gd : devices) {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Point reference = lastKnownLocation;
+		if (reference == null) {
+			// no visible parent: use the monitor where the application was last used
+			Rectangle lastScreen = ScreenMemory.getLastScreenBounds();
+			reference = new Point((int) lastScreen.getCenterX(), (int) lastScreen.getCenterY());
+		}
+		for (GraphicsDevice gd : ge.getScreenDevices()) {
 			GraphicsConfiguration gc = gd.getDefaultConfiguration();
-			Rectangle bounds = gc.getBounds();
-			if (bounds.contains(lastKnownLocation)) {
+			if (gc.getBounds().contains(reference)) {
 				return gc;
 			}
 		}
-		return parent.getGraphicsConfiguration();
+		return ge.getDefaultScreenDevice().getDefaultConfiguration();
 	}
 	
 	public Boolean showYNMessageCommon(Object msg, String title, int msgType, boolean allowNull, boolean warningType, boolean cancEnabled) {
@@ -677,9 +717,9 @@ public class JOptionHelper {
 				allowNull ? optionsAvailable[optionsAvailable.length - 1] : optionsAvailable[0]);
 
 		// *** MONITOR CORRETTO ***
-		GraphicsConfiguration gc = getCurrentMonitor(parentComponent);
+		GraphicsConfiguration gc = getCurrentMonitor(getDialogParent());
 
-		final JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), title,
+		final JDialog dialog = new JDialog(getDialogWindow(), title,
 				Dialog.ModalityType.APPLICATION_MODAL, gc);
 
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -716,8 +756,8 @@ public class JOptionHelper {
 
 	
 	public static void centerOnParentMonitor(Component dialog, Component parent) {
-		GraphicsConfiguration gc = parent.getGraphicsConfiguration();
-		Rectangle bounds = gc.getBounds();
+		GraphicsConfiguration gc = parent != null ? parent.getGraphicsConfiguration() : null;
+		Rectangle bounds = gc != null ? gc.getBounds() : ScreenMemory.getLastScreenBounds();
 		int W = dialog.getWidth();
 		int H = dialog.getHeight();
 		int x = bounds.x + (bounds.width - W) / 2;
@@ -735,11 +775,11 @@ public class JOptionHelper {
 						optionsAvailable,
 						optionsAvailable[initialOptionIndex]);
 
-		final JDialog dialog = optionPane.createDialog(parentComponent, title);
+		final JDialog dialog = optionPane.createDialog(getDialogParent(), title);
 		try {
 			dialog.setAlwaysOnTop(true);
 			dialog.enableInputMethods(true);
-			dialog.setLocationRelativeTo(parentComponent);
+			placeDialog(dialog);
 			dialog.toFront();
 			dialog.setVisible(true);
 			dialog.dispose();
@@ -770,9 +810,9 @@ public class JOptionHelper {
 					choiceOptions,
 					defaultOption);
 
-			JDialog dialog = optionPane.createDialog(parentComponent, title);
+			JDialog dialog = optionPane.createDialog(getDialogParent(), title);
 			dialog.setAlwaysOnTop(true);
-			dialog.setLocationRelativeTo(parentComponent);
+			placeDialog(dialog);
 			dialog.toFront();
 
 			try {

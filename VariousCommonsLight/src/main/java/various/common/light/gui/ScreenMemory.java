@@ -79,6 +79,11 @@ public final class ScreenMemory {
 		window.setBounds(screen.x + (screen.width - width) / 2, screen.y + (screen.height - height) / 2, width, height);
 	}
 
+	/** Centers the window, keeping its current size, on the last used monitor */
+	public static void centerOnLastScreen(Window window) {
+		centerOnLastScreen(window, window.getWidth(), window.getHeight());
+	}
+
 	/** Moves the frame on the last used monitor and maximizes it there */
 	public static void maximizeOnLastScreen(JFrame frame) {
 		Rectangle screen = getLastScreenBounds();

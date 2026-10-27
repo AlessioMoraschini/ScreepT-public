@@ -195,14 +195,9 @@ public class UpdateProgressPanel {
 
 	private void initGraphics(int nYrows) {
 
-		try {
-			// set preferred style from current configuration
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+		// the look and feel is the application one: never switch it, just tint the bar when it is Nimbus
+		if ("Nimbus".equals(UIManager.getLookAndFeel().getName())) {
 			UIManager.put("nimbusOrange", Color.GREEN);
-
-		} catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException
-				| IllegalAccessException ex) {
-			System.out.println("Error setting current look and feel! :(");
 		}
 
 		GridBagLayout gridBagLayout = new GridBagLayout();

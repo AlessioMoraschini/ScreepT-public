@@ -196,7 +196,7 @@ public class SimpleCalculatorGui extends JLabel{
 		
 		//set criteria of main label
 		setBounds(0, 0, 276, 425);
-		setIcon(new ImageIcon(getClass().getResource("/res/imgs/SimpleCalculatorBackground.jpg")));
+		setIcon(com.minhasKamal.ultimateCalculator.utils.CalculatorTheme.background(getClass().getResource("/res/imgs/SimpleCalculatorBackground.jpg")));
 	}
 
 	/********* Main Method *********/

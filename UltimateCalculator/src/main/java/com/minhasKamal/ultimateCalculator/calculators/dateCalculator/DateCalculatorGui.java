@@ -134,7 +134,7 @@ public class DateCalculatorGui extends JLabel {
 
 		//**Setting Criterion of the Frame**//
     	setBounds(0, 0, 300, 400);
-    	setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/imgs/" +
+    	setIcon(com.minhasKamal.ultimateCalculator.utils.CalculatorTheme.background(getClass().getResource("/res/imgs/" +
     			"DateCalculatorBackground.jpg")));
 	}
 

@@ -2,7 +2,9 @@ package puppynoid.gui;
 
 import java.awt.Color;
 import java.awt.FontMetrics;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -45,6 +47,7 @@ import puppynoid.om.Shot;
 import puppynoid.utils.LevelLoader;
 import puppynoid.utils.config.GameConfigs;
 import puppynoid.utils.config.GeneralConfig;
+import various.common.light.gui.ScreenMemory;
 import various.common.light.sounds.SoundsManager;
 
 public class GameFrame extends JFrame implements KeyListener {
@@ -70,6 +73,10 @@ public class GameFrame extends JFrame implements KeyListener {
 	private boolean goToNextLevel = false;
 	private boolean forceExitLevel = false;
 	private boolean paused = false;
+	/** Controls guide shown on top at the start, until the first launch of the ball (or a timeout) */
+	private boolean controlsHintDismissed = false;
+	private long controlsHintStart = 0;
+	private static final long CONTROLS_HINT_TIMEOUT_MS = 20000;
 	private boolean running = false;
 
 	private double lastFt;
@@ -152,7 +159,7 @@ public class GameFrame extends JFrame implements KeyListener {
 		this.setSize(gameConfig.SCREEN_WIDTH, gameConfig.SCREEN_HEIGHT);
 		this.setVisible(true);
 		this.addKeyListener(this);
-		this.setLocationRelativeTo(null);
+		ScreenMemory.centerOnLastScreen(this);
 		this.setIconImage(new ImageIcon(GameConfigs.IMG_FOLDER + "mainIcon.png").getImage());
 
 		this.createBufferStrategy(2);
@@ -426,6 +433,8 @@ public class GameFrame extends JFrame implements KeyListener {
 			
 			drawButtons(g);
 
+			drawControlsHint(g);
+
 			// If paused draw string
 			if (paused) {
 				FontMetrics fontMetrics = g.getFontMetrics(scoreboard.font.deriveFont(50f));
@@ -447,6 +456,49 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		bf.show();
 		Toolkit.getDefaultToolkit().sync();
+	}
+
+	/** Banner on top explaining the keys, visible at the start until the player launches the ball */
+	private void drawControlsHint(Graphics g) {
+		if (controlsHintDismissed) {
+			return;
+		}
+		if (controlsHintStart == 0) {
+			controlsHintStart = System.currentTimeMillis();
+		} else if (System.currentTimeMillis() - controlsHintStart > CONTROLS_HINT_TIMEOUT_MS) {
+			controlsHintDismissed = true;
+			return;
+		}
+
+		String title = "HOW TO PLAY";
+		String keys = "\u2190 / \u2192  move paddle     CTRL  launch ball     SPACE  pause     ESC  quit     ENTER  retry     N  next level";
+		int width = gameConfig.SCREEN_WIDTH;
+		float size = 24f;
+		Font keysFont = scoreboard.font.deriveFont(Font.BOLD, size);
+		// shrink the text to fit narrow screens
+		while (size > 12f && g.getFontMetrics(keysFont).stringWidth(keys) > width - 60) {
+			size -= 1f;
+			keysFont = scoreboard.font.deriveFont(Font.BOLD, size);
+		}
+		Font titleFont = scoreboard.font.deriveFont(Font.BOLD, size + 4f);
+		int bandHeight = (int) (size * 3.6f);
+
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setColor(new Color(10, 12, 20, 235));
+		g2.fillRect(0, 0, width, bandHeight);
+		g2.setColor(new Color(255, 205, 60));
+		g2.fillRect(0, bandHeight - 3, width, 3);
+
+		g2.setFont(titleFont);
+		g2.setColor(new Color(255, 205, 60));
+		int titleX = (width - g2.getFontMetrics().stringWidth(title)) / 2;
+		g2.drawString(title, titleX, (int) (size * 1.5f));
+
+		g2.setFont(keysFont);
+		g2.setColor(Color.WHITE);
+		int keysX = (width - g2.getFontMetrics().stringWidth(keys)) / 2;
+		g2.drawString(keys, keysX, (int) (size * 2.9f));
+		g2.dispose();
 	}
 
 	//////////////// SOUND METHODS /////////////////////
@@ -749,6 +801,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			}
 			break;
 		case KeyEvent.VK_SPACE:
+			controlsHintDismissed = true;
 			paused = !paused;
 			pauseButton.isSelected = paused;
 			break;
@@ -762,6 +815,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			break;
 		case KeyEvent.VK_CONTROL:
 			if (ball.ballStopped) {
+				controlsHintDismissed = true;
 				ball.shot();
 			}
 			break;

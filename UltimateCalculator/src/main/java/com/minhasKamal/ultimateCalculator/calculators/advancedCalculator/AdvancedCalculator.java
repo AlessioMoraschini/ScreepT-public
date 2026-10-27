@@ -312,6 +312,7 @@ public class AdvancedCalculator extends UltimateCalculatorFrame{
 		super.gui.setResizable(false);
 		super.gui.setMinimumSize(new Dimension(500, 420));
 		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
+		com.minhasKamal.ultimateCalculator.utils.CalculatorKeyboard.install(super.gui, false);
 		super.gui.setFocusable(true);
 	}
 

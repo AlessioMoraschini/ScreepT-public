@@ -351,6 +351,7 @@ public class BaseCalculator extends UltimateCalculatorFrame{
 		super.gui.setResizable(false);
 		super.gui.setMinimumSize(new Dimension(327, 450));
 		super.gui.setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
+		com.minhasKamal.ultimateCalculator.utils.CalculatorKeyboard.install(super.gui, true);
 	}
 
 	//**
