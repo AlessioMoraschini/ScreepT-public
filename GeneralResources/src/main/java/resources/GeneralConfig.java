@@ -53,6 +53,9 @@ public class GeneralConfig {
 	public static String BUILD_COMMIT_HASH = resourcesFilePathsMappings.getProperty("BUILD_COMMIT_HASH", "Undefined commit hash");
 	public static String CHANGE_LOG_FILE_PATH = resourcesFilePathsMappings.getProperty("CHANGE_LOG_FILE_PATH", "");
 	public static File CHANGE_LOG_FILE = CHANGE_LOG_FILE_PATH.equals("") ? null : new File(CHANGE_LOG_FILE_PATH);
+	// curated release notes shown by the changelog viewer and the "What's new" dialog
+	public static String RELEASE_NOTES_FILE_PATH = resourcesFilePathsMappings.getProperty("RELEASE_NOTES_FILE_PATH", "CHANGELOG.md");
+	public static File RELEASE_NOTES_FILE = new File(RELEASE_NOTES_FILE_PATH);
 
 	public static String WEBSITE = resourcesFilePathsMappings.getProperty("WEBSITE", "www.am-design-development.com");
 	public static String MAIL_INFO = resourcesFilePathsMappings.getProperty("MAIL_INFO", "info@am-design-development.com");

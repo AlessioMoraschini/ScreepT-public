@@ -17,7 +17,12 @@
 
 package com.minhasKamal.ultimateCalculator.mainFrame;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
@@ -27,6 +32,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import com.minhasKamal.ultimateCalculator.CalculatorMainApp;
@@ -143,12 +149,51 @@ public class UltimateCalculatorFrameGui extends JFrame {
 
 		//**Setting Criterion of the Frame**//
 		setJMenuBar(jMenuBarMain);
+		// FlatLaf would embed the menu in the narrow title bar, squeezing it: keep it below the title
+		getRootPane().putClientProperty("JRootPane.menuBarEmbedded", false);
 		setTitle("Ultimate Calculator");
 		setIconImage(new ImageIcon(getClass().getResource("/res/imgs/UltimateCalculatorIcon.png")).getImage());
 //		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
     	setResizable(false);
     	setMinimumSize(new Dimension(250, 350));
+		setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
+
+		// modes add their absolute layout panel: fit the window around it (title bar and menu height depend on theme and interface size)
+		getContentPane().addContainerListener(new ContainerAdapter() {
+			@Override
+			public void componentAdded(ContainerEvent e) {
+				SwingUtilities.invokeLater(() -> fitToContent());
+			}
+		});
+	}
+
+	/** Sizes the window so that the whole mode panel is visible, keeping it centered on the caller */
+	public void fitToContent() {
+		Rectangle content = new Rectangle();
+		for (Component c : getContentPane().getComponents()) {
+			content = content.union(c.getBounds());
+		}
+		if (content.isEmpty()) {
+			return;
+		}
+		Insets insets = getInsets();
+		int menuHeight = getJMenuBar() == null ? 0 : getJMenuBar().getPreferredSize().height;
+		Dimension size = new Dimension(content.x + content.width + insets.left + insets.right,
+				content.y + content.height + insets.top + insets.bottom + menuHeight);
+		// custom title bars (FlatLaf) are not part of the insets: correct with the real content pane size
+		for (int i = 0; i < 3; i++) {
+			setMinimumSize(null);
+			setSize(size);
+			validate();
+			int missingWidth = content.x + content.width - getContentPane().getWidth();
+			int missingHeight = content.y + content.height - getContentPane().getHeight();
+			if (missingHeight == 0 && missingWidth <= 0) {
+				break;
+			}
+			size = new Dimension(size.width + Math.max(missingWidth, 0), size.height + missingHeight);
+		}
+		setMinimumSize(getSize());
 		setLocationRelativeTo(CalculatorMainApp.parentCallerFrame);
 	}
 
