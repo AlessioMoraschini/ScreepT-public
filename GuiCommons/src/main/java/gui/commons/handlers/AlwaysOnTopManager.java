@@ -45,6 +45,8 @@ public final class AlwaysOnTopManager {
 
 	/** Root pane client property marking the windows kept above the main window */
 	public static final String KEEP_ABOVE_APPLICATION = "screept.keepAboveApplication";
+	/** Client property of the root pane: the window decides by itself to be on top of everything, the pin rule leaves it alone */
+	public static final String FORCE_ON_TOP = "screept.forceAlwaysOnTop";
 
 	private static final boolean WINDOWS = System.getProperty("os.name", "").toLowerCase().startsWith("windows");
 	private static final int SWP_NOSIZE = 0x0001;
@@ -93,6 +95,19 @@ public final class AlwaysOnTopManager {
 		return pinned;
 	}
 
+	/**
+	 * Puts a window above every other window, also of other applications, ignoring the pin of the main window,
+	 * or gives it back to the pin rule (on = false).
+	 */
+	public static void keepOnTop(Window window, boolean on) {
+		if (window instanceof RootPaneContainer) {
+			((RootPaneContainer) window).getRootPane().putClientProperty(FORCE_ON_TOP, on ? Boolean.TRUE : null);
+		}
+		if (window.isAlwaysOnTopSupported()) {
+			window.setAlwaysOnTop(on || (isManaged(window) && pinned));
+		}
+	}
+
 	/** The window will stay above the main window while both are open (see class description) */
 	public static void keepAboveApplication(RootPaneContainer window) {
 		window.getRootPane().putClientProperty(KEEP_ABOVE_APPLICATION, Boolean.TRUE);
@@ -137,6 +152,10 @@ public final class AlwaysOnTopManager {
 
 	private static boolean isManaged(Window window) {
 		if (window == null || window == mainWindow) {
+			return false;
+		}
+		if (window instanceof RootPaneContainer
+				&& Boolean.TRUE.equals(((RootPaneContainer) window).getRootPane().getClientProperty(FORCE_ON_TOP))) {
 			return false;
 		}
 		if (window instanceof Frame) {
