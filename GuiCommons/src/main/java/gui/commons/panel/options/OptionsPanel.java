@@ -54,8 +54,16 @@ public class OptionsPanel extends JPanel implements Scrollable {
 		add(noResults, "growx, gaptop 30");
 	}
 
+	private java.util.Map<String, String> helpTexts = java.util.Collections.emptyMap();
+
+	/** Descriptions popped up when the mouse rests on an option, by row label or checkbox text; set before adding the sections */
+	public void setHelpTexts(java.util.Map<String, String> helpTexts) {
+		this.helpTexts = helpTexts;
+	}
+
 	public OptionSection addSection(String title, String description) {
 		OptionSection section = new OptionSection(title, description, 0);
+		section.setHelpTexts(helpTexts);
 		sections.add(section);
 		add(section, "growx");
 		return section;

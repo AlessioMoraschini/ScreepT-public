@@ -446,6 +446,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.setFractionalFontMetricsEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "fractionalFontMetricsEnabled"), TextEditorOption.DEF_fractionalFontMetricsEnabled));
 		textEditorOpt.setHyperLinksEnabled(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "hyperLinksEnabled"), TextEditorOption.DEF_hyperLinksEnabled));
 		textEditorOpt.setInterline(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "interline"), TextEditorOption.DEF_interline));
+		textEditorOpt.setShellInteractive(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "shellInteractive"), TextEditorOption.DEF_shellInteractive));
+		textEditorOpt.setMaxFileSizeMb(getIntVarFromString(iniReadFile.get(TEXT_EDITOR_OPT, "maxFileSizeMb"), TextEditorOption.DEF_maxFileSizeMb));
 		textEditorOpt.setTabSpacesEmulated(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "tabSpacesEmulated"), TextEditorOption.DEF_tabsSpacesEmulated));
 		textEditorOpt.setShowBracketsPopup(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "showBracketsPopup"), TextEditorOption.DEF_showBracketsPopup));
 		textEditorOpt.setSpellChecker(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "spellChecker"), TextEditorOption.DEF_spellChecker));
@@ -671,6 +673,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "markEndOfLine", textEditorOpt.markEndOfLine);
 		iniFile.put(TEXT_EDITOR_OPT, "tabSpacesEmulated", textEditorOpt.tabSpacesEmulated);
 		iniFile.put(TEXT_EDITOR_OPT, "interline", textEditorOpt.interline);
+		iniFile.put(TEXT_EDITOR_OPT, "maxFileSizeMb", textEditorOpt.maxFileSizeMb);
+		iniFile.put(TEXT_EDITOR_OPT, "shellInteractive", textEditorOpt.shellInteractive);
 		iniFile.put(TEXT_EDITOR_OPT, "showBracketsPopup", textEditorOpt.showBracketsPopup);
 		iniFile.put(TEXT_EDITOR_OPT, "spellChecker", textEditorOpt.spellChecker);
 		iniFile.put(TEXT_EDITOR_OPT, "prefDictspellChecker", textEditorOpt.prefDictspellChecker);

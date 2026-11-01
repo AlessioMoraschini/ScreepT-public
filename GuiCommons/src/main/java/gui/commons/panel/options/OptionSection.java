@@ -124,12 +124,20 @@ public class OptionSection extends JPanel {
 	/** Nested section, shown indented inside this one (e.g. "Editing" inside "Text editor") */
 	public OptionSection addSubsection(String title, String description) {
 		OptionSection subsection = new OptionSection(title, description, level + 1);
+		subsection.helpTexts = helpTexts;
 		subsections.add(subsection);
 		contentPanel.add(subsection, "growx, gaptop 6");
 		return subsection;
 	}
 
 	/** Labeled row: label on the left, controls (combo, spinner, slider, buttons...) on the right */
+	/** Descriptions shown on hover, by row label or checkbox text (set by the owning {@link OptionsPanel}) */
+	private java.util.Map<String, String> helpTexts = java.util.Collections.emptyMap();
+
+	void setHelpTexts(java.util.Map<String, String> helpTexts) {
+		this.helpTexts = helpTexts;
+	}
+
 	public OptionSection addRow(String label, JComponent... controls) {
 
 		JLabel rowLabel = new JLabel(label);
@@ -144,6 +152,7 @@ public class OptionSection extends JPanel {
 
 		rowsPanel.add(rowLabel);
 		rowsPanel.add(controlsPanel, "growx");
+		OptionHelp.attach(label, helpTexts.get(label), rowLabel, controlsPanel);
 		items.add(new Item(searchText(label, controls), rowLabel, controlsPanel));
 		return this;
 	}
@@ -152,6 +161,7 @@ public class OptionSection extends JPanel {
 		for (AbstractButton checkBox : checkBoxes) {
 			enlargeFont(checkBox);
 			checksPanel.add(checkBox, "growx");
+			OptionHelp.attach(checkBox.getText(), helpTexts.get(checkBox.getText()), checkBox);
 			items.add(new Item(searchText(checkBox.getText(), checkBox), checkBox));
 		}
 		return this;

@@ -97,6 +97,8 @@ public class TextEditorOption {
 	public static final boolean DEF_hyperLinksEnabled = false;
 	public static final boolean DEF_tabsSpacesEmulated = false;
 	public static final int DEF_interline = 2;
+	public static final int DEF_maxFileSizeMb = 100;
+	public static final boolean DEF_shellInteractive = false;
 	public static final boolean DEF_markEndOfLine = false;
 	public static final boolean DEF_showBracketsPopup = false;
 	public static final boolean DEF_spellChecker = false;
@@ -172,6 +174,9 @@ public class TextEditorOption {
 	public boolean roundedSelectionEdges;
 	public boolean useFocusableTips;
 	public int interline;
+	public int maxFileSizeMb;
+	/** Shell panels start in interactive (terminal) mode instead of text mode */
+	public boolean shellInteractive;
 	public boolean tabSpacesEmulated;
 	public boolean markEndOfLine;
 	public boolean showBracketsPopup;
@@ -255,6 +260,8 @@ public class TextEditorOption {
 		fractionalFontMetricsEnabled = DEF_fractionalFontMetricsEnabled;
 		hyperLinksEnabled = DEF_fractionalFontMetricsEnabled;
 		interline = DEF_interline;
+		maxFileSizeMb = DEF_maxFileSizeMb;
+		shellInteractive = DEF_shellInteractive;
 		tabSpacesEmulated = DEF_tabsSpacesEmulated;
 		markEndOfLine = DEF_markEndOfLine;
 		showBracketsPopup = DEF_showBracketsPopup;
@@ -310,6 +317,24 @@ public class TextEditorOption {
 
 	public void setLastTagsUsed(LimitedConcurrentList<String> lastTagsUsed) {
 		this.lastTagsUsed = lastTagsUsed;
+	}
+
+	public boolean isShellInteractive() {
+		return shellInteractive;
+	}
+
+	public void setShellInteractive(boolean shellInteractive) {
+		this.shellInteractive = shellInteractive;
+	}
+
+	public int getMaxFileSizeMb() {
+		return maxFileSizeMb;
+	}
+
+	/** Also updates the runtime limit used by the editor to decide when to propose LogSearch */
+	public void setMaxFileSizeMb(int maxFileSizeMb) {
+		this.maxFileSizeMb = Math.max(1, maxFileSizeMb);
+		GeneralConfig.MAX_FILE_SIZE_TXT_EDITOR_KB = this.maxFileSizeMb * 1024;
 	}
 
 	public int getInterline() {

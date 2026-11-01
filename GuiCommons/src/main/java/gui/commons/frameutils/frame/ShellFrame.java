@@ -123,6 +123,7 @@ public class ShellFrame extends ParentFrame {
 						setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 						return;
 					}
+					((ShellReadWritePanel)payloadPanel).shutdownTerminal();
 					setVisible(false);
 				}
 				setDefaultCloseOperation(DISPOSE_ON_CLOSE);

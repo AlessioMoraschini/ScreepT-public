@@ -77,7 +77,29 @@
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>5.2.0</version>
+			<version>5.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+			<version>5.13.0</version>
+		</dependency>
+
+		<!-- Pseudo terminal for the interactive shell (Windows winpty / ConPTY, Linux, macOS), Java 8 build; its own dependencies are declared here -->
+		<dependency>
+			<groupId>org.jetbrains.pty4j</groupId>
+			<artifactId>pty4j</artifactId>
+			<version>0.12.10-jdk8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>20.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.36</version>
 		</dependency>
 
 		<!-- Base of ScreepT Dark LAF (gui.commons.guistyle.laf), Java 8 compatible, no transitive deps -->

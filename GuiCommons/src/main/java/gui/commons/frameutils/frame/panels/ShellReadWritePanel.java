@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -37,6 +38,7 @@ import gui.commons.frameutils.frame.om.ConsoleConcatenationModeWindows;
 import gui.commons.frameutils.frame.panels.arch.ParentPanel;
 import gui.commons.frameutils.frame.panels.common.LoadNewSavePanel;
 import gui.commons.frameutils.frame.panels.common.PlayStopPausePanel;
+import gui.commons.frameutils.frame.terminal.TerminalPanel;
 import gui.commons.frameutils.shortcuts.ShellShortcutsListener;
 import gui.commons.splitpanel.SplitPaneUtils;
 import net.miginfocom.swing.MigLayout;
@@ -77,6 +79,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	public JTextField interactiveInputField;
 	public JCheckBox checkBoxConcatenation;
 	public JCheckBox checkBoxAutoscroll;
+	public JCheckBox checkBoxInteractive;
 	public JLabel labelConcatenationMode;
 	public JLabel lblInteractiveInputDescription;
 	public JLabel lblCurrentFile;
@@ -88,6 +91,11 @@ public class ShellReadWritePanel extends ParentPanel {
 	public File loadedFile;
 
 	private Process process;
+
+	/** Interactive mode: a real terminal (colors, live programs) replaces the text output */
+	private TerminalPanel terminal;
+	private boolean interactiveStartupValue;
+	private Consumer<Boolean> onInteractiveChanged;
 
 	private JFrame parentFrame;
 
@@ -157,7 +165,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	public void initGui() {
 		setLayout(new MigLayout(
 				"fill, insets 1, hidemode 2",
-				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][10px][60px, grow][20px]",
+				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][125px][60px, grow][20px]",
 				"[25px:25px][:0px:30px][50px,grow]"));
 
 		// HEADER
@@ -191,6 +199,10 @@ public class ShellReadWritePanel extends ParentPanel {
 		comboConcatenationMode = new JComboBox<String>(getComboModes());
 		comboConcatenationMode.setCursor(GuiUtils.CURSOR_HAND);
 		add(comboConcatenationMode, "cell 6 0 1 1, alignx right");
+
+		checkBoxInteractive = ScreepTGuiFactory.getCheckBox("Interactive", "Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output", false);
+		checkBoxInteractive.setEnabled(TerminalPanel.isSupported());
+		add(checkBoxInteractive, "cell 7 0 1 1,alignx center, aligny center");
 
 		lblCurrentFile = ScreepTGuiFactory.getLabel("[No file loaded]", null, null, null, true);
 		lblCurrentFile.setForeground(Color.DARK_GRAY);
@@ -244,6 +256,104 @@ public class ShellReadWritePanel extends ParentPanel {
 		commandTextArea.requestFocusInWindow();
 
 		setInteractiveInputMode(false);
+		SwingUtilities.invokeLater(() -> {
+			if (interactiveStartupValue) {
+				setTerminalMode(true);
+			}
+		});
+	}
+
+	/** Initial state of the interactive checkbox (from the saved configuration) */
+	public void setInteractiveMode(boolean interactive) {
+		interactiveStartupValue = interactive;
+		if (checkBoxInteractive != null && checkBoxInteractive.isEnabled()) {
+			setTerminalMode(interactive);
+		}
+	}
+
+	public boolean isInteractiveMode() {
+		return checkBoxInteractive != null && checkBoxInteractive.isSelected();
+	}
+
+	/** Called every time the user switches between interactive and text mode */
+	public void setOnInteractiveChanged(Consumer<Boolean> onInteractiveChanged) {
+		this.onInteractiveChanged = onInteractiveChanged;
+	}
+
+	/** Closes the interactive console, if any (call when the window closes) */
+	public void shutdownTerminal() {
+		if (terminal != null) {
+			terminal.dispose();
+		}
+	}
+
+	private void setTerminalMode(boolean interactive) {
+		if (interactive == (terminal != null && splitPane.getBottomComponent() == terminal)) {
+			checkBoxInteractive.setSelected(interactive);
+			return;
+		}
+		if (interactive) {
+			if (process != null) {
+				checkBoxInteractive.setSelected(false);
+				dialogHelper.info("Stop the running command before switching to interactive mode.", "Interactive mode");
+				return;
+			}
+			if (terminal == null) {
+				terminal = new TerminalPanel();
+				terminal.setTerminalFontSize(GeneralConfig.SHELL_PANEL_FONT_SIZE);
+				terminal.setRestartAction(this::startTerminal);
+			}
+			int divider = splitPane.getDividerLocation();
+			splitPane.setBottomComponent(terminal);
+			splitPane.setDividerLocation(divider);
+			checkBoxInteractive.setSelected(true);
+			startTerminal();
+		} else {
+			int divider = splitPane.getDividerLocation();
+			if (terminal != null) {
+				terminal.stop();
+			}
+			splitPane.setBottomComponent(scrollPaneBottom);
+			splitPane.setDividerLocation(divider);
+			checkBoxInteractive.setSelected(false);
+		}
+		if (onInteractiveChanged != null) {
+			onInteractiveChanged.accept(interactive);
+		}
+	}
+
+	private void startTerminal() {
+		try {
+			// the terminal opens in the folder of the loaded script, else in the home of the user
+			File folder = loadedFile != null && loadedFile.getParentFile() != null && loadedFile.getParentFile().isDirectory()
+					? loadedFile.getParentFile() : new File(System.getProperty("user.home"));
+			terminal.start(folder.getAbsolutePath());
+		} catch (Exception e) {
+			logger.error("Can't start the interactive terminal", e);
+			dialogHelper.error("Can't start the interactive terminal: " + e.getMessage());
+			setTerminalMode(false);
+		}
+	}
+
+	/** Types the selected (or current block of) commands into the interactive terminal and presses Enter */
+	private void runInTerminal() {
+		boolean concatenate = checkBoxConcatenation.isSelected();
+		String command;
+		try {
+			command = concatenate
+					? RXTextUtilities.getSelectedOrBlockText(commandTextArea, true, (String) comboConcatenationMode.getSelectedItem())
+					: RXTextUtilities.getSelectedOrBlockText(commandTextArea, true, EOL.LF.eol);
+		} catch (Exception e) {
+			logger.error("Can't read the commands to launch", e);
+			return;
+		}
+		if (!terminal.isAlive()) {
+			startTerminal();
+		}
+		if (!StringWorker.isEmpty(command)) {
+			terminal.sendString(command.replace("\r\n", "\n").replace('\n', '\r') + "\r");
+		}
+		terminal.focusTerminal();
 	}
 
 	public void setSyncAction(Runnable action) {
@@ -283,6 +393,8 @@ public class ShellReadWritePanel extends ParentPanel {
 				}
 			}
 		});
+
+		checkBoxInteractive.addActionListener(e -> setTerminalMode(checkBoxInteractive.isSelected()));
 
 		checkBoxConcatenation.addActionListener((e)->{
 			labelConcatenationMode.setEnabled(checkBoxConcatenation.isSelected());
@@ -331,6 +443,13 @@ public class ShellReadWritePanel extends ParentPanel {
 	private Runnable stopAction() {
 		return () -> {
 
+			if (terminal != null && splitPane.getBottomComponent() == terminal) {
+				terminal.stop();
+				playStopPausePanel.initButtons();
+				terminal.focusTerminal();
+				return;
+			}
+
 			GuiUtils.giveFocusToComponent(commandTextArea);
 			GuiUtils.mouseClick(commandTextArea.getLocationOnScreen().x + 10, commandTextArea.getLocationOnScreen().y + 10);
 			GuiUtils.launchThreadSafeSwing(() -> {
@@ -366,6 +485,11 @@ public class ShellReadWritePanel extends ParentPanel {
 
 	private Runnable playAction() {
 		return () -> {
+			if (terminal != null && splitPane.getBottomComponent() == terminal) {
+				runInTerminal();
+				playStopPausePanel.initButtons();
+				return;
+			}
 			GuiUtils.launchThreadSafeSwing(() -> {
 				String batFile = null;
 				try {
