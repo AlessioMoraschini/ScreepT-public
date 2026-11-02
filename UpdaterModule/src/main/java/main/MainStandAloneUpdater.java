@@ -264,8 +264,13 @@ public class MainStandAloneUpdater {
 				restorePropertiesToKeep(backupProperties, MAIN_APP_PROPERTIES_PATH);
 				saveNewJarRef(resourcesFilePathsMappings, newJar);
 
-				logger.info("deleting old jar...");
-				FileUtils.deleteQuietly(oldJar);
+				// same name (update to the very same version): deleting it would remove the new jar just copied
+				if (oldJar != null && !oldJar.getName().equals(newJar.getName())) {
+					logger.info("deleting old jar...");
+					FileUtils.deleteQuietly(oldJar);
+				} else {
+					logger.info("old jar has the same name of the new one: not deleted");
+				}
 
 				logger.info("Completed!");
 				updateProgressMonitor.update(100, "Completed! Restarting ScreepT...", true);
