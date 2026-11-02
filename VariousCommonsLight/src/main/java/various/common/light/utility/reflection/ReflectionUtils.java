@@ -49,9 +49,15 @@ public class ReflectionUtils {
 		List<T> result = new ArrayList<>();
 		
 		for(Field i_field : fields) {
-			i_field.setAccessible(true);
 			if(filterType.isAssignableFrom(i_field.getType())) {
-				T positiveMatch = filterType.cast(i_field.get(parentObjInstance));
+				// Java 9+ forbids setAccessible on private fields of JDK classes (InaccessibleObjectException): such fields are skipped
+				T positiveMatch;
+				try {
+					i_field.setAccessible(true);
+					positiveMatch = filterType.cast(i_field.get(parentObjInstance));
+				} catch (RuntimeException e) {
+					continue;
+				}
 				result.add(positiveMatch);
 			}
 		}
@@ -74,10 +80,15 @@ public class ReflectionUtils {
 		List<T> result = new ArrayList<>();
 		
 		for(Field i_field : fields) {
-			i_field.setAccessible(true);
-			
 			if(filterType.isAssignableFrom(i_field.getType())) {
-				T positiveMatch = filterType.cast(i_field.get(parentObjInstance));
+				// Java 9+ forbids setAccessible on private fields of JDK classes (InaccessibleObjectException): such fields are skipped
+				T positiveMatch;
+				try {
+					i_field.setAccessible(true);
+					positiveMatch = filterType.cast(i_field.get(parentObjInstance));
+				} catch (RuntimeException e) {
+					continue;
+				}
 				
 				if (discardMatches) {
 					if (!i_field.getName().matches(fieldNameFilter)) {
@@ -178,10 +189,15 @@ public class ReflectionUtils {
 		List<T> result = new ArrayList<>();
 		
 		for(Field i_field : fields) {
-			i_field.setAccessible(true);
-			
 			if(filterType.isAssignableFrom(i_field.getType())) {
-				T positiveMatch = filterType.cast(i_field.get(parentObjInstance));
+				// Java 9+ forbids setAccessible on private fields of JDK classes (InaccessibleObjectException): such fields are skipped
+				T positiveMatch;
+				try {
+					i_field.setAccessible(true);
+					positiveMatch = filterType.cast(i_field.get(parentObjInstance));
+				} catch (RuntimeException e) {
+					continue;
+				}
 				
 				if (discardMatches) {
 					
