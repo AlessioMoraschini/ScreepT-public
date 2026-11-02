@@ -312,16 +312,43 @@ public class SysUtils {
 			}
 		} // END WINDOWS
 
+		// MULTI-PLATFORM extra locations: local "jre" folder (first), JAVA_HOME, PATH, other vendors and version managers
+		String localJre = new File(JvmLocator.LOCAL_JRE_DIR).getAbsolutePath();
+		for (String extraHome : JvmLocator.findExtraJvmHomes(OS)) {
+			if (containsSameHome(foundJVMS, extraHome)) {
+				continue;
+			}
+			if (extraHome.startsWith(localJre)) {
+				foundJVMS.add(0, extraHome);
+			} else {
+				foundJVMS.add(extraHome);
+			}
+		}
+
 		// MULTI-PLATFORM : Add current if not yet present into list
 		String canonicalCurrentPath;
 		canonicalCurrentPath = getCurrentJavaHome().getAbsolutePath();
 		logger.info("Current jvm is : " + canonicalCurrentPath);
-		if(!foundJVMS.contains(canonicalCurrentPath) && !foundJVMS.contains(new File(canonicalCurrentPath).getParentFile().getAbsolutePath())) {
+		if(!containsSameHome(foundJVMS, canonicalCurrentPath) && !containsSameHome(foundJVMS, new File(canonicalCurrentPath).getParentFile().getAbsolutePath())) {
 			foundJVMS.add(canonicalCurrentPath);
 			logger.info(canonicalCurrentPath + " not found in previously retrieved list -> added to JVM list");
 		}
 
 		return foundJVMS;
+	}
+
+	private static boolean containsSameHome(List<String> homes, String candidate) {
+		try {
+			File canonicalCandidate = new File(candidate).getCanonicalFile();
+			for (String home : homes) {
+				if (new File(home).getCanonicalFile().equals(canonicalCandidate)) {
+					return true;
+				}
+			}
+		} catch (IOException e) {
+			return homes.contains(candidate);
+		}
+		return false;
 	}
 
 	public static String getCurrentJVMversion() {
@@ -330,6 +357,11 @@ public class SysUtils {
 
 	public static String getJavaVersionFromBin(String javaBinDirPath) throws IOException {
 		File parentOfBin = new File(javaBinDirPath).getParentFile();
+		// the version is on the JAVA_VERSION line, which is not always the first one of the release file
+		String declared = JvmLocator.versionOfHome(parentOfBin);
+		if (!declared.isEmpty()) {
+			return declared;
+		}
 		File releaseFile = new File(parentOfBin.getAbsolutePath(), "release");
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(releaseFile));
 		String version = bufferedReader.readLine();

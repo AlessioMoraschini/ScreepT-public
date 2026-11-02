@@ -21,6 +21,7 @@ import java.lang.management.OperatingSystemMXBean;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
@@ -44,7 +45,8 @@ public class ResourceUsageLabel extends JLabel {
 	private static final float SEPARATOR_VISIBILITY = 0.35f;
 
 	private final Runtime runtime = Runtime.getRuntime();
-	private final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+	/** Obtained off the EDT: the first use of the management classes takes a few hundred ms */
+	private volatile OperatingSystemMXBean os;
 	private final Timer timer = new Timer(REFRESH_MS, e -> refresh());
 
 	public ResourceUsageLabel() {
@@ -53,8 +55,17 @@ public class ResourceUsageLabel extends JLabel {
 		setVerticalAlignment(SwingConstants.CENTER);
 		setAlignmentY(CENTER_ALIGNMENT);
 		setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 14));
-		refresh();
-		timer.start();
+		// loading the management classes is slow: do it in background so the main window opens sooner
+		Thread loader = new Thread(() -> {
+			os = ManagementFactory.getOperatingSystemMXBean();
+			processCpuLoad();
+			SwingUtilities.invokeLater(() -> {
+				refresh();
+				timer.start();
+			});
+		}, "ResourceUsageLabel-init");
+		loader.setDaemon(true);
+		loader.start();
 	}
 
 	/** A bit bigger than the default label font, also after a look and feel switch */
