@@ -102,6 +102,18 @@
 
 	<dependencies>
 
+		<!-- JavaScript engine for Java 15+ (Nashorn was removed from the JDK); on Java 8-14 the JDK one is found first. Java 8 compatible. -->
+		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7.14</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino-engine</artifactId>
+			<version>1.7.14</version>
+		</dependency>
+
 		<!-- Exclude test only dependencies from build -->
 		<dependency>
 			<groupId>junit</groupId>

@@ -95,9 +95,13 @@ public abstract class AbstractPluginApplicationApi {
 		classLoadersList.add(ClasspathHelper.contextClassLoader());
 		classLoadersList.add(ClasspathHelper.staticClassLoader());
 
+		// Java 9+ app class loader is not an URLClassLoader: forClassLoader finds nothing, so java.class.path is added too
+		Set<java.net.URL> urls = new HashSet<>(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])));
+		urls.addAll(ClasspathHelper.forJavaClassPath());
+
 		Reflections reflections = new Reflections(new ConfigurationBuilder()
 				.setScanners(new SubTypesScanner(false), new ResourcesScanner())
-				.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
+				.setUrls(urls)
 				.filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(PACKAGE_PLUGINS_ROOT))));
 
 		return reflections;

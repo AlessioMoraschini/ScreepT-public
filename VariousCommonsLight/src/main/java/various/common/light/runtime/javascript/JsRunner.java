@@ -34,6 +34,9 @@ public class JsRunner {
 	public JsRunner() {
 		manager = new ScriptEngineManager();
 		engine = manager.getEngineByName("JavaScript");
+		if (engine == null) {
+			engine = manager.getEngineByName("rhino");
+		}
 	}
 
 	public void initRunnerFromSingleJsLib(String librayPath) throws ScriptException, IOException {

@@ -102,6 +102,18 @@
 			<version>1.7.36</version>
 		</dependency>
 
+		<!-- Html viewer (gui.commons.frameutils.html.HtmlViewerPanel): Flying Saucer 9.4.0 is the last release built for Java 8 -->
+		<dependency>
+			<groupId>org.xhtmlrenderer</groupId>
+			<artifactId>flying-saucer-core</artifactId>
+			<version>9.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.12.2</version>
+		</dependency>
+
 		<!-- Base of ScreepT Dark LAF (gui.commons.guistyle.laf), Java 8 compatible, no transitive deps -->
 		<dependency>
 			<groupId>com.formdev</groupId>

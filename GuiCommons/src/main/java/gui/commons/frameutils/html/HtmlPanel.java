@@ -34,12 +34,12 @@ public class HtmlPanel extends JPanel{
 	static Logger logger = Logger.getLogger(HtmlPanel.class);
 	
 	private JPanel headerPanel;
-	public JavaFxPanelHtml jfxPanel;
+	public HtmlViewerPanel viewer;
 	public JScrollPane mainScrollPane;
 	private JEditorPane mainHtmlEditorPane;
 	private String indexID = "indexList";
 
-	public boolean javaFxPaneSelected = false;
+	public boolean viewerSelected = false;
 	
 	/**
 	 * Simple java swing version - limited css and effects
@@ -73,51 +73,30 @@ public class HtmlPanel extends JPanel{
 	}
 
 	/**
-	 * Java fx test contructor
-	 * @param headerHeight
-	 * @param URL
+	 * Full viewer (Flying Saucer, no JavaFX): table of contents, search, zoom, themed page.
+	 * @param headerHeight not used anymore: the viewer has its own toolbar
+	 * @param indexID not used anymore: the table of contents is built from the headings
 	 */
 	public HtmlPanel(Integer headerHeight, String indexID) {
-		
 		logger.info(this.getClass().getName() + " Starting...");
-		
-		this.indexID = indexID;
-		javaFxPaneSelected = true;
-		jfxPanel = new JavaFxPanelHtml();
-//		jfxPanel.add(new JLabel("Loading..."));
-		
-		setBorder(BorderFactory.createEmptyBorder());
-		setBackground(Color.BLACK);
-		setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+", fill, insets 0 ", "[100px][100px,grow][100px]", "[:"+headerHeight+"px:"+headerHeight+"px][100px,grow]"));
-		
-		headerPanel = new HeaderPanelSearch(jfxPanel);
-		headerPanel.setBorder(new EmptyBorder(0,0,0,0));
-		headerPanel.setBackground(Color.BLACK);
-		jfxPanel.setBorder(BorderFactory.createEmptyBorder());
-		if (headerHeight > 0) {
-			add(headerPanel, "cell 0 0 3 1,grow");
-			add(jfxPanel, "cell 0 1 3 1,grow");
-		}else {
-			add(jfxPanel, "cell 0 0 3 2,grow");
-		}
 
-//		mainScrollPane.setViewportView(jfxPanel);
-		
+		this.indexID = indexID;
+		viewerSelected = true;
+		viewer = new HtmlViewerPanel();
+		setBorder(BorderFactory.createEmptyBorder());
+		setLayout(new MigLayout("fill, insets 0"));
+		add(viewer, "grow");
+
 		logger.info(this.getClass().getName() + " Initialized!");
 	}
 
 	/**
-	 * Load into javaFx version panel
+	 * Load into the full viewer
 	 * @param pathToHtml
 	 */
 	public void loadHtmlFx(final String pathToHtml) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				logger.info("Loading html from: " + pathToHtml);
-				jfxPanel.loadUrl(pathToHtml, indexID);
-				logger.info(pathToHtml + " : Loaded!");
-			}
-		});
+		logger.info("Loading html from: " + pathToHtml);
+		viewer.load(pathToHtml);
 	}
 	
 	/**
@@ -128,8 +107,8 @@ public class HtmlPanel extends JPanel{
 		HtmlLoader.loadHtmlInEditPane(mainHtmlEditorPane, pathToHtml);
 	}
 	
-	public JavaFxPanelHtml getFxHtmlPane() {
-		return jfxPanel;
+	public HtmlViewerPanel getViewer() {
+		return viewer;
 	}
 	
 	public JEditorPane getMainHtmlEditorPane() {

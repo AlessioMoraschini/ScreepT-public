@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.activation.UnsupportedDataTypeException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -124,7 +123,7 @@ public class GenericFileChooserDialog {
 
 	/**JFRAME - only img supported extension
 	 * this method select a file from the user (only supported images files),if nothing is selected returns null
-	 * @throws UnsupportedDataTypeException if image type is not supported
+	 * @throws java.io.IOException if image type is not supported
 	 */
 	public File fileImgRead(JPanel parent, String ext) throws Exception {
 
