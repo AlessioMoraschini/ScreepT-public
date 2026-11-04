@@ -11,6 +11,7 @@
  */
 package gui.commons.mouseutils;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.AWTEvent;
 import java.awt.AWTException;
 import java.awt.Color;
@@ -101,7 +102,7 @@ public class MousePointerUtils {
 						altPressed = keyEvent.getID() == KeyEvent.KEY_PRESSED;
 					}
 
-					if (keyEvent.isControlDown() && keyEvent.isShiftDown()) {
+					if (ShortcutKeys.isCtrlDown(keyEvent) && keyEvent.isShiftDown()) {
 						if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
 							logger.debug(MouseInfo.getPointerInfo().getLocation() + " | ");
 							logger.debug(event);

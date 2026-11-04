@@ -11,6 +11,7 @@
  */
 package gui.commons.mouseutils;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -415,18 +416,18 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 		if(tree.hasFocus()) try {
 			tree.setCursor(GuiUtils.CURSOR_WAIT);
 
-			if (!event.isAltDown() && !event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
+			if (!event.isAltDown() && !ShortcutKeys.isCtrlDown(event) && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_ENTER && tree.getSelectionCount() == 1) {
 				if(itemLoadFile != null) {
 					itemLoadFile.doClick();
 				}
-			} else if (!event.isAltDown() && !event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == 127 && tree.getSelectionCount() > 0) {
+			} else if (!event.isAltDown() && !ShortcutKeys.isCtrlDown(event) && !event.isShiftDown() && event.getKeyCode() == 127 && tree.getSelectionCount() > 0) {
 				if(deleteItem != null) {
 					deleteItem.doClick();
 				}
-			} else if (!event.isAltDown() && event.isControlDown() && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() == 1) {
+			} else if (!event.isAltDown() && ShortcutKeys.isCtrlDown(event) && !event.isShiftDown() && event.getKeyCode() == KeyEvent.VK_V && tree.getSelectionCount() == 1) {
 				pasteFromClipboard();
 
-			} else if(event.isControlDown() && !event.isShiftDown() && !event.isAltDown() && event.getKeyCode() == KeyEvent.VK_C && tree.getSelectionCount() != 0) {
+			} else if(ShortcutKeys.isCtrlDown(event) && !event.isShiftDown() && !event.isAltDown() && event.getKeyCode() == KeyEvent.VK_C && tree.getSelectionCount() != 0) {
 				copySelectedFilesToClipboard();
 			}
 		} catch (Exception e) {

@@ -16,6 +16,13 @@
 		<relativePath>../../ScreepT-public/PluginsParent</relativePath>
 	</parent>
 
+	<repositories>
+		<repository>
+			<id>codecomparator-local</id>
+			<url>file:${project.basedir}/maven-repo</url>
+		</repository>
+	</repositories>
+
 	<!-- MIT LICENSE -->
 	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
@@ -43,11 +50,11 @@
 			<version>${ext.plugin.interface.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.devocative/jmeld -->
+		<!-- JMeld 3.4 (Java 8 build) from the project-local repository ./maven-repo -->
 		<dependency>
-		    <groupId>org.devocative</groupId>
+		    <groupId>am.design.thirdparty</groupId>
 		    <artifactId>jmeld</artifactId>
-		    <version>${jmeld.version}</version>
+		    <version>3.4</version>
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
@@ -104,9 +111,9 @@
 							<outputDirectory>${outdir}</outputDirectory>
 							<appendAssemblyId>false</appendAssemblyId>
 							<exclude>/**/*humbs.db</exclude>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
+							<descriptors>
+							<descriptor>src/assembly/plugin-fatjar.xml</descriptor>
+						</descriptors>
 						</configuration>
 					</execution>
 				</executions>

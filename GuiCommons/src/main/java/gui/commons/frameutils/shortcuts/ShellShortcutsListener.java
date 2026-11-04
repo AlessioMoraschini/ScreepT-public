@@ -1,5 +1,6 @@
 package gui.commons.frameutils.shortcuts;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
@@ -25,7 +26,7 @@ public class ShellShortcutsListener implements KeyEventDispatcher {
 			
 		} else if(e.getID() == KeyEvent.KEY_RELEASED && SwingUtilities.getWindowAncestor(panelRef).isFocusableWindow()) {
 			
-			if(e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown() && !e.isAltDown() && !e.isShiftDown()) {
+			if(e.getKeyCode() == KeyEvent.VK_ENTER && ShortcutKeys.isCtrlDown(e) && !e.isAltDown() && !e.isShiftDown()) {
 				panelRef.playStopPausePanel.getPlayButton().doClick();
 			}
 			

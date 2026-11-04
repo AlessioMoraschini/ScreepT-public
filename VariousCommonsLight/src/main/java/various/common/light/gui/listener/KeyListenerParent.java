@@ -1,5 +1,6 @@
 package various.common.light.gui.listener;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,7 +26,7 @@ public class KeyListenerParent {
 	public boolean dispatchKeyEvent(final KeyEvent e) {
 		
 		updateKeyCode(e);
-		lastNClicks.add(new ClickUpdate(e.getKeyCode(), e.isControlDown(), e.isAltDown(), e.isShiftDown()));
+		lastNClicks.add(new ClickUpdate(e.getKeyCode(), ShortcutKeys.isCtrlDown(e), e.isAltDown(), e.isShiftDown()));
 		
 		return false;
 	}
@@ -48,7 +49,7 @@ public class KeyListenerParent {
 	}
 
 	public boolean isShortcutKey(KeyEvent e) {
-		return (e.isAltDown() || e.isControlDown() || e.isShiftDown());
+		return (e.isAltDown() || ShortcutKeys.isCtrlDown(e) || e.isShiftDown());
 	}
 	
 	public boolean repeatedClicksInLimitedTime(KeyEvent e, int repeats, boolean ctrl, boolean alt, boolean shift, long maxInterval) {
@@ -56,7 +57,7 @@ public class KeyListenerParent {
 
 		if(lastNClicks.isFull() || lastNClicks.getSize() >= repeats) {
 			
-			if(e.isControlDown() == ctrl && e.isAltDown() == alt && e.isShiftDown() == shift) {
+			if(ShortcutKeys.isCtrlDown(e) == ctrl && e.isAltDown() == alt && e.isShiftDown() == shift) {
 				int nLastClicks = lastNClicks.getSize();
 				int limit = nLastClicks-1-repeats >= 0 ? nLastClicks-1-repeats : 0;
 				

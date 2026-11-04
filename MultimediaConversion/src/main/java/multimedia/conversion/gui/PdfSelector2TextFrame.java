@@ -62,7 +62,7 @@ public class PdfSelector2TextFrame extends JFrame {
 	public int WIDTH = 800;
 	public int HEIGHT = GuiUtilsExtended.getScreenSize().height-200;
 
-	private JScrollPane imageContainerPanel;
+	private JPanel imageContainerPanel;
 	private JTextArea txtAreaParsedText;
 	private JScrollPane textPreviewScrollPane;
 	private JButton btnLoadImage;
@@ -109,7 +109,7 @@ public class PdfSelector2TextFrame extends JFrame {
 		GuiUtilsExtended.showOnSameScreen(this, mainFrameParent);
 		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 
-		imageContainerPanel = new JScrollPane();
+		imageContainerPanel = new JPanel(new java.awt.BorderLayout());
 		imageContainerPanel.setBackground(Color.BLACK);
 		imageContainerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 
@@ -134,6 +134,7 @@ public class PdfSelector2TextFrame extends JFrame {
 		textPreviewScrollPane.setViewportView(txtAreaParsedText);
 
 		btnLoadImage = new JButton("Load Pdf");
+		btnLoadImage.setToolTipText("Choose a PDF file from disk and show it in the viewer above");
 		btnLoadImage.setBackground(new Color(230, 230, 250));
 		btnLoadImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLoadImage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD));
@@ -141,6 +142,7 @@ public class PdfSelector2TextFrame extends JFrame {
 		getContentPane().add(btnLoadImage, "cell 0 2,grow");
 
 		btnParseImage = new JButton("Extract text");
+		btnParseImage.setToolTipText("Read the text contained in the PDF (OCR if the pages are images) and show it in the box below");
 		btnParseImage.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		btnParseImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnParseImage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
@@ -148,6 +150,7 @@ public class PdfSelector2TextFrame extends JFrame {
 		getContentPane().add(btnParseImage, "cell 1 2,grow");
 
 		btnInjectSelected = new JButton("Inject Selected");
+		btnInjectSelected.setToolTipText("Insert the selected text (or all the extracted text if nothing is selected) into the open text editor");
 		btnInjectSelected.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		btnInjectSelected.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnInjectSelected.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
@@ -269,22 +272,21 @@ public class PdfSelector2TextFrame extends JFrame {
 		});
 	}
 
-	private void initDisplayPanel(JScrollPane father) {
+	private void initDisplayPanel(JPanel father) {
 		controllerPdf = new SwingController();
 		// We created the SwingViewFactory configured with the controller
 		SwingViewBuilder factory = new SwingViewBuilder(controllerPdf);
 		// We use the factory to build a preconfigured JPanel
 		// with a full and active viewer user interface.
 		JPanel viewerComponentPanel = factory.buildViewerPanel();
-		viewerComponentPanel.setPreferredSize(new Dimension(400, 243));
-		viewerComponentPanel.setMaximumSize(new Dimension(400, 243));
 		// We add keyboard command
 		ComponentKeyBinding.install(controllerPdf, viewerComponentPanel);
 		// add interactive mouse link annotation support via callback
 		controllerPdf.getDocumentViewController().setAnnotationCallback(
 		              new org.icepdf.ri.common.MyAnnotationCallback(controllerPdf.getDocumentViewController()));
 
-		father.setViewportView(viewerComponentPanel);
+		// the viewer has its own scroll pane: it must not be nested in another one (scroll glitches)
+		father.add(viewerComponentPanel, java.awt.BorderLayout.CENTER);
 	}
 
 	private void displayPdf(File sourceFile) throws IOException {

@@ -11,6 +11,7 @@
  */
 package gui.commons.panel.options;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -83,7 +84,7 @@ public class OptionsHeader extends JPanel {
 			}
 		});
 		window.getRootPane().registerKeyboardAction(e -> searchField.requestFocusInWindow(),
-				KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
+				KeyStroke.getKeyStroke(KeyEvent.VK_F, ShortcutKeys.MENU_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 		add(titleLabel);
 		add(searchField, "w 300!");

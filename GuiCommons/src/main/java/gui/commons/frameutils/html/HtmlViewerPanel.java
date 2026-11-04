@@ -3,6 +3,7 @@
  */
 package gui.commons.frameutils.html;
 
+import various.common.light.gui.ShortcutKeys;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -500,16 +501,16 @@ public class HtmlViewerPanel extends JPanel {
 	}
 
 	private void installKeys() {
-		bind(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK), "find", this::focusSearch);
+		bind(KeyStroke.getKeyStroke(KeyEvent.VK_F, ShortcutKeys.MENU_DOWN_MASK), "find", this::focusSearch);
 		bind(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "findNext", () -> step(true));
 		bind(KeyStroke.getKeyStroke(KeyEvent.VK_F3, InputEvent.SHIFT_DOWN_MASK), "findPrev", () -> step(false));
-		bind(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_DOWN_MASK), "zoomIn", this::zoomIn);
-		bind(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_DOWN_MASK), "zoomIn2", this::zoomIn);
-		bind(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK), "zoomOut", this::zoomOut);
-		bind(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK), "zoomOut2", this::zoomOut);
-		bind(KeyStroke.getKeyStroke(KeyEvent.VK_0, InputEvent.CTRL_DOWN_MASK), "zoomReset", this::zoomReset);
+		bind(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, ShortcutKeys.MENU_DOWN_MASK), "zoomIn", this::zoomIn);
+		bind(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, ShortcutKeys.MENU_DOWN_MASK), "zoomIn2", this::zoomIn);
+		bind(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, ShortcutKeys.MENU_DOWN_MASK), "zoomOut", this::zoomOut);
+		bind(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, ShortcutKeys.MENU_DOWN_MASK), "zoomOut2", this::zoomOut);
+		bind(KeyStroke.getKeyStroke(KeyEvent.VK_0, ShortcutKeys.MENU_DOWN_MASK), "zoomReset", this::zoomReset);
 		xhtmlScroll.addMouseWheelListener(e -> {
-			if (e.isControlDown()) {
+			if (ShortcutKeys.isCtrlDown(e)) {
 				if (e.getWheelRotation() < 0) {
 					zoomIn();
 				} else {

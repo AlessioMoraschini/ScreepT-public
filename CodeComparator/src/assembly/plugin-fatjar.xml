@@ -1,0 +1,36 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<!-- Same as the predefined jar-with-dependencies, except that the original JMeld LookAndFeelManager
+		is left out: the ScreepT version of that class (src/main/java/org/jmeld/ui/util) must be the only one,
+		otherwise JMeld would install its own look and feel in the whole application. -->
+	<id>jar-with-dependencies</id>
+	<formats>
+		<format>jar</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>/</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
+			<unpack>true</unpack>
+			<scope>runtime</scope>
+			<unpackOptions>
+				<excludes>
+					<exclude>org/jmeld/ui/util/LookAndFeelManager.class</exclude>
+					<exclude>org/jmeld/ui/RevisionBar*.class</exclude>
+					<exclude>org/jmeld/ui/SavePanelDialog*.class</exclude>
+					<!-- logging libraries are provided by the host application: the old copies bundled inside the JMeld 3.4 jar (slf4j 1.5.6, 2008) hid the newer ones and broke the PDF reader -->
+					<exclude>org/slf4j/**</exclude>
+					<exclude>org/apache/log4j/**</exclude>
+				</excludes>
+			</unpackOptions>
+		</dependencySet>
+	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.outputDirectory}</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>

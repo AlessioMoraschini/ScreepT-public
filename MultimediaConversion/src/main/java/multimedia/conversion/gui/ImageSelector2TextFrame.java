@@ -136,6 +136,7 @@ public class ImageSelector2TextFrame extends JFrame{
 		textPreviewScrollPane.setViewportView(txtAreaParsedText);
 		
 		btnLoadImage = new JButton("Load Image");
+		btnLoadImage.setToolTipText("Choose an image file from disk and show it in the preview above");
 		btnLoadImage.setBackground(new Color(230, 230, 250));
 		btnLoadImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLoadImage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_LOAD));
@@ -143,6 +144,7 @@ public class ImageSelector2TextFrame extends JFrame{
 		getContentPane().add(btnLoadImage, "cell 0 2,grow");
 		
 		btnParseImage = new JButton("Extract text");
+		btnParseImage.setToolTipText("Read the text contained in the image (OCR) and show it in the box below");
 		btnParseImage.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		btnParseImage.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnParseImage.setIcon(new ImageIcon(IconsPathConfigurator.ICON_EXPORT_LOG));
@@ -150,6 +152,7 @@ public class ImageSelector2TextFrame extends JFrame{
 		getContentPane().add(btnParseImage, "cell 1 2,grow");
 		
 		btnInjectSelected = new JButton("Inject Selected");
+		btnInjectSelected.setToolTipText("Insert the selected text (or all the extracted text if nothing is selected) into the open text editor");
 		btnInjectSelected.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		btnInjectSelected.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnInjectSelected.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));
