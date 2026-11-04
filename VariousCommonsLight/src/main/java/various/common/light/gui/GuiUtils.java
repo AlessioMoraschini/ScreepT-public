@@ -786,22 +786,32 @@ public class GuiUtils {
 		return new Dimension(screen.width - (marginLeftRight + marginLeftRight), screen.height);
 	}
 
+	/**
+	 * Bounds of the monitor where a window must be placed: the one hosting it when it is already visible,
+	 * otherwise the monitor last used by the main ScreepT window (so launcher, plugin manager, progress bars and
+	 * dialogs always open where the application opens).
+	 */
+	public static Rectangle getTargetScreenBounds(Component component) {
+		if (component != null && component.isShowing() && component.getGraphicsConfiguration() != null) {
+			return component.getGraphicsConfiguration().getBounds();
+		}
+		return ScreenMemory.getLastScreenBounds();
+	}
+
 	public static void centerComponent(Component targetComponent, int percentSize) {
 		if (targetComponent != null) {
 			float percent = (float) percentSize / 100;
-			Dimension screenSize = (targetComponent instanceof JFrame) ? getScreenSize(targetComponent)
-					: getScreenSize();
-			int W = (int) (screenSize.width * percent);
-			int H = (int) (screenSize.height * percent);
+			Rectangle screen = getTargetScreenBounds(targetComponent);
+			int W = (int) (screen.width * percent);
+			int H = (int) (screen.height * percent);
 			targetComponent.setSize(W, H);
-			targetComponent.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+			targetComponent.setBounds(screen.x + (screen.width - W) / 2, screen.y + (screen.height - H) / 2, W, H);
 		}
 	}
 
 	public static void centerComponent(Component targetFrame, int W, int H) {
 		if (targetFrame != null) {
-			GraphicsConfiguration gc = targetFrame.getGraphicsConfiguration();
-			Rectangle bounds = gc.getBounds();
+			Rectangle bounds = getTargetScreenBounds(targetFrame);
 			int x = bounds.x + (bounds.width - W) / 2;
 			int y = bounds.y + (bounds.height - H) / 2;
 			targetFrame.setSize(W, H);
@@ -813,31 +823,30 @@ public class GuiUtils {
 		if (targetFrame == null) {
 			return;
 		}
-		Dimension screenSize = (targetFrame instanceof JFrame) ? getScreenSize(targetFrame) : getScreenSize();
-		Dimension frameSize = null;
-		frameSize = targetFrame.getSize();
+		Rectangle screen = getTargetScreenBounds(targetFrame);
+		Dimension frameSize = targetFrame.getSize();
 		int W = frameSize.width;
 		int H = frameSize.height;
 
-		targetFrame.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+		targetFrame.setBounds(screen.x + (screen.width - W) / 2, screen.y + (screen.height - H) / 2, W, H);
 	}
 
 	public static void centerFrame(JFrame targetFrame, int percentSize) {
 		if (targetFrame != null) {
 			float percent = (float) percentSize / 100;
-			Dimension screenSize = getScreenSize(targetFrame);
-			int W = (int) (screenSize.width * percent);
-			int H = (int) (screenSize.height * percent);
+			Rectangle screen = getTargetScreenBounds(targetFrame);
+			int W = (int) (screen.width * percent);
+			int H = (int) (screen.height * percent);
 			targetFrame.setSize(W, H);
-			targetFrame.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+			targetFrame.setBounds(screen.x + (screen.width - W) / 2, screen.y + (screen.height - H) / 2, W, H);
 		}
 	}
 
 	public static void centerFrame(JFrame targetFrame, int W, int H) {
 		if (targetFrame != null) {
-			Dimension screenSize = getScreenSize(targetFrame);
+			Rectangle screen = getTargetScreenBounds(targetFrame);
 			targetFrame.setSize(W, H);
-			targetFrame.setBounds(screenSize.width / 2 - W / 2, screenSize.height / 2 - H / 2, W, H);
+			targetFrame.setBounds(screen.x + (screen.width - W) / 2, screen.y + (screen.height - H) / 2, W, H);
 		}
 	}
 

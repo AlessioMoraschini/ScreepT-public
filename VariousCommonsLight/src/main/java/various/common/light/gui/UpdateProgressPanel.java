@@ -76,7 +76,7 @@ public class UpdateProgressPanel {
     	initSpecBar();
 
     	dialog.setVisible(true);
-    	dialog.setLocationRelativeTo(relativeTo);
+    	placeDialog();
     	dialog.repaint();
 
 		new Thread(new Runnable() {
@@ -135,7 +135,7 @@ public class UpdateProgressPanel {
 		            @Override
 					public void run() {
 		            	dialog.repaint();
-						dialog.setLocationRelativeTo(relativeTo);
+						placeDialog();
 
 		                try {
 		                	if (secondBar) {
@@ -170,7 +170,7 @@ public class UpdateProgressPanel {
 
         dialog.add(GeneralBar, gbc_genb);
         dialog.pack();
-        dialog.setLocationRelativeTo(relativeTo);
+        placeDialog();
         dialog.setVisible(true);
 	}
 
@@ -188,7 +188,7 @@ public class UpdateProgressPanel {
 
         dialog.add(pb, gbc_pb);
         dialog.pack();
-        dialog.setLocationRelativeTo(relativeTo);
+        placeDialog();
         dialog.setVisible(true);
 
 	}
@@ -493,10 +493,19 @@ public class UpdateProgressPanel {
 		dialog.setVisible(progBarEnabled);
 	}
 
+	/** Next to the given window if it is visible, otherwise on the monitor used by the main ScreepT window */
+	private void placeDialog() {
+		if (relativeTo != null && relativeTo.isShowing()) {
+			dialog.setLocationRelativeTo(relativeTo);
+		} else {
+			ScreenMemory.centerOnLastScreen(dialog);
+		}
+	}
+
 	public void setLocationRelativeTo(JFrame parent) {
 		relativeTo = parent;
 		if(dialog != null) {
-			dialog.setLocationRelativeTo(relativeTo);
+			placeDialog();
 		}
 	}
 

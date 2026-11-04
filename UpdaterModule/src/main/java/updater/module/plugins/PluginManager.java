@@ -164,6 +164,8 @@ public class PluginManager {
 		ArrayList<String> relativeNewCopied = FileVarious.getPathsRelativeToOtherFile(FileVarious.listFiles(unzippedPlugin, new ArrayList<>()), unzippedPlugin);
 		plugin.setInstallationCompleted(true);
 		addToInstalledList(plugin);
+		// an update installs over the files left "to delete at next start" by the removal of the old version: they are the new ones now
+		removeInstalledFilesFromPendingDelete(relativeNewCopied);
 
 		String installedList = PropertiesManager.listToString(relativeNewCopied, installedPluginPropsListSeparator);
 		installedPluginProperties.commentedProperties.setProperty(plugin.getName(), installedList);
@@ -565,6 +567,49 @@ public class PluginManager {
 		installedPluginProperties.savePropertyChecked(
 				installedPluginPendingDeleteListKey,
 				PropertiesManager.listToString(currentlyPending, ";"));
+	}
+
+	/**
+	 * Removes from the "delete at next start" list the files that have just been installed. Without this an updated
+	 * plugin was deleted by the launcher at the next start (or, when the file was in use, the list stayed full and the
+	 * application restarted the launcher at every exit).
+	 */
+	public void removeInstalledFilesFromPendingDelete(ArrayList<String> relativeInstalledPaths) {
+		ArrayList<String> pending = installedPluginProperties.getStringList(installedPluginPendingDeleteListKey, ";");
+		if (pending.isEmpty() || relativeInstalledPaths == null || relativeInstalledPaths.isEmpty()) {
+			return;
+		}
+
+		ArrayList<String> kept = new ArrayList<>();
+		for (String pendingPath : pending) {
+			boolean installedNow = false;
+			for (String relative : relativeInstalledPaths) {
+				if (isSamePath(pendingPath, new File(APPLICATION_ROOT_DIR, relative))) {
+					installedNow = true;
+					break;
+				}
+			}
+			if (!installedNow) {
+				kept.add(pendingPath);
+			}
+		}
+
+		if (kept.size() != pending.size()) {
+			if (kept.isEmpty()) {
+				installedPluginProperties.removeProperty(installedPluginPendingDeleteListKey);
+			} else {
+				installedPluginProperties.savePropertyChecked(installedPluginPendingDeleteListKey, PropertiesManager.listToString(kept, ";"));
+			}
+			logger.info("Pending deletes of files just installed removed from the list");
+		}
+	}
+
+	private static boolean isSamePath(String path, File other) {
+		try {
+			return new File(path).getCanonicalFile().equals(other.getCanonicalFile());
+		} catch (IOException e) {
+			return new File(path).getAbsoluteFile().equals(other.getAbsoluteFile());
+		}
 	}
 
 	public void updatePendingPluginUpdate(String pendingPluginName) {

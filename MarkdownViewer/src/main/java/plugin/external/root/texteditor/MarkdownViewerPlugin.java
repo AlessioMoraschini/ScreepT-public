@@ -31,7 +31,7 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 
 	@Override
 	public String getVersion() {
-		return "1.0.0";
+		return "1.1.0";
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 
 	@Override
 	public String getDescription() {
-		return "A tool to view markdown files and convert from/to html";
+		return "A markdown editor with live preview, outline, tables and html export (also converts from/to html)";
 	}
 
 	@Override
