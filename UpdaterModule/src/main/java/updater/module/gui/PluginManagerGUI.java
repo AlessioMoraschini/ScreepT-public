@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -71,6 +72,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	private JTable table;
 	TableRowSorter<DefaultTableModel> sorter;
 	private JLabel lblTitleHeaderMessage;
+	private JLabel lblSummary;
 
 	public static final String BUTTON_INSTALL = "Install";
 	public static final String BUTTON_UNINSTALL = "Uninstall";
@@ -139,66 +141,57 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 
 		this.pluginManager = (pluginManager != null) ? pluginManager : new PluginManager();
 
-		UIManager.put("ToolTip.background", new Color(255, 250, 205));
 		this.setAlwaysOnTop(true);
-		getContentPane().setBackground(Color.DARK_GRAY);
-		getContentPane().setLayout(new MigLayout("", "[50%,grow][50%,grow]", "[32px:40px][40px:40px:40px][20px][grow]"));
+		getContentPane().setLayout(new MigLayout("insets 0, fill", "[grow]", "[][][grow]"));
 
-		lblTitleHeaderMessage = new JLabel("Welcome to Plugin Manager, choose and install your preferred add-ons ;)");
-		lblTitleHeaderMessage.setForeground(new Color(211, 211, 211));
-		lblTitleHeaderMessage.setBackground(Color.BLACK);
-		lblTitleHeaderMessage.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		lblTitleHeaderMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitleHeaderMessage.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblTitleHeaderMessage.setOpaque(true);
-		lblTitleHeaderMessage.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		getContentPane().add(lblTitleHeaderMessage, "cell 0 0 2 1,grow");
+		// header: icon, title, subtitle and the counters
+		JPanel header = new JPanel(new MigLayout("insets 18 24 8 24, fillx", "[]14[grow][]", "[]0[]"));
+		header.add(new JLabel(PluginIcons.of(PluginIcons.Kind.PUZZLE, 36, new Color(0x4FA3FF))), "cell 0 0 1 2");
+		JLabel lblTitle = new JLabel("Plugin Manager");
+		lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 22f));
+		header.add(lblTitle, "cell 1 0");
+		lblTitleHeaderMessage = new JLabel("Choose and install your preferred add-ons");
+		lblTitleHeaderMessage.setForeground(UIManager.getColor("Label.disabledForeground"));
+		header.add(lblTitleHeaderMessage, "cell 1 1");
+		lblSummary = new JLabel(" ");
+		lblSummary.setToolTipText("Available plugins, installed ones and updates waiting");
+		lblSummary.setForeground(UIManager.getColor("Label.disabledForeground"));
+		header.add(lblSummary, "cell 2 0 1 2,aligny center");
+		getContentPane().add(header, "cell 0 0,growx");
 
-		panel = new JPanel();
-		panel.setBorder(new LineBorder(Color.GRAY, 1, true));
-		panel.setBackground(new Color(64, 64, 64));
-		getContentPane().add(panel, "cell 0 1 2 1,grow");
-		panel.setLayout(new MigLayout("", "[::10px][][grow][170px:n][::10px]", "[45px:45px:45px]"));
-
-		lblFilter = new JLabel("Filter:");
-		lblFilter.setForeground(Color.LIGHT_GRAY);
-		lblFilter.setMinimumSize(new Dimension(60, 45));
-		lblFilter.setPreferredSize(new Dimension(60, 45));
-		lblFilter.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblFilter.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblFilter.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(lblFilter, "cell 1 0,alignx right,growy");
+		// filter and refresh
+		panel = new JPanel(new MigLayout("insets 4 24 12 24, fillx", "[]8[grow]12[]", "[]"));
+		lblFilter = new JLabel(PluginIcons.of(PluginIcons.Kind.SEARCH, 18));
+		lblFilter.setForeground(UIManager.getColor("Label.disabledForeground"));
+		panel.add(lblFilter, "cell 0 0");
 
 		String previousFilter = textFieldSearch != null ? textFieldSearch.getText() : "";
-		textFieldSearch = ScreepTGuiFactory.getTextField(Color.WHITE, Color.DARK_GRAY, null, new Font("Segoe UI", Font.PLAIN, 17), false);
+		textFieldSearch = new JTextField();
 		textFieldSearch.setText(previousFilter);
-		textFieldSearch.setMinimumSize(new Dimension(10, 45));
-		textFieldSearch.setPreferredSize(new Dimension(10, 45));
-		textFieldSearch.setColumns(10);
-		panel.add(textFieldSearch, "cell 2 0,growx,aligny center");
+		textFieldSearch.putClientProperty("JTextField.placeholderText", "Filter plugins by name, description or status...");
+		textFieldSearch.setToolTipText("Type to filter the list (the text is matched on name, description and status)");
+		panel.add(textFieldSearch, "cell 1 0,growx,h 36!");
 
-		btnRefreshFromRemote = new JButton("Refresh from remote");
-		btnRefreshFromRemote.setForeground(Color.WHITE);
-		btnRefreshFromRemote.setBackground(Color.DARK_GRAY);
+		btnRefreshFromRemote = new JButton("Refresh from remote", PluginIcons.of(PluginIcons.Kind.REFRESH, 16));
+		btnRefreshFromRemote.setToolTipText("Download the list of the available plugins again");
 		btnRefreshFromRemote.setCursor(GuiUtils.CURSOR_HAND);
-		btnRefreshFromRemote.setOpaque(false);
-		panel.add(btnRefreshFromRemote, "cell 3 0,alignx right,aligny center");
+		panel.add(btnRefreshFromRemote, "cell 2 0,h 36!");
+		getContentPane().add(panel, "cell 0 1,growx");
 
 		table = new JTable();
 		table.setAutoCreateRowSorter(true);
-//		table.setPreferredScrollableViewportSize(new Dimension(450, 350));
-
-//		renderer = new JTableButtonRenderer(thisPanel);
-//		table.setDefaultRenderer(JButton.class, renderer);
 
 		JScrollPane tableContainer = new JScrollPane(table);
-		table.setBorder(new LineBorder(new Color(0, 0, 0)));
+		tableContainer.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor") != null ? UIManager.getColor("Component.borderColor") : Color.GRAY));
+		JPanel body = new JPanel(new java.awt.BorderLayout());
+		body.setBorder(BorderFactory.createEmptyBorder(0, 24, 20, 24));
+		body.add(tableContainer, java.awt.BorderLayout.CENTER);
 		table.setCellSelectionEnabled(false);
 		table.setFillsViewportHeight(true);
 		table.setShowHorizontalLines(true);
-		table.setShowVerticalLines(true);
-		table.setRowHeight(30);
-		getContentPane().add(tableContainer, "cell 0 3 2 1,grow");
+		table.setShowVerticalLines(false);
+		table.setRowHeight(50);
+		getContentPane().add(body, "cell 0 2,grow");
 
 		addHandlers();
 
@@ -224,6 +217,16 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	}
 
 	private void addHandlers() {
+
+		// Esc closes the window, like the X of the title bar
+		getRootPane().getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), "close-plugin-manager");
+		getRootPane().getActionMap().put("close-plugin-manager", new javax.swing.AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				dispatchEvent(new java.awt.event.WindowEvent(thisPanel, java.awt.event.WindowEvent.WINDOW_CLOSING));
+			}
+		});
 
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
@@ -401,38 +404,80 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		table.setCellSelectionEnabled(false);
 		table.setFillsViewportHeight(true);
 		table.setShowHorizontalLines(true);
-		table.setShowVerticalLines(true);
-		table.setRowHeight(30);
+		table.setShowVerticalLines(false);
+		table.setShowHorizontalLines(true);
+		table.setIntercellSpacing(new Dimension(0, 1));
+		table.setRowHeight(50);
 
-//		table.setModel(new PluginTableModel(null, columnNames));
-
-		table.setGridColor(Color.DARK_GRAY);
-		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-		table.setBackground(Color.WHITE);
 		table.getTableHeader().setDefaultRenderer(new HeaderRenderer(table));
-		table.getTableHeader().setFont(new Font("Segoe UI Black", Font.PLAIN, 14));
 		table.getTableHeader().setVisible(true);
 		table.getTableHeader().setResizingAllowed(true);
+		table.getTableHeader().setReorderingAllowed(false);
 		table.setRowSelectionAllowed(true);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setSelectionBackground(new Color(3, 127, 252, 30));
-		table.setSelectionForeground(Color.BLACK);
 
+		table.getColumn(columnNames[0]).setCellRenderer(new PluginNameCellRenderer());
 		table.getColumn(columnNames[1]).setCellRenderer(new NormalStringCellRenderer());
+		table.getColumn(columnNames[2]).setCellRenderer(new StatusCellRenderer());
 
 		table.getColumn(columnNames[3]).setCellRenderer(renderer);
 		table.getColumn(columnNames[3]).setCellEditor(btnEditor);
 
 		table.getColumn(columnNames[4]).setCellRenderer(new WarningsCellRenderer());
 
-		table.getColumnModel().getColumn(0).setPreferredWidth(110);
-		table.getColumnModel().getColumn(0).setMinWidth(110);
-		table.getColumnModel().getColumn(1).setPreferredWidth(450);
-		table.getColumnModel().getColumn(2).setPreferredWidth(250);
-		table.getColumnModel().getColumn(3).setPreferredWidth(200);
-		table.getColumnModel().getColumn(3).setMinWidth(200);
-		table.getColumnModel().getColumn(4).setPreferredWidth(40);
-		table.getColumnModel().getColumn(4).setMinWidth(40);
+		table.getColumnModel().getColumn(0).setPreferredWidth(220);
+		table.getColumnModel().getColumn(0).setMinWidth(160);
+		table.getColumnModel().getColumn(1).setPreferredWidth(430);
+		table.getColumnModel().getColumn(2).setPreferredWidth(230);
+		table.getColumnModel().getColumn(3).setPreferredWidth(190);
+		table.getColumnModel().getColumn(3).setMinWidth(190);
+		table.getColumnModel().getColumn(4).setPreferredWidth(90);
+		table.getColumnModel().getColumn(4).setMinWidth(70);
+	}
+
+	/** Plugin name with a colored initial tile */
+	public class PluginNameCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 4301223018873501241L;
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			String name = value == null ? "" : value.toString();
+			label.setIcon(PluginIcons.avatar(name, 30));
+			label.setIconTextGap(12);
+			label.setFont(label.getFont().deriveFont(Font.BOLD));
+			label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 4));
+			return label;
+		}
+	}
+
+	/** Installed / update available / not installed, with a colored icon */
+	public class StatusCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 7213340989164021017L;
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			PluginDTO plugin = getPluginDTO((String) table.getValueAt(row, 0));
+			String muted = "#8b949e";
+			if (plugin == null || !plugin.installationCompleted) {
+				label.setIcon(PluginIcons.of(PluginIcons.Kind.INFO, 18, PluginActionStyle.MUTED));
+				label.setText("<html><b>Not installed</b><br><font color=" + muted + ">Available to install</font></html>");
+				label.setToolTipText("Not installed yet");
+			} else if (plugin.isUpToDate()) {
+				label.setIcon(PluginIcons.of(PluginIcons.Kind.CHECK, 18, PluginActionStyle.GREEN));
+				label.setText("<html><b>Installed</b><br><font color=" + muted + ">Version " + plugin.getInstalledVersion() + "</font></html>");
+				label.setToolTipText("Installed and up to date");
+			} else {
+				label.setIcon(PluginIcons.of(PluginIcons.Kind.UPDATE, 18, PluginActionStyle.ORANGE));
+				label.setText("<html><b>Update available</b><br><font color=" + muted + ">" + plugin.getInstalledVersion() + " \u2192 " + plugin.getLastVersion() + "</font></html>");
+				label.setToolTipText("Installed version " + plugin.getInstalledVersion() + ", latest version " + plugin.getLastVersion());
+			}
+			label.setIconTextGap(10);
+			label.setHorizontalAlignment(JLabel.LEFT);
+			label.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 4));
+			return label;
+		}
 	}
 
 	public class WarningsCellRenderer extends DefaultTableCellRenderer {
@@ -456,15 +501,11 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	        if(warningHtml != null) {
 	        	labelItem.setToolTipText(warningHtml);
 	        	labelItem.setFont(labelItem.getFont().deriveFont(Font.BOLD));
-	        	try {
-					labelItem.setIcon(GuiUtils.getDefaultSystemIcon(DefaultSysIcons.WARN, 16, 16));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				labelItem.setIcon(PluginIcons.of(PluginIcons.Kind.WARNING, 16, PluginActionStyle.ORANGE));
 	        } else {
 	        	labelItem.setToolTipText(null);
 	        	labelItem.setFont(labelItem.getFont().deriveFont(Font.PLAIN));
-				labelItem.setIcon(new ImageIcon());
+				labelItem.setIcon(null);
 	        }
 	        labelItem.setHorizontalAlignment(JLabel.CENTER);
 	        return labelItem;
@@ -517,10 +558,18 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		Collections.sort(pluginList);
 
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		int installedCount = 0;
+		int toUpdateCount = 0;
 		for(PluginDTO current : pluginList) {
 			String noExtensionName = FilenameUtils.removeExtension(current.getName());
 			String description = current.getDescription();
 			boolean installed = current.isInstallationCompleted();
+			if (installed) {
+				installedCount++;
+				if (!current.isUpToDate()) {
+					toUpdateCount++;
+				}
+			}
 			String alreadyInstalledStr = "Already installed (" + current.getInstalledVersion() + ")";
 			String notUpToDateStr = "Installed - to update (Installed version: " + current.getInstalledVersion() + ")";
 			alreadyInstalledStr = current.isUpToDate() ? alreadyInstalledStr : notUpToDateStr;
@@ -532,6 +581,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 			model.addRow(new Object[]{noExtensionName, description, installedText, installOrRemoveBtn, current.getLastVersion()});
 		}
 
+		lblSummary.setText(pluginList.size() + " plugins   \u2022   " + installedCount + " installed   \u2022   " + toUpdateCount + " to update");
 		table.revalidate();
 		table.repaint();
 		table.setEnabled(true);

@@ -13,6 +13,8 @@ package updater.module.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.TimeoutException;
@@ -22,6 +24,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 
 import updater.module.plugins.PluginDTO;
@@ -38,6 +41,7 @@ class ButtonEditor extends DefaultCellEditor {
 	private static SafeLogger logger = new SafeLogger(ButtonEditor.class);
 
 	protected JButton button;
+	protected JPanel editorPanel;
     private String label;
     private boolean isPushed;
 
@@ -48,9 +52,17 @@ class ButtonEditor extends DefaultCellEditor {
     public ButtonEditor(IPluginManagerGui pluginManagerInterface) {
         super(new JCheckBox());
         this.button = new JButton();
-        this.button.setForeground(Color.BLACK);
-        this.button.setBackground(Color.LIGHT_GRAY);
-        this.button.setOpaque(false);
+        this.button.setOpaque(true);
+        this.editorPanel = new JPanel(null) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void doLayout() {
+                Dimension size = button.getPreferredSize();
+                button.setBounds(Math.max(0, (getWidth() - size.width) / 2), Math.max(0, (getHeight() - size.height) / 2), size.width, size.height);
+            }
+        };
+        this.editorPanel.setOpaque(true);
+        this.editorPanel.add(this.button);
         this.pluginManagerInterface = pluginManagerInterface;
         this.button.addActionListener(new ActionListener() {
 
@@ -59,6 +71,26 @@ class ButtonEditor extends DefaultCellEditor {
 				 fireEditingStopped();
 			}
 		});
+    }
+
+    /** Only a click on the button starts the action: the empty part of the cell does nothing */
+    @Override
+    public boolean isCellEditable(java.util.EventObject anEvent) {
+        if (anEvent instanceof java.awt.event.MouseEvent && anEvent.getSource() instanceof JTable) {
+            JTable table = (JTable) anEvent.getSource();
+            java.awt.Point point = ((java.awt.event.MouseEvent) anEvent).getPoint();
+            int row = table.rowAtPoint(point);
+            int column = table.columnAtPoint(point);
+            if (row < 0 || column < 0) {
+                return false;
+            }
+            Rectangle cell = table.getCellRect(row, column, false);
+            Dimension size = button.getPreferredSize();
+            Rectangle buttonArea = new Rectangle(cell.x + Math.max(0, (cell.width - size.width) / 2),
+                    cell.y + Math.max(0, (cell.height - size.height) / 2), size.width, size.height);
+            return buttonArea.contains(point);
+        }
+        return super.isCellEditable(anEvent);
     }
 
     @Override
@@ -70,9 +102,13 @@ class ButtonEditor extends DefaultCellEditor {
     	PluginDTO clickedButtonPlugin = pluginManagerInterface.getPluginDTO(pluginName);
 
     	label = getButtonString(clickedButtonPlugin, false);
-        button.setText(label);
+        PluginActionStyle.apply(button, clickedButtonPlugin);
+        editorPanel.setBackground(table.getSelectionBackground());
+        Rectangle cell = table.getCellRect(row, column, false);
+        Dimension buttonSize = button.getPreferredSize();
+        button.setBounds(Math.max(0, (cell.width - buttonSize.width) / 2), Math.max(0, (cell.height - buttonSize.height) / 2), buttonSize.width, buttonSize.height);
         isPushed = true;
-        return button;
+        return editorPanel;
     }
 
     public static String getButtonString(PluginDTO clickedButtonPlugin, boolean prefixOnly) {

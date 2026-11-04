@@ -63,6 +63,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>	
+		<!-- JMeld reads and writes its settings with JAXB, which is not part of Java 11 and newer: it travels with the plugin (works on Java 8 too) -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>2.3.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
