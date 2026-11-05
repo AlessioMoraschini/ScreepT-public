@@ -11,10 +11,14 @@
  */
 package various.common.light.gui;
 
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
+
+import javax.swing.JComponent;
 
 /**
  * Cross-platform "main shortcut key": Ctrl on Windows and Linux, Cmd on macOS.
@@ -30,6 +34,18 @@ public final class ShortcutKeys {
 
 	/** Extended modifier mask: CTRL_DOWN_MASK, or META_DOWN_MASK on macOS. */
 	public static final int MENU_DOWN_MASK = IS_MAC ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
+
+	/**
+	 * Client property (Boolean.TRUE) of a component that wants every key for itself, as the interactive terminal does:
+	 * while it has the focus the global shortcut listeners and the menu accelerators stay out of the way.
+	 */
+	public static final String CAPTURE_ALL_KEYS = "screept.captureAllKeys";
+
+	/** True when the component with the keyboard focus asked to receive all the keys (see {@link #CAPTURE_ALL_KEYS}) */
+	public static boolean isFocusOwnerCapturingKeys() {
+		Component owner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+		return owner instanceof JComponent && Boolean.TRUE.equals(((JComponent) owner).getClientProperty(CAPTURE_ALL_KEYS));
+	}
 
 	private ShortcutKeys() {
 	}

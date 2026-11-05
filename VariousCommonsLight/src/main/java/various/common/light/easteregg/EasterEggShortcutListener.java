@@ -3,6 +3,8 @@ package various.common.light.easteregg;
 import java.awt.KeyEventDispatcher;
 import java.awt.event.KeyEvent;
 
+import various.common.light.gui.ShortcutKeys;
+
 import various.common.light.gui.listener.KeyListenerParent;
 
 public class EasterEggShortcutListener extends KeyListenerParent implements KeyEventDispatcher {
@@ -15,6 +17,11 @@ public class EasterEggShortcutListener extends KeyListenerParent implements KeyE
 	
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
+
+		// a terminal with the focus owns the keyboard: no shortcut of the other panels
+		if(ShortcutKeys.isFocusOwnerCapturingKeys()) {
+			return false;
+		}
 
 		if (e.getID() == KeyEvent.KEY_RELEASED) {
 			super.dispatchKeyEvent(e);

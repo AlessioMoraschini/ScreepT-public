@@ -37,6 +37,11 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -44,10 +49,16 @@ import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import various.common.light.gui.ShortcutKeys;
+
 /**
  * Interactive terminal: a real console (Windows pseudo console) shown with colors, cursor and scrollback. Programs
  * that need a terminal (prompts, editors, colored tools, progress bars) work as in any terminal emulator.
  * Keys go straight to the process; Ctrl+C copies the selection when there is one, else interrupts; Ctrl+V pastes.
+ * History: mouse wheel, scroll bar and Shift+PageUp/PageDown/Home/End scroll the scrollback; full screen programs (alternate
+ * screen) get the wheel as they ask (mouse reports) or as arrow keys. Ctrl+Shift+H (Cmd+Shift+H on macOS) opens the search bar.
+ * With the focus here the terminal owns the keyboard: no shortcut of the other panels or of the menus runs ({@link ShortcutKeys#CAPTURE_ALL_KEYS}),
+ * and its own shortcuts are not used by any other function of the application.
  */
 public class TerminalPanel extends JPanel {
 
@@ -56,10 +67,22 @@ public class TerminalPanel extends JPanel {
 	private static final Color DEFAULT_FG = new Color(0xCC, 0xCC, 0xCC);
 	private static final Color DEFAULT_BG = new Color(0x0C, 0x0C, 0x0C);
 	private static final Color SELECTION = new Color(0x26, 0x4F, 0x78);
+	private static final Color MATCH_BG = new Color(0x6B, 0x5B, 0x1A);
+	private static final Color CURRENT_MATCH_BG = new Color(0xF2, 0xA3, 0x3A);
+	private static final int MAX_MATCHES = 5000;
 
 	private final Canvas canvas = new Canvas();
 	private final JScrollBar scrollBar = new JScrollBar(JScrollBar.VERTICAL);
 	private final Timer refreshTimer;
+	private final TerminalSearchBar searchBar;
+	/** Matches of the search: {line number (dropped + index), first column, length}, ordered by position */
+	private final List<long[]> matches = new ArrayList<long[]>();
+	private int currentMatch = -1;
+	private boolean searchStale;
+	private long lastSearchTime;
+	private long lastAbsTotal;
+	private long lastDropped;
+	private double wheelAccumulator;
 
 	private VtScreen screen;
 	private PtySession session;
@@ -97,9 +120,30 @@ public class TerminalPanel extends JPanel {
 
 	public TerminalPanel() {
 		super(new BorderLayout());
+		searchBar = new TerminalSearchBar(new TerminalSearchBar.Host() {
+			@Override
+			public void queryChanged() {
+				runSearch(true);
+			}
+
+			@Override
+			public void step(boolean older) {
+				stepMatch(older);
+			}
+
+			@Override
+			public void closeRequested() {
+				hideSearch();
+			}
+		});
+		searchBar.setVisible(false);
+		add(searchBar, BorderLayout.NORTH);
 		add(canvas, BorderLayout.CENTER);
 		add(scrollBar, BorderLayout.EAST);
+		scrollBar.addMouseWheelListener(e -> scrollByWheel(e.getPreciseWheelRotation()));
 		screen = new VtScreen(80, 24, this::sendString);
+		// the canvas is built before the font size is set: measure again now
+		canvas.fontChanged();
 		scrollBar.addAdjustmentListener(e -> {
 			if (!adjustingScrollBar) {
 				scrollOffset = Math.max(0, scrollBar.getMaximum() - scrollBar.getVisibleAmount() - scrollBar.getValue());
@@ -110,7 +154,12 @@ public class TerminalPanel extends JPanel {
 			if (dirty) {
 				dirty = false;
 				updateScrollBar();
+				searchStale = searchStale || searchBar.isVisible();
 				canvas.repaint();
+			}
+			// the output goes on while the search is open: matches are refreshed a few times per second
+			if (searchStale && System.currentTimeMillis() - lastSearchTime > 250) {
+				runSearch(false);
 			}
 		});
 		refreshTimer.start();
@@ -136,7 +185,11 @@ public class TerminalPanel extends JPanel {
 			screen = new VtScreen(screen.cols, screen.rows, this::sendString);
 		}
 		scrollOffset = 0;
+		lastAbsTotal = 0;
+		lastDropped = 0;
 		clearSelection();
+		matches.clear();
+		currentMatch = -1;
 		launch(directory, PtySession.isWindows() && !conPtyBroken);
 		canvas.requestFocusInWindow();
 	}
@@ -247,14 +300,238 @@ public class TerminalPanel extends JPanel {
 	private void updateScrollBar() {
 		int total;
 		int rows;
+		boolean alt;
+		long absTotal;
+		long droppedNow;
 		synchronized (screen) {
 			total = screen.totalLines();
 			rows = screen.rows;
+			alt = screen.altScreen;
+			droppedNow = screen.dropped;
+			absTotal = droppedNow + screen.scrollback.size();
+		}
+		// who is reading the history keeps looking at the same lines while new output arrives
+		long growth = absTotal - lastAbsTotal;
+		long trimmed = droppedNow - lastDropped;
+		lastAbsTotal = absTotal;
+		lastDropped = droppedNow;
+		if (trimmed > 0 && selAnchorLine >= 0) {
+			selAnchorLine -= (int) trimmed;
+			selEndLine -= (int) trimmed;
+			if (selAnchorLine < 0 || selEndLine < 0) {
+				clearSelection();
+			}
+		}
+		if (growth > 0 && scrollOffset > 0) {
+			scrollOffset += (int) Math.min(growth, Integer.MAX_VALUE / 2);
+		}
+		if (alt) {
+			// a full screen program owns the whole window: no history under it
+			scrollOffset = 0;
 		}
 		scrollOffset = Math.max(0, Math.min(scrollOffset, total - rows));
 		adjustingScrollBar = true;
 		scrollBar.setValues(total - rows - scrollOffset, rows, 0, total);
 		adjustingScrollBar = false;
+	}
+
+	/** Scrolls the history by lines (positive: towards older output) */
+	private void scrollLines(int lines) {
+		scrollOffset = (int) Math.max(0L, Math.min((long) scrollOffset + lines, Integer.MAX_VALUE / 2));
+		updateScrollBar();
+		canvas.repaint();
+	}
+
+	private void scrollByWheel(double rotation) {
+		wheelAccumulator += rotation;
+		int steps = (int) wheelAccumulator;
+		wheelAccumulator -= steps;
+		if (steps != 0) {
+			scrollLines(-steps * 3);
+		}
+	}
+
+	/** Mouse wheel: full screen programs get it as they asked (mouse reports) or as arrow keys, the rest scrolls the history */
+	private void onWheel(MouseWheelEvent e) {
+		double rotation = e.getPreciseWheelRotation();
+		int mode;
+		boolean sgr;
+		boolean alt;
+		int cols;
+		int rows;
+		synchronized (screen) {
+			mode = screen.mouseMode;
+			sgr = screen.mouseSgr;
+			alt = screen.altScreen;
+			cols = screen.cols;
+			rows = screen.rows;
+		}
+		boolean forward = !e.isShiftDown() && session != null && session.isAlive();
+		if (forward && (mode != 0 || alt)) {
+			wheelAccumulator += rotation;
+			int steps = (int) wheelAccumulator;
+			wheelAccumulator -= steps;
+			if (mode != 0) {
+				int col = Math.max(1, Math.min(cols, e.getX() / canvas.charWidth + 1));
+				int row = Math.max(1, Math.min(rows, e.getY() / canvas.charHeight + 1));
+				int button = steps < 0 ? 64 : 65;
+				for (int i = 0; i < Math.abs(steps); i++) {
+					if (sgr) {
+						sendString("\u001b[<" + button + ";" + col + ";" + row + "M");
+					} else if (col <= 222 && row <= 222) {
+						sendString("\u001b[M" + (char) (32 + button) + (char) (32 + col) + (char) (32 + row));
+					}
+				}
+			} else {
+				for (int i = 0; i < Math.abs(steps) * 3; i++) {
+					sendString(canvas.cursorKey(null, steps < 0 ? 'A' : 'B'));
+				}
+			}
+		} else {
+			scrollByWheel(rotation);
+		}
+	}
+
+	////////// SEARCH ////////////////
+
+	public void showSearch() {
+		String initial = hasSelection() ? selectedText() : null;
+		searchBar.setVisible(true);
+		if (initial != null && !initial.isEmpty() && initial.indexOf('\n') < 0) {
+			searchBar.setQuery(initial);
+		}
+		revalidate();
+		searchBar.focusField();
+		runSearch(true);
+	}
+
+	public void hideSearch() {
+		searchBar.setVisible(false);
+		matches.clear();
+		currentMatch = -1;
+		searchStale = false;
+		revalidate();
+		canvas.repaint();
+		canvas.requestFocusInWindow();
+	}
+
+	public void toggleSearch() {
+		if (searchBar.isVisible()) {
+			hideSearch();
+		} else {
+			showSearch();
+		}
+	}
+
+	public boolean isSearchVisible() {
+		return searchBar.isVisible();
+	}
+
+	/** Looks for the query in the whole history. jump: go to a match (the latest one), else the current one is kept */
+	private void runSearch(boolean jump) {
+		searchStale = false;
+		lastSearchTime = System.currentTimeMillis();
+		String query = searchBar.getQuery();
+		long anchorLine = -1;
+		long anchorColumn = 0;
+		if (!jump && currentMatch >= 0 && currentMatch < matches.size()) {
+			anchorLine = matches.get(currentMatch)[0];
+			anchorColumn = matches.get(currentMatch)[1];
+		}
+
+		List<long[]> found = new ArrayList<long[]>();
+		boolean capped = false;
+		boolean invalid = false;
+		if (!query.isEmpty()) {
+			Pattern pattern = null;
+			try {
+				String expression = searchBar.isRegex() ? query : Pattern.quote(query);
+				if (searchBar.isWholeWord()) {
+					expression = "\\b(?:" + expression + ")\\b";
+				}
+				pattern = Pattern.compile(expression, searchBar.isMatchCase() ? 0 : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+			} catch (PatternSyntaxException e) {
+				invalid = true;
+			}
+			if (pattern != null) {
+				synchronized (screen) {
+					int from = screen.altScreen ? screen.scrollback.size() : 0;
+					int total = screen.totalLines();
+					scan: for (int i = from; i < total; i++) {
+						VtScreen.Row row = screen.lineAt(i);
+						if (row == null) {
+							continue;
+						}
+						String text = row.text();
+						if (text.isEmpty()) {
+							continue;
+						}
+						Matcher matcher = pattern.matcher(text);
+						while (matcher.find()) {
+							if (matcher.end() > matcher.start()) {
+								found.add(new long[] { screen.dropped + i, matcher.start(), matcher.end() - matcher.start() });
+								if (found.size() >= MAX_MATCHES) {
+									capped = true;
+									break scan;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		matches.clear();
+		matches.addAll(found);
+		if (matches.isEmpty()) {
+			currentMatch = -1;
+		} else {
+			currentMatch = matches.size() - 1;
+			if (anchorLine >= 0) {
+				for (int i = 0; i < matches.size(); i++) {
+					long[] m = matches.get(i);
+					if (m[0] > anchorLine || (m[0] == anchorLine && m[1] >= anchorColumn)) {
+						currentMatch = i;
+						break;
+					}
+				}
+			}
+		}
+		searchBar.setResult(currentMatch, matches.size(), capped, invalid);
+		if (jump && currentMatch >= 0) {
+			revealCurrentMatch();
+		}
+		canvas.repaint();
+	}
+
+	private void stepMatch(boolean older) {
+		if (matches.isEmpty()) {
+			return;
+		}
+		int count = matches.size();
+		currentMatch = currentMatch < 0 ? count - 1 : (currentMatch + (older ? -1 : 1) + count) % count;
+		searchBar.setResult(currentMatch, count, count >= MAX_MATCHES, false);
+		revealCurrentMatch();
+		canvas.repaint();
+	}
+
+	/** Scrolls the history so that the current match is in the middle of the screen (nothing if already visible) */
+	private void revealCurrentMatch() {
+		if (currentMatch < 0 || currentMatch >= matches.size()) {
+			return;
+		}
+		long line = matches.get(currentMatch)[0];
+		synchronized (screen) {
+			int index = (int) (line - screen.dropped);
+			int total = screen.totalLines();
+			int rows = screen.rows;
+			int first = total - rows - scrollOffset;
+			if (index < first || index >= first + rows) {
+				int newFirst = Math.max(0, Math.min(total - rows, index - rows / 2));
+				scrollOffset = total - rows - newFirst;
+			}
+		}
+		updateScrollBar();
 	}
 
 	private void clearSelection() {
@@ -335,6 +612,7 @@ public class TerminalPanel extends JPanel {
 		Canvas() {
 			setOpaque(true);
 			setFocusable(true);
+			putClientProperty(ShortcutKeys.CAPTURE_ALL_KEYS, Boolean.TRUE);
 			setFocusTraversalKeysEnabled(false);
 			setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.TEXT_CURSOR));
 			fontChanged();
@@ -360,6 +638,13 @@ public class TerminalPanel extends JPanel {
 				@Override
 				public void keyPressed(KeyEvent e) {
 					onKeyPressed(e);
+					// whatever it was, no menu accelerator or panel binding may see it
+					e.consume();
+				}
+
+				@Override
+				public void keyReleased(KeyEvent e) {
+					e.consume();
 				}
 
 				@Override
@@ -399,9 +684,7 @@ public class TerminalPanel extends JPanel {
 
 				@Override
 				public void mouseWheelMoved(MouseWheelEvent e) {
-					scrollOffset = Math.max(0, scrollOffset - e.getWheelRotation() * 3);
-					updateScrollBar();
-					repaint();
+					onWheel(e);
 				}
 			};
 			addMouseListener(mouse);
@@ -484,7 +767,7 @@ public class TerminalPanel extends JPanel {
 		}
 
 		private String cursorKey(KeyEvent e, char letter) {
-			int mod = modifierCode(e);
+			int mod = e == null ? 1 : modifierCode(e);
 			if (mod > 1) {
 				return "\u001b[1;" + mod + letter;
 			}
@@ -496,9 +779,47 @@ public class TerminalPanel extends JPanel {
 			return "\u001b[" + number + (mod > 1 ? ";" + mod : "") + "~";
 		}
 
+		/** Keys the terminal keeps for itself: search and history scrolling. They work also when the process is over */
+		private boolean handleLocalShortcut(KeyEvent e) {
+			int code = e.getKeyCode();
+			// Ctrl+Shift+H (Cmd+Shift+H on macOS): free in the whole application (Ctrl+F, Ctrl+Shift+F, F3... belong to other functions)
+			if (code == KeyEvent.VK_H && ShortcutKeys.isCtrlDown(e) && e.isShiftDown() && !e.isAltDown()) {
+				skipTyped((char) 8);
+				e.consume();
+				showSearch();
+				return true;
+			}
+			boolean alt;
+			int rows;
+			synchronized (screen) {
+				alt = screen.altScreen;
+				rows = screen.rows;
+			}
+			if (alt || e.isAltDown()) {
+				return false;
+			}
+			boolean shiftOnly = e.isShiftDown() && !e.isControlDown() && !e.isMetaDown();
+			if (shiftOnly && code == KeyEvent.VK_PAGE_UP) {
+				scrollLines(Math.max(1, rows - 1));
+			} else if (shiftOnly && code == KeyEvent.VK_PAGE_DOWN) {
+				scrollLines(-Math.max(1, rows - 1));
+			} else if (shiftOnly && code == KeyEvent.VK_HOME) {
+				scrollLines(Integer.MAX_VALUE / 4);
+			} else if (shiftOnly && code == KeyEvent.VK_END) {
+				scrollLines(-Integer.MAX_VALUE / 4);
+			} else {
+				return false;
+			}
+			e.consume();
+			return true;
+		}
+
 		private void onKeyPressed(KeyEvent e) {
 			int code = e.getKeyCode();
 			if (code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_ALT || code == KeyEvent.VK_META) {
+				return;
+			}
+			if (handleLocalShortcut(e)) {
 				return;
 			}
 			if (session == null || !session.isAlive()) {
@@ -654,6 +975,10 @@ public class TerminalPanel extends JPanel {
 				clearSelection();
 				repaint();
 			}
+			if (scrollOffset != 0) {
+				scrollOffset = 0;
+				updateScrollBar();
+			}
 			sendString(text);
 			e.consume();
 		}
@@ -723,6 +1048,8 @@ public class TerminalPanel extends JPanel {
 			synchronized (screen) {
 				int first = Math.max(0, screen.totalLines() - screen.rows - scrollOffset);
 				int cols = screen.cols;
+				int matchCount = searchBar.isVisible() ? matches.size() : 0;
+				int matchPos = matchCount > 0 ? firstMatchFrom(screen.dropped + first) : 0;
 				int selStartLine = Math.min(selAnchorLine, selEndLine);
 				int selFinalLine = Math.max(selAnchorLine, selEndLine);
 				boolean forward = selAnchorLine < selEndLine || (selAnchorLine == selEndLine && selAnchorCol <= selEndCol);
@@ -737,6 +1064,22 @@ public class TerminalPanel extends JPanel {
 						continue;
 					}
 					int py = y * charHeight;
+					byte[] highlight = null;
+					if (matchCount > 0) {
+						long absolute = screen.dropped + line;
+						while (matchPos < matchCount && matches.get(matchPos)[0] < absolute) {
+							matchPos++;
+						}
+						for (int k = matchPos; k < matchCount && matches.get(k)[0] == absolute; k++) {
+							long[] m = matches.get(k);
+							if (highlight == null) {
+								highlight = new byte[row.ch.length];
+							}
+							for (int c = (int) m[1]; c < Math.min(highlight.length, m[1] + m[2]); c++) {
+								highlight[c] = (byte) (k == currentMatch ? 2 : 1);
+							}
+						}
+					}
 					for (int x = 0; x < Math.min(cols, row.ch.length); x++) {
 						int attr = row.at[x];
 						boolean reverse = (attr & VtScreen.REVERSE) != 0;
@@ -755,6 +1098,9 @@ public class TerminalPanel extends JPanel {
 						if (selected) {
 							bg = SELECTION;
 							fg = Color.WHITE;
+						} else if (highlight != null && highlight[x] != 0) {
+							bg = highlight[x] == 2 ? CURRENT_MATCH_BG : MATCH_BG;
+							fg = highlight[x] == 2 ? Color.BLACK : Color.WHITE;
 						}
 						int px = x * charWidth;
 						if (bg != null) {
@@ -795,6 +1141,21 @@ public class TerminalPanel extends JPanel {
 			}
 			g.dispose();
 		}
+	}
+
+	/** Index of the first match not before the given line (matches are ordered) */
+	private int firstMatchFrom(long line) {
+		int low = 0;
+		int high = matches.size();
+		while (low < high) {
+			int mid = (low + high) >>> 1;
+			if (matches.get(mid)[0] < line) {
+				low = mid + 1;
+			} else {
+				high = mid;
+			}
+		}
+		return low;
 	}
 
 	private Runnable restartAction;

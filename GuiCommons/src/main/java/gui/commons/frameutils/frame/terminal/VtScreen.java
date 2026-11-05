@@ -29,7 +29,9 @@ final class VtScreen {
 	static final int REVERSE = 4;
 	static final int ITALIC = 8;
 	static final int DIM = 16;
-	private static final int MAX_SCROLLBACK = 5000;
+	private static final int MAX_SCROLLBACK = 10000;
+	/** The scrollback is trimmed in blocks, so a long output does not shift the whole list for every line */
+	private static final int TRIM_BLOCK = 500;
 
 	private static final int[] ANSI = { 0x0C0C0C, 0xC50F1F, 0x13A10E, 0xC19C00, 0x0037DA, 0x881798, 0x3A96DD, 0xCCCCCC,
 			0x767676, 0xE74856, 0x16C60C, 0xF9F1A5, 0x3B78FF, 0xB4009E, 0x61D6D6, 0xF2F2F2 };
@@ -82,6 +84,12 @@ final class VtScreen {
 	boolean appCursorKeys;
 	boolean bracketedPaste;
 	boolean altScreen;
+	/** Mouse reporting asked by the program: 0 none, else 1000 (clicks), 1002 (drag), 1003 (any motion) */
+	int mouseMode;
+	/** SGR encoding of the mouse reports (mode 1006) */
+	boolean mouseSgr;
+	/** Lines removed from the beginning of the scrollback so far: gives stable numbers to the lines (dropped + index) */
+	long dropped;
 
 	private boolean wrapPending;
 	private int top;
@@ -254,6 +262,8 @@ final class VtScreen {
 		cursorVisible = true;
 		appCursorKeys = false;
 		bracketedPaste = false;
+		mouseMode = 0;
+		mouseSgr = false;
 		eraseDisplay(2);
 	}
 
@@ -288,8 +298,9 @@ final class VtScreen {
 			Row removed = grid[top];
 			if (!altScreen && top == 0 && bottom == rows - 1) {
 				scrollback.add(removed);
-				if (scrollback.size() > MAX_SCROLLBACK) {
-					scrollback.remove(0);
+				if (scrollback.size() > MAX_SCROLLBACK + TRIM_BLOCK) {
+					scrollback.subList(0, TRIM_BLOCK).clear();
+					dropped += TRIM_BLOCK;
 				}
 			}
 			System.arraycopy(grid, top + 1, grid, top, bottom - top);
@@ -478,6 +489,18 @@ final class VtScreen {
 		case 2004:
 			bracketedPaste = on;
 			break;
+		case 1000:
+		case 1002:
+		case 1003:
+			if (on) {
+				mouseMode = mode;
+			} else if (mouseMode == mode) {
+				mouseMode = 0;
+			}
+			break;
+		case 1006:
+			mouseSgr = on;
+			break;
 		case 47:
 		case 1047:
 		case 1049:
@@ -533,6 +556,7 @@ final class VtScreen {
 			}
 			break;
 		case 3:
+			dropped += scrollback.size();
 			scrollback.clear();
 			break;
 		default:
@@ -669,10 +693,25 @@ final class VtScreen {
 		for (int y = 0; y < drop; y++) {
 			scrollback.add(grid[y]);
 		}
-		for (int y = 0; y < Math.min(newRows, rows - drop); y++) {
-			Row source = grid[y + drop];
+		// when it gets taller and the text filled the screen, the last lines of the scrollback come back at the top
+		int pull = 0;
+		if (!altScreen && newRows > rows && !scrollback.isEmpty() && lastUsedRow() + 1 >= rows) {
+			pull = Math.min(scrollback.size(), newRows - rows);
+		}
+		List<Row> sources = new ArrayList<Row>();
+		for (int i = scrollback.size() - pull; i < scrollback.size(); i++) {
+			sources.add(scrollback.get(i));
+		}
+		for (int i = 0; i < pull; i++) {
+			scrollback.remove(scrollback.size() - 1);
+		}
+		for (int y = drop; y < rows; y++) {
+			sources.add(grid[y]);
+		}
+		for (int y = 0; y < Math.min(newRows, sources.size()); y++) {
+			Row source = sources.get(y);
 			Row target = resized[y];
-			int width = Math.min(newCols, cols);
+			int width = Math.min(newCols, source.ch.length);
 			System.arraycopy(source.ch, 0, target.ch, 0, width);
 			System.arraycopy(source.fg, 0, target.fg, 0, width);
 			System.arraycopy(source.bg, 0, target.bg, 0, width);
@@ -682,11 +721,22 @@ final class VtScreen {
 		savedMainGrid = null;
 		cols = newCols;
 		rows = newRows;
-		curY = Math.max(0, Math.min(newRows - 1, curY - drop));
+		curY = Math.max(0, Math.min(newRows - 1, curY - drop + pull));
 		curX = Math.min(curX, newCols - 1);
 		top = 0;
 		bottom = newRows - 1;
 		wrapPending = false;
+	}
+
+	/** Last row of the screen with some text, or the cursor row */
+	private int lastUsedRow() {
+		int last = curY;
+		for (int y = rows - 1; y > last; y--) {
+			if (!grid[y].text().isEmpty()) {
+				return y;
+			}
+		}
+		return last;
 	}
 
 	/** Line of the whole buffer: scrollback first, then the screen */

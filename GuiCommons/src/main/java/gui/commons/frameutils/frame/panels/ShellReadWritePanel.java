@@ -80,6 +80,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	public JCheckBox checkBoxConcatenation;
 	public JCheckBox checkBoxAutoscroll;
 	public JCheckBox checkBoxInteractive;
+	private JButton searchTerminalButton;
 	public JLabel labelConcatenationMode;
 	public JLabel lblInteractiveInputDescription;
 	public JLabel lblCurrentFile;
@@ -165,7 +166,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	public void initGui() {
 		setLayout(new MigLayout(
 				"fill, insets 1, hidemode 2",
-				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][125px][60px, grow][20px]",
+				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][125px][25px][60px, grow][20px]",
 				"[25px:25px][:0px:30px][50px,grow]"));
 
 		// HEADER
@@ -206,11 +207,21 @@ public class ShellReadWritePanel extends ParentPanel {
 
 		lblCurrentFile = ScreepTGuiFactory.getLabel("[No file loaded]", null, null, null, true);
 		lblCurrentFile.setForeground(Color.DARK_GRAY);
-		add(lblCurrentFile, "cell 8 0 1 1, alignx right");
+		searchTerminalButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_SEARCH, true);
+		searchTerminalButton.setToolTipText("Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)");
+		searchTerminalButton.addActionListener(e -> {
+			if (terminal != null) {
+				terminal.toggleSearch();
+			}
+		});
+		searchTerminalButton.setVisible(false);
+		add(searchTerminalButton, "cell 8 0 1 1,grow");
+
+		add(lblCurrentFile, "cell 9 0 1 1, alignx right");
 
 		pinToTopButton = getPinToTopButton(parentFrame);
 		if(parentFrame != null) {
-			add(pinToTopButton, "cell 9 0 1 1, alignx right, grow");
+			add(pinToTopButton, "cell 10 0 1 1, alignx right, grow");
 		}
 
 		// TOGGLE JTEXT FIELD for interactive input after start
@@ -223,14 +234,14 @@ public class ShellReadWritePanel extends ParentPanel {
 				Color.BLACK,
 				Color.RED,
 				ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), true);
-		add(interactiveInputField, "cell 1 1 9 1,grow");
+		add(interactiveInputField, "cell 1 1 10 1,grow");
 
 
 		// SPLIT PANE
 		splitPane = new JSplitPane();
 		splitPane.setContinuousLayout(true);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		add(splitPane, "cell 0 2 10 1,grow");
+		add(splitPane, "cell 0 2 11 1,grow");
 
 
 		// TOP SCROLL PANEL
@@ -307,12 +318,15 @@ public class ShellReadWritePanel extends ParentPanel {
 			splitPane.setBottomComponent(terminal);
 			splitPane.setDividerLocation(divider);
 			checkBoxInteractive.setSelected(true);
+			searchTerminalButton.setVisible(true);
 			startTerminal();
 		} else {
 			int divider = splitPane.getDividerLocation();
 			if (terminal != null) {
 				terminal.stop();
+				terminal.hideSearch();
 			}
+			searchTerminalButton.setVisible(false);
 			splitPane.setBottomComponent(scrollPaneBottom);
 			splitPane.setDividerLocation(divider);
 			checkBoxInteractive.setSelected(false);
