@@ -484,6 +484,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		String themeRead = iniReadFile.get(TEXT_EDITOR_OPT, "preferredTheme");
 		String theme = (!StringWorker.trimToEmpty(themeRead).equals(""))? themeRead : TextEditorOption.DEFAULT_SELECTED_THEME;
 		textEditorOpt.setSelectedTheme(theme);
+
+		// extension -> viewer associations changed by the user (empty: every default)
+		textEditorOpt.viewerAssociations = StringWorker.trimToEmpty(iniReadFile.get(TEXT_EDITOR_OPT, "viewerAssociations"));
 	}
 
 	/**
@@ -628,6 +631,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "lastEscapeLanguage", textEditorOpt.lastEscapeLanguage);
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredTheme", textEditorOpt.selectedTheme);
+		iniFile.put(TEXT_EDITOR_OPT, "viewerAssociations", textEditorOpt.viewerAssociations == null ? "" : textEditorOpt.viewerAssociations);
 		iniFile.put(TEXT_EDITOR_OPT, "fileTreeActive", textEditorOpt.fileTreeActive);
 		iniFile.put(TEXT_EDITOR_OPT, "clipboardViewActive", textEditorOpt.clipboardViewActive);
 		iniFile.put(TEXT_EDITOR_OPT, "mapViewActive", textEditorOpt.mapViewActive);

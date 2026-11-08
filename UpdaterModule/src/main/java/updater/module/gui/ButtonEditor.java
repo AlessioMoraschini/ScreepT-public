@@ -52,6 +52,7 @@ class ButtonEditor extends DefaultCellEditor {
     public ButtonEditor(IPluginManagerGui pluginManagerInterface) {
         super(new JCheckBox());
         this.button = new JButton();
+        this.button.setPreferredSize(PluginActionStyle.BUTTON_SIZE);
         this.button.setOpaque(true);
         this.editorPanel = new JPanel(null) {
             private static final long serialVersionUID = 1L;
@@ -78,6 +79,9 @@ class ButtonEditor extends DefaultCellEditor {
     public boolean isCellEditable(java.util.EventObject anEvent) {
         if (anEvent instanceof java.awt.event.MouseEvent && anEvent.getSource() instanceof JTable) {
             JTable table = (JTable) anEvent.getSource();
+            if (!javax.swing.SwingUtilities.isLeftMouseButton((java.awt.event.MouseEvent) anEvent)) {
+                return false;
+            }
             java.awt.Point point = ((java.awt.event.MouseEvent) anEvent).getPoint();
             int row = table.rowAtPoint(point);
             int column = table.columnAtPoint(point);
@@ -85,7 +89,7 @@ class ButtonEditor extends DefaultCellEditor {
                 return false;
             }
             Rectangle cell = table.getCellRect(row, column, false);
-            Dimension size = button.getPreferredSize();
+            Dimension size = PluginActionStyle.BUTTON_SIZE;
             Rectangle buttonArea = new Rectangle(cell.x + Math.max(0, (cell.width - size.width) / 2),
                     cell.y + Math.max(0, (cell.height - size.height) / 2), size.width, size.height);
             return buttonArea.contains(point);

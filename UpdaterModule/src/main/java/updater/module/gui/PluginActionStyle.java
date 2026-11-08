@@ -19,6 +19,8 @@ final class PluginActionStyle {
 	static final Color ORANGE = new Color(214, 140, 38);
 	static final Color MUTED = new Color(139, 148, 158);
 
+	static final Dimension BUTTON_SIZE = new Dimension(172, 34);
+
 	enum Action { INSTALL, UNINSTALL, UPDATE }
 
 	private PluginActionStyle() {
@@ -40,7 +42,7 @@ final class PluginActionStyle {
 		button.setOpaque(true);
 		button.setForeground(Color.WHITE);
 		button.setFocusPainted(false);
-		button.setPreferredSize(new Dimension(172, 34));
+		button.setPreferredSize(BUTTON_SIZE);
 
 		switch (action) {
 		case INSTALL:

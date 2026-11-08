@@ -1,446 +1,319 @@
+/**
+ *
+ * =========================================================================================
+ *  Copyright (C) 2019-2020
+ *
+ *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ * =========================================================================================
+ *
+ * You should have received a copy of the license with this file.
+ * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
+ */
 package gui.commons.frameutils.frame;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
 import java.awt.Window;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
+import gui.commons.dialogutils.NativeFileChooser;
+import gui.commons.frameutils.frame.arch.ToolStyle;
 import gui.commons.frameutils.frame.om.ImageConverterOpener;
-import gui.commons.frameutils.frame.panels.FileSelectorDnD;
+import gui.commons.imagestudio.BatchDialog;
+import gui.commons.imagestudio.ImageEdit;
+import gui.commons.imagestudio.ImageStudioPanel;
+import gui.commons.imagestudio.StudioMode;
+import net.miginfocom.swing.MigLayout;
 import resources.IconsPathConfigurator;
 import various.common.light.files.FileHistory;
 import various.common.light.gui.GuiUtils;
+import various.common.light.gui.dnd.FileDrop;
 import various.common.light.utility.log.SafeLogger;
-import various.common.light.utility.manipulation.ConversionUtils;
-import various.common.light.utility.manipulation.ImageWorker;
 
-import javax.swing.JButton;
-import javax.swing.SwingUtilities;
-
+/**
+ * Image Studio window: several images in tabs, each with its own editing panel (see {@link ImageStudioPanel}), the
+ * conversion options on the right, batch processing from the header and the Basic / Classic / Nerd mode selector.
+ * The same panel also opens as an integrated tab of the text editor.
+ */
 public class ImageViewerFrame extends JFrame {
 	private static final long serialVersionUID = 8293717691849535908L;
-	
+
 	public static SafeLogger logger = new SafeLogger(ImageViewerFrame.class);
-	
+
+	/** Kept for compatibility: the studio converts by itself, there is no separate converter to open any more */
 	public static ImageConverterOpener imageConverterOpener = null;
-	
+
 	public static final int REFRESH_PERIOD = 300;
 	public static final int MAX_HISTORY_SIZE = 40;
 
-	BufferedImage image = null;
-	public File imageFile = null;
-	
-	JLabel imageContainer = null;
-	
-	static int headerHeight = 40;
-	Dimension imgDimension = new Dimension(900, 500);
-	Dimension dimension = new Dimension(900, 500 + headerHeight);
-	private JButton btnReload;
-	
-	public JFrame thisFrame;
-	private FileSelectorDnD panelDropper;
-	private JLabel dynLblFileSize;
-	private JLabel lblFileSize;
-	private JLabel lblWidth;
-	private JLabel lblHeight;
-	private JLabel dynLblWidth;
-	private JLabel dynLblHeight;
-	
 	public static FileHistory history = new FileHistory(MAX_HISTORY_SIZE);
 	public static File currentLoaded = null;
-	
+
+	/** File of the image in the selected tab */
+	public File imageFile = null;
+	public JFrame thisFrame;
 	boolean active = false;
-	private JButton btnPrev;
-	private JButton btnNext;
-	private JButton btnConvert;
-	
+
+	private final JTabbedPane tabs = new JTabbedPane();
+	private final List<ImageStudioPanel> panels = new ArrayList<ImageStudioPanel>();
+	private JComboBox<StudioMode> comboMode;
+	private final Runnable modeListener = () -> SwingUtilities.invokeLater(() -> {
+		if (comboMode.getSelectedItem() != StudioMode.current()) {
+			comboMode.setSelectedItem(StudioMode.current());
+		}
+	});
+
 	public ImageViewerFrame(File imageFileSource) {
-		
+
 		thisFrame = this;
 		active = true;
-		currentLoaded = imageFileSource != null ? imageFileSource : currentLoaded;
-		
-		getContentPane().setBackground(Color.BLACK);
-		
+
 		GuiUtils.setFrameIcon(IconsPathConfigurator.F_ICON_IMAGE, this);
-		
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 432, 0, 0};
-		gridBagLayout.rowHeights = new int[]{40, 253, 0};
-		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		getContentPane().setLayout(gridBagLayout);
-		
-		JPanel panel = new JPanel();
-		panel.setMaximumSize(new Dimension(32767, headerHeight));
-		panel.setPreferredSize(new Dimension(10, headerHeight));
-		panel.setMinimumSize(new Dimension(10, headerHeight));
-		panel.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		panel.setBackground(new Color(128, 128, 128));
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.gridwidth = 3;
-		gbc_panel.insets = new Insets(0, 0, 5, 0);
-		gbc_panel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 0;
-		getContentPane().add(panel, gbc_panel);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{30, 0, 90, 350, 25, 25, 0, 35, 0, 35, 0, 15, 0, 15};
-		gbl_panel.rowHeights = new int[]{0, 0};
-		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 1000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
-		
-		btnReload = new JButton("");
-		btnReload.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD));
-		btnReload.setCursor(GuiUtils.CURSOR_HAND);
-		GuiUtils.makeTransparentJButton(btnReload);
-		GridBagConstraints gbc_btnReload = new GridBagConstraints();
-		gbc_btnReload.gridwidth = 2;
-		gbc_btnReload.insets = new Insets(0, 0, 0, 5);
-		gbc_btnReload.gridx = 0;
-		gbc_btnReload.gridy = 0;
-		panel.add(btnReload, gbc_btnReload);
-		
-		btnConvert = new JButton("Convert");
-		btnConvert.setCursor(GuiUtils.CURSOR_HAND);
-		btnConvert.setBackground(new Color(112, 128, 144));
-		btnConvert.setPreferredSize(new Dimension(70, 30));
-		btnConvert.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		btnConvert.setMinimumSize(new Dimension(95, 28));
-		GridBagConstraints gbc_btnConvert = new GridBagConstraints();
-		gbc_btnConvert.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnConvert.insets = new Insets(0, 0, 0, 5);
-		gbc_btnConvert.gridx = 2;
-		gbc_btnConvert.gridy = 0;
-		panel.add(btnConvert, gbc_btnConvert);
-		
-		lblFileSize = new JLabel("File size:");
-		lblFileSize.setForeground(Color.BLACK);
-		lblFileSize.setFont(new Font("Tahoma", Font.BOLD, 14));
-		GridBagConstraints gbc_lblFileSize = new GridBagConstraints();
-		gbc_lblFileSize.insets = new Insets(0, 0, 0, 5);
-		gbc_lblFileSize.gridx = 4;
-		gbc_lblFileSize.gridy = 0;
-		panel.add(lblFileSize, gbc_lblFileSize);
-		
-		dynLblFileSize = new JLabel("");
-		dynLblFileSize.setForeground(Color.WHITE);
-		dynLblFileSize.setFont(new Font("Tahoma", Font.BOLD, 15));
-		GridBagConstraints gbc_dynLblFileSize = new GridBagConstraints();
-		gbc_dynLblFileSize.insets = new Insets(0, 0, 0, 5);
-		gbc_dynLblFileSize.gridx = 5;
-		gbc_dynLblFileSize.gridy = 0;
-		panel.add(dynLblFileSize, gbc_dynLblFileSize);
-		
-		imageContainer = new JLabel();
-		imageContainer.setFont(new Font("Segoe UI", Font.BOLD, 17));
-		imageContainer.setForeground(Color.LIGHT_GRAY);
-		GridBagConstraints gbc_imageContainer = new GridBagConstraints();
-		gbc_imageContainer.insets = new Insets(0, 0, 0, 5);
-		gbc_imageContainer.anchor = GridBagConstraints.CENTER;
-		gbc_imageContainer.gridx = 1;
-		gbc_imageContainer.gridy = 1;
-		getContentPane().add(imageContainer, gbc_imageContainer);
-		
-		panelDropper = new FileSelectorDnD(() -> {
-			loadResizedImageFile(panelDropper.loadedFile, true);
-			SwingUtilities.invokeLater(() -> {
-				history.addToHistory(imageFile);
-			});
+		setTitle("Image Studio");
+
+		getContentPane().setLayout(new MigLayout("fill, insets 10, gapy 8", "[grow,fill]", "[][grow,fill]"));
+
+		JPanel header = new JPanel(new MigLayout("insets 0, gapx 8", "[][][grow,fill][][]", "[]"));
+		header.setOpaque(false);
+		JButton open = ToolStyle.button("Open images...", null, "Open one or more images in new tabs (Ctrl+O)");
+		open.addActionListener(e -> chooseAndOpen());
+		JButton batch = ToolStyle.button("Batch...", null, "Apply the same edits and conversion to many images");
+		batch.addActionListener(e -> new BatchDialog(this, currentFile()).setVisible(true));
+		header.add(open);
+		header.add(batch);
+		header.add(new JLabel(), "growx");
+		header.add(ToolStyle.mutedLabel("Mode"));
+		comboMode = new JComboBox<StudioMode>(StudioMode.values());
+		comboMode.setSelectedItem(StudioMode.current());
+		comboMode.setToolTipText("<html><b>Basic</b>: convert and resize.<br><b>Classic</b>: + adjustments, filters, rotate, flip.<br><b>Nerd</b>: + every option, histogram, grid.</html>");
+		ToolStyle.hand(comboMode);
+		comboMode.addActionListener(e -> StudioMode.set((StudioMode) comboMode.getSelectedItem()));
+		header.add(comboMode);
+		getContentPane().add(header, "growx, wrap");
+
+		tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		tabs.addChangeListener(e -> onTabSelected());
+		getContentPane().add(tabs, "grow");
+		new FileDrop(tabs, BorderFactory.createLineBorder(ToolStyle.BLUE, 3), files -> SwingUtilities.invokeLater(() -> openFiles(files)));
+
+		StudioMode.addListener(modeListener);
+
+		addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent windowEvent) {
+	        	logger.debug("Closing Frame: " + getClass().getName());
+	        	closeWindow();
+		    }
 		});
-		panelDropper.setBackground(new Color(128, 128, 128));
-		panelDropper.addNewTarget(imageContainer);
-		panelDropper.txtFieldFilePath.setBackground(Color.DARK_GRAY);
-		panelDropper.txtFieldFilePath.setForeground(Color.WHITE);
-		panelDropper.txtFieldFilePath.setFont(new Font("Tahoma", Font.BOLD, 14));
-		
-		GridBagConstraints gbc_panelDropper = new GridBagConstraints();
-		gbc_panelDropper.insets = new Insets(0, 0, 0, 5);
-		gbc_panelDropper.fill = GridBagConstraints.BOTH;
-		gbc_panelDropper.gridx = 3;
-		gbc_panelDropper.gridy = 0;
-		panel.add(panelDropper, gbc_panelDropper);
-		
-		lblWidth = new JLabel("Width:");
-		lblWidth.setForeground(Color.BLACK);
-		lblWidth.setFont(new Font("Tahoma", Font.BOLD, 14));
-		GridBagConstraints gbc_lblWidth = new GridBagConstraints();
-		gbc_lblWidth.insets = new Insets(0, 0, 0, 5);
-		gbc_lblWidth.gridx = 6;
-		gbc_lblWidth.gridy = 0;
-		panel.add(lblWidth, gbc_lblWidth);
-		
-		dynLblWidth = new JLabel("");
-		dynLblWidth.setForeground(Color.WHITE);
-		dynLblWidth.setFont(new Font("Tahoma", Font.BOLD, 15));
-		GridBagConstraints gbc_dynLblWidth = new GridBagConstraints();
-		gbc_dynLblWidth.insets = new Insets(0, 0, 0, 5);
-		gbc_dynLblWidth.gridx = 7;
-		gbc_dynLblWidth.gridy = 0;
-		panel.add(dynLblWidth, gbc_dynLblWidth);
-		
-		lblHeight = new JLabel("Height:");
-		lblHeight.setForeground(Color.BLACK);
-		lblHeight.setFont(new Font("Tahoma", Font.BOLD, 14));
-		GridBagConstraints gbc_lblHeight = new GridBagConstraints();
-		gbc_lblHeight.insets = new Insets(0, 0, 0, 5);
-		gbc_lblHeight.gridx = 8;
-		gbc_lblHeight.gridy = 0;
-		panel.add(lblHeight, gbc_lblHeight);
-		
-		dynLblHeight = new JLabel("");
-		dynLblHeight.setForeground(Color.WHITE);
-		dynLblHeight.setFont(new Font("Tahoma", Font.BOLD, 15));
-		GridBagConstraints gbc_dynLblHeight = new GridBagConstraints();
-		gbc_dynLblHeight.anchor = GridBagConstraints.WEST;
-		gbc_dynLblHeight.insets = new Insets(0, 0, 0, 5);
-		gbc_dynLblHeight.gridx = 9;
-		gbc_dynLblHeight.gridy = 0;
-		panel.add(dynLblHeight, gbc_dynLblHeight);
-		
-		btnPrev = new JButton("");
-		btnPrev.setPreferredSize(new Dimension(18, 12));
-		btnPrev.setMinimumSize(new Dimension(18, 12));
-		btnPrev.setMaximumSize(new Dimension(18, 12));
-		btnPrev.setCursor(GuiUtils.CURSOR_HAND);
-		btnPrev.setIcon(new ImageIcon(IconsPathConfigurator.ICON_PREV));
-		GuiUtils.makeTransparentJButton(btnPrev);
-		GridBagConstraints gbc_btnPrev = new GridBagConstraints();
-		gbc_btnPrev.anchor = GridBagConstraints.EAST;
-		gbc_btnPrev.insets = new Insets(0, 0, 0, 5);
-		gbc_btnPrev.gridx = 11;
-		gbc_btnPrev.gridy = 0;
-		panel.add(btnPrev, gbc_btnPrev);
-		
-		btnNext = new JButton("");
-		btnNext.setPreferredSize(new Dimension(18, 12));
-		btnNext.setMinimumSize(new Dimension(18, 12));
-		btnNext.setMaximumSize(new Dimension(18, 12));
-		btnNext.setCursor(GuiUtils.CURSOR_HAND);
-		btnNext.setIcon(new ImageIcon(IconsPathConfigurator.ICON_NEXT));
-		GuiUtils.makeTransparentJButton(btnNext);
-		GridBagConstraints gbc_btnNext = new GridBagConstraints();
-		gbc_btnNext.anchor = GridBagConstraints.WEST;
-		gbc_btnNext.gridx = 12;
-		gbc_btnNext.gridy = 0;
-		panel.add(btnNext, gbc_btnNext);
-		
-		addHandlers();
-		
-		loadResizedImageFile(imageFileSource, false);
-		
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
-		setMinimumSize(getDimension());
-		GuiUtils.centerComponent(this, getDimension());
-		
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+		if (imageFileSource != null) {
+			openFile(imageFileSource);
+		}
+
+		setMinimumSize(new Dimension(900, 560));
+		GuiUtils.centerComponent(this, new Dimension(1280, 800));
 		setVisible(true);
 	}
-	
+
+	private File currentFile() {
+		return imageFile;
+	}
+
+	private void chooseAndOpen() {
+		NativeFileChooser chooser = new NativeFileChooser();
+		chooser.setMultiSelectionEnabled(true);
+		chooser.setDialogTitle("Open images");
+		if (currentLoaded != null && currentLoaded.getParentFile() != null) {
+			chooser.setCurrentDirectory(currentLoaded.getParentFile());
+		}
+		if (chooser.showDialog(this, "Open") == NativeFileChooser.APPROVE_OPTION) {
+			openFiles(chooser.getSelectedFiles());
+		}
+	}
+
+	/** Opens every image file in its own tab (an image already open is just selected) */
+	public void openFiles(File[] files) {
+		if (files == null) {
+			return;
+		}
+		for (File file : files) {
+			if (ImageEdit.isImageFile(file)) {
+				openFile(file);
+			}
+		}
+	}
+
+	/** Opens the image in a tab, or selects its tab when it is already open */
+	public void openFile(File file) {
+		if (file == null || !file.exists()) {
+			return;
+		}
+		for (int i = 0; i < panels.size(); i++) {
+			File open = panels.get(i).getFile();
+			if (open != null && open.equals(file)) {
+				tabs.setSelectedIndex(i);
+				return;
+			}
+		}
+		final ImageStudioPanel panel = new ImageStudioPanel(file);
+		panels.add(panel);
+		tabs.addTab(panel.getTitle(), panel);
+		int index = tabs.getTabCount() - 1;
+		tabs.setTabComponentAt(index, buildTabHeader(panel));
+		panel.setChangeListener(() -> SwingUtilities.invokeLater(() -> refreshTabHeader(panel)));
+		tabs.setSelectedIndex(index);
+		history.addToHistoryIfNotPresent(file);
+		currentLoaded = file;
+	}
+
+	private JPanel buildTabHeader(final ImageStudioPanel panel) {
+		JPanel header = new JPanel(new MigLayout("insets 0, gapx 6", "[][]", "[]"));
+		header.setOpaque(false);
+		JLabel label = new JLabel(panel.getTitle());
+		label.setName("title");
+		JButton close = new JButton("x");
+		close.putClientProperty("JButton.buttonType", "toolBarButton");
+		close.setToolTipText("Close this image (Ctrl+W)");
+		close.setFocusable(false);
+		close.setMargin(new java.awt.Insets(0, 4, 0, 4));
+		close.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		close.addActionListener(e -> closeTab(panel));
+		header.add(label);
+		header.add(close);
+		return header;
+	}
+
+	private void refreshTabHeader(ImageStudioPanel panel) {
+		int index = panels.indexOf(panel);
+		if (index < 0 || index >= tabs.getTabCount()) {
+			return;
+		}
+		java.awt.Component header = tabs.getTabComponentAt(index);
+		if (header instanceof JPanel) {
+			for (java.awt.Component c : ((JPanel) header).getComponents()) {
+				if (c instanceof JLabel && "title".equals(c.getName())) {
+					((JLabel) c).setText(panel.getTitle() + (panel.isModified() ? " *" : ""));
+				}
+			}
+		}
+	}
+
+	private void closeTab(ImageStudioPanel panel) {
+		if (!panel.confirmClose(this)) {
+			return;
+		}
+		int index = panels.indexOf(panel);
+		if (index >= 0) {
+			tabs.removeTabAt(index);
+			panels.remove(index);
+		}
+		panel.dispose();
+		if (panels.isEmpty()) {
+			imageFile = null;
+			setTitle("Image Studio");
+		}
+	}
+
+	private void onTabSelected() {
+		int index = tabs.getSelectedIndex();
+		if (index >= 0 && index < panels.size()) {
+			ImageStudioPanel panel = panels.get(index);
+			imageFile = panel.getFile();
+			currentLoaded = imageFile != null ? imageFile : currentLoaded;
+			setTitle(panel.getTitle() + " - Image Studio");
+			panel.onSelected();
+		}
+	}
+
+	private void closeWindow() {
+		for (ImageStudioPanel panel : new ArrayList<ImageStudioPanel>(panels)) {
+			tabs.setSelectedIndex(panels.indexOf(panel));
+			if (!panel.confirmClose(this)) {
+				return;
+			}
+		}
+		active = false;
+		StudioMode.removeListener(modeListener);
+		for (ImageStudioPanel panel : panels) {
+			panel.dispose();
+		}
+		panels.clear();
+		dispose();
+	}
+
+	// ---------------------------------------------------------------- STATIC ENTRY POINTS
+
+	/** Previous / next image: selects the neighbour tab of the last window, or walks the opened files history */
 	public static void loadFromHistory(boolean previous) {
+		ArrayList<ImageViewerFrame> viewers = getViewerInstanceList();
+		if (!viewers.isEmpty()) {
+			JTabbedPane tabs = viewers.get(0).tabs;
+			int count = tabs.getTabCount();
+			if (count > 1) {
+				tabs.setSelectedIndex((tabs.getSelectedIndex() + (previous ? -1 : 1) + count) % count);
+				return;
+			}
+		}
 		if (!history.isEmpty()) {
 			currentLoaded = previous ? history.getPreviousInHistory(currentLoaded) : history.getNextInHistory(currentLoaded);
 			loadIntoLastExistingInstance(currentLoaded);
 		}
 	}
-	
-	private void addHandlers() {
-		
-		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		            
-	        	logger.debug("Closing Frame: " + getClass().getName());	        	
-	        	active = false;
-	        	
-	        	dispose();
-		    }
-		});
-		
-		thisFrame.addWindowStateListener(new WindowStateListener() {
-			@Override
-			public void windowStateChanged(WindowEvent e) {
-				setDimension(thisFrame.getSize());
-				setImgDimension(new Dimension(getDimension().width - 5, getDimension().height - headerHeight));
-			}
-		});
-		
-		thisFrame.addComponentListener(new ComponentListener() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-			}
-			@Override
-			public void componentResized(ComponentEvent e) {
-				setDimension(thisFrame.getSize());
-				setImgDimension(new Dimension(getDimension().width - 5, getDimension().height - headerHeight));
-			}
-			@Override
-			public void componentMoved(ComponentEvent e) {
-			}
-			@Override
-			public void componentHidden(ComponentEvent e) {
-			}
-		});
 
-		GuiUtils.launchThreadSafeSwing(() -> {
-			Dimension lastFrameDimension = getDimension();
-			while(active) {
-				if(lastFrameDimension != getDimension()){
-					try {
-						lastFrameDimension = getDimension();
-						setImgDimension(getSize() != null ? getSize() : getImgDimension());
-						loadResizedImageFile(imageFile, false);
-						Thread.sleep(REFRESH_PERIOD);
-					} catch (InterruptedException e1) {
-						logger.error("an error occurred while refreshing current file: " + imageFile, e1);
-					}
-				}
-			}
-		});
-		
-		btnReload.addActionListener((e) -> {
-			loadResizedImageFile(imageFile, true);
-		});
-		
-		btnConvert.addActionListener((e) -> {
-			if (imageConverterOpener != null) {
-				imageConverterOpener.run();
-			}
-		});
-		
-		btnPrev.addActionListener((e) -> {
-			loadFromHistory(true);
-		});
-
-		btnNext.addActionListener((e) -> {
-			loadFromHistory(false);
-		});
-	}
-	
-	
-	public Dimension getImgDimension() {
-		return imgDimension;
-	}
-
-	public void setImgDimension(Dimension imgDimension) {
-		this.imgDimension = imgDimension;
-	}
-
-	public Dimension getDimension() {
-		return dimension;
-	}
-	
-	public void setDimension(Dimension dimension) {
-		this.dimension = dimension;
-	}
-	
-	private void loadResizedImageFile(File imageFile, boolean forceRefresh) {
-		try {
-			imageContainer.setText("");
-
-			if (forceRefresh || this.imageFile == null || !this.imageFile.equals(imageFile)) {
-				setTitle(imageFile.getName());
-				dynLblFileSize.setText(ConversionUtils.coolFileSize(imageFile));
-				panelDropper.txtFieldFilePath.setText(imageFile.getCanonicalPath());
-				panelDropper.txtFieldFilePath.setToolTipText(imageFile.getCanonicalPath());
-				this.imageFile = imageFile;
-				this.image = ImageIO.read(imageFile);
-				dynLblWidth.setText(String.valueOf(image.getWidth()) + " Px");
-				dynLblHeight.setText(String.valueOf(image.getHeight()) + " Px");
-				
-				history.addToHistoryIfNotPresent(imageFile);
-			}
-			
-			imageContainer.setCursor(GuiUtils.CURSOR_WAIT);
-			SwingUtilities.invokeLater(() -> {
-				Dimension sameRatioDim = ImageWorker.getDimensionSameRatio(image, getImgDimension().width, getImgDimension().height);
-				imageContainer.setIcon(new ImageIcon(image.getScaledInstance(sameRatioDim.width, sameRatioDim.height, Image.SCALE_DEFAULT)));
-				imageContainer.setCursor(GuiUtils.CURSOR_DEFAULT);
-				
-			});
-			
-		} catch (Exception e) {
-			imageContainer.setIcon(null);
-			imageContainer.setText("There was an error while loading image :(");
-			logger.error("Cannot preload image, an error occurred", e);
-		}
-	}
-	
 	public static void newInstanceIfNotExisting(File imageFile) {
-		
+
 		logger.info("Image file to open: " + imageFile);
-		
+
 		if(imageFile == null || !imageFile.exists()) {
 			logger.warn("Cannot load image -> Invalid input file: " + imageFile);
 			return;
 		}
-
-		boolean instanceFileFound = false;
-		for(ImageViewerFrame viewer : getViewerInstanceList()) {
-			if(viewer.imageFile != null && viewer.imageFile.equals(imageFile)) {
-				instanceFileFound = true;
-				viewer.toFront();
-				viewer.setVisible(true);
-			}
-		} 
-
-		if(!instanceFileFound){
-			GuiUtils.launchThreadSafeSwing(() -> {
-				new ImageViewerFrame(imageFile);
-				logger.info("Image file loaded into viewer!");
-			});
-		}
+		loadIntoLastExistingInstance(imageFile);
 	}
 
+	/** Opens the image in a new tab of the open window, creating the window if there is none */
 	public static void loadIntoLastExistingInstance(File file) {
-		
+
 		File imageFile = file;
-		
+
 		logger.info("Image file to open: " + imageFile);
-		
+
 		if(imageFile == null || !imageFile.exists()) {
 			if(!history.isEmpty()) {
 				imageFile = history.getLast();
 			}
 			logger.warn("Cannot load image -> Invalid input file: " + imageFile + " -> Last in history loaded: " + history.getLast());
 		}
-		
-		boolean instanceFileFound = false;
-		for(ImageViewerFrame viewer : getViewerInstanceList()) {
-			instanceFileFound = true;
-			viewer.toFront();
-			viewer.setVisible(true);
-			viewer.loadResizedImageFile(imageFile, false);
-			logger.info("Image file already loaded into viewer!");
-			return;
-		} 
-		
-		if(!instanceFileFound){
-			new ImageViewerFrame(imageFile);
-			logger.info("Image file loaded into viewer!");
-		}
+
+		final File target = imageFile;
+		GuiUtils.launchThreadSafeSwing(() -> {
+			ArrayList<ImageViewerFrame> viewers = getViewerInstanceList();
+			if (!viewers.isEmpty()) {
+				ImageViewerFrame viewer = viewers.get(0);
+				viewer.toFront();
+				viewer.setVisible(true);
+				viewer.openFile(target);
+				logger.info("Image file loaded into the open Image Studio!");
+			} else {
+				new ImageViewerFrame(target);
+				logger.info("Image file loaded into a new Image Studio!");
+			}
+		});
 	}
-	
+
 	public static ArrayList<ImageViewerFrame> getViewerInstanceList(){
 		ArrayList<ImageViewerFrame> viewers = new ArrayList<>();
 		for(Window window : Window.getWindows()) {
@@ -448,7 +321,7 @@ public class ImageViewerFrame extends JFrame {
 				viewers.add((ImageViewerFrame) window);
 			}
 		}
-		
+
 		return viewers;
 	}
 }

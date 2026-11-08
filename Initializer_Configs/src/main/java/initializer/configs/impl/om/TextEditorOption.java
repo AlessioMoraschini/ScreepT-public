@@ -133,6 +133,9 @@ public class TextEditorOption {
 	// TEXT AREA
 	public String defaultWorkspacePath;
 	public String selectedTheme;
+
+	/** Viewer chosen by the user for an extension, only where different from the default: "ext=viewerId;ext=viewerId" */
+	public String viewerAssociations = "";
 	public Double dividerBottomPosRatio;
 	public int dividerFileTreePosX;
 	public int dividerRightPanePosX;
