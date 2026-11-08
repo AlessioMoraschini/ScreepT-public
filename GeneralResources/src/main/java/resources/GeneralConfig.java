@@ -195,6 +195,9 @@ public class GeneralConfig {
 			public static String FTP_PSW = resourcesFilePathsMappings.getProperty("FTP_PSW", "anonymous");
 			public static String FTP_USER = resourcesFilePathsMappings.getProperty("FTP_USER", "anonymous");
 			public static String FTP_UPLOAD_FOLDER = resourcesFilePathsMappings.getProperty("FTP_UPLOAD_FOLDER", "upload");
+			/** Servers that accept the random bytes of the upload speed test (HTTP POST): the first that answers is used */
+			public static String UP_URL = resourcesFilePathsMappings.getProperty("UP_URL", "https://speed.cloudflare.com/__up");
+			public static String UP_URL_FALLBACK = resourcesFilePathsMappings.getProperty("UP_URL_FALLBACK", "http://speedtest.tele2.net/upload.php");
 
 			public static String DOWN_SHORT_FILE = resourcesFilePathsMappings.getProperty("DOWN_SHORT_FILE", "1MB.zip");
 			public static int DOWN_SHORT_FILE_SIZE_MB = resourcesFilePathsMappings.getIntVarFromProps("DOWN_SHORT_FILE_SIZE_MB", 1);
