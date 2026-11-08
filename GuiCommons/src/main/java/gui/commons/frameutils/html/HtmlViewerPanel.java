@@ -73,6 +73,7 @@ public class HtmlViewerPanel extends JPanel {
 
 	private final XHTMLPanel xhtml = new XHTMLPanel();
 	private final FSScrollPane xhtmlScroll = new FSScrollPane(xhtml);
+	private final GuideHeroPanel hero = new GuideHeroPanel("ScreepT", "portable workbench");
 	private final JTextField searchField = new JTextField(22);
 	private final JLabel countLabel = new JLabel(" ");
 	private final DefaultListModel<Heading> tocModel = new DefaultListModel<>();
@@ -137,7 +138,12 @@ public class HtmlViewerPanel extends JPanel {
 		tocScroll.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, borderColor()));
 		tocScroll.setMinimumSize(new Dimension(0, 0));
 
-		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tocScroll, xhtmlScroll);
+		hero.setVisible(false);
+		JPanel rightSide = new JPanel(new BorderLayout());
+		rightSide.add(hero, BorderLayout.NORTH);
+		rightSide.add(xhtmlScroll, BorderLayout.CENTER);
+
+		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tocScroll, rightSide);
 		split.setBorder(BorderFactory.createEmptyBorder());
 		split.setDividerLocation(230);
 		split.setDividerSize(4);
@@ -192,6 +198,11 @@ public class HtmlViewerPanel extends JPanel {
 	private Document prepare(String html, String base) {
 		Document d = Jsoup.parse(html, base);
 		d.select("script, style, link[rel=stylesheet], noscript").remove();
+		// the guide title block (two static logos) is replaced by the animated hero above the page
+		if (!d.select("#titleBlock").isEmpty()) {
+			d.select("#titleBlock").remove();
+			d.body().attr("data-hero", "1");
+		}
 		for (Element img : d.select("img[src]")) {
 			String abs = img.absUrl("src");
 			if (!abs.isEmpty()) {
@@ -230,6 +241,8 @@ public class HtmlViewerPanel extends JPanel {
 
 	private void show(Document prepared, String base) {
 		source = prepared;
+		final boolean withHero = prepared.body().hasAttr("data-hero");
+		SwingUtilities.invokeLater(() -> hero.setVisible(withHero));
 		baseUrl = base;
 		hitCount = 0;
 		currentHit = -1;
@@ -540,7 +553,7 @@ public class HtmlViewerPanel extends JPanel {
 		return c != null ? c : Color.GRAY;
 	}
 
-	private static boolean darkTheme() {
+	static boolean darkTheme() {
 		Color bg = UIManager.getColor("Panel.background");
 		return bg == null || (bg.getRed() * 299 + bg.getGreen() * 587 + bg.getBlue() * 114) / 1000 < 128;
 	}
