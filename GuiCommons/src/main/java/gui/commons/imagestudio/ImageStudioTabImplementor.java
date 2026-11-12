@@ -22,7 +22,7 @@ import javax.imageio.ImageIO;
 import gui.commons.tabs.TabContent;
 import gui.commons.tabs.TabImplementor;
 
-/** Opens images as an Image Studio inside an editor tab */
+/** Opens images in an editor tab as a read-only viewer (zoom, details, histogram, copy); editing is in the Image Studio window */
 public class ImageStudioTabImplementor implements TabImplementor {
 
 	public static final String ID = "image";
@@ -34,7 +34,7 @@ public class ImageStudioTabImplementor implements TabImplementor {
 
 	@Override
 	public String getDisplayName() {
-		return "Image Studio";
+		return "Image Viewer";
 	}
 
 	@Override
@@ -44,6 +44,9 @@ public class ImageStudioTabImplementor implements TabImplementor {
 			if (!suffix.isEmpty()) {
 				extensions.add(suffix.toLowerCase(Locale.ROOT));
 			}
+		}
+		for (String extra : new String[] {"jpeg", "jfif", "jpe", "dib", "tif", "tiff", "psd", "psb"}) {
+			extensions.add(extra);
 		}
 		return Collections.unmodifiableSet(extensions);
 	}
@@ -55,6 +58,6 @@ public class ImageStudioTabImplementor implements TabImplementor {
 
 	@Override
 	public TabContent open(File file) {
-		return new ImageStudioPanel(file);
+		return new ImageStudioPanel(file, true);
 	}
 }

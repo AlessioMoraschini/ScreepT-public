@@ -45,4 +45,8 @@ public interface TabContent {
 
 	/** Notifies the host when title or modified state change (the host refreshes the tab header) */
 	void setChangeListener(Runnable listener);
+
+	/** Gives the content a way to ask the host to close its tab (for contents that hand the work over to a window) */
+	default void setCloseHandler(Runnable closeTab) {
+	}
 }

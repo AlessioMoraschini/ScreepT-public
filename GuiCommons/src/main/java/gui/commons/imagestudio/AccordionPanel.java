@@ -35,56 +35,131 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * Vertical list of collapsible sections. Each section has the lowest {@link StudioMode} it is shown in, so the same
- * panel is simple in Basic and complete in Nerd.
+ * panel is simple in Basic and complete in Nerd. By default only one section is open at a time (so the list fits the
+ * window without scrolling) and each header can show a short badge with what is set inside, visible when closed too.
  */
 public class AccordionPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private final List<Section> sections = new ArrayList<Section>();
+	private boolean exclusive = true;
 
 	public AccordionPanel() {
-		super(new MigLayout("insets 0, wrap 1, gapy 6, hidemode 3", "[grow,fill]", ""));
+		super(new MigLayout("insets 0, wrap 1, gapy 2, hidemode 3", "[grow,fill]", ""));
 		setOpaque(false);
 	}
 
-	/** Adds a section; it starts expanded when {@code expanded} is true */
+	/** true (default): opening a section closes the others */
+	public void setExclusive(boolean exclusive) {
+		this.exclusive = exclusive;
+	}
+
+	/** Adds a section; it starts expanded when {@code expanded} is true (in exclusive mode only the first one stays open) */
 	public void addSection(String title, JComponent content, StudioMode minimumMode, boolean expanded) {
-		Section section = new Section(title, content, minimumMode, expanded);
+		boolean open = expanded && !(exclusive && hasOpenSection());
+		Section section = new Section(this, title, content, minimumMode, open);
 		sections.add(section);
 		add(section, "growx");
 	}
 
-	/** Shows the sections available in the mode */
-	public void applyMode(StudioMode mode) {
+	private boolean hasOpenSection() {
 		for (Section section : sections) {
-			section.setVisible(mode.atLeast(section.minimumMode));
+			if (section.expanded) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Shows the sections available in the mode; if the open one is not available, the first one that is gets opened */
+	public void applyMode(StudioMode mode) {
+		boolean open = false;
+		Section first = null;
+		for (Section section : sections) {
+			boolean visible = mode.atLeast(section.minimumMode);
+			section.setVisible(visible);
+			if (visible && first == null) {
+				first = section;
+			}
+			open |= visible && section.expanded;
+		}
+		if (!open && first != null) {
+			first.setExpanded(true);
 		}
 		revalidate();
 		repaint();
 	}
 
-	/** One section: clickable header with an arrow and the content card below */
+	/** Short text on the right of the section header (empty hides it) */
+	public void setBadge(String title, String text) {
+		for (Section section : sections) {
+			if (section.title.equals(title)) {
+				section.setBadge(text);
+			}
+		}
+	}
+
+	private void opened(Section opened) {
+		if (!exclusive) {
+			return;
+		}
+		for (Section section : sections) {
+			if (section != opened && section.expanded) {
+				section.setExpanded(false);
+			}
+		}
+	}
+
+	/** One section: clickable header with an arrow and a badge, and the content below */
 	private static class Section extends JPanel {
 		private static final long serialVersionUID = 1L;
 
+		private final AccordionPanel owner;
+		private final String title;
 		private final StudioMode minimumMode;
-		private final JComponent content;
-		private final JLabel header;
+		private final JPanel header;
+		private final JLabel titleLabel;
+		private final JLabel badge;
+		private final JPanel body;
 		private boolean expanded;
 
-		Section(String title, JComponent content, StudioMode minimumMode, boolean expanded) {
-			super(new MigLayout("insets 0, wrap 1, gapy 0", "[grow,fill]", ""));
+		Section(AccordionPanel owner, String title, JComponent content, StudioMode minimumMode, boolean expanded) {
+			super(new MigLayout("insets 0, wrap 1, gapy 0, hidemode 3", "[grow,fill]", ""));
 			setOpaque(false);
+			this.owner = owner;
+			this.title = title;
 			this.minimumMode = minimumMode;
-			this.content = content;
 			this.expanded = expanded;
 
-			header = new JLabel(title);
-			header.setFont(ToolStyle.font(0f, Font.BOLD));
-			header.setIconTextGap(8);
-			header.setBorder(javax.swing.BorderFactory.createEmptyBorder(7, 6, 7, 6));
+			header = new JPanel(new MigLayout("insets 4 8 4 8, gapx 6", "[grow,fill,shrink][]", "[]")) {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected void paintComponent(Graphics g0) {
+					Graphics2D g = (Graphics2D) g0.create();
+					g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+					g.setColor(getBackground());
+					g.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
+					if (Section.this.expanded) {
+						g.setColor(ToolStyle.BLUE);
+						g.fillRoundRect(0, 5, 3, getHeight() - 10, 3, 3);
+					}
+					g.dispose();
+				}
+			};
+			header.setOpaque(false);
+			header.setBackground(base());
 			header.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			header.setOpaque(true);
+
+			titleLabel = new JLabel(title);
+			titleLabel.setFont(ToolStyle.font(0f, Font.BOLD));
+			titleLabel.setIconTextGap(8);
+			titleLabel.setIcon(new Arrow());
+			badge = ToolStyle.mutedLabel("");
+			badge.setFont(ToolStyle.font(-1f, Font.PLAIN));
+			badge.setVisible(false);
+			header.add(titleLabel, "wmin 0");
+			header.add(badge, "wmin 0");
 			header.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -94,27 +169,23 @@ public class AccordionPanel extends JPanel {
 				@Override
 				public void mouseEntered(MouseEvent e) {
 					header.setBackground(hover());
+					header.repaint();
 				}
 
 				@Override
 				public void mouseExited(MouseEvent e) {
 					header.setBackground(base());
+					header.repaint();
 				}
 			});
-			header.setBackground(base());
-			header.setIcon(new Arrow());
 			add(header, "growx");
 
-			JPanel body = new JPanel(new MigLayout("insets 8 8 10 8, wrap 1, gapy 4", "[grow,fill]", ""));
+			body = new JPanel(new MigLayout("insets 8 8 10 8, wrap 1, gapy 4", "[grow,fill]", ""));
 			body.setOpaque(false);
-			body.add(content, "growx");
-			content = body;
-			this.contentHolder = body;
+			body.add(content, "growx, wmin 0");
 			add(body, "growx");
 			body.setVisible(expanded);
 		}
-
-		private final JComponent contentHolder;
 
 		private static Color base() {
 			Color panel = UIManager.getColor("Panel.background");
@@ -126,16 +197,30 @@ public class AccordionPanel extends JPanel {
 			return panel == null ? Color.GRAY : ToolStyle.blend(panel, ToolStyle.isDark() ? Color.WHITE : Color.BLACK, 0.12f);
 		}
 
+		void setBadge(String text) {
+			boolean show = text != null && !text.isEmpty();
+			badge.setText(show ? text : "");
+			badge.setVisible(show);
+			header.revalidate();
+		}
+
 		void toggle() {
-			expanded = !expanded;
-			contentHolder.setVisible(expanded);
-			header.repaint();
-			revalidate();
-			Component top = getParent();
-			if (top != null) {
-				top.revalidate();
-				top.repaint();
+			setExpanded(!expanded);
+		}
+
+		void setExpanded(boolean value) {
+			if (expanded == value) {
+				return;
 			}
+			expanded = value;
+			body.setVisible(expanded);
+			header.repaint();
+			titleLabel.repaint();
+			if (expanded) {
+				owner.opened(this);
+			}
+			owner.revalidate();
+			owner.repaint();
 		}
 
 		private class Arrow implements Icon {

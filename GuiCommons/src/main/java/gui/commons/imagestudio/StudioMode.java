@@ -24,7 +24,7 @@ public enum StudioMode {
 	CLASSIC("Classic", "+ adjustments, filters, rotate, flip, copy"),
 	NERD("Nerd", "+ every option: histogram, gamma, hue, resampling, grid");
 
-	private static final String PREF_KEY = "imageStudioMode";
+	private static final String PREF_KEY = "imageStudioMode2";
 	private static final List<Runnable> listeners = new ArrayList<Runnable>();
 	private static StudioMode current = load();
 
@@ -78,9 +78,9 @@ public enum StudioMode {
 
 	private static StudioMode load() {
 		try {
-			return valueOf(Preferences.userNodeForPackage(StudioMode.class).get(PREF_KEY, CLASSIC.name()));
+			return valueOf(Preferences.userNodeForPackage(StudioMode.class).get(PREF_KEY, NERD.name()));
 		} catch (RuntimeException e) {
-			return CLASSIC;
+			return NERD;
 		}
 	}
 }

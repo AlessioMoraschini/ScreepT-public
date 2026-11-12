@@ -39,6 +39,26 @@ public class TreeUtils {
 	public static final Color DEF_BACK_HOVER = new Color(0, 102, 153, 20);
 	
 	public static int MAX_EXPAND_ITERATIONS = 256;
+
+	/** True when the color is dark (relative luminance under one half) */
+	public static boolean isDark(Color color) {
+		double lum = (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255.0;
+		return lum < 0.5;
+	}
+
+	/** A text color that reads well on the background, whatever the theme: light on dark, dark on light */
+	public static Color textOn(Color background) {
+		return isDark(background) ? new Color(0xE4, 0xE7, 0xEB) : new Color(0x1E, 0x22, 0x28);
+	}
+
+	/** Mix of two colors: 0 gives the first, 1 the second */
+	public static Color blend(Color first, Color second, float amount) {
+		float a = Math.max(0f, Math.min(1f, amount));
+		return new Color(
+				Math.round(first.getRed() + (second.getRed() - first.getRed()) * a),
+				Math.round(first.getGreen() + (second.getGreen() - first.getGreen()) * a),
+				Math.round(first.getBlue() + (second.getBlue() - first.getBlue()) * a));
+	}
 	
 	public static TreePath getPath(TreeNode treeNode) {
 		List<Object> nodes = new ArrayList<Object>();

@@ -85,7 +85,7 @@ public class ImageViewerFrame extends JFrame {
 
 		getContentPane().setLayout(new MigLayout("fill, insets 10, gapy 8", "[grow,fill]", "[][grow,fill]"));
 
-		JPanel header = new JPanel(new MigLayout("insets 0, gapx 8", "[][][grow,fill][][]", "[]"));
+		JPanel header = new JPanel(new MigLayout("insets 0, gapx 8", "[][][][grow,fill][][]", "[]"));
 		header.setOpaque(false);
 		JButton open = ToolStyle.button("Open images...", null, "Open one or more images in new tabs (Ctrl+O)");
 		open.addActionListener(e -> chooseAndOpen());
@@ -93,6 +93,9 @@ public class ImageViewerFrame extends JFrame {
 		batch.addActionListener(e -> new BatchDialog(this, currentFile()).setVisible(true));
 		header.add(open);
 		header.add(batch);
+		JButton clean = ToolStyle.button("Clean metadata...", null, "Remove EXIF, GPS and other metadata from many images, without losing quality");
+		clean.addActionListener(e -> new gui.commons.imagestudio.MetadataCleanerDialog(this, currentFile()).setVisible(true));
+		header.add(clean);
 		header.add(new JLabel(), "growx");
 		header.add(ToolStyle.mutedLabel("Mode"));
 		comboMode = new JComboBox<StudioMode>(StudioMode.values());
@@ -303,12 +306,11 @@ public class ImageViewerFrame extends JFrame {
 			ArrayList<ImageViewerFrame> viewers = getViewerInstanceList();
 			if (!viewers.isEmpty()) {
 				ImageViewerFrame viewer = viewers.get(0);
-				viewer.toFront();
-				viewer.setVisible(true);
 				viewer.openFile(target);
+				gui.commons.imagestudio.DialogFit.bringToFront(viewer);
 				logger.info("Image file loaded into the open Image Studio!");
 			} else {
-				new ImageViewerFrame(target);
+				gui.commons.imagestudio.DialogFit.bringToFront(new ImageViewerFrame(target));
 				logger.info("Image file loaded into a new Image Studio!");
 			}
 		});

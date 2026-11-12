@@ -45,15 +45,17 @@ public final class CatsVisit {
 
 	private final JComponent page;
 	private final int secondsBefore;
+	private final java.util.function.Supplier<Rectangle> avoidSupplier;
 	private final Random random = new Random();
 	private Timer waiting;
 	private Timer animation;
 	private JWindow overlay;
 	private CatsPlayground playground;
 
-	private CatsVisit(JComponent page, int secondsBefore) {
+	private CatsVisit(JComponent page, int secondsBefore, java.util.function.Supplier<Rectangle> avoidSupplier) {
 		this.page = page;
 		this.secondsBefore = secondsBefore;
+		this.avoidSupplier = avoidSupplier;
 	}
 
 	/**
@@ -61,7 +63,16 @@ public final class CatsVisit {
 	 * Nothing happens if the system has no transparent windows.
 	 */
 	public static void attach(final JComponent page, int secondsBefore) {
-		final CatsVisit visit = new CatsVisit(page, Math.max(1, secondsBefore));
+		attach(page, secondsBefore, null);
+	}
+
+	/**
+	 * Same, with a zone of the page the cats never cover (for instance the text being typed): {@code avoid} gives its
+	 * rectangle in the coordinates of the page, or null when there is nothing to protect. The cats stay beside it and now
+	 * and then one touches it with a paw and goes away.
+	 */
+	public static void attach(final JComponent page, int secondsBefore, java.util.function.Supplier<Rectangle> avoid) {
+		final CatsVisit visit = new CatsVisit(page, Math.max(1, secondsBefore), avoid);
 		page.addHierarchyListener(e -> {
 			if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
 				if (page.isShowing()) {
@@ -147,10 +158,31 @@ public final class CatsVisit {
 			overlay.setBounds(bounds);
 			playground.setArea(0, bounds.width, FLOOR_DEPTH);
 		}
+		updateForbiddenZone();
 		playground.tick();
 		overlay.repaint();
 		if (playground.isFinished()) {
 			endVisit();
+		}
+	}
+
+	/** Hands the playground the rectangle of the text to protect, converted to the coordinates of the overlay */
+	private void updateForbiddenZone() {
+		if (avoidSupplier == null) {
+			return;
+		}
+		try {
+			Rectangle zone = avoidSupplier.get();
+			if (zone == null || zone.isEmpty()) {
+				playground.setAvoid(null, overlay.getHeight() - FLOOR_MARGIN);
+				return;
+			}
+			java.awt.Point pageOrigin = page.getLocationOnScreen();
+			java.awt.Point overlayOrigin = overlay.getLocationOnScreen();
+			playground.setAvoid(new Rectangle(pageOrigin.x - overlayOrigin.x + zone.x, pageOrigin.y - overlayOrigin.y + zone.y, zone.width, zone.height),
+					overlay.getHeight() - FLOOR_MARGIN);
+		} catch (RuntimeException e) {
+			playground.setAvoid(null, overlay.getHeight() - FLOOR_MARGIN);
 		}
 	}
 

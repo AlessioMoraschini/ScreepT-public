@@ -16,7 +16,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -89,7 +91,10 @@ public final class CatsPlayground {
 	private static final double GRAVITY = 0.5;
 	private static final double BALL_GRAVITY = 0.42;
 
-	private enum State { HIDDEN, APPEAR, IDLE, WALK, CHASE, CROUCH, AIR, VANISH, LEAVE, TRAIL }
+	private enum State { HIDDEN, APPEAR, IDLE, WALK, CHASE, CROUCH, AIR, VANISH, LEAVE, TRAIL, ROLL, FLIP, SLEEP, STRETCH, ZOOM, SPIN, SIT, APPROACH, PAW }
+
+	/** Free space kept between a cat and the forbidden zone */
+	private static final int ZONE_MARGIN = 6;
 
 	private final Random random = new Random();
 	private final int scale;
@@ -106,6 +111,10 @@ public final class CatsPlayground {
 	private boolean leaving;
 	private boolean finished;
 	private boolean initialized;
+	/** Area the cats must never cover (the typed text of the page), in the coordinates of the component that paints */
+	private Rectangle avoid;
+	private int groundHint;
+	private boolean feoVisible = true;
 
 	/** @param scale screen pixels for each pixel of art (2 or 3 are good) */
 	public CatsPlayground(int scale) {
@@ -144,6 +153,40 @@ public final class CatsPlayground {
 		setArea(left, width, 0);
 	}
 
+	/**
+	 * Zone the cats never cover, for instance the text the user is typing: they stay beside it, and now and then one of them
+	 * walks up to it, touches it with a paw and goes away. {@code ground} is the same value given to {@link #paint}.
+	 *
+	 * @param zone rectangle in the coordinates of the painting component, or null for no zone
+	 */
+	public void setAvoid(Rectangle zone, int ground) {
+		this.avoid = zone == null ? null : new Rectangle(zone);
+		this.groundHint = ground;
+	}
+
+	/** Feo can be left out (false): only Nano plays. Call it before the first {@link #tick}. */
+	public void setFeoVisible(boolean visible) {
+		this.feoVisible = visible;
+		if (!visible) {
+			feo.enter(State.HIDDEN, Integer.MAX_VALUE / 2);
+		}
+	}
+
+	private Rectangle padded() {
+		return new Rectangle(avoid.x - ZONE_MARGIN, avoid.y - ZONE_MARGIN, avoid.width + 2 * ZONE_MARGIN, avoid.height + 2 * ZONE_MARGIN);
+	}
+
+	/** True if something with this footprint would cover the forbidden zone */
+	private boolean hitsZone(double cx, double depth, double height, double halfWidth, double bodyHeight) {
+		if (avoid == null) {
+			return false;
+		}
+		Rectangle zone = padded();
+		double bottom = contactY(groundHint, depth) - height;
+		double top = bottom - bodyHeight;
+		return cx + halfWidth > zone.x && cx - halfWidth < zone.x + zone.width && bottom > zone.y && top < zone.y + zone.height;
+	}
+
 	/** The cats play for this many ticks, then Nano follows Feo and they walk out of the area (default: never) */
 	public void leaveAfter(int ticks) {
 		finaleAt = clock + Math.max(1, ticks);
@@ -174,6 +217,11 @@ public final class CatsPlayground {
 		leaving = true;
 		double middle = left + width / 2.0;
 		feo.leaveDirection = feo.x < middle ? -1 : 1;
+		if (!feoVisible) {
+			nano.leaveDirection = nano.x < middle ? -1 : 1;
+			nano.enter(State.LEAVE, 0);
+			return;
+		}
 		feo.enter(State.LEAVE, 0);
 		nano.enter(State.TRAIL, 0);
 	}
@@ -318,6 +366,17 @@ public final class CatsPlayground {
 				d = 1;
 				vd = -Math.abs(vd) * 0.7;
 			}
+			if (avoid != null && hitsZone(x, d, z, yarnFrames[0].getWidth() / 2.0, yarnFrames[0].getHeight())) {
+				Rectangle zone = padded();
+				double toLeft = x + half - zone.x;
+				double toRight = zone.x + zone.width - (x - half);
+				x = toLeft < toRight ? zone.x - half : zone.x + zone.width + half;
+				vx = -vx * 0.5;
+				if (x < left + half || x > left + width - half) {
+					x = clamp(x, left + half, left + width - half);
+					vx = 0;
+				}
+			}
 		}
 
 		void paintShadow(Graphics2D g, int ground) {
@@ -368,6 +427,10 @@ public final class CatsPlayground {
 		int facing = 1;
 		int leaveDirection = 1;
 		double gait;
+		/** rotation of the body while it rolls or flips, and the width of the pose (stretching, sitting) */
+		double rotation;
+		double poseX = 1;
+		private int approachSide;
 
 		private State state = State.HIDDEN;
 		private int stateTicks;
@@ -397,6 +460,8 @@ public final class CatsPlayground {
 			state = next;
 			stateTicks = 0;
 			stateLength = length;
+			rotation = 0;
+			poseX = 1;
 		}
 
 		private double spriteWidth() {
@@ -440,7 +505,7 @@ public final class CatsPlayground {
 						sqv = 0;
 					}
 					vz = 0;
-					if (state == State.AIR) {
+					if (state == State.AIR || state == State.FLIP) {
 						enter(State.IDLE, 6 + random.nextInt(14));
 					}
 				}
@@ -448,8 +513,13 @@ public final class CatsPlayground {
 			switch (state) {
 			case HIDDEN:
 				if (stateTicks >= stateLength) {
-					x = left + spriteWidth() / 2 + random.nextDouble() * Math.max(1, width - spriteWidth());
-					d = depthPx > 0 ? 0.15 + random.nextDouble() * 0.8 : 0.5;
+					for (int attempt = 0; attempt < 14; attempt++) {
+						x = left + spriteWidth() / 2 + random.nextDouble() * Math.max(1, width - spriteWidth());
+						d = depthPx > 0 ? 0.15 + random.nextDouble() * 0.8 : 0.5;
+						if (!hitsZone(x, d, 0, spriteWidth() / 2, stand.getHeight())) {
+							break;
+						}
+					}
 					vx = 0;
 					vd = 0;
 					facing = x < left + width / 2.0 ? 1 : -1;
@@ -494,7 +564,109 @@ public final class CatsPlayground {
 				break;
 			case VANISH:
 				if (stateTicks >= stateLength) {
-					enter(State.HIDDEN, 25 + random.nextInt(60));
+					if (leaving) {
+						x = left - 1000; // blocked by the zone while leaving: gone
+						enter(State.HIDDEN, Integer.MAX_VALUE / 2);
+					} else {
+						enter(State.HIDDEN, 25 + random.nextInt(60));
+					}
+				}
+				break;
+			case ROLL: {
+				double p = stateTicks / (double) Math.max(1, stateLength);
+				rotation = p * 2 * Math.PI;
+				x += facing * 1.5 * (1 - p);
+				sq = 0.86;
+				if (stateTicks >= stateLength) {
+					enter(State.IDLE, 14 + random.nextInt(20));
+					sq = 0.8;
+				}
+				break;
+			}
+			case FLIP:
+				if (stateTicks == 1) {
+					vz = 7.4;
+					z = 0.1;
+					vx = facing * 1.2;
+				}
+				rotation = Math.min(2 * Math.PI, stateTicks * 2 * Math.PI / 26.0);
+				x += vx;
+				vx *= 0.99;
+				if (stateTicks > 90) {
+					enter(State.IDLE, 10);
+				}
+				break;
+			case SLEEP:
+				brake();
+				sq = 0.6;
+				if (stateTicks % 50 == 10) {
+					bubble = stateTicks % 100 == 10 ? "z" : "Zz";
+					bubbleTicks = 45;
+				}
+				if (stateTicks >= stateLength) {
+					enter(State.STRETCH, 44);
+				}
+				break;
+			case STRETCH: {
+				brake();
+				boolean reaching = stateTicks < stateLength * 0.65;
+				poseX = reaching ? 1.32 : 1.0;
+				sq = reaching ? 0.82 : 1.06;
+				if (stateTicks >= stateLength) {
+					enter(State.IDLE, 10 + random.nextInt(30));
+				}
+				break;
+			}
+			case ZOOM:
+				steer(targetX, targetD, 5.6 * agility, 0.55);
+				if (Math.abs(x - targetX) < 14) {
+					pickZoomTarget();
+				}
+				if (stateTicks >= stateLength) {
+					enter(State.IDLE, 12);
+				}
+				break;
+			case SPIN:
+				brake();
+				facing = (stateTicks / 3) % 2 == 0 ? 1 : -1;
+				if (stateTicks % 10 == 1) {
+					vz = 2.6;
+					z = 0.1;
+				}
+				if (stateTicks >= stateLength) {
+					enter(State.IDLE, 10);
+				}
+				break;
+			case SIT:
+				brake();
+				sq = 1.1;
+				poseX = 0.88;
+				if (stateTicks >= stateLength) {
+					enter(State.IDLE, 10);
+				}
+				break;
+			case APPROACH:
+				steer(targetX, targetD, 1.6 * agility, 0.14);
+				if (stateTicks > 360) {
+					enter(State.IDLE, 20);
+				} else if (Math.abs(x - targetX) < 4 && Math.abs((d - targetD) * depthPx) < 4) {
+					facing = -approachSide;
+					vx = 0;
+					vd = 0;
+					enter(State.PAW, 54);
+				}
+				break;
+			case PAW:
+				brake();
+				sq = 1.07;
+				if (stateTicks == 4 && random.nextInt(3) == 0) {
+					say();
+				}
+				if (stateTicks >= stateLength) {
+					// touched it: now away from the text
+					targetX = clamp(x + approachSide * (140 + random.nextDouble() * 220), left + 40, left + width - 40);
+					targetD = depthPx > 0 ? 0.1 + random.nextDouble() * 0.9 : 0.5;
+					enter(State.WALK, 0);
 				}
 				break;
 			case LEAVE:
@@ -509,6 +681,106 @@ public final class CatsPlayground {
 			x = leaving ? x : clamp(x, left + spriteWidth() / 2, left + width - spriteWidth() / 2);
 			if (depthPx > 0) {
 				d = clamp(d, 0.02, 1);
+			}
+			keepOutOfZone();
+		}
+
+		/** The cats never cover the forbidden zone: when one would, it is moved beside it */
+		private void keepOutOfZone() {
+			if (avoid == null || state == State.HIDDEN) {
+				return;
+			}
+			double halfWidth = spriteWidth() / 2;
+			if (!hitsZone(x, d, z, halfWidth, stand.getHeight())) {
+				return;
+			}
+			if (leaving) {
+				enter(State.VANISH, 12);
+				return;
+			}
+			Rectangle zone = padded();
+			double toLeft = x + halfWidth - zone.x;
+			double toRight = zone.x + zone.width - (x - halfWidth);
+			boolean leftSide = toLeft < toRight;
+			double nx = leftSide ? zone.x - halfWidth : zone.x + zone.width + halfWidth;
+			if (nx < left + halfWidth || nx > left + width - halfWidth) {
+				nx = leftSide ? zone.x + zone.width + halfWidth : zone.x - halfWidth;
+				if (nx < left + halfWidth || nx > left + width - halfWidth) {
+					enter(State.VANISH, 14);
+					return;
+				}
+			}
+			x = nx;
+			vx = 0;
+			if (state == State.WALK || state == State.CHASE || state == State.ZOOM || state == State.AIR || state == State.FLIP || state == State.ROLL || state == State.CROUCH) {
+				enter(State.IDLE, 16 + random.nextInt(20));
+			}
+		}
+
+		private boolean canReachZone() {
+			if (avoid == null) {
+				return false;
+			}
+			int top = groundHint - depthPx - stand.getHeight();
+			return avoid.y + avoid.height > top && avoid.y < groundHint + 2;
+		}
+
+		/** Walks to the side of the forbidden zone, to touch it with a paw */
+		private void startApproach() {
+			Rectangle zone = padded();
+			double halfWidth = spriteWidth() / 2;
+			boolean fromLeft = x < zone.x + zone.width / 2.0;
+			double edge = fromLeft ? zone.x - halfWidth : zone.x + zone.width + halfWidth;
+			approachSide = fromLeft ? -1 : 1;
+			if (edge < left + halfWidth || edge > left + width - halfWidth) {
+				approachSide = -approachSide;
+				edge = approachSide < 0 ? zone.x - halfWidth : zone.x + zone.width + halfWidth;
+			}
+			if (edge < left + halfWidth || edge > left + width - halfWidth) {
+				enter(State.IDLE, 30);
+				return;
+			}
+			double wantY = clamp(zone.y + zone.height * 0.85, groundHint - depthPx, groundHint);
+			targetX = edge;
+			targetD = depthPx > 0 ? clamp(1 - (groundHint - wantY) / depthPx, 0.02, 1) : 0.5;
+			enter(State.APPROACH, 0);
+		}
+
+		private void pickZoomTarget() {
+			for (int attempt = 0; attempt < 8; attempt++) {
+				targetX = left + 40 + random.nextDouble() * Math.max(1, width - 80);
+				if (Math.abs(targetX - x) > 150) {
+					break;
+				}
+			}
+			targetD = depthPx > 0 ? 0.1 + random.nextDouble() * 0.9 : 0.5;
+		}
+
+		/** A trick now and then: roll, flip, nap, stretch, zoomies, spin, sit */
+		private void trick() {
+			switch (random.nextInt(7)) {
+			case 0:
+				enter(State.ROLL, 40);
+				break;
+			case 1:
+				enter(State.FLIP, 0);
+				break;
+			case 2:
+				enter(State.SLEEP, 140 + random.nextInt(200));
+				break;
+			case 3:
+				enter(State.STRETCH, 44);
+				break;
+			case 4:
+				pickZoomTarget();
+				enter(State.ZOOM, 80 + random.nextInt(40));
+				break;
+			case 5:
+				enter(State.SPIN, 28);
+				break;
+			default:
+				enter(State.SIT, 60 + random.nextInt(90));
+				break;
 			}
 		}
 
@@ -588,6 +860,14 @@ public final class CatsPlayground {
 		/** What to do next, at random: the ball is the favourite */
 		private void decide() {
 			double distance = Math.abs(ball.x - x);
+			if (avoid != null && random.nextInt(100) < 14 && canReachZone()) {
+				startApproach();
+				return;
+			}
+			if (random.nextInt(100) < 24) {
+				trick();
+				return;
+			}
 			double r = random.nextDouble();
 			if (r < 0.50) {
 				enter(State.CHASE, 0);
@@ -622,7 +902,7 @@ public final class CatsPlayground {
 			if (moving) {
 				return walk[((int) gait) % 2];
 			}
-			return blinkTicks > 0 && state == State.IDLE ? blink : stand;
+			return state == State.SLEEP || (blinkTicks > 0 && (state == State.IDLE || state == State.SIT)) ? blink : stand;
 		}
 
 		void paintShadow(Graphics2D g, int ground) {
@@ -644,9 +924,9 @@ public final class CatsPlayground {
 			} else if (state == State.VANISH) {
 				alpha = 1f - Math.min(1f, stateTicks / (float) stateLength);
 			}
-			double breathing = state == State.IDLE ? 1 + 0.018 * Math.sin(clock * 0.12) : 1;
+			double breathing = state == State.IDLE || state == State.SIT ? 1 + 0.018 * Math.sin(clock * 0.12) : state == State.SLEEP ? 1 + 0.03 * Math.sin(clock * 0.07) : 1;
 			double scaleY = sq * breathing;
-			double scaleX = 1 + (1 - sq) * 0.7; // keeps the volume: flatter means wider
+			double scaleX = (1 + (1 - sq) * 0.7) * poseX; // keeps the volume: flatter means wider
 			int w = (int) Math.round(frame.getWidth() * scaleX);
 			int h = (int) Math.round(frame.getHeight() * scaleY);
 			// the body bobs one art pixel at every step
@@ -659,15 +939,38 @@ public final class CatsPlayground {
 			if (alpha < 1f) {
 				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.max(0f, alpha)));
 			}
+			AffineTransform untilted = g.getTransform();
+			if (rotation != 0) {
+				g.rotate(rotation * (facing >= 0 ? 1 : -1), cx, top + h / 2.0);
+			}
 			if (facing >= 0) {
 				g.drawImage(frame, cx - w / 2, top, cx + w - w / 2, bottom, 0, 0, frame.getWidth(), frame.getHeight(), null);
 			} else {
 				g.drawImage(frame, cx + w - w / 2, top, cx - w / 2, bottom, 0, 0, frame.getWidth(), frame.getHeight(), null);
 			}
+			g.setTransform(untilted);
+			if (state == State.PAW) {
+				paintPaw(g, cx, top, w, h);
+			}
 			g.setComposite(before);
 			if (state == State.APPEAR || state == State.VANISH) {
 				paintPuff(g, cx, bottom - h / 2, state == State.APPEAR ? stateTicks : stateLength - stateTicks);
 			}
+		}
+
+		/** The front paw reaching out to the forbidden zone and tapping it */
+		private void paintPaw(Graphics2D g, int cx, int top, int w, int h) {
+			boolean out = (stateTicks / 5) % 2 == 0;
+			int reach = ZONE_MARGIN + scale * 2 + (out ? 0 : -scale * 2);
+			int front = cx + facing * (w / 2);
+			int y = top + h * 55 / 100 - (out ? 0 : scale);
+			int pawH = scale * 3;
+			int x0 = facing > 0 ? front - scale : front - reach;
+			int pawW = reach + scale;
+			g.setColor(OUTLINE);
+			g.fillRect(x0, y, pawW, pawH);
+			g.setColor(light);
+			g.fillRect(x0 + (facing > 0 ? 0 : scale), y + scale / 2, pawW - scale, Math.max(1, pawH - scale));
 		}
 
 		/** Little pixel stars flying out from the cat when it shows up or disappears */

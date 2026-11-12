@@ -52,7 +52,8 @@ public class ImageCanvas extends JComponent {
 
 	public ImageCanvas() {
 		setOpaque(true);
-		setPreferredSize(new Dimension(500, 400));
+		setPreferredSize(new Dimension(260, 200));
+		setMinimumSize(new Dimension(0, 0));
 		MouseAdapter mouse = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -152,6 +153,14 @@ public class ImageCanvas extends JComponent {
 	}
 
 	/** @param refit true: fit to the window; false: keep zoom and position (the size may change) */
+	private String message;
+
+	/** Text shown instead of an image (why there is none) */
+	public void setMessage(String text) {
+		message = text;
+		repaint();
+	}
+
 	public void setImage(BufferedImage img, boolean refit) {
 		boolean sameSize = shown != null && img != null && shown.getWidth() == img.getWidth() && shown.getHeight() == img.getHeight();
 		this.shown = img;
@@ -242,8 +251,13 @@ public class ImageCanvas extends JComponent {
 		BufferedImage img = shown;
 		if (img == null) {
 			g.setColor(ToolStyle.muted());
-			String text = "Drop an image here";
-			g.drawString(text, (getWidth() - g.getFontMetrics().stringWidth(text)) / 2, getHeight() / 2);
+			String[] lines = (message != null ? message : "Drop an image here").split("\n");
+			java.awt.FontMetrics fm = g.getFontMetrics();
+			int y = getHeight() / 2 - (lines.length - 1) * fm.getHeight() / 2;
+			for (String line : lines) {
+				g.drawString(line, Math.max(4, (getWidth() - fm.stringWidth(line)) / 2), y);
+				y += fm.getHeight();
+			}
 			g.dispose();
 			return;
 		}

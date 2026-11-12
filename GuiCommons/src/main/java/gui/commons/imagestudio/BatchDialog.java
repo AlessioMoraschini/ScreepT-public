@@ -88,9 +88,9 @@ public class BatchDialog extends JDialog {
 	private final JLabel lblProgress = ToolStyle.mutedLabel(" ");
 	private final JButton btnRun;
 	private final JCheckBox chkOriginal = new JCheckBox("Show original");
-	private final JRadioButton rbSample = new JRadioButton("Built-in sample", true);
+	private final JRadioButton rbSample = new JRadioButton("Built-in sample");
 	private final JRadioButton rbCustom = new JRadioButton("My photo...");
-	private final JRadioButton rbFirst = new JRadioButton("First of the list");
+	private final JRadioButton rbFirst = new JRadioButton("Image selected in the list", true);
 
 	private BufferedImage sampleImage;
 	private BufferedImage processed;
@@ -101,15 +101,28 @@ public class BatchDialog extends JDialog {
 
 	public BatchDialog(Window owner, File suggestedFile) {
 		super(owner, "Batch processing", ModalityType.MODELESS);
-		setLayout(new MigLayout("fill, insets 12, gapy 8", "[300!][grow,fill][320!]", "[grow,fill][]"));
+		setLayout(new MigLayout("fill, insets 12, gapy 8", "[grow,fill][320!]", "[grow,fill][]"));
 
 		settingsPanel = new ImageSettingsPanel(settings, this::onSettingsChanged, true);
 		btnRun = ToolStyle.accent(ToolStyle.button("Process all images", null, "Applies the settings to every image of the list"), ToolStyle.GREEN);
 
-		add(buildSources(), "grow");
-		add(buildPreview(), "grow");
+		// the file list and the preview never overlap: the border between them can be dragged, and each side scrolls when it is too small
+		JScrollPane sourcesScroll = new JScrollPane(buildSources(), javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		sourcesScroll.setBorder(null);
+		sourcesScroll.getVerticalScrollBar().setUnitIncrement(16);
+		sourcesScroll.setMinimumSize(new Dimension(160, 120));
+		JPanel previewPanel = buildPreview();
+		previewPanel.setMinimumSize(new Dimension(220, 120));
+		javax.swing.JSplitPane split = new javax.swing.JSplitPane(javax.swing.JSplitPane.HORIZONTAL_SPLIT, sourcesScroll, previewPanel);
+		split.setOneTouchExpandable(true);
+		split.setContinuousLayout(true);
+		split.setResizeWeight(0.0);
+		split.setDividerLocation(Math.max(340, sourcesScroll.getViewport().getView().getPreferredSize().width + 24));
+		split.setDividerSize(8);
+		split.setBorder(null);
+		add(split, "grow, wmin 0");
 		add(settingsPanel, "grow, wrap");
-		add(buildOutput(), "span 3, growx");
+		add(buildOutput(), "span 2, growx");
 
 		previewTimer = new Timer(150, e -> renderPreview());
 		previewTimer.setRepeats(false);
@@ -136,16 +149,14 @@ public class BatchDialog extends JDialog {
 				requestClose();
 			}
 		});
-		setMinimumSize(new Dimension(1100, 700));
-		setSize(1280, 780);
-		setLocationRelativeTo(owner);
+		DialogFit.apply(this, owner, 1100, 700);
 	}
 
 	// ------------------------------------------------------------------ UI
 
 	private JPanel buildSources() {
-		JPanel card = ToolStyle.card(new MigLayout("insets 12, wrap 1, gapy 6", "[grow,fill]", "[][grow,fill][][][]"));
-		card.add(ToolStyle.caption("1. Images to process"));
+		JPanel card = ToolStyle.card(new MigLayout("insets 12, wrap 1, gapy 6", "[grow,fill]", "[][grow,fill,60::][][][][][]"));
+		card.add(ToolStyle.caption("1. Images to process (click one to preview it)"));
 		list.setCellRenderer(new javax.swing.DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
 
@@ -158,8 +169,15 @@ public class BatchDialog extends JDialog {
 				return this;
 			}
 		});
-		card.add(new JScrollPane(list), "grow, h 220::");
-		JPanel buttons = new JPanel(new MigLayout("insets 0, gapx 4", "[grow,fill][grow,fill]", "[][]"));
+		list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+		list.addListSelectionListener(e -> {
+			if (!e.getValueIsAdjusting() && rbFirst.isSelected()) {
+				loadSample();
+			}
+		});
+		JScrollPane listScroll = new JScrollPane(list, javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		card.add(listScroll, "grow, wmin 0, hmin 60");
+		JPanel buttons = new JPanel(new MigLayout("insets 0, gapx 4", "[grow,fill,sg b][grow,fill,sg b]", "[][]"));
 		buttons.setOpaque(false);
 		JButton addFiles = ToolStyle.button("Add images...", null, "Choose image files");
 		addFiles.addActionListener(e -> addFilesDialog());
@@ -171,11 +189,17 @@ public class BatchDialog extends JDialog {
 				listModel.removeElement(f);
 			}
 			updateCount();
+			if (rbFirst.isSelected()) {
+				loadSample();
+			}
 		});
 		JButton clear = ToolStyle.button("Clear", null, "Empty the list");
 		clear.addActionListener(e -> {
 			listModel.clear();
 			updateCount();
+			if (rbFirst.isSelected()) {
+				loadSample();
+			}
 		});
 		buttons.add(addFiles);
 		buttons.add(addFolder, "wrap");
@@ -192,9 +216,9 @@ public class BatchDialog extends JDialog {
 		group.add(rbFirst);
 		JPanel radios = new JPanel(new MigLayout("insets 0, wrap 1, gapy 0", "[grow,fill]", ""));
 		radios.setOpaque(false);
+		radios.add(rbFirst);
 		radios.add(rbSample);
 		radios.add(rbCustom);
-		radios.add(rbFirst);
 		card.add(radios);
 		rbSample.addActionListener(e -> loadSample());
 		rbFirst.addActionListener(e -> loadSample());
@@ -218,7 +242,14 @@ public class BatchDialog extends JDialog {
 		p.add(canvas, "grow");
 		ToolStyle.hand(chkOriginal);
 		chkOriginal.addActionListener(e -> showCurrentPreview());
-		p.add(chkOriginal);
+		JPanel under = new JPanel(new MigLayout("insets 0, gapx 8", "[][grow,fill][]", "[]"));
+		under.setOpaque(false);
+		under.add(chkOriginal);
+		under.add(new JLabel());
+		JButton importSettings = ToolStyle.button("Import settings...", null, PhotoshopPresets.SUPPORTED_HINT);
+		importSettings.addActionListener(e -> settingsPanel.importPresetFromUser());
+		under.add(importSettings);
+		p.add(under, "growx");
 		return p;
 	}
 
@@ -327,14 +358,24 @@ public class BatchDialog extends JDialog {
 				found.add(path);
 			}
 		}
+		int firstNew = -1;
 		for (File f : found) {
 			if (present.add(f)) {
+				if (firstNew < 0) {
+					firstNew = listModel.size();
+				}
 				listModel.addElement(f);
 			}
 		}
 		updateCount();
 		if (rbFirst.isSelected()) {
-			loadSample();
+			if (firstNew >= 0) {
+				// the first image just added is the one shown: click another one to preview it instead
+				list.setSelectedIndex(firstNew);
+				list.ensureIndexIsVisible(firstNew);
+			} else {
+				loadSample();
+			}
 		}
 	}
 
@@ -346,13 +387,15 @@ public class BatchDialog extends JDialog {
 	// ------------------------------------------------------------------ sample and preview
 
 	private void loadSample() {
-		final File source = rbCustom.isSelected() ? customSample : rbFirst.isSelected() && !listModel.isEmpty() ? listModel.get(0) : null;
+		final File selected = list.getSelectedValue();
+		final File source = rbCustom.isSelected() ? customSample
+				: rbFirst.isSelected() ? (selected != null ? selected : (!listModel.isEmpty() ? listModel.get(0) : null)) : null;
 		new SwingWorker<BufferedImage, Void>() {
 			@Override
 			protected BufferedImage doInBackground() throws Exception {
 				BufferedImage read;
 				if (source != null) {
-					read = ImageIO.read(source);
+					read = ImageEdit.read(source);
 				} else {
 					InputStream in = BatchDialog.class.getResourceAsStream(SAMPLE_RESOURCE);
 					if (in == null) {
@@ -380,6 +423,7 @@ public class BatchDialog extends JDialog {
 				try {
 					sampleImage = get();
 					settingsPanel.setBaseSize(sampleImage.getWidth(), sampleImage.getHeight());
+					settingsPanel.setThumbnailSource(sampleImage);
 					canvas.setImage(sampleImage, true);
 					renderPreview();
 				} catch (Exception e) {
@@ -540,7 +584,7 @@ public class BatchDialog extends JDialog {
 				File source = sources.get(i);
 				publish("Processing " + (i + 1) + " / " + sources.size() + ": " + source.getName());
 				try {
-					BufferedImage image = ImageIO.read(source);
+					BufferedImage image = ImageEdit.read(source);
 					if (image == null) {
 						throw new IOException("unsupported format");
 					}

@@ -96,16 +96,17 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 
 			}
 
-			iconContainer.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
-			container.setBackground(selected ? TreeUtils.DEF_BACK_SELECTION : tree.getBackground());
-			if(hoveringRow == row){
-				iconContainer.setForeground(new Color(240,240,240));
-				container.setForeground(new Color(240,240,240));
-			} else {
-				iconContainer.setBorder(new EmptyBorder(0, 0, 0, 0));
-				iconContainer.setForeground(selected ? Color.WHITE : Color.LIGHT_GRAY);
-				container.setForeground(selected ? Color.WHITE : Color.LIGHT_GRAY);
-			}
+			// the tree paints the row highlight and the level guides: the cell is transparent and its colors follow the tree
+			// background, so every theme (light or dark) reads well
+			container.setOpaque(false);
+			iconContainer.setOpaque(false);
+			Color background = tree.getBackground();
+			Color strong = TreeUtils.textOn(background);
+			boolean folder = value instanceof FileNamed && !((FileNamed) value).mFile.isFile();
+			Color text = selected || hoveringRow == row ? strong : TreeUtils.blend(strong, background, folder ? 0.08f : 0.2f);
+			iconContainer.setBorder(new EmptyBorder(0, 3, 0, 8));
+			iconContainer.setForeground(text);
+			container.setForeground(text);
 		}
 		return container;
     }

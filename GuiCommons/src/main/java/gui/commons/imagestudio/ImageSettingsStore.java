@@ -53,6 +53,7 @@ public final class ImageSettingsStore {
 			filters.append(filters.length() > 0 ? "," : "").append(filter.name());
 		}
 		p.setProperty("filters", filters.toString());
+		p.setProperty("filterStrength", String.valueOf(s.filterStrength));
 		p.setProperty("rotation", String.valueOf(s.rotation));
 		p.setProperty("flipH", String.valueOf(s.flipH));
 		p.setProperty("flipV", String.valueOf(s.flipV));
@@ -65,6 +66,29 @@ public final class ImageSettingsStore {
 		p.setProperty("quality", String.valueOf(s.quality));
 		p.setProperty("progressive", String.valueOf(s.progressive));
 		p.setProperty("background", String.valueOf(s.background == null ? 0xFFFFFF : s.background.getRGB() & 0xFFFFFF));
+		p.setProperty("exposure", String.valueOf(s.exposure));
+		p.setProperty("shadows", String.valueOf(s.shadows));
+		p.setProperty("highlights", String.valueOf(s.highlights));
+		p.setProperty("vibrance", String.valueOf(s.vibrance));
+		p.setProperty("tint", String.valueOf(s.tint));
+		p.setProperty("sharpness", String.valueOf(s.sharpness));
+		p.setProperty("blur", String.valueOf(s.blur));
+		p.setProperty("vignette", String.valueOf(s.vignette));
+		p.setProperty("grain", String.valueOf(s.grain));
+		p.setProperty("cropRatio", s.cropRatio.name());
+		p.setProperty("cropLeft", String.valueOf(s.cropLeft));
+		p.setProperty("cropTop", String.valueOf(s.cropTop));
+		p.setProperty("cropRight", String.valueOf(s.cropRight));
+		p.setProperty("cropBottom", String.valueOf(s.cropBottom));
+		p.setProperty("straighten", String.valueOf(s.straighten));
+		p.setProperty("borderWidth", String.valueOf(s.borderWidth));
+		p.setProperty("borderColor", String.valueOf(s.borderColor == null ? 0xFFFFFF : s.borderColor.getRGB() & 0xFFFFFF));
+		p.setProperty("corners", String.valueOf(s.corners));
+		p.setProperty("watermark", s.watermark == null ? "" : s.watermark);
+		p.setProperty("watermarkPosition", s.watermarkPosition.name());
+		p.setProperty("watermarkSize", String.valueOf(s.watermarkSize));
+		p.setProperty("watermarkOpacity", String.valueOf(s.watermarkOpacity));
+		p.setProperty("watermarkColor", String.valueOf(s.watermarkColor == null ? 0xFFFFFF : s.watermarkColor.getRGB() & 0xFFFFFF));
 		return p;
 	}
 
@@ -113,6 +137,30 @@ public final class ImageSettingsStore {
 				// a filter of a newer version: ignored
 			}
 		}
+		s.filterStrength = number(p, "filterStrength", s.filterStrength, 0, 100);
+		s.exposure = number(p, "exposure", s.exposure, -100, 100);
+		s.shadows = number(p, "shadows", s.shadows, -100, 100);
+		s.highlights = number(p, "highlights", s.highlights, -100, 100);
+		s.vibrance = number(p, "vibrance", s.vibrance, -100, 100);
+		s.tint = number(p, "tint", s.tint, -100, 100);
+		s.sharpness = number(p, "sharpness", s.sharpness, 0, 100);
+		s.blur = number(p, "blur", s.blur, 0, 20);
+		s.vignette = number(p, "vignette", s.vignette, 0, 100);
+		s.grain = number(p, "grain", s.grain, 0, 100);
+		s.cropRatio = enumValue(p, "cropRatio", s.cropRatio, ImageSettings.CropRatio.class);
+		s.cropLeft = number(p, "cropLeft", s.cropLeft, 0, 45);
+		s.cropTop = number(p, "cropTop", s.cropTop, 0, 45);
+		s.cropRight = number(p, "cropRight", s.cropRight, 0, 45);
+		s.cropBottom = number(p, "cropBottom", s.cropBottom, 0, 45);
+		s.straighten = number(p, "straighten", s.straighten, -45, 45);
+		s.borderWidth = number(p, "borderWidth", s.borderWidth, 0, 1000);
+		s.borderColor = new Color(number(p, "borderColor", s.borderColor == null ? 0xFFFFFF : s.borderColor.getRGB() & 0xFFFFFF, 0, 0xFFFFFF));
+		s.corners = number(p, "corners", s.corners, 0, 50);
+		s.watermark = text(p, "watermark", s.watermark == null ? "" : s.watermark);
+		s.watermarkPosition = enumValue(p, "watermarkPosition", s.watermarkPosition, ImageSettings.TextPosition.class);
+		s.watermarkSize = number(p, "watermarkSize", s.watermarkSize, 2, 30);
+		s.watermarkOpacity = number(p, "watermarkOpacity", s.watermarkOpacity, 5, 100);
+		s.watermarkColor = new Color(number(p, "watermarkColor", s.watermarkColor == null ? 0xFFFFFF : s.watermarkColor.getRGB() & 0xFFFFFF, 0, 0xFFFFFF));
 		s.rotation = ((number(p, "rotation", s.rotation, 0, 360) / 90) % 4) * 90;
 		s.flipH = Boolean.parseBoolean(text(p, "flipH", String.valueOf(s.flipH)));
 		s.flipV = Boolean.parseBoolean(text(p, "flipV", String.valueOf(s.flipV)));

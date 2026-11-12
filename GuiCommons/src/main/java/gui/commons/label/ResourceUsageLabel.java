@@ -12,6 +12,7 @@
 package gui.commons.label;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Insets;
@@ -19,7 +20,10 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -29,8 +33,11 @@ import javax.swing.UIManager;
  * Discreet live indicator of this application CPU and RAM usage (JDK only, refreshed every second):
  * ScreepT: CPU = process load on all cores, RAM = JVM heap used / max available;
  * PC: CPU = whole system load, RAM = physical memory used / total. Details in the tooltip.
+ * <p>
+ * Three parts side by side: the ScreepT values, a small pencil right next to the maximum memory of ScreepT (to change it,
+ * see {@link #setMemoryEditAction}) and the PC values, so the pencil is never mistaken as belonging to the PC.
  */
-public class ResourceUsageLabel extends JLabel {
+public class ResourceUsageLabel extends JPanel {
 
 	private static final long serialVersionUID = 2398750982735509831L;
 
@@ -38,23 +45,82 @@ public class ResourceUsageLabel extends JLabel {
 	private static final float FONT_DELTA = 1f;
 	private static final long MB = 1024L * 1024L;
 	private static final long GB = MB * 1024L;
-	/** Widest expected text (titles bold, rest plain): fixed width, so the menu bar does not move at every refresh */
-	private static final String WIDTH_TITLES = "ScreepTPC";
-	private static final String WIDTH_VALUES = "  CPU 100% · RAM 99999 / 99999 MB      |      CPU 100% · RAM 999.9 / 999.9 GB";
+	/** Widest expected texts (titles bold, rest plain): fixed width, so the menu bar does not move at every refresh */
+	private static final String APP_TITLE = "ScreepT";
+	private static final String APP_VALUES = "  CPU 100% · RAM 99999 / 99999 MB";
+	private static final String PC_TITLE = "PC";
+	private static final String PC_VALUES = "  CPU 100% · RAM 999.9 / 999.9 GB";
+	private static final String PC_SEPARATOR = "      |      ";
 	/** 0 = invisible (background color), 1 = as visible as the values */
 	private static final float SEPARATOR_VISIBILITY = 0.35f;
+
+	/** Label with a fixed width computed from the widest text it can show */
+	private static final class FixedLabel extends JLabel {
+		private static final long serialVersionUID = 1L;
+		private final String widthTitle;
+		private final String widthValues;
+
+		FixedLabel(String widthTitle, String widthValues, int alignment) {
+			this.widthTitle = widthTitle;
+			this.widthValues = widthValues;
+			setHorizontalAlignment(alignment);
+			setVerticalAlignment(SwingConstants.CENTER);
+			setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
+			updateUI();
+		}
+
+		/** A bit bigger than the default label font, also after a look and feel switch */
+		@Override
+		public void updateUI() {
+			super.updateUI();
+			java.awt.Font base = UIManager.getFont("Label.font");
+			if (base != null) {
+				setFont(new javax.swing.plaf.FontUIResource(base.deriveFont(base.getSize2D() + FONT_DELTA)));
+			}
+		}
+
+		@Override
+		public Dimension getPreferredSize() {
+			FontMetrics metrics = getFontMetrics(getFont());
+			FontMetrics bold = getFontMetrics(getFont().deriveFont(java.awt.Font.BOLD));
+			Insets insets = getInsets();
+			return new Dimension(bold.stringWidth(widthTitle) + metrics.stringWidth(widthValues) + insets.left + insets.right, super.getPreferredSize().height);
+		}
+
+		@Override
+		public Dimension getMaximumSize() {
+			return new Dimension(getPreferredSize().width, Short.MAX_VALUE);
+		}
+	}
 
 	private final Runtime runtime = Runtime.getRuntime();
 	/** Obtained off the EDT: the first use of the management classes takes a few hundred ms */
 	private volatile OperatingSystemMXBean os;
 	private final Timer timer = new Timer(REFRESH_MS, e -> refresh());
+	private final FixedLabel appLabel = new FixedLabel(APP_TITLE, APP_VALUES, SwingConstants.RIGHT);
+	private final FixedLabel pcLabel = new FixedLabel(PC_TITLE, PC_VALUES + PC_SEPARATOR, SwingConstants.LEFT);
+	private final JButton editButton = new JButton(new PencilIcon(14));
 
 	public ResourceUsageLabel() {
-		setHorizontalAlignment(SwingConstants.RIGHT);
-		// vertically centered in the whole menu bar height
-		setVerticalAlignment(SwingConstants.CENTER);
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setOpaque(false);
 		setAlignmentY(CENTER_ALIGNMENT);
 		setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 14));
+		appLabel.setBorder(BorderFactory.createEmptyBorder());
+
+		editButton.putClientProperty("JButton.buttonType", "toolBarButton");
+		editButton.setFocusable(false);
+		editButton.setMargin(new Insets(2, 3, 2, 3));
+		editButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		editButton.setToolTipText("<html><b>Change the maximum memory of ScreepT</b><br>Choose between the minimum set in the launcher and what the PC can give now.<br>"
+				+ "It is saved in the launcher settings and applies after a restart.</html>");
+		editButton.setMaximumSize(new Dimension(24, Short.MAX_VALUE));
+		editButton.setVisible(false);
+
+		add(appLabel);
+		add(editButton);
+		add(pcLabel);
+
 		// loading the management classes is slow: do it in background so the main window opens sooner
 		Thread loader = new Thread(() -> {
 			os = ManagementFactory.getOperatingSystemMXBean();
@@ -68,14 +134,14 @@ public class ResourceUsageLabel extends JLabel {
 		loader.start();
 	}
 
-	/** A bit bigger than the default label font, also after a look and feel switch */
-	@Override
-	public void updateUI() {
-		super.updateUI();
-		java.awt.Font base = UIManager.getFont("Label.font");
-		if (base != null) {
-			setFont(new javax.swing.plaf.FontUIResource(base.deriveFont(base.getSize2D() + FONT_DELTA)));
+	/** Shows the pencil next to the maximum memory of ScreepT; clicking it runs the action */
+	public void setMemoryEditAction(final Runnable action) {
+		for (java.awt.event.ActionListener l : editButton.getActionListeners()) {
+			editButton.removeActionListener(l);
 		}
+		editButton.addActionListener(e -> action.run());
+		editButton.setVisible(action != null);
+		revalidate();
 	}
 
 	public void stop() {
@@ -95,20 +161,20 @@ public class ResourceUsageLabel extends JLabel {
 		String title = hex(titleColor);
 		String separator = hex(blend(background, valuesColor, SEPARATOR_VISIBILITY));
 
-		StringBuilder html = new StringBuilder("<html><nobr>")
-				.append(titled(title, "ScreepT", values, percent(processCpu) + String.format(" · RAM %d / %d MB", usedMb, maxMb)));
+		appLabel.setText("<html><nobr>" + titled(title, "ScreepT", values, percent(processCpu) + String.format(" · RAM %d / %d MB", usedMb, maxMb)) + "</nobr></html>");
 
+		String tooltip = details(usedMb, maxMb, processCpu);
+		appLabel.setToolTipText(tooltip);
 		if (os instanceof com.sun.management.OperatingSystemMXBean) {
 			com.sun.management.OperatingSystemMXBean sunOs = (com.sun.management.OperatingSystemMXBean) os;
 			long totalPhysical = sunOs.getTotalPhysicalMemorySize();
 			long usedPhysical = totalPhysical - sunOs.getFreePhysicalMemorySize();
-			html.append("&nbsp;&nbsp;&nbsp;<font color=\"").append(separator).append("\">|</font>&nbsp;&nbsp;&nbsp;")
-				.append(titled(title, "PC", values, percent(sunOs.getSystemCpuLoad())
-						+ String.format(" · RAM %.1f / %.1f GB", usedPhysical / (double) GB, totalPhysical / (double) GB)));
+			pcLabel.setText("<html><nobr>&nbsp;&nbsp;&nbsp;<font color=\"" + separator + "\">|</font>&nbsp;&nbsp;&nbsp;"
+					+ titled(title, "PC", values, percent(sunOs.getSystemCpuLoad())
+							+ String.format(" · RAM %.1f / %.1f GB", usedPhysical / (double) GB, totalPhysical / (double) GB))
+					+ "</nobr></html>");
+			pcLabel.setToolTipText(tooltip);
 		}
-
-		setText(html.append("</nobr></html>").toString());
-		setToolTipText(details(usedMb, maxMb, processCpu));
 	}
 
 	private static String titled(String titleColor, String title, String valuesColor, String values) {
@@ -154,15 +220,6 @@ public class ResourceUsageLabel extends JLabel {
 				.append(" MB used of ").append(sunOs.getTotalPhysicalMemorySize() / MB).append(" MB");
 		}
 		return html.append("</html>").toString();
-	}
-
-	@Override
-	public Dimension getPreferredSize() {
-		FontMetrics metrics = getFontMetrics(getFont());
-		FontMetrics boldMetrics = getFontMetrics(getFont().deriveFont(java.awt.Font.BOLD));
-		Insets insets = getInsets();
-		return new Dimension(boldMetrics.stringWidth(WIDTH_TITLES) + metrics.stringWidth(WIDTH_VALUES) + insets.left + insets.right,
-				super.getPreferredSize().height);
 	}
 
 	@Override
