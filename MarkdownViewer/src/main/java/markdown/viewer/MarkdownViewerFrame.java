@@ -28,12 +28,16 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
@@ -99,7 +103,8 @@ import various.common.light.utility.string.StringWorker;
 
 /**
  * Markdown viewer / editor: Markdown editor with live preview (GitHub style tables, task lists, strikethrough,
- * autolinks, table of contents), HTML source, headings outline, formatting toolbar, text zoom, HTML export.
+ * autolinks, table of contents, $math$), HTML source, headings outline, formatting toolbar, text zoom, HTML export.
+ * Smart editing (lists, tables, TOC, link completion, shortcuts) is in {@link SmartMarkdownEditor}.
  *
  * Esc closes the window (asking what to do with unsaved changes), every control has a tooltip with its shortcut.
  */
@@ -177,6 +182,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 	private boolean previewDark;
 	private boolean syncScroll = true;
 	private Timer renderTimer;
+	private SmartMarkdownEditor smartEditor;
 	private AWTEventListener wheelListener;
 	private KeyEventDispatcher escapeDispatcher;
 	private Set<String> fontFamilies;
@@ -236,6 +242,8 @@ public class MarkdownViewerFrame extends ParentFrame {
 				}
 				markdownFile = chosen;
 			}
+			if(smartEditor != null)
+				smartEditor.updateToc(); // the table of contents follows the headings, like VS Code "Markdown All in One"
 			String text = textAreaMarkDown.getText();
 			FileWorker.writeStringToFile(text, markdownFile, true);
 			savedMarkdown = text;
@@ -262,7 +270,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 				}
 				htmlFile = chosen;
 			}
-			FileWorker.writeStringToFile(buildStandaloneHtml(), htmlFile, true);
+			FileWorker.writeStringToFile(buildStandaloneHtml(htmlFile), htmlFile, true);
 			setStatus("Exported " + htmlFile.getName());
 			return true;
 		} catch (IOException e) {
@@ -324,7 +332,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 
 	public String markdownToHtml(String markdown) {
 		try {
-			return getRenderer().render(getParser().parse(markdown == null ? "" : markdown));
+			return renderBody(markdown == null ? "" : markdown, null);
 		} catch (Exception e) {
 			logger.error("Can't convert from markdown to html", e);
 			dialogHelper.error("Invalid markdown data, cannot convert to html!");
@@ -366,8 +374,29 @@ public class MarkdownViewerFrame extends ParentFrame {
 		options.set(AnchorLinkExtension.ANCHORLINKS_SET_ID, false);
 		options.set(AnchorLinkExtension.ANCHORLINKS_TEXT_PREFIX, "");
 		options.set(AnchorLinkExtension.ANCHORLINKS_TEXT_SUFFIX, "");
+		// heading ids as GitHub (and MarkdownText.slug): '_' kept, spaces and '-' become '-'
+		options.set(HtmlRenderer.HEADER_ID_GENERATOR_TO_DASH_CHARS, " -");
+		options.set(HtmlRenderer.HEADER_ID_GENERATOR_NON_DASH_CHARS, "_");
 		parser = Parser.builder(options).build();
 		renderer = HtmlRenderer.builder(options).build();
+	}
+
+	/**
+	 * Markdown to html, with the $...$ / $$...$$ formulas: taken out before parsing (so "_" and "*" in them are not emphasis),
+	 * written back as {@code <span class="math" data-tex="...">} with a unicode rendering inside (KaTeX replaces it in the exported page).
+	 * @param documentOut when given, receives the parsed document of the original text (its offsets are the editor ones)
+	 */
+	private static String renderBody(String markdown, Node[] documentOut) {
+		MarkdownText.MathExtraction math = MarkdownText.extractMath(markdown);
+		Node document = getParser().parse(math.markdown);
+		String html = getRenderer().render(document);
+		if(documentOut != null)
+			documentOut[0] = math.isEmpty() ? document : getParser().parse(markdown);
+		return MarkdownText.restoreMath(html, math, (tex, display) -> {
+			String attribute = MarkdownText.htmlEscape(tex);
+			return display ? "<div class=\"math display\" data-tex=\"" + attribute + "\">" + TexLite.toHtml(tex) + "</div>"
+					: "<span class=\"math\" data-tex=\"" + attribute + "\">" + TexLite.toHtml(tex) + "</span>";
+		});
 	}
 
 	// ------------------------------------------------------------------ init
@@ -458,32 +487,36 @@ public class MarkdownViewerFrame extends ParentFrame {
 		main.add(iconButton(ToolIcons.Kind.BROWSER, "Open the rendered page in the default web browser", () -> openInBrowser()));
 
 		JToolBar tools = newToolBar();
-		JButton btnBold = button("B", "Bold (" + KEY + "+B)", () -> wrapSelection("**", "**", "bold"));
+		JButton btnBold = button("B", "Bold: selection or word at the caret, again to remove it (" + KEY + "+B)", () -> smartEditor.toggleWrap("**"));
 		btnBold.setFont(btnBold.getFont().deriveFont(Font.BOLD));
-		JButton btnItalic = button("I", "Italic (" + KEY + "+I)", () -> wrapSelection("*", "*", "italic"));
+		JButton btnItalic = button("I", "Italic: selection or word at the caret, again to remove it (" + KEY + "+I)", () -> smartEditor.toggleWrap("*"));
 		btnItalic.setFont(btnItalic.getFont().deriveFont(Font.ITALIC));
-		JButton btnStrike = button("S", "Strikethrough", () -> wrapSelection("~~", "~~", "text"));
+		JButton btnStrike = button("S", "Strikethrough (Alt+S)", () -> smartEditor.toggleWrap("~~"));
 		java.util.Map<java.awt.font.TextAttribute, Object> strikeAttributes = new java.util.HashMap<java.awt.font.TextAttribute, Object>(btnStrike.getFont().getAttributes());
 		strikeAttributes.put(java.awt.font.TextAttribute.STRIKETHROUGH, java.awt.font.TextAttribute.STRIKETHROUGH_ON);
 		btnStrike.setFont(btnStrike.getFont().deriveFont(strikeAttributes));
-		JButton btnHeading = button("H", "Heading: cycles # / ## / ### / none on the current line (" + KEY + "+H)", () -> cycleHeading());
+		JButton btnHeading = button("H", "Heading: cycles # / ## / ### / none on the current line (" + KEY + "+H). Level up / down: " + KEY + "+Shift+] / [ (or " + KEY + "+Shift+Up / Down)", () -> cycleHeading());
 		btnHeading.setFont(btnHeading.getFont().deriveFont(Font.BOLD));
 		tools.add(btnHeading);
 		tools.add(btnBold);
 		tools.add(btnItalic);
 		tools.add(btnStrike);
-		tools.add(button("</>", "Inline code (" + KEY + "+`)", () -> wrapSelection("`", "`", "code")));
+		tools.add(button("</>", "Inline code (" + KEY + "+`)", () -> smartEditor.toggleWrap("`")));
+		tools.add(button("\u2211", "Math: $inline$, again for a $$block$$ (" + KEY + "+M). Rendered in the preview, with KaTeX in the exported page", () -> smartEditor.toggleMath()));
 		addGap(tools);
 		tools.add(iconButton(ToolIcons.Kind.CODE_BLOCK, "Fenced code block", () -> codeBlock()));
 		tools.add(iconButton(ToolIcons.Kind.LINK, "Insert a link (" + KEY + "+K)", () -> insertLink()));
 		tools.add(iconButton(ToolIcons.Kind.IMAGE, "Insert an image", () -> insertImage()));
 		tools.add(iconButton(ToolIcons.Kind.TABLE, "Insert a table", () -> insertTable()));
+		tools.add(button("\u25a6", "Format the table at the caret: columns aligned, :--- / :---: / ---: kept (all the tables when the caret is not in one) (Shift+Alt+F)", () -> smartEditor.formatTables()));
 		tools.add(iconButton(ToolIcons.Kind.RULE, "Insert a horizontal rule", () -> insertText("\n---\n")));
 		addGap(tools);
 		tools.add(iconButton(ToolIcons.Kind.LIST, "Bulleted list on the selected lines", () -> toggleLinePrefix("- ")));
 		tools.add(iconButton(ToolIcons.Kind.NUMBERED, "Numbered list on the selected lines", () -> numberedList()));
-		tools.add(iconButton(ToolIcons.Kind.TASK, "Task list (checkboxes) on the selected lines", () -> toggleLinePrefix("- [ ] ")));
+		tools.add(iconButton(ToolIcons.Kind.TASK, "Task list: checks / unchecks the boxes of the selected lines, adds them where missing (Alt+C)", () -> smartEditor.toggleTasks()));
 		tools.add(iconButton(ToolIcons.Kind.QUOTE, "Quote on the selected lines", () -> toggleLinePrefix("> ")));
+		tools.add(button("TOC", "Table of contents: inserted at the caret between <!-- TOC --> markers, updated here and on every save. "
+				+ "<!-- omit in toc --> at the end of a heading leaves it out (" + KEY + "+Shift+T)", () -> smartEditor.insertOrUpdateToc()));
 		addGap(tools);
 
 		btnOutline = iconToggle(ToolIcons.Kind.OUTLINE, "Show or hide the list of headings (" + KEY + "+Shift+O)", null);
@@ -526,6 +559,10 @@ public class MarkdownViewerFrame extends ParentFrame {
 		});
 		tools.add(lblZoom);
 		tools.add(iconButton(ToolIcons.Kind.ZOOM_IN, "Larger text (" + KEY + " + plus, or " + KEY + " + mouse wheel)", () -> setZoom(zoomPercent + ZOOM_STEP)));
+		addGap(tools);
+		JButton btnHelp = button("?", "Shortcuts and smart editing (F1)", () -> showShortcuts());
+		btnHelp.setFont(btnHelp.getFont().deriveFont(Font.BOLD));
+		tools.add(btnHelp);
 
 		bars.add(main);
 		bars.add(tools);
@@ -711,6 +748,19 @@ public class MarkdownViewerFrame extends ParentFrame {
 		// close action: unsaved changes -> Save / Don't save / Cancel
 		setCloseAction(() -> confirmClose());
 
+		smartEditor = new SmartMarkdownEditor(textAreaMarkDown, new SmartMarkdownEditor.Host() {
+			@Override
+			public File baseDirectory() {
+				return markdownFile != null ? markdownFile.getAbsoluteFile().getParentFile() : null;
+			}
+
+			@Override
+			public void status(String text) {
+				setStatus(text);
+			}
+		});
+		smartEditor.install();
+
 		wheelListener = new AWTEventListener() {
 			@Override
 			public void eventDispatched(AWTEvent event) {
@@ -748,6 +798,10 @@ public class MarkdownViewerFrame extends ParentFrame {
 				Window window = src instanceof Window ? (Window) src : SwingUtilities.getWindowAncestor(src);
 				if(window != MarkdownViewerFrame.this)
 					return false;
+				if(smartEditor != null && smartEditor.handleEscape()) {
+					e.consume();
+					return true; // closes the link suggestions only
+				}
 				if((src instanceof JTextComponent && !(src instanceof JTextArea) && !(src instanceof JEditorPane)) || src instanceof JComboBox)
 					return false;
 				e.consume();
@@ -773,11 +827,11 @@ public class MarkdownViewerFrame extends ParentFrame {
 		bind(KeyEvent.VK_O, 0, "mdv-open", () -> openFile());
 		bind(KeyEvent.VK_E, 0, "mdv-export", () -> exportHtml());
 		bind(KeyEvent.VK_ENTER, 0, "mdv-refresh", () -> renderNow());
-		bind(KeyEvent.VK_B, 0, "mdv-bold", () -> wrapSelection("**", "**", "bold"));
-		bind(KeyEvent.VK_I, 0, "mdv-italic", () -> wrapSelection("*", "*", "italic"));
+		bind(KeyEvent.VK_B, 0, "mdv-bold", () -> smartEditor.toggleWrap("**"));
+		bind(KeyEvent.VK_I, 0, "mdv-italic", () -> smartEditor.toggleWrap("*"));
 		bind(KeyEvent.VK_K, 0, "mdv-link", () -> insertLink());
 		bind(KeyEvent.VK_H, 0, "mdv-heading", () -> cycleHeading());
-		bind(KeyEvent.VK_BACK_QUOTE, 0, "mdv-code", () -> wrapSelection("`", "`", "code"));
+		bind(KeyEvent.VK_BACK_QUOTE, 0, "mdv-code", () -> smartEditor.toggleWrap("`"));
 		bind(KeyEvent.VK_1, 0, "mdv-view1", () -> setViewMode(ViewMode.EDITOR));
 		bind(KeyEvent.VK_2, 0, "mdv-view2", () -> setViewMode(ViewMode.SPLIT));
 		bind(KeyEvent.VK_3, 0, "mdv-view3", () -> setViewMode(ViewMode.PREVIEW));
@@ -789,6 +843,14 @@ public class MarkdownViewerFrame extends ParentFrame {
 		bind(KeyEvent.VK_SUBTRACT, 0, "mdv-zoomout2", () -> setZoom(zoomPercent - ZOOM_STEP));
 		bind(KeyEvent.VK_0, 0, "mdv-zoomreset", () -> setZoom(100));
 		bind(KeyEvent.VK_NUMPAD0, 0, "mdv-zoomreset2", () -> setZoom(100));
+		getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), "mdv-help");
+		getRootPane().getActionMap().put("mdv-help", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showShortcuts();
+			}
+		});
 	}
 
 	private void bind(int keyCode, int extraMask, String name, final Runnable action) {
@@ -832,11 +894,11 @@ public class MarkdownViewerFrame extends ParentFrame {
 		String markdown = textAreaMarkDown.getText();
 
 		if(source == Source.MARKDOWN) {
-			Node document = getParser().parse(markdown);
-			String body = getRenderer().render(document);
+			Node[] document = new Node[1];
+			String body = renderBody(markdown, document);
 			setHtmlSourceText(body);
 			showPreview(body);
-			updateOutline(document);
+			updateOutline(document[0]);
 		} else {
 			showPreview(textAreaHtml.getText());
 			updateOutline(getParser().parse(markdown));
@@ -928,6 +990,9 @@ public class MarkdownViewerFrame extends ParentFrame {
 		sheet.addRule("th {background-color:" + codeBg + "; color:" + head + ";}");
 		sheet.addRule("td {color:" + fg + ";}");
 		sheet.addRule("hr {color:" + muted + ";}");
+		String serif = pickFont("Cambria Math", "Cambria", "STIX Two Math", "Times New Roman", "Serif");
+		sheet.addRule(".math {font-family:" + serif + "; color:" + head + "; font-size:" + Math.round(px * 1.08f) + "px;}");
+		sheet.addRule("div.math {text-align:center; margin-top:8px; margin-bottom:8px;}");
 
 		textAreaPreview.setEditorKit(kit);
 		textAreaPreview.setBackground(Color.decode(bg));
@@ -1225,7 +1290,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 		try {
 			File temp = File.createTempFile("MarkdownViewer_", ".html");
 			temp.deleteOnExit();
-			FileWorker.writeStringToFile(buildStandaloneHtml(), temp, true);
+			FileWorker.writeStringToFile(buildStandaloneHtml(null), temp, true);
 			Desktop.getDesktop().browse(temp.toURI());
 		} catch (Exception e) {
 			logger.error("", e);
@@ -1256,8 +1321,10 @@ public class MarkdownViewerFrame extends ParentFrame {
 	}
 
 	/** Full html page with its own style (readable on its own in a browser, light or dark). */
-	private String buildStandaloneHtml() {
+	private String buildStandaloneHtml(File target) {
 		String body = source == Source.MARKDOWN ? markdownToHtml(textAreaMarkDown.getText()) : textAreaHtml.getText();
+		body = resolveResources(body, target);
+		boolean hasMath = body.contains("class=\"math");
 		String title = markdownFile != null ? baseName(markdownFile) : "Markdown";
 		return "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>" + escape(title) + "</title>\n<style>\n"
 				+ ":root{color-scheme:light dark;--bg:#fff;--fg:#24292f;--muted:#57606a;--link:#0969da;--code:#f3f4f6;--border:#d0d7de}\n"
@@ -1269,7 +1336,108 @@ public class MarkdownViewerFrame extends ParentFrame {
 				+ "blockquote{margin:1em 0;padding:0 1em;color:var(--muted);border-left:.25em solid var(--border)}\n"
 				+ "table{border-collapse:collapse}th,td{border:1px solid var(--border);padding:.4em .8em}th{background:var(--code)}\n"
 				+ "img{max-width:100%}hr{border:0;border-top:1px solid var(--border)}\n"
-				+ "</style>\n</head>\n<body>\n" + body + "\n</body>\n</html>\n";
+				+ "li.task-list-item{list-style:none}li.task-list-item input{margin:0 .4em 0 -1.3em}\n"
+				+ ".math{font-family:'Cambria Math','STIX Two Math','Times New Roman',serif}div.math{text-align:center;margin:1em 0;overflow-x:auto}\n"
+				+ "</style>\n" + (hasMath ? KATEX : "") + "</head>\n<body>\n" + body + "\n</body>\n</html>\n";
+	}
+
+	/** KaTeX from the CDN renders the data-tex formulas; offline the unicode rendering stays. */
+	private static final String KATEX = "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css\">\n"
+			+ "<script defer src=\"https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js\" onload=\"document.querySelectorAll('.math[data-tex]').forEach(function(e){"
+			+ "try{katex.render(e.getAttribute('data-tex'),e,{displayMode:e.tagName==='DIV',throwOnError:false});}catch(x){}})\"></script>\n";
+
+	private static final Pattern RESOURCE = Pattern.compile("(<(?:img|a)\\b[^>]*?\\b(src|href)=\")([^\"]*)(\")", Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * Local images (up to 8 MB) are embedded as data uris, so the page works on its own; the other relative links are
+	 * rewritten for the folder of the exported file (a file uri when it is on another drive or the page is temporary).
+	 */
+	private String resolveResources(String html, File target) {
+		File base = markdownFile != null ? markdownFile.getAbsoluteFile().getParentFile() : null;
+		if(base == null)
+			return html;
+		Matcher m = RESOURCE.matcher(html);
+		StringBuffer sb = new StringBuffer();
+		while(m.find()) {
+			String value = m.group(3);
+			String replaced = value;
+			if(!value.isEmpty() && !value.startsWith("#") && !value.startsWith("/") && !value.matches("^[a-zA-Z][a-zA-Z0-9+.-]*:.*")) {
+				int cut = value.length();
+				for(char c : new char[] {'#', '?'}) {
+					int at = value.indexOf(c);
+					if(at >= 0)
+						cut = Math.min(cut, at);
+				}
+				String suffix = value.substring(cut);
+				File file;
+				try {
+					file = new File(base, java.net.URLDecoder.decode(value.substring(0, cut).replace("&amp;", "&").replace("+", "%2B"), "UTF-8"));
+				} catch (Exception e) {
+					file = new File(base, value.substring(0, cut));
+				}
+				String mime = imageMime(file.getName());
+				if("src".equalsIgnoreCase(m.group(2)) && mime != null && file.isFile() && file.length() <= 8L * 1024 * 1024) {
+					try {
+						replaced = "data:" + mime + ";base64," + Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+					} catch (IOException e) {
+						logger.debug("Cannot embed " + file);
+					}
+				} else if(file.exists() && (target == null || !base.equals(target.getAbsoluteFile().getParentFile()))) {
+					try {
+						if(target == null)
+							throw new IllegalArgumentException("temporary page");
+						replaced = target.getAbsoluteFile().getParentFile().toPath().relativize(file.getCanonicalFile().toPath()).toString().replace('\\', '/').replace(" ", "%20") + suffix;
+					} catch (Exception e) {
+						replaced = file.getAbsoluteFile().toURI().toString() + suffix;
+					}
+				}
+			}
+			m.appendReplacement(sb, Matcher.quoteReplacement(m.group(1) + replaced + m.group(4)));
+		}
+		m.appendTail(sb);
+		return sb.toString();
+	}
+
+	private static String imageMime(String name) {
+		String n = name.toLowerCase(Locale.ROOT);
+		if(n.endsWith(".png"))
+			return "image/png";
+		if(n.endsWith(".jpg") || n.endsWith(".jpeg"))
+			return "image/jpeg";
+		if(n.endsWith(".gif"))
+			return "image/gif";
+		if(n.endsWith(".svg"))
+			return "image/svg+xml";
+		if(n.endsWith(".webp"))
+			return "image/webp";
+		if(n.endsWith(".bmp"))
+			return "image/bmp";
+		return null;
+	}
+
+	/** F1 / "?": what the editor does beyond plain typing. */
+	private void showShortcuts() {
+		String k = KEY;
+		String[][] rows = {
+			{k + "+B / " + k + "+I / Alt+S / " + k + "+`", "Bold, italic, strikethrough, code: on the selection or the word at the caret, again to remove"},
+			{k + "+M", "Math: $inline$, again for $$block$$ (rendered in the preview, KaTeX in the exported page)"},
+			{k + "+Shift+] / [  (or Up / Down)", "Heading level up / down; " + k + "+H cycles # / ## / ###"},
+			{"Enter", "Continues lists (- * + 1. 1)), task lists and quotes; on an empty item ends the list"},
+			{"Tab / Shift+Tab", "Indents / outdents list items (selected lines too), numbered lists numbered again"},
+			{"Backspace", "Right after a list marker: one level up, or removes the marker"},
+			{"Alt+C", "Checks / unchecks the task boxes of the selected lines"},
+			{"Shift+Alt+F", "Formats the table at the caret (all the tables when the caret is not in one)"},
+			{k + "+Shift+T", "Table of contents between <!-- TOC --> and <!-- /TOC -->, updated on save; <!-- omit in toc --> leaves a heading out"},
+			{"](#   and   ](", "Suggests the headings of the document, then files and folders next to it (file.md# for its headings)"},
+			{k + "+V on a selection", "Pasting a url makes the link [selection](url)"},
+			{k + "+E", "Exports a standalone html page: images embedded, links fixed, formulas with KaTeX"},
+			{k + "+1 / 2 / 3,  " + k + "+Shift+O", "Editor, split, preview; outline of the headings"},
+		};
+		StringBuilder html = new StringBuilder("<html><table cellpadding=3>");
+		for(String[] r : rows)
+			html.append("<tr><td valign=top nowrap><b>").append(escape(r[0])).append("</b></td><td>").append(escape(r[1])).append("</td></tr>");
+		html.append("</table></html>");
+		JOptionPane.showMessageDialog(this, new JLabel(html.toString()), "Markdown Viewer - smart editing", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private String baseName(File file) {
