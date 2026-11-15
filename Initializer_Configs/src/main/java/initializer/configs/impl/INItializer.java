@@ -331,6 +331,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		readLocale = (readLocale != null) ? readLocale : GenericOption.DEF_locale.toString();
 		Locale locale = new Locale(readLocale);
 		genOpt.setLocale(readLocale != null ? locale : GenericOption.DEF_locale);
+		// the language of the interface is a different key: the old "locale" (system language) must not change it
+		String readLanguage = iniReadFile.get(GEN_OPT, "language");
+		genOpt.setLanguage(readLanguage != null ? readLanguage : GenericOption.DEF_language);
 	}
 
 	/**
@@ -601,6 +604,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(GEN_OPT, "exceptionAdvicesEnabled", genOpt.isExceptionAdvicesEnabled());
 		iniFile.put(GEN_OPT, "automaticUpdateOn", genOpt.isAutomaticUpdateOn());
 		iniFile.put(GEN_OPT, "locale", genOpt.getLocale());
+		iniFile.put(GEN_OPT, "language", genOpt.getLanguage());
 	}
 
 	public void writeImgConverterOptions() {

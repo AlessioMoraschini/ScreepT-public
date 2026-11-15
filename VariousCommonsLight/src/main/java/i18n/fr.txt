@@ -11,8 +11,11 @@ Browse...	Parcourir...
 Calculator	Calculatrice
 Cancel	Annuler
 Cannot load the image:	Impossible de charger l'image :
+~Cannot load the image:	Impossible de charger l'image :
 Cannot save the image:	Impossible d'enregistrer l'image :
+~Cannot save the image:	Impossible d'enregistrer l'image :
 Cannot export the image:	Impossible d'exporter l'image :
+~Cannot export the image:	Impossible d'exporter l'image :
 Charset:	Jeu de caractères :
 Check for software updates...	Rechercher des mises à jour du logiciel...
 Choose general application Charset to use	Choisissez le jeu de caractères général de l'application
@@ -89,6 +92,7 @@ Lines:	Lignes :
 Load Custom Configuration	Charger une configuration personnalisée
 Load configuration from other installation	Charger la configuration d'une autre installation
 Loading	Chargement
+~Loading	Chargement
 Loads blurry first, then sharp: better for the web	Charge d'abord flou puis net : mieux pour le web
 Lock	Verrouiller
 Log level chosen at application start	Niveau de journalisation choisi au démarrage de l'application
@@ -186,9 +190,13 @@ Choose the language of the application	Choisissez la langue de l'application
 Some texts may stay in English until translated	Certains textes peuvent rester en anglais tant qu'ils ne sont pas traduits
 Search an element (comment, caret, gutter...)	Rechercher un élément (commentaire, curseur, gouttière...)
 Preview failed:	Échec de l'aperçu :
+~Preview failed:	Échec de l'aperçu :
 Metadata removed from	Métadonnées supprimées de
+~Metadata removed from	Métadonnées supprimées de
 Saved:	Enregistré :
+~Saved:	Enregistré :
 Exported:	Exporté :
+~Exported:	Exporté :
 Current file:	Fichier actuel :
 File tree	Arborescence
 Displayed:	Affiché :
@@ -201,6 +209,7 @@ Quality:	Qualité :
 Use workspace	Utiliser l'espace de travail
 Reading the files of the folder...	Lecture des fichiers du dossier...
 Result number limited to	Nombre de résultats limité à
+~Result number limited to	Nombre de résultats limité à
 Overwrite	Écraser
 Close all	Tout fermer
 Select all	Tout sélectionner
@@ -220,3 +229,230 @@ Settings	Paramètres
 Warning	Avertissement
 Error	Erreur
 Information	Information
+Adapt text width (word wrap)	Adapter le texte à la largeur (retour à la ligne)
+Allow fractional fonts	Autoriser les polices fractionnaires
+Animate brackets	Animer les parenthèses
+Antialiasing enabled	Anticrénelage activé
+Appearance	Apparence
+Auto check for file changes	Vérifier automatiquement les modifications des fichiers
+Auto-indentation	Indentation automatique
+Autosave temp files	Enregistrer automatiquement les fichiers temporaires
+Autostart	Démarrage automatique
+Autostart, launcher and updates check	Démarrage automatique, launcher et mises à jour
+Brackets and occurrences	Parenthèses et occurrences
+Brackets matching	Correspondance des parenthèses
+Clear whitespace lines	Nettoyer les lignes d'espaces
+Close curly braces	Fermer les accolades
+Close markup tags	Fermer les balises
+Code folding	Repliage du code
+Configuration autosave	Enregistrement automatique de la configuration
+Customize...	Personnaliser...
+Default EOL	Fin de ligne par défaut
+Discard	Abandonner
+Display	Affichage
+Editing	Édition
+Emulated tabs with spaces	Tabulations émulées avec des espaces
+Encoding	Encodage
+Encoding, line endings and configuration autosave	Encodage, fin de ligne et enregistrement automatique de la configuration
+Fade highlight	Surbrillance estompée
+Files	Fichiers
+Focusable tips	Info-bulles activables
+Font	Police
+Font, line spacing and spellchecker	Police, interligne et correcteur orthographique
+Fonts and graphic elements size; Custom keeps your own values	Taille des polices et éléments graphiques ; Personnalisé garde vos valeurs
+GUI style	Style de l'interface
+General	Général
+Generic options	Options génériques
+Graphic preferences	Préférences graphiques
+Highlight 2nd languages	Mettre en évidence les langages imbriqués
+How text is rendered and highlighted	Comment le texte est affiché et mis en évidence
+Hyperlinks enabled	Liens activés
+Inline tabs (one scrolling line)	Onglets en ligne (une ligne défilante)
+Interface size	Taille de l'interface
+Interline	Interligne
+Log font size	Taille de police du journal
+Log level	Niveau de journalisation
+Look and feel, theme and interface size	Apparence, thème et taille de l'interface
+Margin	Marge
+Margin and interline	Marge et interligne
+Mark end of line	Marquer la fin de ligne
+Mark occurrences	Marquer les occurrences
+Max file size (MB)	Taille maximale de fichier (Mo)
+Menu font size	Taille de police des menus
+Network	Réseau
+Nimbus dark theme	Thème sombre Nimbus
+Nimbus size variant	Variante de taille Nimbus
+Paint matched bracket pairs	Surligner les paires de parenthèses
+Paint occurrences border	Dessiner la bordure des occurrences
+Password checks and proxy	Vérification des mots de passe et proxy
+Password security	Sécurité des mots de passe
+Round selection edges	Bords de sélection arrondis
+Save Values	Enregistrer les valeurs
+Security and network	Sécurité et réseau
+Show bracket popup	Afficher l'info-bulle des parenthèses
+Spellchecker dictionary	Dictionnaire du correcteur orthographique
+Startup and updates	Démarrage et mises à jour
+Sync clipboard style	Synchroniser le style du presse-papiers
+Text editor	Éditeur de texte
+Typing helpers, tabs and files	Aides à la saisie, onglets et fichiers
+User name	Nom d'utilisateur
+User name, language and sounds	Nom d'utilisateur, langue et sons
+Viewer associations...	Associations des visionneuses...
+Viewers	Visionneuses
+Volume	Volume
+Language of the application. Not implemented yet: for now ScreepT speaks English.	Langue de l'application : change toute l'interface immédiatement.
+Enable/Disable error dialog in case of general warnings detected by the application	Active/désactive la fenêtre d'erreur pour les avertissements généraux de l'application
+Enable/Disable automatic check for updates at start	Active/désactive la recherche automatique de mises à jour au démarrage
+Enable/Disable ScreepT to be automatically launched at System startup.	Active/désactive le lancement automatique de ScreepT au démarrage du système.
+Choose name used to customize messages and various dialogs and advices	Choisissez le nom utilisé pour personnaliser messages, fenêtres et avertissements
+Choose preferred style scheme	Choisissez le schéma de style préféré
+Change font and text-properties	Modifier la police et les propriétés du texte
+Close this dialog and discard every change	Ferme la fenêtre et annule toutes les modifications
+Close this dialog and use current settings with explicit save on phisical file	Ferme la fenêtre et utilise les paramètres actuels en les enregistrant dans le fichier
+Close this dialog and use current settings without explicit save on phisical file	Ferme la fenêtre et utilise les paramètres actuels sans les enregistrer dans le fichier
+Closes the window and drops every change made here: the previous settings are restored.	Ferme la fenêtre et annule toutes les modifications faites ici : les paramètres précédents sont restaurés.
+Closes the window and uses the current settings for this session. They are written to the configuration file only when it is saved (autosave or on exit).	Ferme la fenêtre et utilise les paramètres actuels pour cette session. Ils ne sont écrits dans le fichier de configuration que lors de son enregistrement (automatique ou à la sortie).
+Closes the window, keeps the current settings and writes them to the configuration file.	Ferme la fenêtre, conserve les paramètres actuels et les écrit dans le fichier de configuration.
+Brings every option of this window back to the value it had when the window was opened.	Remet chaque option de cette fenêtre à la valeur qu'elle avait à l'ouverture.
+Reset initial values	Réinitialiser les valeurs initiales
+Reset default text-graphics values reading them from current configuration file.	Réinitialise les valeurs graphiques du texte à partir du fichier de configuration actuel.
+Use the slider or type the value in the box: both follow each other.	Utilisez le curseur ou saisissez la valeur dans la case : les deux restent synchronisés.
+The change is applied immediately to every open window. Discard brings back the previous style.	Le changement s'applique immédiatement à toutes les fenêtres ouvertes. « Abandonner » rétablit le style précédent.
+Look and feel of the whole application: ScreepT Dark (the default dark theme), the classic light styles, Nimbus and others.\n\n	Apparence de toute l'application : ScreepT Dark (le thème sombre par défaut), les styles clairs classiques, Nimbus et d'autres.\n\n
+Size of fonts and graphic elements of the whole interface: Mini, Small, Medium, Big, XXL or Custom.\n\n	Taille des polices et éléments graphiques de toute l'interface : Mini, Petite, Moyenne, Grande, XXL ou Personnalisée.\n\n
+Color theme of the text editor (syntax colors, background, selection).\n\n	Thème de couleurs de l'éditeur de texte (couleurs de syntaxe, arrière-plan, sélection).\n\n
+Font family and size of the text editor.\n\nA monospaced font (for example Consolas) is the best choice: the rectangular selection	Famille et taille de la police de l'éditeur de texte.\n\nUne police à chasse fixe (par exemple Consolas) est le meilleur choix : la sélection rectangulaire
+Text editor font: a monospaced one (e.g. Consolas) keeps rectangular selections aligned	Police de l'éditeur : une police à chasse fixe (ex. Consolas) garde les sélections rectangulaires alignées
+Extra space between the lines of the text editor	Espace supplémentaire entre les lignes de l'éditeur de texte
+Space between the border of the text editor and the text	Espace entre le bord de l'éditeur de texte et le texte
+Size of the font used by the log area at the bottom of the application.	Taille de la police de la zone de journal en bas de l'application.
+Verbosity of the application log, chosen when the application starts. A more detailed level helps to investigate problems but writes more.	Niveau de détail du journal de l'application, choisi au démarrage. Un niveau plus détaillé aide à diagnostiquer les problèmes mais écrit davantage.
+Security level used when ScreepT checks passwords (for example in the crypter).	Niveau de sécurité utilisé par ScreepT pour vérifier les mots de passe (par exemple dans le crypter).
+Opens the network options, where you can set the proxy ScreepT uses to reach the internet (for example for the updates check).	Ouvre les options réseau, où vous pouvez définir le proxy utilisé par ScreepT pour accéder à internet (par exemple pour les mises à jour).
+At start ScreepT checks whether a new version is available.	Au démarrage, ScreepT vérifie si une nouvelle version est disponible.
+Launch ScreepT automatically when you log in to the system. The button beside it opens the autostart folder of your system.	Lance ScreepT automatiquement à l'ouverture de session. Le bouton voisin ouvre le dossier de démarrage automatique du système.
+When checked, launcher will not be shown on startup	Si coché, le launcher n'est pas affiché au démarrage
+The launcher window (loading progress) is not shown while ScreepT starts.	La fenêtre du launcher (progression du chargement) n'est pas affichée pendant le démarrage de ScreepT.
+Enable/Disable periodic autosave (also when exiting application) current configuration will be automatically saved	Active/désactive l'enregistrement périodique (aussi à la sortie) : la configuration actuelle est enregistrée automatiquement
+Dictionary used by the spellchecker of the text editor.\n\nThe spellchecker is switched on and off from the text editor toolbar.	Dictionnaire utilisé par le correcteur orthographique de l'éditeur de texte.\n\nLe correcteur s'active et se désactive depuis la barre de l'éditeur de texte.
+Show whitespaces and empty lines	Afficher les espaces et lignes vides
+Draws a mark at the end of every line, so you can see where lines end and spot trailing spaces.	Dessine une marque à la fin de chaque ligne pour voir où elles se terminent et repérer les espaces en fin de ligne.
+Draws a mark for spaces, tabs and empty lines, to see exactly what is in the text.	Dessine une marque pour les espaces, tabulations et lignes vides afin de voir exactement le contenu du texte.
+Smooths the edges of the letters in the text editor. Turn it off only if text looks blurry on your screen.	Lisse les bords des lettres dans l'éditeur de texte. Désactivez-le seulement si le texte paraît flou sur votre écran.
+Selecting a word highlights all its other occurrences in the file.	Sélectionner un mot met en évidence toutes ses autres occurrences dans le fichier.
+The highlighted occurrences also get a border around them.	Les occurrences mises en évidence ont aussi une bordure.
+When the cursor is next to a bracket, the matching bracket is highlighted.	Quand le curseur est à côté d'une parenthèse, celle qui lui correspond est mise en évidence.
+Both brackets of the pair are highlighted, not only the matching one.	Les deux parenthèses de la paire sont mises en évidence, pas seulement celle qui correspond.
+The highlight of the matching bracket is animated, so it is easier to notice.	La mise en évidence de la parenthèse correspondante est animée pour être plus visible.
+When the matching bracket is out of the visible area, a small popup shows the line it is on.	Quand la parenthèse correspondante est hors de la zone visible, une petite fenêtre affiche la ligne où elle se trouve.
+Typing an opening curly brace adds the closing one automatically.	Taper une accolade ouvrante ajoute automatiquement la fermante.
+In HTML and XML files, typing the end of an opening tag adds the matching closing tag automatically.	Dans les fichiers HTML et XML, taper la fin d'une balise ouvrante ajoute automatiquement la balise fermante.
+When you press Enter, the new line starts with the same indentation as the previous one.	Quand vous appuyez sur Entrée, la nouvelle ligne commence avec la même indentation que la précédente.
+The Tab key inserts spaces instead of a tab character; the number of spaces is the tab size of the editor.	La touche Tab insère des espaces au lieu d'une tabulation ; le nombre d'espaces est la taille de tabulation de l'éditeur.
+This number will be used as number of spaces for each tab pressed.	Ce nombre sert de nombre d'espaces pour chaque tabulation.
+Lines that contain only spaces or tabs are cleaned when you leave them, so no invisible trailing whitespace remains.	Les lignes ne contenant que des espaces ou tabulations sont nettoyées quand vous les quittez, sans espaces invisibles résiduels.
+Links found in the text (web addresses, file paths) become clickable with Ctrl + click.	Les liens du texte (adresses web, chemins de fichiers) deviennent cliquables avec Ctrl + clic.
+Lets you collapse and expand blocks of code (functions, classes, tags) with the markers in the left margin.	Permet de replier et déplier des blocs de code (fonctions, classes, balises) avec les marqueurs de la marge gauche.
+The highlight of the current line fades out softly instead of being drawn as a solid band.	La mise en évidence de la ligne courante s'estompe doucement au lieu d'être une bande pleine.
+The selection of text has rounded corners instead of square ones.	La sélection de texte a des coins arrondis au lieu de coins carrés.
+In files that mix languages (for example HTML with JavaScript or CSS) the embedded code gets its own syntax colors.	Dans les fichiers mêlant plusieurs langages (par exemple HTML avec JavaScript ou CSS), le code imbriqué a ses propres couleurs de syntaxe.
+Tips and auto-completion hints can take the focus, so you can scroll and select inside them.	Les info-bulles et l'autocomplétion peuvent prendre le focus, pour défiler et sélectionner à l'intérieur.
+Uses fractional font metrics: letters are spaced more precisely, especially with non-integer scaling.	Utilise des métriques de police fractionnaires : les lettres sont espacées plus précisément, surtout avec une mise à l'échelle non entière.
+Watches the open files: when another program modifies one of them, ScreepT notices it and lets you reload it.	Surveille les fichiers ouverts : quand un autre programme en modifie un, ScreepT le détecte et vous propose de le recharger.
+Keeps a temporary copy of the files you are editing and saves it periodically, so work can be recovered after a crash.\n\n	Conserve une copie temporaire des fichiers édités et l'enregistre périodiquement pour récupérer le travail après un plantage.\n\n
+Line ending used for new files: LF (Linux / macOS), CRLF (Windows) or CR.\n\nExisting files keep the line endings they already have unless you convert them.	Fin de ligne des nouveaux fichiers : LF (Linux / macOS), CRLF (Windows) ou CR.\n\nLes fichiers existants gardent leur fin de ligne sauf conversion.
+Charset ScreepT uses by default to read and write text files.\n\nChange it only if your files are not UTF-8 and special characters look wrong.	Jeu de caractères utilisé par défaut par ScreepT pour lire et écrire les fichiers texte.\n\nNe le changez que si vos fichiers ne sont pas en UTF-8 et que les caractères spéciaux sont incorrects.
+Shows an advice window when an exception happens inside ScreepT, so you know that something went wrong.\n\nErrors are written to the log in any case.	Affiche une fenêtre d'avertissement quand une exception survient dans ScreepT, pour savoir que quelque chose s'est mal passé.\n\nLes erreurs sont de toute façon écrites dans le journal.
+Volume of the application sounds (clicks, alerts). Move the slider to hear the difference; the number beside it is the current value.	Volume des sons de l'application (clics, alertes). Déplacez le curseur pour entendre la différence ; le nombre à côté est la valeur actuelle.
+The name ScreepT uses to customize messages, dialogs and advices. It is also the name the home assistant calls you by.	Le nom utilisé par ScreepT pour personnaliser messages, fenêtres et avertissements. C'est aussi le nom avec lequel l'assistant d'accueil vous appelle.
+Enter USERNAME	Saisissez le nom d'utilisateur
+Please insert your name:	Saisissez votre nom :
+Username must be between 1-26 characters!	Le nom d'utilisateur doit comporter de 1 à 26 caractères !
+Search in the guide (Ctrl+F)	Rechercher dans le guide (Ctrl+F)
+Search in terminal	Rechercher dans le terminal
+Search options (Ctrl+F)	Options de recherche (Ctrl+F)
+Find in the text (Ctrl+F)	Rechercher dans le texte (Ctrl+F)
+Filter plugins by name, description or status...	Filtrer les plugins par nom, description ou état...
+Filter by extension or viewer (type to narrow the list)	Filtrer par extension ou visionneuse (saisissez pour réduire la liste)
+Name contains... (comma separated)	Le nom contient... (séparés par des virgules)
+Path of the file or folder to hash (Enter to load)	Chemin du fichier ou du dossier à hacher (Entrée pour charger)
+Calculating...	Calcul en cours...
+Filter documents	Filtrer les documents
+Where the clean copies are written (required)	Où les copies propres sont écrites (obligatoire)
+Where the new images are written (required)	Où les nouvelles images sont écrites (obligatoire)
+Are you sure to delete?	Voulez-vous vraiment supprimer ?
+Are you sure to delete	Voulez-vous vraiment supprimer
+~Are you sure to delete	Voulez-vous vraiment supprimer
+Are you sure you want to overwrite	Voulez-vous vraiment écraser
+~Are you sure you want to overwrite	Voulez-vous vraiment écraser
+Are you sure to remove all tabs?	Voulez-vous vraiment fermer tous les onglets ?
+Are you sure to overwrite current configuration?	Voulez-vous vraiment écraser la configuration actuelle ?
+Are you sure to reload current theme? all unsaved changes will be lost	Voulez-vous vraiment recharger le thème actuel ? Toutes les modifications non enregistrées seront perdues
+Wanna reload? If document is different or changed by another application, you will lose all unsaved changes... Continue?	Recharger ? Si le document est différent ou modifié par une autre application, vous perdrez toutes les modifications non enregistrées... Continuer ?
+Wanna save current before reload?	Enregistrer le fichier actuel avant de recharger ?
+A restart is required to apply changes, restart now?	Un redémarrage est nécessaire pour appliquer les changements : redémarrer maintenant ?
+An error occurred!	Une erreur s'est produite !
+An error occurred while saving, do you want to exit anyway?	Erreur lors de l'enregistrement : voulez-vous quitter quand même ?
+An error occurred :(	Une erreur s'est produite :(
+Something has gone wrong :(	Quelque chose s'est mal passé :(
+Sorry, something went wrong :(	Désolé, quelque chose s'est mal passé :(
+Cannot rename!	Impossible de renommer !
+Cannot create File without name	Impossible de créer un fichier sans nom
+Cannot open the web browser :(	Impossible d'ouvrir le navigateur web :(
+Cannot load theme, an error occurred	Impossible de charger le thème, une erreur s'est produite
+Cannot import: invalid theme	Impossible d'importer : thème invalide
+Theme imported.	Thème importé.
+Theme import failed! (See logs for details)	Échec de l'import du thème ! (Voir les journaux pour les détails)
+Invalid name, theme not saved!	Nom invalide, thème non enregistré !
+Specify theme file name	Indiquez le nom du fichier du thème
+The changes of the current theme are not saved: switch theme and lose them?	Les modifications du thème actuel ne sont pas enregistrées : changer de thème et les perdre ?
+There are changes not saved: close the theme editor and lose them?	Des modifications ne sont pas enregistrées : fermer l'éditeur de thèmes et les perdre ?
+File exists, wanna overwrite?	Le fichier existe, écraser ?
+This name already exists, wanna overwrite?	Ce nom existe déjà, écraser ?
+File does not exist anymore!	Le fichier n'existe plus !
+Folder does not exist anymore!	Le dossier n'existe plus !
+File not saved, maybe folder it's not acessible or locked by an other program?!	Fichier non enregistré : le dossier est peut-être inaccessible ou verrouillé par un autre programme ?
+Please select a file!	Veuillez sélectionner un fichier !
+Please select a directory!	Veuillez sélectionner un dossier !
+Select a directory!	Sélectionnez un dossier !
+Invalid selection.	Sélection invalide.
+No text is selected	Aucun texte sélectionné
+Nothing selected, exiting.	Rien de sélectionné, sortie.
+Procedure aborted	Procédure interrompue
+Stop process?	Arrêter le processus ?
+Search interrupted by user!	Recherche interrompue par l'utilisateur !
+Settings saved :)	Paramètres enregistrés :)
+Saved!	Enregistré !
+General Options Saved :)	Options générales enregistrées :)
+Configuration Loaded!	Configuration chargée !
+Configuration reloaded!	Configuration rechargée !
+Configuration not saved!	Configuration non enregistrée !
+Really want to overwrite default configuration?	Voulez-vous vraiment écraser la configuration par défaut ?
+Really want to Reset standard ScreepT configuration? Unsaved changes will be lost!	Voulez-vous vraiment réinitialiser la configuration standard de ScreepT ? Les modifications non enregistrées seront perdues !
+Choose a name for the configuration to save	Choisissez un nom pour la configuration à enregistrer
+Please specify a name for the template:	Indiquez un nom pour le modèle :
+Template Added to collection.	Modèle ajouté à la collection.
+Specify the name of the folder to create:	Indiquez le nom du dossier à créer :
+Specify the word you want to remove	Indiquez le mot à supprimer
+Specify the tag to use for sorrounding	Indiquez la balise d'encadrement
+Please enter a password, empty key text!	Saisissez un mot de passe, le champ clé est vide !
+Empty password	Mot de passe vide
+Cannot read updates, an error occurred :(	Impossible de lire les mises à jour, une erreur s'est produite :(
+Cannot retrieve remote update data, server is unreachable.	Impossible de récupérer les données de mise à jour distantes : le serveur est injoignable.
+Updates will be installed when you'll close current session	Les mises à jour seront installées à la fermeture de la session en cours
+ScreepT must be restarted to begin update procedure: do you want to restart now?	ScreepT doit redémarrer pour lancer la mise à jour : redémarrer maintenant ?
+It was not possible to verify integrity of downloaded updates, install anyway?	Impossible de vérifier l'intégrité des mises à jour téléchargées : installer quand même ?
+Pending plugin updates have been installed correctly!	Les mises à jour de plugins en attente ont été installées correctement !
+Image type not supported! Do you want to open Image Studio to convert it?	Type d'image non pris en charge ! Voulez-vous ouvrir Image Studio pour la convertir ?
+An error occurred, cannot load image :(	Une erreur s'est produite, impossible de charger l'image :(
+An error occurred, cannot load pdf :(	Une erreur s'est produite, impossible de charger le PDF :(
+Cannot open the browser:	Impossible d'ouvrir le navigateur :
+~Cannot open the browser:	Impossible d'ouvrir le navigateur :
+Cannot export the html file :(	Impossible d'exporter le fichier HTML :(
+Cannot save the markdown file :(	Impossible d'enregistrer le fichier markdown :(
+Login failed	Échec de la connexion
+Please select a workspace before to export	Sélectionnez un espace de travail avant d'exporter
+Please select a workspace before to import	Sélectionnez un espace de travail avant d'importer
+Please insert a name for the image to be added (Otherwise current date will be used as filename)	Saisissez un nom pour l'image à ajouter (sinon la date actuelle sera utilisée)
+Choose a name for the new Clipboard (If existing a new unique name like "xxxx(1).ext" will be created)	Choisissez un nom pour le nouveau presse-papiers (s'il existe, un nom unique comme « xxxx(1).ext » sera créé)
+Choose file extension	Choisissez l'extension du fichier

@@ -11,8 +11,11 @@ Browse...	浏览...
 Calculator	计算器
 Cancel	取消
 Cannot load the image:	无法加载图像：
+~Cannot load the image:	无法加载图像：
 Cannot save the image:	无法保存图像：
+~Cannot save the image:	无法保存图像：
 Cannot export the image:	无法导出图像：
+~Cannot export the image:	无法导出图像：
 Charset:	字符集：
 Check for software updates...	检查软件更新...
 Choose general application Charset to use	选择应用程序使用的通用字符集
@@ -89,6 +92,7 @@ Lines:	行数：
 Load Custom Configuration	加载自定义配置
 Load configuration from other installation	从其他安装加载配置
 Loading	正在加载
+~Loading	正在加载
 Loads blurry first, then sharp: better for the web	先模糊后清晰加载：更适合网页
 Lock	锁定
 Log level chosen at application start	应用程序启动时选择的日志级别
@@ -186,9 +190,13 @@ Choose the language of the application	选择应用程序语言
 Some texts may stay in English until translated	部分文本在翻译之前可能仍为英文
 Search an element (comment, caret, gutter...)	搜索元素（注释、光标、行号栏...）
 Preview failed:	预览失败：
+~Preview failed:	预览失败：
 Metadata removed from	已移除元数据：
+~Metadata removed from	已移除元数据：
 Saved:	已保存：
+~Saved:	已保存：
 Exported:	已导出：
+~Exported:	已导出：
 Current file:	当前文件：
 File tree	文件树
 Displayed:	显示：
@@ -201,6 +209,7 @@ Quality:	质量：
 Use workspace	使用工作区
 Reading the files of the folder...	正在读取文件夹中的文件...
 Result number limited to	结果数量限制为
+~Result number limited to	结果数量限制为
 Overwrite	覆盖
 Close all	全部关闭
 Select all	全选
@@ -220,3 +229,230 @@ Settings	设置
 Warning	警告
 Error	错误
 Information	信息
+Adapt text width (word wrap)	按宽度换行（自动换行）
+Allow fractional fonts	允许小数字号
+Animate brackets	括号动画
+Antialiasing enabled	启用抗锯齿
+Appearance	外观
+Auto check for file changes	自动检查文件更改
+Auto-indentation	自动缩进
+Autosave temp files	自动保存临时文件
+Autostart	自动启动
+Autostart, launcher and updates check	自动启动、启动器和更新检查
+Brackets and occurrences	括号和匹配项
+Brackets matching	括号匹配
+Clear whitespace lines	清除空白行
+Close curly braces	自动闭合花括号
+Close markup tags	自动闭合标记标签
+Code folding	代码折叠
+Configuration autosave	自动保存配置
+Customize...	自定义...
+Default EOL	默认换行符
+Discard	放弃
+Display	显示
+Editing	编辑
+Emulated tabs with spaces	用空格模拟制表符
+Encoding	编码
+Encoding, line endings and configuration autosave	编码、换行符和配置自动保存
+Fade highlight	渐隐高亮
+Files	文件
+Focusable tips	可聚焦提示
+Font	字体
+Font, line spacing and spellchecker	字体、行距和拼写检查
+Fonts and graphic elements size; Custom keeps your own values	字体和图形元素大小；自定义保留您的值
+GUI style	界面样式
+General	常规
+Generic options	通用选项
+Graphic preferences	图形首选项
+Highlight 2nd languages	高亮嵌入语言
+How text is rendered and highlighted	文本的绘制和高亮方式
+Hyperlinks enabled	启用超链接
+Inline tabs (one scrolling line)	内联标签页（单行滚动）
+Interface size	界面大小
+Interline	行距
+Log font size	日志字体大小
+Log level	日志级别
+Look and feel, theme and interface size	外观、主题和界面大小
+Margin	边距
+Margin and interline	边距和行距
+Mark end of line	标记行尾
+Mark occurrences	标记匹配项
+Max file size (MB)	最大文件大小 (MB)
+Menu font size	菜单字体大小
+Network	网络
+Nimbus dark theme	Nimbus 深色主题
+Nimbus size variant	Nimbus 大小变体
+Paint matched bracket pairs	高亮匹配的括号对
+Paint occurrences border	绘制匹配项边框
+Password checks and proxy	密码检查和代理
+Password security	密码安全
+Round selection edges	圆角选区
+Save Values	保存设置
+Security and network	安全和网络
+Show bracket popup	显示括号弹窗
+Spellchecker dictionary	拼写检查词典
+Startup and updates	启动和更新
+Sync clipboard style	同步剪贴板样式
+Text editor	文本编辑器
+Typing helpers, tabs and files	输入辅助、标签页和文件
+User name	用户名
+User name, language and sounds	用户名、语言和声音
+Viewer associations...	查看器关联...
+Viewers	查看器
+Volume	音量
+Language of the application. Not implemented yet: for now ScreepT speaks English.	应用程序语言：立即切换整个界面。
+Enable/Disable error dialog in case of general warnings detected by the application	启用/禁用应用程序检测到一般警告时的错误对话框
+Enable/Disable automatic check for updates at start	启用/禁用启动时自动检查更新
+Enable/Disable ScreepT to be automatically launched at System startup.	启用/禁用 ScreepT 随系统自动启动。
+Choose name used to customize messages and various dialogs and advices	选择用于个性化消息、对话框和提示的名称
+Choose preferred style scheme	选择首选样式方案
+Change font and text-properties	更改字体和文本属性
+Close this dialog and discard every change	关闭此对话框并放弃所有更改
+Close this dialog and use current settings with explicit save on phisical file	关闭此对话框并使用当前设置，并保存到文件
+Close this dialog and use current settings without explicit save on phisical file	关闭此对话框并使用当前设置，不保存到文件
+Closes the window and drops every change made here: the previous settings are restored.	关闭窗口并放弃此处所有更改：恢复之前的设置。
+Closes the window and uses the current settings for this session. They are written to the configuration file only when it is saved (autosave or on exit).	关闭窗口并在本次会话中使用当前设置。仅在保存配置（自动保存或退出时）才会写入配置文件。
+Closes the window, keeps the current settings and writes them to the configuration file.	关闭窗口，保留当前设置并写入配置文件。
+Brings every option of this window back to the value it had when the window was opened.	将此窗口的每个选项恢复为打开时的值。
+Reset initial values	重置为初始值
+Reset default text-graphics values reading them from current configuration file.	从当前配置文件读取并重置文本图形默认值。
+Use the slider or type the value in the box: both follow each other.	使用滑块或在框中输入数值：两者同步。
+The change is applied immediately to every open window. Discard brings back the previous style.	更改会立即应用于所有打开的窗口。“放弃”可恢复之前的样式。
+Look and feel of the whole application: ScreepT Dark (the default dark theme), the classic light styles, Nimbus and others.\n\n	整个应用程序的外观：ScreepT Dark（默认深色主题）、经典浅色样式、Nimbus 等。\n\n
+Size of fonts and graphic elements of the whole interface: Mini, Small, Medium, Big, XXL or Custom.\n\n	整个界面的字体和图形元素大小：迷你、小、中、大、超大或自定义。\n\n
+Color theme of the text editor (syntax colors, background, selection).\n\n	文本编辑器的颜色主题（语法颜色、背景、选区）。\n\n
+Font family and size of the text editor.\n\nA monospaced font (for example Consolas) is the best choice: the rectangular selection	文本编辑器的字体和大小。\n\n等宽字体（如 Consolas）是最佳选择：矩形选择
+Text editor font: a monospaced one (e.g. Consolas) keeps rectangular selections aligned	编辑器字体：等宽字体（如 Consolas）可保持矩形选择对齐
+Extra space between the lines of the text editor	文本编辑器行间的额外间距
+Space between the border of the text editor and the text	文本编辑器边框与文本之间的间距
+Size of the font used by the log area at the bottom of the application.	应用程序底部日志区域的字体大小。
+Verbosity of the application log, chosen when the application starts. A more detailed level helps to investigate problems but writes more.	应用程序日志的详细程度，在启动时选择。更详细的级别有助于排查问题，但写入更多内容。
+Security level used when ScreepT checks passwords (for example in the crypter).	ScreepT 检查密码时使用的安全级别（例如在加密器中）。
+Opens the network options, where you can set the proxy ScreepT uses to reach the internet (for example for the updates check).	打开网络选项，可在此设置 ScreepT 访问互联网所用的代理（例如用于检查更新）。
+At start ScreepT checks whether a new version is available.	启动时 ScreepT 会检查是否有新版本。
+Launch ScreepT automatically when you log in to the system. The button beside it opens the autostart folder of your system.	登录系统时自动启动 ScreepT。旁边的按钮可打开系统的自动启动文件夹。
+When checked, launcher will not be shown on startup	勾选后启动时不显示启动器
+The launcher window (loading progress) is not shown while ScreepT starts.	ScreepT 启动时不显示启动器窗口（加载进度）。
+Enable/Disable periodic autosave (also when exiting application) current configuration will be automatically saved	启用/禁用定期自动保存（退出时也会保存）：当前配置将自动保存
+Dictionary used by the spellchecker of the text editor.\n\nThe spellchecker is switched on and off from the text editor toolbar.	文本编辑器拼写检查使用的词典。\n\n拼写检查可在文本编辑器工具栏中开启或关闭。
+Show whitespaces and empty lines	显示空白字符和空行
+Draws a mark at the end of every line, so you can see where lines end and spot trailing spaces.	在每行末尾绘制标记，便于查看行尾位置并发现多余空格。
+Draws a mark for spaces, tabs and empty lines, to see exactly what is in the text.	为空格、制表符和空行绘制标记，以便准确查看文本内容。
+Smooths the edges of the letters in the text editor. Turn it off only if text looks blurry on your screen.	平滑文本编辑器中的字符边缘。仅当文本在屏幕上显得模糊时才关闭。
+Selecting a word highlights all its other occurrences in the file.	选中一个单词时，会高亮文件中它的所有其他匹配项。
+The highlighted occurrences also get a border around them.	高亮的匹配项还会带有边框。
+When the cursor is next to a bracket, the matching bracket is highlighted.	光标位于括号旁时，会高亮与之匹配的括号。
+Both brackets of the pair are highlighted, not only the matching one.	括号对中的两个括号都会高亮，而不仅是匹配的那个。
+The highlight of the matching bracket is animated, so it is easier to notice.	匹配括号的高亮带有动画，更容易注意到。
+When the matching bracket is out of the visible area, a small popup shows the line it is on.	当匹配的括号不在可见区域时，会用小弹窗显示其所在行。
+Typing an opening curly brace adds the closing one automatically.	输入左花括号时会自动补全右花括号。
+In HTML and XML files, typing the end of an opening tag adds the matching closing tag automatically.	在 HTML 和 XML 文件中，输入起始标签的结尾时会自动添加对应的结束标签。
+When you press Enter, the new line starts with the same indentation as the previous one.	按下回车时，新行将与上一行使用相同的缩进。
+The Tab key inserts spaces instead of a tab character; the number of spaces is the tab size of the editor.	Tab 键插入空格而不是制表符；空格数即编辑器的制表符大小。
+This number will be used as number of spaces for each tab pressed.	此数字将作为每次按 Tab 键插入的空格数。
+Lines that contain only spaces or tabs are cleaned when you leave them, so no invisible trailing whitespace remains.	仅含空格或制表符的行在离开时会被清理，不会残留不可见空白。
+Links found in the text (web addresses, file paths) become clickable with Ctrl + click.	文本中的链接（网址、文件路径）可通过 Ctrl + 单击打开。
+Lets you collapse and expand blocks of code (functions, classes, tags) with the markers in the left margin.	可通过左侧边栏的标记折叠和展开代码块（函数、类、标签）。
+The highlight of the current line fades out softly instead of being drawn as a solid band.	当前行的高亮会柔和渐隐，而不是实心色带。
+The selection of text has rounded corners instead of square ones.	文本选区使用圆角而不是直角。
+In files that mix languages (for example HTML with JavaScript or CSS) the embedded code gets its own syntax colors.	在混合多种语言的文件中（例如含 JavaScript 或 CSS 的 HTML），嵌入的代码使用各自的语法颜色。
+Tips and auto-completion hints can take the focus, so you can scroll and select inside them.	提示和自动补全可以获得焦点，因此可在其中滚动和选择。
+Uses fractional font metrics: letters are spaced more precisely, especially with non-integer scaling.	使用小数字体度量：字符间距更精确，尤其在非整数缩放时。
+Watches the open files: when another program modifies one of them, ScreepT notices it and lets you reload it.	监视已打开的文件：当其他程序修改其中某个文件时，ScreepT 会发现并让您重新加载。
+Keeps a temporary copy of the files you are editing and saves it periodically, so work can be recovered after a crash.\n\n	为正在编辑的文件保留临时副本并定期保存，以便崩溃后恢复工作。\n\n
+Line ending used for new files: LF (Linux / macOS), CRLF (Windows) or CR.\n\nExisting files keep the line endings they already have unless you convert them.	新文件使用的换行符：LF（Linux / macOS）、CRLF（Windows）或 CR。\n\n现有文件保持原有换行符，除非您进行转换。
+Charset ScreepT uses by default to read and write text files.\n\nChange it only if your files are not UTF-8 and special characters look wrong.	ScreepT 读写文本文件时默认使用的字符集。\n\n仅当您的文件不是 UTF-8 且特殊字符显示异常时才更改。
+Shows an advice window when an exception happens inside ScreepT, so you know that something went wrong.\n\nErrors are written to the log in any case.	ScreepT 内部发生异常时显示提示窗口，让您知道出了问题。\n\n无论如何错误都会写入日志。
+Volume of the application sounds (clicks, alerts). Move the slider to hear the difference; the number beside it is the current value.	应用程序声音（点击、警报）的音量。拖动滑块可听到差异；旁边的数字为当前值。
+The name ScreepT uses to customize messages, dialogs and advices. It is also the name the home assistant calls you by.	ScreepT 用于个性化消息、对话框和提示的名称。主页助手也会用它称呼您。
+Enter USERNAME	输入用户名
+Please insert your name:	请输入您的名字：
+Username must be between 1-26 characters!	用户名必须为 1 到 26 个字符！
+Search in the guide (Ctrl+F)	在指南中搜索 (Ctrl+F)
+Search in terminal	在终端中搜索
+Search options (Ctrl+F)	搜索选项 (Ctrl+F)
+Find in the text (Ctrl+F)	在文本中查找 (Ctrl+F)
+Filter plugins by name, description or status...	按名称、描述或状态筛选插件...
+Filter by extension or viewer (type to narrow the list)	按扩展名或查看器筛选（输入以缩小列表）
+Name contains... (comma separated)	名称包含...（以逗号分隔）
+Path of the file or folder to hash (Enter to load)	要计算哈希的文件或文件夹路径（回车加载）
+Calculating...	正在计算...
+Filter documents	筛选文档
+Where the clean copies are written (required)	干净副本的保存位置（必填）
+Where the new images are written (required)	新图像的保存位置（必填）
+Are you sure to delete?	确定要删除吗？
+Are you sure to delete	确定要删除
+~Are you sure to delete	确定要删除
+Are you sure you want to overwrite	确定要覆盖
+~Are you sure you want to overwrite	确定要覆盖
+Are you sure to remove all tabs?	确定要关闭所有标签页吗？
+Are you sure to overwrite current configuration?	确定要覆盖当前配置吗？
+Are you sure to reload current theme? all unsaved changes will be lost	确定要重新加载当前主题吗？所有未保存的更改都将丢失
+Wanna reload? If document is different or changed by another application, you will lose all unsaved changes... Continue?	重新加载？如果文档不同或已被其他应用程序更改，将丢失所有未保存的更改……继续吗？
+Wanna save current before reload?	重新加载前要保存当前文件吗？
+A restart is required to apply changes, restart now?	需要重新启动才能应用更改，现在重启吗？
+An error occurred!	发生错误！
+An error occurred while saving, do you want to exit anyway?	保存时出错，仍要退出吗？
+An error occurred :(	发生错误 :(
+Something has gone wrong :(	出了点问题 :(
+Sorry, something went wrong :(	抱歉，出了点问题 :(
+Cannot rename!	无法重命名！
+Cannot create File without name	无法创建没有名称的文件
+Cannot open the web browser :(	无法打开网页浏览器 :(
+Cannot load theme, an error occurred	无法加载主题，发生错误
+Cannot import: invalid theme	无法导入：主题无效
+Theme imported.	主题已导入。
+Theme import failed! (See logs for details)	主题导入失败！（详见日志）
+Invalid name, theme not saved!	名称无效，主题未保存！
+Specify theme file name	指定主题文件名
+The changes of the current theme are not saved: switch theme and lose them?	当前主题的更改尚未保存：切换主题将丢失这些更改，确定吗？
+There are changes not saved: close the theme editor and lose them?	有未保存的更改：关闭主题编辑器将丢失这些更改，确定吗？
+File exists, wanna overwrite?	文件已存在，要覆盖吗？
+This name already exists, wanna overwrite?	此名称已存在，要覆盖吗？
+File does not exist anymore!	文件已不存在！
+Folder does not exist anymore!	文件夹已不存在！
+File not saved, maybe folder it's not acessible or locked by an other program?!	文件未保存：文件夹可能无法访问或被其他程序锁定？
+Please select a file!	请选择一个文件！
+Please select a directory!	请选择一个目录！
+Select a directory!	请选择一个目录！
+Invalid selection.	选择无效。
+No text is selected	未选择文本
+Nothing selected, exiting.	未选择任何内容，退出。
+Procedure aborted	操作已中止
+Stop process?	要停止该进程吗？
+Search interrupted by user!	搜索已被用户中断！
+Settings saved :)	设置已保存 :)
+Saved!	已保存！
+General Options Saved :)	常规选项已保存 :)
+Configuration Loaded!	配置已加载！
+Configuration reloaded!	配置已重新加载！
+Configuration not saved!	配置未保存！
+Really want to overwrite default configuration?	确定要覆盖默认配置吗？
+Really want to Reset standard ScreepT configuration? Unsaved changes will be lost!	确定要重置 ScreepT 标准配置吗？未保存的更改将丢失！
+Choose a name for the configuration to save	为要保存的配置选择名称
+Please specify a name for the template:	请为模板指定名称：
+Template Added to collection.	模板已添加到集合。
+Specify the name of the folder to create:	请指定要创建的文件夹名称：
+Specify the word you want to remove	请指定要删除的单词
+Specify the tag to use for sorrounding	请指定用于包围的标签
+Please enter a password, empty key text!	请输入密码，密钥为空！
+Empty password	密码为空
+Cannot read updates, an error occurred :(	无法读取更新，发生错误 :(
+Cannot retrieve remote update data, server is unreachable.	无法获取远程更新数据：服务器不可达。
+Updates will be installed when you'll close current session	更新将在关闭当前会话时安装
+ScreepT must be restarted to begin update procedure: do you want to restart now?	ScreepT 必须重新启动才能开始更新：现在重启吗？
+It was not possible to verify integrity of downloaded updates, install anyway?	无法验证已下载更新的完整性，仍要安装吗？
+Pending plugin updates have been installed correctly!	待处理的插件更新已成功安装！
+Image type not supported! Do you want to open Image Studio to convert it?	不支持的图像类型！要打开 Image Studio 进行转换吗？
+An error occurred, cannot load image :(	发生错误，无法加载图像 :(
+An error occurred, cannot load pdf :(	发生错误，无法加载 PDF :(
+Cannot open the browser:	无法打开浏览器：
+~Cannot open the browser:	无法打开浏览器：
+Cannot export the html file :(	无法导出 HTML 文件 :(
+Cannot save the markdown file :(	无法保存 markdown 文件 :(
+Login failed	登录失败
+Please select a workspace before to export	导出前请选择工作区
+Please select a workspace before to import	导入前请选择工作区
+Please insert a name for the image to be added (Otherwise current date will be used as filename)	请输入要添加的图像名称（否则使用当前日期作为文件名）
+Choose a name for the new Clipboard (If existing a new unique name like "xxxx(1).ext" will be created)	为新剪贴板选择名称（如已存在，将创建类似“xxxx(1).ext”的唯一名称）
+Choose file extension	选择文件扩展名

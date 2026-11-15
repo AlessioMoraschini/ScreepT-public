@@ -96,6 +96,8 @@ public final class I18n {
 
 	private static volatile String current = "en";
 	private static volatile Map<String, String> table = Collections.emptyMap();
+	/** Texts that start with a fixed part followed by something dynamic (a file name, a number...): pack lines that start with ~ */
+	private static volatile List<String[]> prefixes = Collections.emptyList();
 	private static boolean installed = false;
 	private static boolean applying = false;
 	private static final Map<Window, String[]> WINDOW_TITLES = new WeakHashMap<Window, String[]>();
@@ -139,7 +141,16 @@ public final class I18n {
 	/** Changes the language of the application, translating also the windows that are already open */
 	public static synchronized void setLanguage(String code) {
 		current = normalize(code);
-		table = "en".equals(current) ? Collections.<String, String>emptyMap() : load(current);
+		Map<String, String> loaded = "en".equals(current) ? Collections.<String, String>emptyMap() : load(current);
+		List<String[]> prefixList = new ArrayList<String[]>();
+		for (Map.Entry<String, String> entry : loaded.entrySet()) {
+			if (entry.getKey().startsWith("~")) {
+				prefixList.add(new String[] {entry.getKey().substring(1), entry.getValue()});
+			}
+		}
+		prefixList.sort((a, b) -> b[0].length() - a[0].length());
+		prefixes = prefixList;
+		table = loaded;
 		installButtonsTexts();
 		install();
 		if (SwingUtilities.isEventDispatchThread()) {
@@ -225,7 +236,53 @@ public final class I18n {
 				found = core.substring(0, 6) + innerFound + closing;
 			}
 		}
+		if (found == null && (core.indexOf('<') >= 0 && core.indexOf('>') > core.indexOf('<'))) {
+			found = translateMarkup(map, core);
+		}
+		if (found == null) {
+			for (String[] prefix : prefixes) {
+				if (core.length() > prefix[0].length() && core.startsWith(prefix[0])) {
+					found = prefix[1] + core.substring(prefix[0].length());
+					break;
+				}
+			}
+		}
 		return found == null ? text : text.substring(0, a) + found + text.substring(b);
+	}
+
+	/** HTML texts (tooltips, messages): every piece of text between the tags is translated on its own */
+	private static String translateMarkup(Map<String, String> map, String html) {
+		StringBuilder out = new StringBuilder(html.length() + 16);
+		boolean changed = false;
+		int i = 0;
+		while (i < html.length()) {
+			int open = html.indexOf('<', i);
+			int close = open < 0 ? -1 : html.indexOf('>', open);
+			if (open < 0 || close < 0) {
+				changed |= appendTranslated(map, out, html.substring(i));
+				break;
+			}
+			changed |= appendTranslated(map, out, html.substring(i, open));
+			out.append(html, open, close + 1);
+			i = close + 1;
+		}
+		return changed ? out.toString() : null;
+	}
+
+	private static boolean appendTranslated(Map<String, String> map, StringBuilder out, String piece) {
+		String core = piece.trim();
+		if (core.isEmpty()) {
+			out.append(piece);
+			return false;
+		}
+		String found = lookup(map, core);
+		if (found == null) {
+			out.append(piece);
+			return false;
+		}
+		int start = piece.indexOf(core);
+		out.append(piece, 0, start).append(found).append(piece.substring(start + core.length()));
+		return true;
 	}
 
 	private static String lookup(Map<String, String> map, String core) {

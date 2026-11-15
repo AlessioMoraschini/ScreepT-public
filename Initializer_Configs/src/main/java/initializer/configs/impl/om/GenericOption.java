@@ -29,6 +29,8 @@ public class GenericOption {
 	public final static Class<?> DEFAULT_PANEL_CLASS_AT_START = JPanel.class;
 	public final static Locale DEF_locale = Locale.getDefault();
 	public final static boolean DEF_firstAccess = true;
+	/** Language of the interface chosen by the user: English until he chooses (also for the installations that were updated) */
+	public final static String DEF_language = "en";
 
 	// FILEDS
 	private String userName;
@@ -42,6 +44,7 @@ public class GenericOption {
 	private boolean automaticUpdateOn;
 	private boolean firstAccess; 
 	private Locale locale;
+	private String language = DEF_language;
 	
 	public GenericOption() {
 		userName = DEFAULT_USERNAME;
@@ -70,6 +73,14 @@ public class GenericOption {
 
 	public void setFirstAccess(boolean firstAccess) {
 		this.firstAccess = firstAccess;
+	}
+
+	public String getLanguage() {
+		return language == null || language.trim().isEmpty() ? DEF_language : language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language == null || language.trim().isEmpty() ? DEF_language : language.trim().toLowerCase();
 	}
 
 	public Locale getLocale() {
