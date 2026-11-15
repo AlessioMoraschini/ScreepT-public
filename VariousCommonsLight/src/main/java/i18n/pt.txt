@@ -456,3 +456,184 @@ Please select a workspace before to import	Selecione um espaço de trabalho ante
 Please insert a name for the image to be added (Otherwise current date will be used as filename)	Digite um nome para a imagem a adicionar (caso contrário, a data atual será usada)
 Choose a name for the new Clipboard (If existing a new unique name like "xxxx(1).ext" will be created)	Escolha um nome para a nova área de transferência (se já existir, será criado um nome único como "xxxx(1).ext")
 Choose file extension	Escolha a extensão do arquivo
+Encode current selected/all text using base 64 (click this with control key pressed to decode)	Codifica o texto selecionado/todo em base 64 (clique com Ctrl pressionado para decodificar)
+Decode current selected/all text using base 64 (release control key and click to encode)	Decodifica o texto selecionado/todo de base 64 (solte Ctrl e clique para codificar)
+Show/hide file document clipboard panel	Mostrar/ocultar o painel da área de transferência de documentos
+Copy all selected text to OS clipboards (keeping style)	Copiar todo o texto selecionado para a área de transferência do sistema (mantendo o estilo)
+View the properties of current file.	Ver as propriedades do arquivo atual.
+Show/hide file explorer panel	Mostrar/ocultar o painel do explorador de arquivos
+This will show/hide the integrated console panel	Mostra/oculta o painel do console integrado
+Click this to change your preferred workspace	Clique para mudar seu espaço de trabalho preferido
+Show/hide document map panel	Mostrar/ocultar o painel do mapa do documento
+Redo Last	Refazer a última ação
+Undo Last	Desfazer a última ação
+go to previous tab in history(if available)	Ir para a aba anterior do histórico (se disponível)
+go to next tab in history(if available)	Ir para a próxima aba do histórico (se disponível)
+Configuration Exported!	Configuração exportada!
+Configuration Resetted!	Configuração redefinida!
+Configuration Saved as new Default!	Configuração salva como novo padrão!
+Open calculator	Abrir a calculadora
+View in Command line	Ver na linha de comando
+Search for text into file(s) with various options	Pesquisar texto em arquivos com várias opções
+Reduce by one level tree depth	Reduzir um nível a profundidade da árvore
+Increase by one level tree depth	Aumentar um nível a profundidade da árvore
+Open color sampler	Abrir o amostrador de cor
+Toggle header panel visibility on/off	Mostrar/ocultar o painel de cabeçalho
+Toggle footer panel visibility on/off	Mostrar/ocultar o painel de rodapé
+Toggle sub-header panel visibility on/off	Mostrar/ocultar o painel de subcabeçalho
+Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable	Lê em voz alta o texto da área de texto (somente inglês). Use o controle superior para mudar a velocidade antes de iniciar; pressione de novo para desativar
+Search recursively files in workspace or custom folder by entering wildcard file name to search for	Pesquisa arquivos recursivamente no espaço de trabalho ou em uma pasta personalizada com um nome com curingas
+Open Escape sequences / special characters replacement panel - Selected/all text	Abrir o painel de substituição de sequências de escape / caracteres especiais - texto selecionado/todo
+Search text into current editor	Pesquisar texto no editor atual
+Go to Line number	Ir para o número da linha
+Create a new empty tab	Criar uma nova aba vazia
+Load source File	Carregar um arquivo de origem
+Replace text	Substituir texto
+Save current file	Salvar o arquivo atual
+Makes selected/all text lowercase	Converte o texto selecionado/todo em minúsculas
+Makes selected/all text uppercase or lowercase	Converte o texto selecionado/todo em maiúsculas ou minúsculas
+Makes selected/all initial characters uppercase	Converte em maiúsculas as iniciais do texto selecionado/todo
+View in System Explorer	Ver no explorador do sistema
+Format Code according to current selected language (if supported)	Formata o código conforme a linguagem selecionada (se suportado)
+If selected tabs will be o one line, else they will be always visible organized in rows	Se ativo, as abas ficam em uma linha; caso contrário, ficam sempre visíveis em linhas
+If selected the tabs of the text editor are on one line, else they are organized in rows and always visible	Se ativo, as abas do editor ficam em uma linha; caso contrário, em linhas sempre visíveis
+The tabs of the open files stay on one scrolling line.	As abas dos arquivos abertos ficam em uma única linha rolável.
+Reload current file from Disk	Recarregar o arquivo atual do disco
+This will lock/unlock sync of file tree and current file opened in editor.	Bloqueia/desbloqueia a sincronização entre a árvore de arquivos e o arquivo aberto no editor.
+Clicking this you will toggle ON/OFF current workspace view.	Clicar ativa/desativa a visualização do espaço de trabalho atual.
+Choose name and folder, save current file	Escolha nome e pasta e salve o arquivo atual
+Open templates manager	Abrir o gerenciador de modelos
+Erase the content of the current opened file displayed (without save)	Apaga o conteúdo do arquivo aberto exibido (sem salvar)
+Crypt text with given key	Criptografa o texto com a chave informada
+Decrypt text with given key	Descriptografa o texto com a chave informada
+When checked, language selector will not be auto updated according to current file type	Se marcado, o seletor de linguagem não é atualizado automaticamente conforme o tipo de arquivo atual
+change font size	Muda o tamanho da fonte
+Scroll tabs with mouse wheel	Role as abas com a roda do mouse
+Remove All loaded Tabs!!!	Fechar todas as abas carregadas!!!
+Remove spaces from selected/all text	Remover os espaços do texto selecionado/todo
+Remove specific words from selected/all text	Remover palavras específicas do texto selecionado/todo
+Set bold style to all text	Aplicar negrito a todo o texto
+Makes text uppercase after dots, or a significat line broker	Converte em maiúsculas o texto após pontos ou uma quebra de linha significativa
+Makes text lowerCase after dots, or a significat line broker	Converte em minúsculas o texto após pontos ou uma quebra de linha significativa
+Copy with syntax highlighting	Copiar com realce de sintaxe
+Open with browser	Abrir com o navegador
+Color picker/converter	Seletor/conversor de cores
+View lineFeeds (From File)	Ver as quebras de linha (do arquivo)
+View lineFeeds (From Loaded Text)	Ver as quebras de linha (do texto carregado)
+Normalize End Of Line	Normalizar o fim de linha
+Normalize to LF (\n) - Linux's default	Normalizar para LF (\n) - padrão do Linux
+Normalize to Mac CR (\r) - Old MAC's default	Normalizar para CR do Mac (\r) - padrão do Mac antigo
+Normalize to Windows CRLF (\r\n) - Windows' default	Normalizar para CRLF do Windows (\r\n) - padrão do Windows
+Normalize to LF and write to file (\n) - Linux's default	Normalizar para LF e gravar no arquivo (\n) - padrão do Linux
+Normalize to Mac CR and write to file (\r) - Old MAC's default	Normalizar para CR do Mac e gravar no arquivo (\r) - padrão do Mac antigo
+Normalize to Windows CRLF and write to file (\r\n) - Windows' default	Normalizar para CRLF do Windows e gravar no arquivo (\r\n) - padrão do Windows
+File properties	Propriedades do arquivo
+Uppercase/Lowercase text	Texto em maiúsculas/minúsculas
+Uppercase first letters	Iniciais em maiúsculas
+Uppercase after significant brokers	Maiúscula após separadores significativos
+Lowercase after significant brokers	Minúscula após separadores significativos
+Sorround with tag	Envolver com tag
+Add Custom Template	Adicionar modelo personalizado
+Add Selection to Templates	Adicionar a seleção aos modelos
+Inject template	Inserir o modelo
+Open Templates folder with OS File Explorer	Abrir a pasta de modelos no explorador de arquivos
+Reload Templates List	Recarregar a lista de modelos
+Templates Manager	Gerenciador de modelos
+Templates manager -	Gerenciador de modelos -
+File added to templates :)	Arquivo adicionado aos modelos :)
+ClipBoard Panel	Painel da área de transferência
+Choose between loaded Clipboards	Escolha entre as áreas de transferência carregadas
+Add new clipboard to this list	Adicionar nova área de transferência a esta lista
+Reload Clipboard List	Recarregar a lista de áreas de transferência
+Reload current Clipboard (be careful, unsaved changes will be lost)	Recarregar a área de transferência atual (cuidado: as alterações não salvas serão perdidas)
+Save current Clipboard	Salvar a área de transferência atual
+Open current clipboard in File System	Abrir a área de transferência atual no explorador de arquivos
+The clipboard panel uses the same colors and syntax style as the text editor.	O painel da área de transferência usa as mesmas cores e o mesmo estilo de sintaxe do editor de texto.
+Created on:	Criado em:
+Last Access:	Último acesso:
+Last Change:	Última alteração:
+File Name:	Nome do arquivo:
+File Path:	Caminho do arquivo:
+File Size:	Tamanho do arquivo:
+Hash MD5:	Hash MD5:
+Can Execute	Executável
+Can Read	Legível
+Can Write	Gravável
+Cannot Execute	Não executável
+Cannot Read	Não legível
+Cannot Write	Não gravável
+Hidden File	Arquivo oculto
+Visible File	Arquivo visível
+Not a File... cannot hash!	Não é um arquivo... não é possível calcular o hash!
+View in File System explorer	Ver no explorador de arquivos
+Open File	Abrir arquivo
+New...	Novo...
+No File	Nenhum arquivo
+Clear Text?	Limpar o texto?
+Do you want to save current file?	Deseja salvar o arquivo atual?
+File is not saved, do you want to save it?	O arquivo não está salvo, deseja salvá-lo?
+File has unsaved changes, do you want to save it before to change tail mode?	O arquivo tem alterações não salvas: deseja salvá-lo antes de mudar o modo tail?
+Do you want to be asked if any file is changed or unsaved?	Deseja ser perguntado se algum arquivo mudou ou não foi salvo?
+Cannot open current file in screept because it does not exist.	Não é possível abrir o arquivo atual no ScreepT porque ele não existe.
+Unexisting file	Arquivo inexistente
+Error opening file :(	Erro ao abrir o arquivo :(
+Error opening:	Erro ao abrir:
+Selection is not a folder!	A seleção não é uma pasta!
+Please select a valid '.png' file!	Selecione um arquivo '.png' válido!
+Please specify a valid 'zip' file!	Especifique um arquivo 'zip' válido!
+Use as Key	Usar como chave
+Add key Image to Dictionary	Adicionar a imagem-chave ao dicionário
+Load Image & Details	Carregar imagem e detalhes
+Read Image & Details	Ler imagem e detalhes
+Read Image and parse text	Ler a imagem e extrair o texto
+Read Pdf and parse text	Ler o PDF e extrair o texto
+Delete selected files	Excluir os arquivos selecionados
+Delete selected Configuration files	Excluir os arquivos de configuração selecionados
+Delete selected Key Images	Excluir as imagens-chave selecionadas
+Export selected configurations	Exportar as configurações selecionadas
+Export selected key Images	Exportar as imagens-chave selecionadas
+Load Selected configuration	Carregar a configuração selecionada
+Preview selected configuration	Pré-visualizar a configuração selecionada
+Add current configuration to this list	Adicionar a configuração atual a esta lista
+Import configuration file or directory content	Importar um arquivo de configuração ou o conteúdo de um diretório
+Import configuration from other installation	Importar a configuração de outra instalação
+Import/export crypted workspace using Creept	Importar/exportar espaço de trabalho criptografado com Creept
+Crypt and export current opened file. (using ScreepT module)	Criptografa e exporta o arquivo aberto. (com o módulo ScreepT)
+Create directory from String path	Criar um diretório a partir de um caminho de texto
+Uppercase First letter - Files&Directories	Primeira letra maiúscula - Arquivos e diretórios
+Insert classic test text "Lorem Ipsum"	Inserir o clássico texto de teste "Lorem Ipsum"
+Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.	Ativa/desativa o corretor ortográfico - (NB: com dicionários personalizados pode ser bem lento; sugiro desativá-lo quando não estiver usando.
+Turn tail -f modality ON/OFF for current tab. When active text will be automatically refreshed from file, but cannot be edited.	Ativa/desativa o modo tail -f na aba atual. Quando ativo, o texto é atualizado a partir do arquivo, mas não pode ser editado.
+This function will collapse tree expanded elements	Esta função recolhe os elementos expandidos da árvore
+This function will reselect current file into file tree(if found)	Esta função seleciona novamente o arquivo atual na árvore de arquivos (se encontrado)
+Cannot add it to the context menu:\n	Não foi possível adicioná-lo ao menu de contexto:\n
+Cannot remove it from the context menu:\n	Não foi possível removê-lo do menu de contexto:\n
+Cannot optimize ScreepT's resources usage, something has gone wrong!	Não foi possível otimizar o uso de recursos do ScreepT: algo deu errado!
+Resources usage was already optimized, but I've done my best to improve it ;)	O uso de recursos já estava otimizado, mas fiz o melhor para melhorá-lo ;)
+ScreepT's Resources usage optimized.	Uso de recursos do ScreepT otimizado.
+Cleaning skipped as requested.	Limpeza ignorada conforme solicitado.
+It seems that "Always on top" is not supported on this system :(	Parece que "Sempre no topo" não é suportado neste sistema :(
+Logs deleted - as you asked ;)	Registros excluídos, como pedido ;)
+Logs not deleted - as you asked ;)	Registros não excluídos, como pedido ;)
+Neither ScreepT.exe nor ScreepT.bat found in the installation folder.	Nem ScreepT.exe nem ScreepT.bat encontrados na pasta de instalação.
+Cannot restart as administrator: neither ScreepT.bat nor ScreepT.exe found	Não foi possível reiniciar como administrador: ScreepT.bat e ScreepT.exe não encontrados
+Hardware info tool not found in this installation, download plugin and restart in order to use it	Ferramenta de informações de hardware não encontrada nesta instalação: baixe o plugin e reinicie para usá-la
+Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?	Ops... ocorreu um erro. Continuar mesmo assim (você perderá todas as alterações não salvas)?
+Something has gone wrong, it's possible that UTF charset can be causing problems :(	Algo deu errado: é possível que o conjunto de caracteres UTF esteja causando problemas :(
+Something went wrong :( Some files may still contain stuff.	Algo deu errado :( Alguns arquivos ainda podem ter conteúdo.
+Reset CreepT	Redefinir o CreepT
+Really want to load default config(unsaved changes will be lost)?	Deseja mesmo carregar a configuração padrão (as alterações não salvas serão perdidas)?
+There are Files changed after decrypt.. do you want to return to ScreepT view?	Há arquivos alterados após a descriptografia... deseja voltar à visualização do ScreepT?
+Given file has not been found, cannot load content.	Arquivo não encontrado, não foi possível carregar o conteúdo.
+Nothing to download, current version is up to date :)	Nada para baixar: a versão atual está atualizada :)
+Do you want to reinstall it anyway from the server?	Deseja reinstalá-la mesmo assim a partir do servidor?
+It replaces the application files with a clean copy, your settings and data are kept.	Substitui os arquivos da aplicação por uma cópia limpa; suas configurações e dados são mantidos.
+Interline: extra space between lines of text.\n\nEach one has a slider and a box with the exact value.	Espaçamento entre linhas: espaço extra entre as linhas de texto.\n\nCada um tem um controle deslizante e uma caixa com o valor exato.
+Margin: space between the border of the text editor and the text.\n\n	Margem: espaço entre a borda do editor de texto e o texto.\n\n
+Long lines wrap at the edge of the editor instead of running out of the window, so no horizontal scrolling is needed.	Linhas longas quebram na borda do editor em vez de sair da janela, sem precisar rolar na horizontal.
+When selected, the text will be cropped to adapt the size of the text area	Se ativo, o texto é cortado para se adaptar ao tamanho da área de texto
+When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)	Se ativo, o texto é cortado para se adaptar à área de texto (sem quebrar palavras)
+Your original file is not touched until you save.	Seu arquivo original não é alterado até você salvar.
+The text itself is not modified.	O texto em si não é modificado.
+You can also define your own theme from the Text editor menu.	Você também pode definir seu próprio tema pelo menu Editor de texto.
+It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	É independente do estilo da interface: você pode ter uma janela escura com um editor claro, ou o contrário.

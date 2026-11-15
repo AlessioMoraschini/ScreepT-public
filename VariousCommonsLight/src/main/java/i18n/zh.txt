@@ -456,3 +456,184 @@ Please select a workspace before to import	导入前请选择工作区
 Please insert a name for the image to be added (Otherwise current date will be used as filename)	请输入要添加的图像名称（否则使用当前日期作为文件名）
 Choose a name for the new Clipboard (If existing a new unique name like "xxxx(1).ext" will be created)	为新剪贴板选择名称（如已存在，将创建类似“xxxx(1).ext”的唯一名称）
 Choose file extension	选择文件扩展名
+Encode current selected/all text using base 64 (click this with control key pressed to decode)	将所选/全部文本编码为 base64（按住 Ctrl 单击可解码）
+Decode current selected/all text using base 64 (release control key and click to encode)	从 base64 解码所选/全部文本（松开 Ctrl 并单击可编码）
+Show/hide file document clipboard panel	显示/隐藏文档剪贴板面板
+Copy all selected text to OS clipboards (keeping style)	将所选文本复制到系统剪贴板（保留样式）
+View the properties of current file.	查看当前文件的属性。
+Show/hide file explorer panel	显示/隐藏文件资源管理器面板
+This will show/hide the integrated console panel	显示/隐藏集成控制台面板
+Click this to change your preferred workspace	单击以更改首选工作区
+Show/hide document map panel	显示/隐藏文档地图面板
+Redo Last	重做上一步
+Undo Last	撤销上一步
+go to previous tab in history(if available)	转到历史记录中的上一个标签页（如有）
+go to next tab in history(if available)	转到历史记录中的下一个标签页（如有）
+Configuration Exported!	配置已导出！
+Configuration Resetted!	配置已重置！
+Configuration Saved as new Default!	配置已保存为新的默认值！
+Open calculator	打开计算器
+View in Command line	在命令行中查看
+Search for text into file(s) with various options	用多种选项在文件中搜索文本
+Reduce by one level tree depth	将目录树深度减少一级
+Increase by one level tree depth	将目录树深度增加一级
+Open color sampler	打开取色器
+Toggle header panel visibility on/off	显示/隐藏页眉面板
+Toggle footer panel visibility on/off	显示/隐藏页脚面板
+Toggle sub-header panel visibility on/off	显示/隐藏子页眉面板
+Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable	朗读文本区域中的文本（仅限英语）。播放前可用上方滑块调整语速，再次按下可停止
+Search recursively files in workspace or custom folder by entering wildcard file name to search for	通过输入带通配符的文件名，在工作区或自定义文件夹中递归搜索文件
+Open Escape sequences / special characters replacement panel - Selected/all text	打开转义序列/特殊字符替换面板 - 所选/全部文本
+Search text into current editor	在当前编辑器中搜索文本
+Go to Line number	转到行号
+Create a new empty tab	新建空白标签页
+Load source File	加载源文件
+Replace text	替换文本
+Save current file	保存当前文件
+Makes selected/all text lowercase	将所选/全部文本转为小写
+Makes selected/all text uppercase or lowercase	将所选/全部文本转为大写或小写
+Makes selected/all initial characters uppercase	将所选/全部文本的首字母大写
+View in System Explorer	在系统资源管理器中查看
+Format Code according to current selected language (if supported)	按当前所选语言格式化代码（如果支持）
+If selected tabs will be o one line, else they will be always visible organized in rows	勾选后标签页排成一行，否则分多行始终可见
+If selected the tabs of the text editor are on one line, else they are organized in rows and always visible	勾选后编辑器标签页排成一行，否则分多行始终可见
+The tabs of the open files stay on one scrolling line.	已打开文件的标签页排成一行，可滚动。
+Reload current file from Disk	从磁盘重新加载当前文件
+This will lock/unlock sync of file tree and current file opened in editor.	锁定/解锁文件树与编辑器中当前文件的同步。
+Clicking this you will toggle ON/OFF current workspace view.	单击可开启/关闭当前工作区视图。
+Choose name and folder, save current file	选择名称和文件夹，保存当前文件
+Open templates manager	打开模板管理器
+Erase the content of the current opened file displayed (without save)	清除当前显示的已打开文件内容（不保存）
+Crypt text with given key	使用给定密钥加密文本
+Decrypt text with given key	使用给定密钥解密文本
+When checked, language selector will not be auto updated according to current file type	勾选后，语言选择器不会根据当前文件类型自动更新
+change font size	更改字体大小
+Scroll tabs with mouse wheel	用鼠标滚轮滚动标签页
+Remove All loaded Tabs!!!	关闭所有已加载的标签页！！！
+Remove spaces from selected/all text	删除所选/全部文本中的空格
+Remove specific words from selected/all text	删除所选/全部文本中的指定单词
+Set bold style to all text	将全部文本设为粗体
+Makes text uppercase after dots, or a significat line broker	在句号或有意义的换行之后将文本转为大写
+Makes text lowerCase after dots, or a significat line broker	在句号或有意义的换行之后将文本转为小写
+Copy with syntax highlighting	带语法高亮复制
+Open with browser	用浏览器打开
+Color picker/converter	取色器/颜色转换器
+View lineFeeds (From File)	查看换行符（来自文件）
+View lineFeeds (From Loaded Text)	查看换行符（来自已加载文本）
+Normalize End Of Line	规范化换行符
+Normalize to LF (\n) - Linux's default	规范化为 LF (\n) - Linux 默认
+Normalize to Mac CR (\r) - Old MAC's default	规范化为 Mac CR (\r) - 旧版 Mac 默认
+Normalize to Windows CRLF (\r\n) - Windows' default	规范化为 Windows CRLF (\r\n) - Windows 默认
+Normalize to LF and write to file (\n) - Linux's default	规范化为 LF 并写入文件 (\n) - Linux 默认
+Normalize to Mac CR and write to file (\r) - Old MAC's default	规范化为 Mac CR 并写入文件 (\r) - 旧版 Mac 默认
+Normalize to Windows CRLF and write to file (\r\n) - Windows' default	规范化为 Windows CRLF 并写入文件 (\r\n) - Windows 默认
+File properties	文件属性
+Uppercase/Lowercase text	文本大/小写
+Uppercase first letters	首字母大写
+Uppercase after significant brokers	在重要分隔符之后大写
+Lowercase after significant brokers	在重要分隔符之后小写
+Sorround with tag	用标签包围
+Add Custom Template	添加自定义模板
+Add Selection to Templates	将所选内容添加到模板
+Inject template	插入模板
+Open Templates folder with OS File Explorer	在资源管理器中打开模板文件夹
+Reload Templates List	重新加载模板列表
+Templates Manager	模板管理器
+Templates manager -	模板管理器 -
+File added to templates :)	文件已添加到模板 :)
+ClipBoard Panel	剪贴板面板
+Choose between loaded Clipboards	在已加载的剪贴板之间选择
+Add new clipboard to this list	将新剪贴板添加到此列表
+Reload Clipboard List	重新加载剪贴板列表
+Reload current Clipboard (be careful, unsaved changes will be lost)	重新加载当前剪贴板（注意：未保存的更改将丢失）
+Save current Clipboard	保存当前剪贴板
+Open current clipboard in File System	在文件系统中打开当前剪贴板
+The clipboard panel uses the same colors and syntax style as the text editor.	剪贴板面板使用与文本编辑器相同的颜色和语法样式。
+Created on:	创建于：
+Last Access:	上次访问：
+Last Change:	上次修改：
+File Name:	文件名：
+File Path:	文件路径：
+File Size:	文件大小：
+Hash MD5:	MD5 哈希：
+Can Execute	可执行
+Can Read	可读
+Can Write	可写
+Cannot Execute	不可执行
+Cannot Read	不可读
+Cannot Write	不可写
+Hidden File	隐藏文件
+Visible File	可见文件
+Not a File... cannot hash!	不是文件……无法计算哈希！
+View in File System explorer	在文件资源管理器中查看
+Open File	打开文件
+New...	新建...
+No File	无文件
+Clear Text?	清除文本？
+Do you want to save current file?	要保存当前文件吗？
+File is not saved, do you want to save it?	文件尚未保存，要保存吗？
+File has unsaved changes, do you want to save it before to change tail mode?	文件有未保存的更改：切换 tail 模式前要保存吗？
+Do you want to be asked if any file is changed or unsaved?	当文件被更改或未保存时是否询问您？
+Cannot open current file in screept because it does not exist.	无法在 ScreepT 中打开当前文件，因为它不存在。
+Unexisting file	文件不存在
+Error opening file :(	打开文件出错 :(
+Error opening:	打开出错：
+Selection is not a folder!	所选内容不是文件夹！
+Please select a valid '.png' file!	请选择有效的“.png”文件！
+Please specify a valid 'zip' file!	请指定有效的“zip”文件！
+Use as Key	用作密钥
+Add key Image to Dictionary	将密钥图像添加到字典
+Load Image & Details	加载图像和详情
+Read Image & Details	读取图像和详情
+Read Image and parse text	读取图像并提取文本
+Read Pdf and parse text	读取 PDF 并提取文本
+Delete selected files	删除所选文件
+Delete selected Configuration files	删除所选配置文件
+Delete selected Key Images	删除所选密钥图像
+Export selected configurations	导出所选配置
+Export selected key Images	导出所选密钥图像
+Load Selected configuration	加载所选配置
+Preview selected configuration	预览所选配置
+Add current configuration to this list	将当前配置添加到此列表
+Import configuration file or directory content	导入配置文件或目录内容
+Import configuration from other installation	从其他安装导入配置
+Import/export crypted workspace using Creept	使用 Creept 导入/导出加密工作区
+Crypt and export current opened file. (using ScreepT module)	加密并导出当前打开的文件。（使用 ScreepT 模块）
+Create directory from String path	根据文本路径创建目录
+Uppercase First letter - Files&Directories	首字母大写 - 文件和目录
+Insert classic test text "Lorem Ipsum"	插入经典测试文本“Lorem Ipsum”
+Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.	开启/关闭拼写检查 -（注意：使用自定义词典时可能很慢，不用时建议关闭。
+Turn tail -f modality ON/OFF for current tab. When active text will be automatically refreshed from file, but cannot be edited.	开启/关闭当前标签页的 tail -f 模式。启用时文本会自动从文件刷新，但无法编辑。
+This function will collapse tree expanded elements	此功能会折叠已展开的目录树元素
+This function will reselect current file into file tree(if found)	此功能会在文件树中重新选中当前文件（如果找到）
+Cannot add it to the context menu:\n	无法添加到右键菜单：\n
+Cannot remove it from the context menu:\n	无法从右键菜单中移除：\n
+Cannot optimize ScreepT's resources usage, something has gone wrong!	无法优化 ScreepT 的资源使用：出了点问题！
+Resources usage was already optimized, but I've done my best to improve it ;)	资源使用已优化，但我仍尽力改进了一下 ;)
+ScreepT's Resources usage optimized.	ScreepT 的资源使用已优化。
+Cleaning skipped as requested.	已按要求跳过清理。
+It seems that "Always on top" is not supported on this system :(	此系统似乎不支持“置顶”:(
+Logs deleted - as you asked ;)	日志已按您的要求删除 ;)
+Logs not deleted - as you asked ;)	日志已按您的要求保留 ;)
+Neither ScreepT.exe nor ScreepT.bat found in the installation folder.	在安装文件夹中找不到 ScreepT.exe 或 ScreepT.bat。
+Cannot restart as administrator: neither ScreepT.bat nor ScreepT.exe found	无法以管理员身份重启：找不到 ScreepT.bat 或 ScreepT.exe
+Hardware info tool not found in this installation, download plugin and restart in order to use it	此安装中未找到硬件信息工具：请下载插件并重启后使用
+Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?	哎呀……发生错误。仍要继续吗（将丢失所有未保存的更改）？
+Something has gone wrong, it's possible that UTF charset can be causing problems :(	出了点问题：可能是 UTF 字符集导致的 :(
+Something went wrong :( Some files may still contain stuff.	出了点问题 :( 某些文件可能仍包含内容。
+Reset CreepT	重置 CreepT
+Really want to load default config(unsaved changes will be lost)?	确定要加载默认配置吗（未保存的更改将丢失）？
+There are Files changed after decrypt.. do you want to return to ScreepT view?	解密后有文件已更改……要返回 ScreepT 视图吗？
+Given file has not been found, cannot load content.	找不到指定文件，无法加载内容。
+Nothing to download, current version is up to date :)	无需下载：当前版本已是最新 :)
+Do you want to reinstall it anyway from the server?	要从服务器重新安装吗？
+It replaces the application files with a clean copy, your settings and data are kept.	用干净的副本替换应用程序文件，您的设置和数据将保留。
+Interline: extra space between lines of text.\n\nEach one has a slider and a box with the exact value.	行距：文本行之间的额外间距。\n\n每项都有滑块和显示精确值的输入框。
+Margin: space between the border of the text editor and the text.\n\n	边距：文本编辑器边框与文本之间的间距。\n\n
+Long lines wrap at the edge of the editor instead of running out of the window, so no horizontal scrolling is needed.	长行会在编辑器边缘自动换行，而不是超出窗口，无需横向滚动。
+When selected, the text will be cropped to adapt the size of the text area	勾选后，文本会被截断以适应文本区域大小
+When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)	勾选后，文本会被截断以适应文本区域（不会拆分单词）
+Your original file is not touched until you save.	在您保存之前，原始文件不会被修改。
+The text itself is not modified.	文本本身不会被修改。
+You can also define your own theme from the Text editor menu.	您也可以从“文本编辑器”菜单中定义自己的主题。
+It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	它独立于界面样式，因此可以是深色窗口配浅色编辑器，或相反。

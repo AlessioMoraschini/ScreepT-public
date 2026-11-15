@@ -456,3 +456,184 @@ Please select a workspace before to import	Seleziona un workspace prima di impor
 Please insert a name for the image to be added (Otherwise current date will be used as filename)	Inserisci un nome per l'immagine da aggiungere (altrimenti verrà usata la data corrente)
 Choose a name for the new Clipboard (If existing a new unique name like "xxxx(1).ext" will be created)	Scegli un nome per i nuovi appunti (se esiste già verrà creato un nome unico come "xxxx(1).ext")
 Choose file extension	Scegli l'estensione del file
+Encode current selected/all text using base 64 (click this with control key pressed to decode)	Codifica il testo selezionato/tutto in base 64 (clic con Ctrl premuto per decodificare)
+Decode current selected/all text using base 64 (release control key and click to encode)	Decodifica il testo selezionato/tutto da base 64 (rilascia Ctrl e clicca per codificare)
+Show/hide file document clipboard panel	Mostra/nascondi il pannello degli appunti dei documenti
+Copy all selected text to OS clipboards (keeping style)	Copia tutto il testo selezionato negli appunti del sistema (mantenendo lo stile)
+View the properties of current file.	Visualizza le proprietà del file corrente.
+Show/hide file explorer panel	Mostra/nascondi il pannello di esplorazione file
+This will show/hide the integrated console panel	Mostra/nasconde il pannello della console integrata
+Click this to change your preferred workspace	Clicca per cambiare il tuo workspace preferito
+Show/hide document map panel	Mostra/nascondi il pannello della mappa del documento
+Redo Last	Ripeti l'ultima azione
+Undo Last	Annulla l'ultima azione
+go to previous tab in history(if available)	Vai alla tab precedente nella cronologia (se disponibile)
+go to next tab in history(if available)	Vai alla tab successiva nella cronologia (se disponibile)
+Configuration Exported!	Configurazione esportata!
+Configuration Resetted!	Configurazione ripristinata!
+Configuration Saved as new Default!	Configurazione salvata come nuova predefinita!
+Open calculator	Apri la calcolatrice
+View in Command line	Mostra nella riga di comando
+Search for text into file(s) with various options	Cerca testo nei file con varie opzioni
+Reduce by one level tree depth	Riduci di un livello la profondità dell'albero
+Increase by one level tree depth	Aumenta di un livello la profondità dell'albero
+Open color sampler	Apri il campionatore di colore
+Toggle header panel visibility on/off	Mostra/nascondi il pannello dell'intestazione
+Toggle footer panel visibility on/off	Mostra/nascondi il pannello del piè di pagina
+Toggle sub-header panel visibility on/off	Mostra/nascondi il pannello della sotto-intestazione
+Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable	Legge ad alta voce il testo nell'area di testo (solo inglese). Usa il cursore in alto per cambiare la velocità prima di avviare; premi di nuovo per disattivare
+Search recursively files in workspace or custom folder by entering wildcard file name to search for	Cerca file in modo ricorsivo nel workspace o in una cartella personalizzata inserendo un nome con caratteri jolly
+Open Escape sequences / special characters replacement panel - Selected/all text	Apri il pannello di sostituzione di sequenze di escape / caratteri speciali - testo selezionato/tutto
+Search text into current editor	Cerca testo nell'editor corrente
+Go to Line number	Vai al numero di riga
+Create a new empty tab	Crea una nuova tab vuota
+Load source File	Carica un file sorgente
+Replace text	Sostituisci testo
+Save current file	Salva il file corrente
+Makes selected/all text lowercase	Rende minuscolo il testo selezionato/tutto
+Makes selected/all text uppercase or lowercase	Rende maiuscolo o minuscolo il testo selezionato/tutto
+Makes selected/all initial characters uppercase	Rende maiuscole le iniziali del testo selezionato/tutto
+View in System Explorer	Mostra nel file manager di sistema
+Format Code according to current selected language (if supported)	Formatta il codice secondo il linguaggio selezionato (se supportato)
+If selected tabs will be o one line, else they will be always visible organized in rows	Se attivo, le tab stanno su una sola riga; altrimenti sono sempre visibili in più righe
+If selected the tabs of the text editor are on one line, else they are organized in rows and always visible	Se attivo, le tab dell'editor stanno su una riga; altrimenti sono su più righe e sempre visibili
+The tabs of the open files stay on one scrolling line.	Le tab dei file aperti stanno su una sola riga scorrevole.
+Reload current file from Disk	Ricarica il file corrente dal disco
+This will lock/unlock sync of file tree and current file opened in editor.	Blocca/sblocca la sincronizzazione tra albero dei file e file aperto nell'editor.
+Clicking this you will toggle ON/OFF current workspace view.	Cliccando attivi/disattivi la vista del workspace corrente.
+Choose name and folder, save current file	Scegli nome e cartella e salva il file corrente
+Open templates manager	Apri il gestore dei modelli
+Erase the content of the current opened file displayed (without save)	Cancella il contenuto del file aperto mostrato (senza salvare)
+Crypt text with given key	Cripta il testo con la chiave data
+Decrypt text with given key	Decripta il testo con la chiave data
+When checked, language selector will not be auto updated according to current file type	Se attivo, il selettore del linguaggio non si aggiorna da solo in base al tipo di file corrente
+change font size	Cambia la dimensione del carattere
+Scroll tabs with mouse wheel	Scorri le tab con la rotellina del mouse
+Remove All loaded Tabs!!!	Chiudi tutte le tab caricate!!!
+Remove spaces from selected/all text	Rimuovi gli spazi dal testo selezionato/tutto
+Remove specific words from selected/all text	Rimuovi parole specifiche dal testo selezionato/tutto
+Set bold style to all text	Applica il grassetto a tutto il testo
+Makes text uppercase after dots, or a significat line broker	Rende maiuscolo il testo dopo i punti o un'interruzione di riga significativa
+Makes text lowerCase after dots, or a significat line broker	Rende minuscolo il testo dopo i punti o un'interruzione di riga significativa
+Copy with syntax highlighting	Copia con evidenziazione della sintassi
+Open with browser	Apri con il browser
+Color picker/converter	Selettore/convertitore di colori
+View lineFeeds (From File)	Mostra le fine riga (dal file)
+View lineFeeds (From Loaded Text)	Mostra le fine riga (dal testo caricato)
+Normalize End Of Line	Normalizza la fine riga
+Normalize to LF (\n) - Linux's default	Normalizza a LF (\n) - predefinito di Linux
+Normalize to Mac CR (\r) - Old MAC's default	Normalizza a CR Mac (\r) - predefinito del vecchio Mac
+Normalize to Windows CRLF (\r\n) - Windows' default	Normalizza a CRLF Windows (\r\n) - predefinito di Windows
+Normalize to LF and write to file (\n) - Linux's default	Normalizza a LF e scrivi su file (\n) - predefinito di Linux
+Normalize to Mac CR and write to file (\r) - Old MAC's default	Normalizza a CR Mac e scrivi su file (\r) - predefinito del vecchio Mac
+Normalize to Windows CRLF and write to file (\r\n) - Windows' default	Normalizza a CRLF Windows e scrivi su file (\r\n) - predefinito di Windows
+File properties	Proprietà del file
+Uppercase/Lowercase text	Testo maiuscolo/minuscolo
+Uppercase first letters	Iniziali maiuscole
+Uppercase after significant brokers	Maiuscolo dopo interruzioni significative
+Lowercase after significant brokers	Minuscolo dopo interruzioni significative
+Sorround with tag	Racchiudi con un tag
+Add Custom Template	Aggiungi modello personalizzato
+Add Selection to Templates	Aggiungi la selezione ai modelli
+Inject template	Inserisci il modello
+Open Templates folder with OS File Explorer	Apri la cartella dei modelli nel file manager
+Reload Templates List	Ricarica l'elenco dei modelli
+Templates Manager	Gestione modelli
+Templates manager -	Gestione modelli -
+File added to templates :)	File aggiunto ai modelli :)
+ClipBoard Panel	Pannello appunti
+Choose between loaded Clipboards	Scegli tra gli appunti caricati
+Add new clipboard to this list	Aggiungi nuovi appunti a questo elenco
+Reload Clipboard List	Ricarica l'elenco degli appunti
+Reload current Clipboard (be careful, unsaved changes will be lost)	Ricarica gli appunti correnti (attenzione: le modifiche non salvate andranno perse)
+Save current Clipboard	Salva gli appunti correnti
+Open current clipboard in File System	Apri gli appunti correnti nel file manager
+The clipboard panel uses the same colors and syntax style as the text editor.	Il pannello appunti usa gli stessi colori e lo stesso stile di sintassi dell'editor di testo.
+Created on:	Creato il:
+Last Access:	Ultimo accesso:
+Last Change:	Ultima modifica:
+File Name:	Nome file:
+File Path:	Percorso file:
+File Size:	Dimensione file:
+Hash MD5:	Hash MD5:
+Can Execute	Eseguibile
+Can Read	Leggibile
+Can Write	Scrivibile
+Cannot Execute	Non eseguibile
+Cannot Read	Non leggibile
+Cannot Write	Non scrivibile
+Hidden File	File nascosto
+Visible File	File visibile
+Not a File... cannot hash!	Non è un file... impossibile calcolare l'hash!
+View in File System explorer	Mostra nel file manager
+Open File	Apri file
+New...	Nuovo...
+No File	Nessun file
+Clear Text?	Cancellare il testo?
+Do you want to save current file?	Vuoi salvare il file corrente?
+File is not saved, do you want to save it?	Il file non è salvato, vuoi salvarlo?
+File has unsaved changes, do you want to save it before to change tail mode?	Il file ha modifiche non salvate: vuoi salvarlo prima di cambiare la modalità tail?
+Do you want to be asked if any file is changed or unsaved?	Vuoi che ti venga chiesto se un file è cambiato o non salvato?
+Cannot open current file in screept because it does not exist.	Impossibile aprire il file corrente in ScreepT perché non esiste.
+Unexisting file	File inesistente
+Error opening file :(	Errore nell'apertura del file :(
+Error opening:	Errore nell'apertura di:
+Selection is not a folder!	La selezione non è una cartella!
+Please select a valid '.png' file!	Seleziona un file '.png' valido!
+Please specify a valid 'zip' file!	Specifica un file 'zip' valido!
+Use as Key	Usa come chiave
+Add key Image to Dictionary	Aggiungi l'immagine chiave al dizionario
+Load Image & Details	Carica immagine e dettagli
+Read Image & Details	Leggi immagine e dettagli
+Read Image and parse text	Leggi l'immagine ed estrai il testo
+Read Pdf and parse text	Leggi il PDF ed estrai il testo
+Delete selected files	Elimina i file selezionati
+Delete selected Configuration files	Elimina i file di configurazione selezionati
+Delete selected Key Images	Elimina le immagini chiave selezionate
+Export selected configurations	Esporta le configurazioni selezionate
+Export selected key Images	Esporta le immagini chiave selezionate
+Load Selected configuration	Carica la configurazione selezionata
+Preview selected configuration	Anteprima della configurazione selezionata
+Add current configuration to this list	Aggiungi la configurazione corrente a questo elenco
+Import configuration file or directory content	Importa un file di configurazione o il contenuto di una cartella
+Import configuration from other installation	Importa la configurazione da un'altra installazione
+Import/export crypted workspace using Creept	Importa/esporta workspace cifrato con Creept
+Crypt and export current opened file. (using ScreepT module)	Cripta ed esporta il file aperto. (con il modulo ScreepT)
+Create directory from String path	Crea una cartella da un percorso di testo
+Uppercase First letter - Files&Directories	Iniziale maiuscola - File e cartelle
+Insert classic test text "Lorem Ipsum"	Inserisci il classico testo di prova "Lorem Ipsum"
+Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.	Attiva/disattiva il correttore ortografico - (NB: con dizionari personalizzati può essere molto lento, ti consiglio di disattivarlo quando non lo usi.
+Turn tail -f modality ON/OFF for current tab. When active text will be automatically refreshed from file, but cannot be edited.	Attiva/disattiva la modalità tail -f per la tab corrente. Quando è attiva il testo si aggiorna dal file ma non è modificabile.
+This function will collapse tree expanded elements	Questa funzione comprime gli elementi espansi dell'albero
+This function will reselect current file into file tree(if found)	Questa funzione riseleziona il file corrente nell'albero dei file (se trovato)
+Cannot add it to the context menu:\n	Impossibile aggiungerlo al menu contestuale:\n
+Cannot remove it from the context menu:\n	Impossibile rimuoverlo dal menu contestuale:\n
+Cannot optimize ScreepT's resources usage, something has gone wrong!	Impossibile ottimizzare l'uso delle risorse di ScreepT: qualcosa è andato storto!
+Resources usage was already optimized, but I've done my best to improve it ;)	L'uso delle risorse era già ottimizzato, ma ho fatto del mio meglio per migliorarlo ;)
+ScreepT's Resources usage optimized.	Uso delle risorse di ScreepT ottimizzato.
+Cleaning skipped as requested.	Pulizia saltata come richiesto.
+It seems that "Always on top" is not supported on this system :(	Sembra che "Sempre in primo piano" non sia supportato su questo sistema :(
+Logs deleted - as you asked ;)	Log eliminati, come richiesto ;)
+Logs not deleted - as you asked ;)	Log non eliminati, come richiesto ;)
+Neither ScreepT.exe nor ScreepT.bat found in the installation folder.	Né ScreepT.exe né ScreepT.bat trovati nella cartella di installazione.
+Cannot restart as administrator: neither ScreepT.bat nor ScreepT.exe found	Impossibile riavviare come amministratore: ScreepT.bat e ScreepT.exe non trovati
+Hardware info tool not found in this installation, download plugin and restart in order to use it	Strumento info hardware non trovato in questa installazione: scarica il plugin e riavvia per usarlo
+Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?	Ops... si è verificato un errore. Continuare comunque (perderai tutte le modifiche non salvate)?
+Something has gone wrong, it's possible that UTF charset can be causing problems :(	Qualcosa è andato storto: forse il charset UTF sta causando problemi :(
+Something went wrong :( Some files may still contain stuff.	Qualcosa è andato storto :( Alcuni file potrebbero contenere ancora dei dati.
+Reset CreepT	Ripristina CreepT
+Really want to load default config(unsaved changes will be lost)?	Vuoi davvero caricare la configurazione predefinita (le modifiche non salvate andranno perse)?
+There are Files changed after decrypt.. do you want to return to ScreepT view?	Ci sono file cambiati dopo la decifratura... vuoi tornare alla vista di ScreepT?
+Given file has not been found, cannot load content.	File non trovato, impossibile caricare il contenuto.
+Nothing to download, current version is up to date :)	Niente da scaricare: la versione corrente è aggiornata :)
+Do you want to reinstall it anyway from the server?	Vuoi reinstallarla comunque dal server?
+It replaces the application files with a clean copy, your settings and data are kept.	Sostituisce i file dell'applicazione con una copia pulita; impostazioni e dati vengono mantenuti.
+Interline: extra space between lines of text.\n\nEach one has a slider and a box with the exact value.	Interlinea: spazio extra tra le righe di testo.\n\nOgnuno ha un cursore e una casella con il valore esatto.
+Margin: space between the border of the text editor and the text.\n\n	Margine: spazio tra il bordo dell'editor di testo e il testo.\n\n
+Long lines wrap at the edge of the editor instead of running out of the window, so no horizontal scrolling is needed.	Le righe lunghe vanno a capo al bordo dell'editor invece di uscire dalla finestra, così non serve scorrere in orizzontale.
+When selected, the text will be cropped to adapt the size of the text area	Se attivo, il testo viene tagliato per adattarsi alla dimensione dell'area di testo
+When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)	Se attivo, il testo viene tagliato per adattarsi all'area di testo (senza spezzare le parole)
+Your original file is not touched until you save.	Il file originale non viene toccato finché non salvi.
+The text itself is not modified.	Il testo in sé non viene modificato.
+You can also define your own theme from the Text editor menu.	Puoi anche definire un tuo tema dal menu Editor di testo.
+It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	È indipendente dallo stile dell'interfaccia: puoi avere una finestra scura con un editor chiaro, o il contrario.

@@ -149,6 +149,14 @@ public final class I18n {
 			}
 		}
 		prefixList.sort((a, b) -> b[0].length() - a[0].length());
+		// case insensitive fallback: a text that differs only in capitals from a key of the pack
+		Map<String, String> lowerCase = new HashMap<String, String>();
+		for (Map.Entry<String, String> entry : loaded.entrySet()) {
+			if (!entry.getKey().startsWith("~")) {
+				lowerCase.put("#lc#" + entry.getKey().toLowerCase(Locale.ROOT), entry.getValue());
+			}
+		}
+		loaded.putAll(lowerCase);
 		prefixes = prefixList;
 		table = loaded;
 		installButtonsTexts();
@@ -247,7 +255,38 @@ public final class I18n {
 				}
 			}
 		}
+		if (found == null) {
+			found = translatePieces(map, core);
+		}
 		return found == null ? text : text.substring(0, a) + found + text.substring(b);
+	}
+
+	/** Messages made of several lines or sentences: every line / sentence found in the pack is translated, the rest stays */
+	private static String translatePieces(Map<String, String> map, String core) {
+		boolean multiline = core.indexOf('\n') >= 0;
+		String[] pieces = multiline ? core.split("(?<=\n)") : SENTENCES.split(core);
+		if (pieces.length < 2) {
+			return null;
+		}
+		StringBuilder out = new StringBuilder(core.length() + 16);
+		boolean changed = false;
+		int position = 0;
+		for (String piece : pieces) {
+			String trimmed = piece.trim();
+			String found = trimmed.isEmpty() ? null : lookup(map, trimmed);
+			int start = core.indexOf(piece, position);
+			out.append(core, position, start);
+			if (found != null) {
+				int inner = piece.indexOf(trimmed);
+				out.append(piece, 0, inner).append(found).append(piece.substring(inner + trimmed.length()));
+				changed = true;
+			} else {
+				out.append(piece);
+			}
+			position = start + piece.length();
+		}
+		out.append(core.substring(position));
+		return changed ? out.toString() : null;
 	}
 
 	/** HTML texts (tooltips, messages): every piece of text between the tags is translated on its own */
@@ -285,10 +324,25 @@ public final class I18n {
 		return true;
 	}
 
+	private static final java.util.regex.Pattern SHORTCUT = java.util.regex.Pattern.compile("^(\\[[^\\]]{1,40}\\]\\s*)(.+)$", java.util.regex.Pattern.DOTALL);
+	private static final java.util.regex.Pattern SENTENCES = java.util.regex.Pattern.compile("(?<=[.!?])\\s+");
+
 	private static String lookup(Map<String, String> map, String core) {
 		String found = map.get(core);
 		if (found != null) {
 			return found;
+		}
+		java.util.regex.Matcher shortcut = SHORTCUT.matcher(core);
+		if (shortcut.matches()) {
+			// "[Ctrl + S] Save current file": the key is the description, the shortcut stays as it is
+			String description = lookup(map, shortcut.group(2).trim());
+			if (description != null) {
+				return shortcut.group(1) + description;
+			}
+		}
+		String lower = map.get("#lc#" + core.toLowerCase(Locale.ROOT));
+		if (lower != null) {
+			return lower;
 		}
 		for (String suffix : new String[] {":", "...", "…", " *", " (*)"}) {
 			if (core.endsWith(suffix) && core.length() > suffix.length()) {

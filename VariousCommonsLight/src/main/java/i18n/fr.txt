@@ -456,3 +456,184 @@ Please select a workspace before to import	Sélectionnez un espace de travail av
 Please insert a name for the image to be added (Otherwise current date will be used as filename)	Saisissez un nom pour l'image à ajouter (sinon la date actuelle sera utilisée)
 Choose a name for the new Clipboard (If existing a new unique name like "xxxx(1).ext" will be created)	Choisissez un nom pour le nouveau presse-papiers (s'il existe, un nom unique comme « xxxx(1).ext » sera créé)
 Choose file extension	Choisissez l'extension du fichier
+Encode current selected/all text using base 64 (click this with control key pressed to decode)	Encode le texte sélectionné/tout en base 64 (clic avec Ctrl enfoncé pour décoder)
+Decode current selected/all text using base 64 (release control key and click to encode)	Décode le texte sélectionné/tout depuis la base 64 (relâchez Ctrl et cliquez pour encoder)
+Show/hide file document clipboard panel	Afficher/masquer le panneau du presse-papiers des documents
+Copy all selected text to OS clipboards (keeping style)	Copier tout le texte sélectionné dans le presse-papiers du système (en gardant le style)
+View the properties of current file.	Afficher les propriétés du fichier actuel.
+Show/hide file explorer panel	Afficher/masquer le panneau de l'explorateur de fichiers
+This will show/hide the integrated console panel	Affiche/masque le panneau de la console intégrée
+Click this to change your preferred workspace	Cliquez pour changer votre espace de travail préféré
+Show/hide document map panel	Afficher/masquer le panneau de la carte du document
+Redo Last	Rétablir la dernière action
+Undo Last	Annuler la dernière action
+go to previous tab in history(if available)	Aller à l'onglet précédent de l'historique (si disponible)
+go to next tab in history(if available)	Aller à l'onglet suivant de l'historique (si disponible)
+Configuration Exported!	Configuration exportée !
+Configuration Resetted!	Configuration réinitialisée !
+Configuration Saved as new Default!	Configuration enregistrée comme nouvelle valeur par défaut !
+Open calculator	Ouvrir la calculatrice
+View in Command line	Afficher dans la ligne de commande
+Search for text into file(s) with various options	Rechercher du texte dans des fichiers avec diverses options
+Reduce by one level tree depth	Réduire d'un niveau la profondeur de l'arborescence
+Increase by one level tree depth	Augmenter d'un niveau la profondeur de l'arborescence
+Open color sampler	Ouvrir le sélecteur d'échantillon de couleur
+Toggle header panel visibility on/off	Afficher/masquer le panneau d'en-tête
+Toggle footer panel visibility on/off	Afficher/masquer le panneau de pied de page
+Toggle sub-header panel visibility on/off	Afficher/masquer le panneau de sous-en-tête
+Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable	Lit à voix haute le texte de la zone de texte (anglais seulement). Utilisez le curseur du haut pour régler la vitesse avant de lancer ; appuyez à nouveau pour désactiver
+Search recursively files in workspace or custom folder by entering wildcard file name to search for	Recherche récursivement des fichiers dans l'espace de travail ou un dossier personnalisé avec un nom à jokers
+Open Escape sequences / special characters replacement panel - Selected/all text	Ouvrir le panneau de remplacement des séquences d'échappement / caractères spéciaux - texte sélectionné/tout
+Search text into current editor	Rechercher du texte dans l'éditeur actuel
+Go to Line number	Aller au numéro de ligne
+Create a new empty tab	Créer un nouvel onglet vide
+Load source File	Charger un fichier source
+Replace text	Remplacer du texte
+Save current file	Enregistrer le fichier actuel
+Makes selected/all text lowercase	Met en minuscules le texte sélectionné/tout
+Makes selected/all text uppercase or lowercase	Met en majuscules ou minuscules le texte sélectionné/tout
+Makes selected/all initial characters uppercase	Met en majuscule les initiales du texte sélectionné/tout
+View in System Explorer	Afficher dans l'explorateur du système
+Format Code according to current selected language (if supported)	Formate le code selon le langage sélectionné (si pris en charge)
+If selected tabs will be o one line, else they will be always visible organized in rows	Si coché, les onglets tiennent sur une ligne ; sinon ils sont toujours visibles en plusieurs lignes
+If selected the tabs of the text editor are on one line, else they are organized in rows and always visible	Si coché, les onglets de l'éditeur tiennent sur une ligne ; sinon ils sont en plusieurs lignes et toujours visibles
+The tabs of the open files stay on one scrolling line.	Les onglets des fichiers ouverts tiennent sur une seule ligne défilante.
+Reload current file from Disk	Recharger le fichier actuel depuis le disque
+This will lock/unlock sync of file tree and current file opened in editor.	Verrouille/déverrouille la synchronisation entre l'arborescence et le fichier ouvert dans l'éditeur.
+Clicking this you will toggle ON/OFF current workspace view.	Cliquer active/désactive la vue de l'espace de travail actuel.
+Choose name and folder, save current file	Choisissez nom et dossier et enregistrez le fichier actuel
+Open templates manager	Ouvrir le gestionnaire de modèles
+Erase the content of the current opened file displayed (without save)	Efface le contenu du fichier ouvert affiché (sans enregistrer)
+Crypt text with given key	Chiffre le texte avec la clé donnée
+Decrypt text with given key	Déchiffre le texte avec la clé donnée
+When checked, language selector will not be auto updated according to current file type	Si coché, le sélecteur de langage ne se met pas à jour selon le type de fichier actuel
+change font size	Change la taille de la police
+Scroll tabs with mouse wheel	Faites défiler les onglets avec la molette de la souris
+Remove All loaded Tabs!!!	Fermer tous les onglets chargés !!!
+Remove spaces from selected/all text	Supprimer les espaces du texte sélectionné/tout
+Remove specific words from selected/all text	Supprimer des mots précis du texte sélectionné/tout
+Set bold style to all text	Mettre tout le texte en gras
+Makes text uppercase after dots, or a significat line broker	Met en majuscule le texte après les points ou un saut de ligne significatif
+Makes text lowerCase after dots, or a significat line broker	Met en minuscules le texte après les points ou un saut de ligne significatif
+Copy with syntax highlighting	Copier avec la coloration syntaxique
+Open with browser	Ouvrir avec le navigateur
+Color picker/converter	Sélecteur/convertisseur de couleurs
+View lineFeeds (From File)	Afficher les fins de ligne (du fichier)
+View lineFeeds (From Loaded Text)	Afficher les fins de ligne (du texte chargé)
+Normalize End Of Line	Normaliser la fin de ligne
+Normalize to LF (\n) - Linux's default	Normaliser en LF (\n) - défaut de Linux
+Normalize to Mac CR (\r) - Old MAC's default	Normaliser en CR Mac (\r) - défaut de l'ancien Mac
+Normalize to Windows CRLF (\r\n) - Windows' default	Normaliser en CRLF Windows (\r\n) - défaut de Windows
+Normalize to LF and write to file (\n) - Linux's default	Normaliser en LF et écrire dans le fichier (\n) - défaut de Linux
+Normalize to Mac CR and write to file (\r) - Old MAC's default	Normaliser en CR Mac et écrire dans le fichier (\r) - défaut de l'ancien Mac
+Normalize to Windows CRLF and write to file (\r\n) - Windows' default	Normaliser en CRLF Windows et écrire dans le fichier (\r\n) - défaut de Windows
+File properties	Propriétés du fichier
+Uppercase/Lowercase text	Texte en majuscules/minuscules
+Uppercase first letters	Initiales en majuscule
+Uppercase after significant brokers	Majuscule après les séparateurs significatifs
+Lowercase after significant brokers	Minuscule après les séparateurs significatifs
+Sorround with tag	Entourer d'une balise
+Add Custom Template	Ajouter un modèle personnalisé
+Add Selection to Templates	Ajouter la sélection aux modèles
+Inject template	Insérer le modèle
+Open Templates folder with OS File Explorer	Ouvrir le dossier des modèles dans l'explorateur de fichiers
+Reload Templates List	Recharger la liste des modèles
+Templates Manager	Gestionnaire de modèles
+Templates manager -	Gestionnaire de modèles -
+File added to templates :)	Fichier ajouté aux modèles :)
+ClipBoard Panel	Panneau du presse-papiers
+Choose between loaded Clipboards	Choisissez parmi les presse-papiers chargés
+Add new clipboard to this list	Ajouter un nouveau presse-papiers à cette liste
+Reload Clipboard List	Recharger la liste des presse-papiers
+Reload current Clipboard (be careful, unsaved changes will be lost)	Recharger le presse-papiers actuel (attention : les modifications non enregistrées seront perdues)
+Save current Clipboard	Enregistrer le presse-papiers actuel
+Open current clipboard in File System	Ouvrir le presse-papiers actuel dans l'explorateur de fichiers
+The clipboard panel uses the same colors and syntax style as the text editor.	Le panneau du presse-papiers utilise les mêmes couleurs et le même style de syntaxe que l'éditeur de texte.
+Created on:	Créé le :
+Last Access:	Dernier accès :
+Last Change:	Dernière modification :
+File Name:	Nom du fichier :
+File Path:	Chemin du fichier :
+File Size:	Taille du fichier :
+Hash MD5:	Hash MD5 :
+Can Execute	Exécutable
+Can Read	Lisible
+Can Write	Modifiable
+Cannot Execute	Non exécutable
+Cannot Read	Non lisible
+Cannot Write	Non modifiable
+Hidden File	Fichier masqué
+Visible File	Fichier visible
+Not a File... cannot hash!	Ce n'est pas un fichier... impossible de calculer le hash !
+View in File System explorer	Afficher dans l'explorateur de fichiers
+Open File	Ouvrir le fichier
+New...	Nouveau...
+No File	Aucun fichier
+Clear Text?	Effacer le texte ?
+Do you want to save current file?	Voulez-vous enregistrer le fichier actuel ?
+File is not saved, do you want to save it?	Le fichier n'est pas enregistré, voulez-vous l'enregistrer ?
+File has unsaved changes, do you want to save it before to change tail mode?	Le fichier a des modifications non enregistrées : l'enregistrer avant de changer le mode tail ?
+Do you want to be asked if any file is changed or unsaved?	Voulez-vous qu'on vous demande si un fichier est modifié ou non enregistré ?
+Cannot open current file in screept because it does not exist.	Impossible d'ouvrir le fichier actuel dans ScreepT car il n'existe pas.
+Unexisting file	Fichier inexistant
+Error opening file :(	Erreur à l'ouverture du fichier :(
+Error opening:	Erreur à l'ouverture de :
+Selection is not a folder!	La sélection n'est pas un dossier !
+Please select a valid '.png' file!	Veuillez sélectionner un fichier '.png' valide !
+Please specify a valid 'zip' file!	Veuillez indiquer un fichier 'zip' valide !
+Use as Key	Utiliser comme clé
+Add key Image to Dictionary	Ajouter l'image clé au dictionnaire
+Load Image & Details	Charger l'image et les détails
+Read Image & Details	Lire l'image et les détails
+Read Image and parse text	Lire l'image et en extraire le texte
+Read Pdf and parse text	Lire le PDF et en extraire le texte
+Delete selected files	Supprimer les fichiers sélectionnés
+Delete selected Configuration files	Supprimer les fichiers de configuration sélectionnés
+Delete selected Key Images	Supprimer les images clés sélectionnées
+Export selected configurations	Exporter les configurations sélectionnées
+Export selected key Images	Exporter les images clés sélectionnées
+Load Selected configuration	Charger la configuration sélectionnée
+Preview selected configuration	Aperçu de la configuration sélectionnée
+Add current configuration to this list	Ajouter la configuration actuelle à cette liste
+Import configuration file or directory content	Importer un fichier de configuration ou le contenu d'un dossier
+Import configuration from other installation	Importer la configuration d'une autre installation
+Import/export crypted workspace using Creept	Importer/exporter l'espace de travail chiffré avec Creept
+Crypt and export current opened file. (using ScreepT module)	Chiffre et exporte le fichier ouvert. (avec le module ScreepT)
+Create directory from String path	Créer un dossier à partir d'un chemin texte
+Uppercase First letter - Files&Directories	Première lettre en majuscule - Fichiers et dossiers
+Insert classic test text "Lorem Ipsum"	Insérer le texte de test classique « Lorem Ipsum »
+Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.	Active/désactive le correcteur orthographique - (NB : avec des dictionnaires personnalisés il peut être très lent, désactivez-le quand vous ne l'utilisez pas.
+Turn tail -f modality ON/OFF for current tab. When active text will be automatically refreshed from file, but cannot be edited.	Active/désactive le mode tail -f pour l'onglet actuel. Quand il est actif, le texte est actualisé depuis le fichier mais n'est pas modifiable.
+This function will collapse tree expanded elements	Cette fonction replie les éléments développés de l'arborescence
+This function will reselect current file into file tree(if found)	Cette fonction resélectionne le fichier actuel dans l'arborescence (s'il est trouvé)
+Cannot add it to the context menu:\n	Impossible de l'ajouter au menu contextuel :\n
+Cannot remove it from the context menu:\n	Impossible de le retirer du menu contextuel :\n
+Cannot optimize ScreepT's resources usage, something has gone wrong!	Impossible d'optimiser l'utilisation des ressources de ScreepT : quelque chose s'est mal passé !
+Resources usage was already optimized, but I've done my best to improve it ;)	L'utilisation des ressources était déjà optimisée, mais j'ai fait de mon mieux pour l'améliorer ;)
+ScreepT's Resources usage optimized.	Utilisation des ressources de ScreepT optimisée.
+Cleaning skipped as requested.	Nettoyage ignoré comme demandé.
+It seems that "Always on top" is not supported on this system :(	Il semble que « Toujours au premier plan » ne soit pas pris en charge sur ce système :(
+Logs deleted - as you asked ;)	Journaux supprimés, comme demandé ;)
+Logs not deleted - as you asked ;)	Journaux non supprimés, comme demandé ;)
+Neither ScreepT.exe nor ScreepT.bat found in the installation folder.	Ni ScreepT.exe ni ScreepT.bat trouvés dans le dossier d'installation.
+Cannot restart as administrator: neither ScreepT.bat nor ScreepT.exe found	Impossible de redémarrer en administrateur : ScreepT.bat et ScreepT.exe introuvables
+Hardware info tool not found in this installation, download plugin and restart in order to use it	Outil d'infos matérielles introuvable dans cette installation : téléchargez le plugin et redémarrez pour l'utiliser
+Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?	Oups... une erreur s'est produite. Continuer quand même (vous perdrez toutes les modifications non enregistrées) ?
+Something has gone wrong, it's possible that UTF charset can be causing problems :(	Quelque chose s'est mal passé : le jeu de caractères UTF pose peut-être problème :(
+Something went wrong :( Some files may still contain stuff.	Quelque chose s'est mal passé :( Certains fichiers peuvent encore contenir des données.
+Reset CreepT	Réinitialiser CreepT
+Really want to load default config(unsaved changes will be lost)?	Voulez-vous vraiment charger la configuration par défaut (les modifications non enregistrées seront perdues) ?
+There are Files changed after decrypt.. do you want to return to ScreepT view?	Des fichiers ont changé après le déchiffrement... voulez-vous revenir à la vue ScreepT ?
+Given file has not been found, cannot load content.	Fichier introuvable, impossible de charger le contenu.
+Nothing to download, current version is up to date :)	Rien à télécharger : la version actuelle est à jour :)
+Do you want to reinstall it anyway from the server?	Voulez-vous la réinstaller quand même depuis le serveur ?
+It replaces the application files with a clean copy, your settings and data are kept.	Remplace les fichiers de l'application par une copie propre ; vos paramètres et données sont conservés.
+Interline: extra space between lines of text.\n\nEach one has a slider and a box with the exact value.	Interligne : espace supplémentaire entre les lignes de texte.\n\nChacun a un curseur et une case avec la valeur exacte.
+Margin: space between the border of the text editor and the text.\n\n	Marge : espace entre le bord de l'éditeur de texte et le texte.\n\n
+Long lines wrap at the edge of the editor instead of running out of the window, so no horizontal scrolling is needed.	Les longues lignes passent à la ligne au bord de l'éditeur au lieu de dépasser de la fenêtre, sans défilement horizontal.
+When selected, the text will be cropped to adapt the size of the text area	Si coché, le texte est coupé pour s'adapter à la taille de la zone de texte
+When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)	Si coché, le texte est coupé pour s'adapter à la zone de texte (sans couper les mots)
+Your original file is not touched until you save.	Votre fichier d'origine n'est pas touché tant que vous n'enregistrez pas.
+The text itself is not modified.	Le texte lui-même n'est pas modifié.
+You can also define your own theme from the Text editor menu.	Vous pouvez aussi définir votre propre thème depuis le menu Éditeur de texte.
+It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	Il est indépendant du style de l'interface : vous pouvez avoir une fenêtre sombre avec un éditeur clair, ou l'inverse.
