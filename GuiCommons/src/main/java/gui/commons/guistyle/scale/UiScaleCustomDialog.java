@@ -11,6 +11,7 @@
  */
 package gui.commons.guistyle.scale;
 
+import various.common.light.i18n.I18n;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.util.function.IntConsumer;
@@ -64,7 +65,7 @@ public class UiScaleCustomDialog extends JDialog {
 		JSpinner componentSpinner = addPercentSpinner(content, "Graphic elements %", guiOpt.getUiComponentScale(), guiOpt::setUiComponentScale);
 		componentSpinner.setToolTipText("Sizes of controls, rows, borders: fully applied with ScreepT Dark style");
 
-		JButton btnClose = new JButton("Close");
+		JButton btnClose = new JButton(I18n.t("common.close"));
 		btnClose.addActionListener(e -> dispose());
 		content.add(btnClose, "span 2, right, gaptop 8");
 

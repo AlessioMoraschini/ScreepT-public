@@ -11,6 +11,7 @@
  */
 package main;
 
+import various.common.light.i18n.I18n;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -508,7 +509,7 @@ public class MainStandAloneUpdater {
 		}
 
 		if(!proceed) {
-			if(dialogHelper.yesOrNo("It was not possible to verify integrity of downloaded updates, install anyway?")) {
+			if(dialogHelper.yesOrNo(I18n.t("updater.it_was_not_possible_to_verify"))) {
 				proceed = true;
 			} else {
 				proceed = false;
@@ -613,7 +614,7 @@ public class MainStandAloneUpdater {
 			UpdateProgressPanel.forceDisposeSafe(panel);
 			if(!validLogin) {
 				String why = dumper.getLastError();
-				int choice = javax.swing.JOptionPane.showOptionDialog(null, why == null ? "Login failed" : "Login failed: " + why, "Login failed",
+				int choice = javax.swing.JOptionPane.showOptionDialog(null, why == null ? "Login failed" : "Login failed: " + why, I18n.t("updater.login_failed"),
 						javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.ERROR_MESSAGE, null, new Object[] { "Retry", "Abort" }, "Retry");
 				if (choice != 0) {
 					logger.error("Uploader aborted by the user (login failed)");

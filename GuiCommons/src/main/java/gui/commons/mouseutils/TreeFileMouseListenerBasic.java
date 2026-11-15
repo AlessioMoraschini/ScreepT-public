@@ -11,6 +11,7 @@
  */
 package gui.commons.mouseutils;
 
+import various.common.light.i18n.I18n;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -89,22 +90,22 @@ public class TreeFileMouseListenerBasic {
 	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 	    
-	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    JMenuItem sysExplorerItem = new JMenuItem(I18n.t("common.view_in_system_explorer"));
 	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 	    
-	    JMenuItem deleteItem = new JMenuItem("Delete selected Configuration files");
+	    JMenuItem deleteItem = new JMenuItem(I18n.t("common.delete_selected_configuration_files"));
 	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    deleteItem.addActionListener(getDeleteActionListener());
 	    menu.add(deleteItem);
 	    
-	    JMenuItem refreshItem = new JMenuItem("Refresh tree");
+	    JMenuItem refreshItem = new JMenuItem(I18n.t("common.refresh_tree"));
 	    refreshItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 	    
-	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    JMenuItem propertiesItem = new JMenuItem(I18n.t("common.file_properties"));
 	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);

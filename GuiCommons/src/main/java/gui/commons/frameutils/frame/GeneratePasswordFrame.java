@@ -11,6 +11,7 @@
  */
 package gui.commons.frameutils.frame;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -286,7 +287,7 @@ public class GeneratePasswordFrame extends ParentFrame{
 						textField.setText(converted);
 
 					} catch (NoSuchAlgorithmException | InvalidKeySpecException e1) {
-						dialogHelper.error("An error occurred!", "An error occurred");
+						dialogHelper.error(I18n.t("common.an_error_occurred"), "An error occurred");
 						logger.error("Cannot hash user source password", e1);
 					} catch(Exception e2) {
 						logger.error("Generic exception: Cannot hash user source password", e2);

@@ -11,6 +11,7 @@
  */
 package gui.commons.tabs;
 
+import various.common.light.i18n.I18n;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -182,7 +183,7 @@ public class ViewerAssociationsDialog extends JDialog {
 			}
 			model.fireTableDataChanged();
 		});
-		JButton ok = ToolStyle.accent(ToolStyle.button("Save", null, "Apply the choices and keep them"), ToolStyle.GREEN);
+		JButton ok = ToolStyle.accent(ToolStyle.button(I18n.t("common.save"), null, "Apply the choices and keep them"), ToolStyle.GREEN);
 		ok.addActionListener(e -> {
 			if (table.isEditing()) {
 				table.getCellEditor().stopCellEditing();
@@ -191,7 +192,7 @@ public class ViewerAssociationsDialog extends JDialog {
 			onSave.accept(TabImplementors.serializeOverrides());
 			dispose();
 		});
-		JButton cancel = ToolStyle.button("Cancel", null, "Close without changing anything");
+		JButton cancel = ToolStyle.button(I18n.t("common.cancel"), null, "Close without changing anything");
 		cancel.addActionListener(e -> dispose());
 
 		// extra extensions: a labelled row of its own, so it is clear what the field is for

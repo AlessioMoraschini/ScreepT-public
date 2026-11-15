@@ -11,6 +11,7 @@
  */
 package gui.commons.imagestudio;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -77,20 +78,20 @@ public class BatchDialog extends JDialog {
 	private final ImageCanvas canvas = new ImageCanvas();
 	private final DefaultListModel<File> listModel = new DefaultListModel<File>();
 	private final JList<File> list = new JList<File>(listModel);
-	private final JLabel lblCount = ToolStyle.mutedLabel("0 images");
+	private final JLabel lblCount = ToolStyle.mutedLabel(I18n.t("batch.0_images"));
 	private final JTextField fieldTarget = new JTextField();
 	private final JTextField fieldPattern = new JTextField("{name}_{n}");
 	private final JSpinner spinStart = new JSpinner(new SpinnerNumberModel(1, 0, 999999, 1));
 	private final JComboBox<String> comboDigits = new JComboBox<String>(new String[] {"1 (1, 2, 3)", "2 (01, 02)", "3 (001, 002)", "4 (0001)", "5", "6"});
-	private final JComboBox<String> comboCollision = new JComboBox<String>(new String[] {"Add a number if the name is taken", "Overwrite the existing file", "Skip the existing file"});
+	private final JComboBox<String> comboCollision = new JComboBox<String>(new String[] {I18n.t("batch.add_a_number_if_the_name"), I18n.t("batch.overwrite_the_existing_file"), I18n.t("batch.skip_the_existing_file")});
 	private final JLabel lblNames = ToolStyle.mutedLabel(" ");
 	private final JProgressBar progress = new JProgressBar();
 	private final JLabel lblProgress = ToolStyle.mutedLabel(" ");
 	private final JButton btnRun;
-	private final JCheckBox chkOriginal = new JCheckBox("Show original");
-	private final JRadioButton rbSample = new JRadioButton("Built-in sample");
-	private final JRadioButton rbCustom = new JRadioButton("My photo...");
-	private final JRadioButton rbFirst = new JRadioButton("Image selected in the list", true);
+	private final JCheckBox chkOriginal = new JCheckBox(I18n.t("batch.show_original"));
+	private final JRadioButton rbSample = new JRadioButton(I18n.t("batch.built_in_sample"));
+	private final JRadioButton rbCustom = new JRadioButton(I18n.t("batch.my_photo"));
+	private final JRadioButton rbFirst = new JRadioButton(I18n.t("batch.image_selected_in_the_list"), true);
 
 	private BufferedImage sampleImage;
 	private BufferedImage processed;
@@ -100,11 +101,11 @@ public class BatchDialog extends JDialog {
 	private BatchWorker worker;
 
 	public BatchDialog(Window owner, File suggestedFile) {
-		super(owner, "Batch processing", ModalityType.MODELESS);
+		super(owner, I18n.t("batch.batch_processing"), ModalityType.MODELESS);
 		setLayout(new MigLayout("fill, insets 12, gapy 8", "[grow,fill][320!]", "[grow,fill][]"));
 
 		settingsPanel = new ImageSettingsPanel(settings, this::onSettingsChanged, true);
-		btnRun = ToolStyle.accent(ToolStyle.button("Process all images", null, "Applies the settings to every image of the list"), ToolStyle.GREEN);
+		btnRun = ToolStyle.accent(ToolStyle.button(I18n.t("batch.process_all_images"), null, I18n.t("batch.applies_the_settings_to_every_image")), ToolStyle.GREEN);
 
 		// the file list and the preview never overlap: the border between them can be dragged, and each side scrolls when it is too small
 		JScrollPane sourcesScroll = new JScrollPane(buildSources(), javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -156,7 +157,7 @@ public class BatchDialog extends JDialog {
 
 	private JPanel buildSources() {
 		JPanel card = ToolStyle.card(new MigLayout("insets 12, wrap 1, gapy 6", "[grow,fill]", "[][grow,fill,60::][][][][][]"));
-		card.add(ToolStyle.caption("1. Images to process (click one to preview it)"));
+		card.add(ToolStyle.caption(I18n.t("batch.1_images_to_process_click_one")));
 		list.setCellRenderer(new javax.swing.DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
 
@@ -179,11 +180,11 @@ public class BatchDialog extends JDialog {
 		card.add(listScroll, "grow, wmin 0, hmin 60");
 		JPanel buttons = new JPanel(new MigLayout("insets 0, gapx 4", "[grow,fill,sg b][grow,fill,sg b]", "[][]"));
 		buttons.setOpaque(false);
-		JButton addFiles = ToolStyle.button("Add images...", null, "Choose image files");
+		JButton addFiles = ToolStyle.button(I18n.t("batch.add_images"), null, I18n.t("batch.choose_image_files"));
 		addFiles.addActionListener(e -> addFilesDialog());
-		JButton addFolder = ToolStyle.button("Add folder...", null, "Add every image of a folder");
+		JButton addFolder = ToolStyle.button(I18n.t("batch.add_folder"), null, I18n.t("batch.add_every_image_of_a_folder"));
 		addFolder.addActionListener(e -> addFolderDialog());
-		JButton remove = ToolStyle.button("Remove", null, "Remove the selected images from the list");
+		JButton remove = ToolStyle.button("Remove", null, I18n.t("batch.remove_the_selected_images_from_the"));
 		remove.addActionListener(e -> {
 			for (File f : new ArrayList<File>(list.getSelectedValuesList())) {
 				listModel.removeElement(f);
@@ -193,7 +194,7 @@ public class BatchDialog extends JDialog {
 				loadSample();
 			}
 		});
-		JButton clear = ToolStyle.button("Clear", null, "Empty the list");
+		JButton clear = ToolStyle.button("Clear", null, I18n.t("batch.empty_the_list"));
 		clear.addActionListener(e -> {
 			listModel.clear();
 			updateCount();
@@ -209,7 +210,7 @@ public class BatchDialog extends JDialog {
 		card.add(lblCount);
 		new FileDrop(list, BorderFactory.createLineBorder(ToolStyle.BLUE, 3), files -> SwingUtilities.invokeLater(() -> addPaths(files)));
 
-		card.add(ToolStyle.caption("2. Sample used to choose the settings"), "gaptop 8");
+		card.add(ToolStyle.caption(I18n.t("batch.2_sample_used_to_choose_the")), "gaptop 8");
 		ButtonGroup group = new ButtonGroup();
 		group.add(rbSample);
 		group.add(rbCustom);
@@ -224,7 +225,7 @@ public class BatchDialog extends JDialog {
 		rbFirst.addActionListener(e -> loadSample());
 		rbCustom.addActionListener(e -> {
 			NativeFileChooser chooser = new NativeFileChooser();
-			chooser.setDialogTitle("Sample photo");
+			chooser.setDialogTitle(I18n.t("batch.sample_photo"));
 			if (chooser.showDialog(this, "Use") == NativeFileChooser.APPROVE_OPTION && ImageEdit.isImageFile(chooser.getSelectedFile())) {
 				customSample = chooser.getSelectedFile();
 			} else if (customSample == null) {
@@ -238,7 +239,7 @@ public class BatchDialog extends JDialog {
 	private JPanel buildPreview() {
 		JPanel p = new JPanel(new MigLayout("insets 0, wrap 1, gapy 6", "[grow,fill]", "[][grow,fill][]"));
 		p.setOpaque(false);
-		p.add(ToolStyle.caption("Preview on the sample (the settings on the right apply to every image)"));
+		p.add(ToolStyle.caption(I18n.t("batch.preview_on_the_sample_the_settings")));
 		p.add(canvas, "grow");
 		ToolStyle.hand(chkOriginal);
 		chkOriginal.addActionListener(e -> showCurrentPreview());
@@ -246,7 +247,7 @@ public class BatchDialog extends JDialog {
 		under.setOpaque(false);
 		under.add(chkOriginal);
 		under.add(new JLabel());
-		JButton importSettings = ToolStyle.button("Import settings...", null, PhotoshopPresets.SUPPORTED_HINT);
+		JButton importSettings = ToolStyle.button(I18n.t("batch.import_settings"), null, PhotoshopPresets.SUPPORTED_HINT);
 		importSettings.addActionListener(e -> settingsPanel.importPresetFromUser());
 		under.add(importSettings);
 		p.add(under, "growx");
@@ -255,30 +256,30 @@ public class BatchDialog extends JDialog {
 
 	private JPanel buildOutput() {
 		JPanel card = ToolStyle.card(new MigLayout("insets 12 14 12 14, gapx 10, gapy 6", "[][grow,fill][][][][grow,fill]", ""));
-		card.add(ToolStyle.caption("3. Output"), "span 6, wrap");
-		card.add(ToolStyle.mutedLabel("Target folder"));
-		fieldTarget.putClientProperty("JTextField.placeholderText", "Where the new images are written (required)");
+		card.add(ToolStyle.caption(I18n.t("batch.3_output")), "span 6, wrap");
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.target_folder")));
+		fieldTarget.putClientProperty("JTextField.placeholderText", I18n.t("gui.where_the_new_images_are_written"));
 		card.add(fieldTarget, "span 4");
-		JButton browse = ToolStyle.button("Browse...", null, "Choose the target folder");
+		JButton browse = ToolStyle.button(I18n.t("gui.browse"), null, I18n.t("batch.choose_the_target_folder"));
 		browse.addActionListener(e -> {
 			NativeFileChooser chooser = new NativeFileChooser();
 			chooser.setFileSelectionMode(NativeFileChooser.DIRECTORIES_ONLY);
-			chooser.setDialogTitle("Target folder");
+			chooser.setDialogTitle(I18n.t("batch.target_folder"));
 			if (chooser.showDialog(this, "Select") == NativeFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
 				fieldTarget.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		});
 		card.add(browse, "wrap");
 
-		card.add(ToolStyle.mutedLabel("Name pattern"));
-		fieldPattern.setToolTipText("<html>Tokens: <b>{name}</b> original name, <b>{n}</b> progressive number, <b>{date}</b> today (yyyyMMdd).<br>The extension comes from the format.</html>");
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.name_pattern")));
+		fieldPattern.setToolTipText(I18n.t("batch.tokens_name_original_name_n_progressive"));
 		card.add(fieldPattern);
-		card.add(ToolStyle.mutedLabel("Start at"));
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.start_at")));
 		card.add(spinStart, "w 80!");
 		card.add(ToolStyle.mutedLabel("Digits"));
 		card.add(comboDigits, "wrap");
 
-		card.add(ToolStyle.mutedLabel("If the name exists"));
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.if_the_name_exists")));
 		card.add(comboCollision);
 		card.add(lblNames, "span 4, wrap");
 
@@ -304,7 +305,7 @@ public class BatchDialog extends JDialog {
 		btnRun.setPreferredSize(new Dimension(190, 36));
 		btnRun.addActionListener(e -> startOrCancel());
 		run.add(btnRun);
-		JButton close = ToolStyle.button("Close", null, "Close this window (Esc)");
+		JButton close = ToolStyle.button(I18n.t("common.close"), null, I18n.t("batch.close_this_window_esc"));
 		close.addActionListener(e -> requestClose());
 		run.add(close);
 		card.add(run, "span 6, growx");
@@ -316,7 +317,7 @@ public class BatchDialog extends JDialog {
 	private void addFilesDialog() {
 		NativeFileChooser chooser = new NativeFileChooser();
 		chooser.setMultiSelectionEnabled(true);
-		chooser.setDialogTitle("Add images");
+		chooser.setDialogTitle(I18n.t("batch.add_images_2"));
 		if (chooser.showDialog(this, "Add") == NativeFileChooser.APPROVE_OPTION) {
 			addPaths(chooser.getSelectedFiles());
 		}
@@ -325,7 +326,7 @@ public class BatchDialog extends JDialog {
 	private void addFolderDialog() {
 		NativeFileChooser chooser = new NativeFileChooser();
 		chooser.setFileSelectionMode(NativeFileChooser.DIRECTORIES_ONLY);
-		chooser.setDialogTitle("Add a folder of images");
+		chooser.setDialogTitle(I18n.t("batch.add_a_folder_of_images"));
 		if (chooser.showDialog(this, "Add") == NativeFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
 			addPaths(new File[] {chooser.getSelectedFile()});
 		}
@@ -380,7 +381,7 @@ public class BatchDialog extends JDialog {
 	}
 
 	private void updateCount() {
-		lblCount.setText(listModel.size() + (listModel.size() == 1 ? " image" : " images"));
+		lblCount.setText(listModel.size() + (listModel.size() == 1 ? I18n.t("batch.image") : I18n.t("batch.images")));
 		updateNamesPreview();
 	}
 
@@ -428,7 +429,7 @@ public class BatchDialog extends JDialog {
 					renderPreview();
 				} catch (Exception e) {
 					logger.error("Cannot load the sample", e);
-					lblProgress.setText("Cannot load the sample image: " + e.getMessage());
+					lblProgress.setText(I18n.t("batch.cannot_load_the_sample_image") + e.getMessage());
 				}
 			}
 		}.execute();
@@ -455,9 +456,9 @@ public class BatchDialog extends JDialog {
 				try {
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 					ImageEdit.write(result, out, snapshot);
-					estimate = "Sample output: " + result.getWidth() + " x " + result.getHeight() + " px, about " + ConversionUtils.coolFileSize((long) out.size());
+					estimate = I18n.t("batch.sample_output") + result.getWidth() + " x " + result.getHeight() + I18n.t("batch.px_about") + ConversionUtils.coolFileSize((long) out.size());
 				} catch (IOException e) {
-					estimate = "This format cannot be written: " + snapshot.format;
+					estimate = I18n.t("batch.this_format_cannot_be_written") + snapshot.format;
 				}
 				return result;
 			}
@@ -505,10 +506,10 @@ public class BatchDialog extends JDialog {
 
 	private void updateNamesPreview() {
 		if (listModel.isEmpty()) {
-			lblNames.setText("Names will look like: " + baseName(new File("photo.jpg"), 0) + ", " + baseName(new File("photo.jpg"), 1));
+			lblNames.setText(I18n.t("batch.names_will_look_like") + baseName(new File("photo.jpg"), 0) + ", " + baseName(new File("photo.jpg"), 1));
 			return;
 		}
-		StringBuilder text = new StringBuilder("Names: ");
+		StringBuilder text = new StringBuilder(I18n.t("batch.names"));
 		for (int i = 0; i < Math.min(3, listModel.size()); i++) {
 			text.append(i > 0 ? ", " : "").append(baseName(listModel.get(i), i));
 		}
@@ -524,30 +525,30 @@ public class BatchDialog extends JDialog {
 		if (worker != null) {
 			worker.cancel(false);
 			btnRun.setEnabled(false);
-			lblProgress.setText("Stopping after the current image...");
+			lblProgress.setText(I18n.t("batch.stopping_after_the_current_image"));
 			return;
 		}
 		if (listModel.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Add at least one image to process.", "Nothing to do", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.t("batch.add_at_least_one_image_to"), I18n.t("batch.nothing_to_do"), JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		String target = fieldTarget.getText().trim();
 		if (target.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Choose the target folder first.", "Target folder", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.t("batch.choose_the_target_folder_first"), I18n.t("batch.target_folder"), JOptionPane.INFORMATION_MESSAGE);
 			fieldTarget.requestFocusInWindow();
 			return;
 		}
 		File folder = new File(target);
 		if (folder.exists() && !folder.isDirectory()) {
-			JOptionPane.showMessageDialog(this, "The target is a file, not a folder.", "Target folder", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.t("batch.the_target_is_a_file_not"), I18n.t("batch.target_folder"), JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		List<File> sources = Collections.list(listModel.elements());
 		for (File source : sources) {
 			if (source.getAbsoluteFile().getParentFile() != null && source.getAbsoluteFile().getParentFile().equals(folder.getAbsoluteFile())
 					&& comboCollision.getSelectedIndex() == 1) {
-				if (JOptionPane.showConfirmDialog(this, "The target folder is also a source folder and \"Overwrite\" is selected:\nthe originals can be replaced. Continue?",
-						"Overwrite originals?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
+				if (JOptionPane.showConfirmDialog(this, I18n.t("batch.the_target_folder_is_also_a"),
+						I18n.t("batch.overwrite_originals"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
 					return;
 				}
 				break;
@@ -556,7 +557,7 @@ public class BatchDialog extends JDialog {
 		worker = new BatchWorker(sources, folder, settings.copy(), comboCollision.getSelectedIndex());
 		progress.setValue(0);
 		progress.setMaximum(sources.size());
-		btnRun.setText("Stop");
+		btnRun.setText(I18n.t("old.stop"));
 		worker.execute();
 	}
 
@@ -582,7 +583,7 @@ public class BatchDialog extends JDialog {
 			int failed = 0;
 			for (int i = 0; i < sources.size() && !isCancelled(); i++) {
 				File source = sources.get(i);
-				publish("Processing " + (i + 1) + " / " + sources.size() + ": " + source.getName());
+				publish(I18n.t("batch.processing") + (i + 1) + " / " + sources.size() + ": " + source.getName());
 				try {
 					BufferedImage image = ImageEdit.read(source);
 					if (image == null) {
@@ -635,18 +636,18 @@ public class BatchDialog extends JDialog {
 		@Override
 		protected void done() {
 			worker = null;
-			btnRun.setText("Process all images");
+			btnRun.setText(I18n.t("batch.process_all_images"));
 			btnRun.setEnabled(true);
 			try {
 				int[] r = get();
-				String summary = r[0] + " written, " + r[1] + " skipped, " + r[2] + " failed" + (isCancelled() ? " (stopped)" : "");
+				String summary = r[0] + I18n.t("batch.written") + r[1] + I18n.t("batch.skipped") + r[2] + I18n.t("batch.failed") + (isCancelled() ? I18n.t("batch.stopped") : "");
 				lblProgress.setText(summary + "  ->  " + folder.getAbsolutePath());
-				JOptionPane.showMessageDialog(BatchDialog.this, summary + "\n\nFolder: " + folder.getAbsolutePath()
-						+ (r[2] > 0 ? "\n\nSome images failed: details are in the log." : ""), "Batch finished",
+				JOptionPane.showMessageDialog(BatchDialog.this, summary + I18n.t("batch.folder") + folder.getAbsolutePath()
+						+ (r[2] > 0 ? I18n.t("batch.some_images_failed_details_are_in") : ""), I18n.t("batch.batch_finished"),
 						r[2] > 0 ? JOptionPane.WARNING_MESSAGE : JOptionPane.INFORMATION_MESSAGE);
 			} catch (Exception e) {
 				logger.error("Batch failed", e);
-				lblProgress.setText("Batch failed: " + e.getMessage());
+				lblProgress.setText(I18n.t("batch.batch_failed") + e.getMessage());
 			}
 		}
 	}

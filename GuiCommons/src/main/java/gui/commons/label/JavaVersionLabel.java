@@ -3,6 +3,7 @@
  */
 package gui.commons.label;
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -140,7 +141,7 @@ public class JavaVersionLabel extends JLabel {
 		area.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
 		area.setCaretPosition(0);
 
-		JButton copy = new JButton("Copy all");
+		JButton copy = new JButton(I18n.t("common.copy_all"));
 		copy.setFocusable(false);
 		copy.addActionListener(e -> {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(area.getText()), null);

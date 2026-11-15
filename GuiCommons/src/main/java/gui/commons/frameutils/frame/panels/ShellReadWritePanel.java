@@ -1,5 +1,6 @@
 package gui.commons.frameutils.frame.panels;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
@@ -173,14 +174,14 @@ public class ShellReadWritePanel extends ParentPanel {
 		playStopPausePanel = new PlayStopPausePanel(playAction(), stopAction(), pauseAction());
 		playStopPausePanel.setPauseVisible(false);
 		playStopPausePanel.setOpaque(true);
-		playStopPausePanel.getPlayButton().setToolTipText("Launch selected text or current contiguous text block");
-		playStopPausePanel.getStopButton().setToolTipText("Stop execution");
+		playStopPausePanel.getPlayButton().setToolTipText(I18n.t("gui.launch_selected_text_or_current_contiguous"));
+		playStopPausePanel.getStopButton().setToolTipText(I18n.t("gui.stop_execution"));
 		add(playStopPausePanel, "cell 0 0 1 1,grow");
 
 		loadNewSavePanel = new LoadNewSavePanel(loadAction(null), newAction(), saveAction(null), saveAsAction());
-		loadNewSavePanel.getLoadButton().setToolTipText("Load file into text area");
-		loadNewSavePanel.getSaveButton().setToolTipText("Save current file");
-		loadNewSavePanel.getSaveAsButton().setToolTipText("Save current file as...");
+		loadNewSavePanel.getLoadButton().setToolTipText(I18n.t("gui.load_file_into_text_area"));
+		loadNewSavePanel.getSaveButton().setToolTipText(I18n.t("gui.save_current_file"));
+		loadNewSavePanel.getSaveAsButton().setToolTipText(I18n.t("gui.save_current_file_as"));
 		loadNewSavePanel.setNewVisible(false);
 		loadNewSavePanel.setOpaque(true);
 		add(loadNewSavePanel, "cell 1 0 1 1,grow");
@@ -188,27 +189,27 @@ public class ShellReadWritePanel extends ParentPanel {
 		clcButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_TEXT_CLEAR, true);
 		add(clcButton, "cell 2 0 1 1,grow");
 
-		checkBoxAutoscroll = ScreepTGuiFactory.getCheckBox("Autoscroll", "Enable/disable output text area auto-scroll feature", false);
+		checkBoxAutoscroll = ScreepTGuiFactory.getCheckBox(I18n.t("gui.autoscroll"), I18n.t("gui.enable_disable_output_text_area_auto"), false);
 		add(checkBoxAutoscroll, "cell 3 0 1 1,grow");
 
-		checkBoxConcatenation = ScreepTGuiFactory.getCheckBox("Concatenate Lines", "When executing, all executed lines will be concatenated with chosen mode", false);
+		checkBoxConcatenation = ScreepTGuiFactory.getCheckBox(I18n.t("gui.concatenate_lines"), I18n.t("gui.when_executing_all_executed_lines_will"), false);
 		add(checkBoxConcatenation, "cell 4 0 1 1,alignx center, aligny center");
 
-		labelConcatenationMode = ScreepTGuiFactory.getLabel("Lines concatenation mode:", null, null, null, false);
+		labelConcatenationMode = ScreepTGuiFactory.getLabel(I18n.t("gui.lines_concatenation_mode"), null, null, null, false);
 		add(labelConcatenationMode, "cell 5 0 1 1,alignx right, aligny center");
 
 		comboConcatenationMode = new JComboBox<String>(getComboModes());
 		comboConcatenationMode.setCursor(GuiUtils.CURSOR_HAND);
 		add(comboConcatenationMode, "cell 6 0 1 1, alignx right");
 
-		checkBoxInteractive = ScreepTGuiFactory.getCheckBox("Interactive", "Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output", false);
+		checkBoxInteractive = ScreepTGuiFactory.getCheckBox(I18n.t("gui.interactive"), I18n.t("gui.interactive_terminal_a_real_shell_with"), false);
 		checkBoxInteractive.setEnabled(TerminalPanel.isSupported());
 		add(checkBoxInteractive, "cell 7 0 1 1,alignx center, aligny center");
 
-		lblCurrentFile = ScreepTGuiFactory.getLabel("[No file loaded]", null, null, null, true);
+		lblCurrentFile = ScreepTGuiFactory.getLabel(I18n.t("gui.no_file_loaded"), null, null, null, true);
 		lblCurrentFile.setForeground(Color.DARK_GRAY);
 		searchTerminalButton = ScreepTGuiFactory.getButton("", null, null, IconsPathConfigurator.ICON_SEARCH, true);
-		searchTerminalButton.setToolTipText("Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)");
+		searchTerminalButton.setToolTipText(I18n.t("gui.search_in_the_terminal_history_ctrl"));
 		searchTerminalButton.addActionListener(e -> {
 			if (terminal != null) {
 				terminal.toggleSearch();
@@ -226,7 +227,7 @@ public class ShellReadWritePanel extends ParentPanel {
 
 		// TOGGLE JTEXT FIELD for interactive input after start
 		lblInteractiveInputDescription = ScreepTGuiFactory.getLabel("Live cmd: ",	null, Color.DARK_GRAY, IconsPathConfigurator.ICON_GEN_INFO, false);
-		lblInteractiveInputDescription.setToolTipText("Enter a command and launch on active process. (to launch command, press enter or click play button)");
+		lblInteractiveInputDescription.setToolTipText(I18n.t("gui.enter_a_command_and_launch_on"));
 		add(lblInteractiveInputDescription, "cell 0 1 1 1,grow");
 
 		interactiveInputField = ScreepTGuiFactory.getTextField(
@@ -675,7 +676,7 @@ public class ShellReadWritePanel extends ParentPanel {
 
 				if (selectedFile.exists()) {
 					if (dialogHelper.yesOrNo("File " + selectedFile.getName()
-							+ " exists, overwrite it?", "Overwrite?")) {
+							+ " exists, overwrite it?", I18n.t("common.overwrite"))) {
 						done = FileWorker.writeStringToFile(outString, selectedFile, true);
 					}
 				} else {
@@ -703,7 +704,7 @@ public class ShellReadWritePanel extends ParentPanel {
 
 		} catch (Exception e1) {
 			done = false;
-			dialogHelper.error("error Saving the selected file :(");
+			dialogHelper.error(I18n.t("common.error_saving_the_selected_file"));
 			logger.error("Exception happened!", e1);
 		}
 

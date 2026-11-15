@@ -11,6 +11,7 @@
  */
 package gui.commons.dialogutils;
 
+import various.common.light.i18n.I18n;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog.ModalityType;
@@ -228,7 +229,7 @@ public class GenericFileChooserDialog {
 
 			File selectedFile = fileChooser.getSelectedFile();
 			if(selectedFile==null) {
-				dialogHelper.error("Please select a file!", "File not selected");
+				dialogHelper.error(I18n.t("gui.please_select_a_file"), "File not selected");
 			}else {
 				correctFile = selectedFile;
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
@@ -277,7 +278,7 @@ public class GenericFileChooserDialog {
 			File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
 			if(selectedFile==null) {
-				dialogHelper.error("Please select a file!", "File not selected");
+				dialogHelper.error(I18n.t("gui.please_select_a_file"), "File not selected");
 			}else {
 				correctFile = selectedFile;
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getAbsolutePath());
@@ -318,7 +319,7 @@ public class GenericFileChooserDialog {
         	File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
         	if(selectedFile==null) {
-        		dialogHelper.error("Please select a file!", "File not selected");
+        		dialogHelper.error(I18n.t("gui.please_select_a_file"), "File not selected");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
@@ -358,7 +359,7 @@ public class GenericFileChooserDialog {
 			File selectedFile = fileChooser.getSelectedFile();
 //        	String givenExtension = FilenameUtils.getExtension(selectedFile.getName());
 			if(selectedFile==null) {
-				dialogHelper.error("Please select a file!", "File not selected");
+				dialogHelper.error(I18n.t("gui.please_select_a_file"), "File not selected");
 			}else {
 				correctFile = selectedFile;
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
@@ -399,7 +400,7 @@ public class GenericFileChooserDialog {
 
 			results = Arrays.asList(fileChooser.getSelectedFiles());
 			if(results == null) {
-				dialogHelper.error("Please select a file!", "File not selected");
+				dialogHelper.error(I18n.t("gui.please_select_a_file"), "File not selected");
 				results = new ArrayList<>();
 			}
 		}
@@ -548,7 +549,7 @@ public class GenericFileChooserDialog {
 
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		dialogHelper.error("Please select a directory!", "Select a directory");
+        		dialogHelper.error(I18n.t("common.please_select_a_directory"), "Select a directory");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
@@ -584,7 +585,7 @@ public class GenericFileChooserDialog {
 
 			File selectedFile = fileChooser.getSelectedFile();
 			if(selectedFile==null||!selectedFile.isDirectory()) {
-				dialogHelper.error("Select a directory!", "Select a directory");
+				dialogHelper.error(I18n.t("common.select_a_directory"), "Select a directory");
 			}else {
 				correctFile = selectedFile;
 				currentConf.getFileOpt().setLastSrcFolderPath(correctFile.getParentFile().getAbsolutePath());
@@ -621,7 +622,7 @@ public class GenericFileChooserDialog {
 
         	File selectedFile = fileChooser.getSelectedFile();
         	if(selectedFile==null||!selectedFile.isDirectory()) {
-        		dialogHelper.error("Select a directory!", "Select a directory");
+        		dialogHelper.error(I18n.t("common.select_a_directory"), "Select a directory");
         	}else {
         		correctFile = selectedFile;
         		currentConf.getFileOpt().setLastDstFolderPath(correctFile.getAbsolutePath());

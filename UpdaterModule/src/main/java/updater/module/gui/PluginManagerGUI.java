@@ -11,6 +11,7 @@
  */
 package updater.module.gui;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -135,7 +136,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		parentFrame = parent != null ? parent : new JFrame();
 		setLocationRelativeTo(parentFrame);
 
-		thisPanel.setTitle("Plugin Manager Module");
+		thisPanel.setTitle(I18n.t("plug.plugin_manager_module"));
 
 		this.refreshDependencyAction = refreshDependencyCheck;
 
@@ -147,14 +148,14 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		// header: icon, title, subtitle and the counters
 		JPanel header = new JPanel(new MigLayout("insets 18 24 8 24, fillx", "[]14[grow][]", "[]0[]"));
 		header.add(new JLabel(PluginIcons.of(PluginIcons.Kind.PUZZLE, 36, new Color(0x4FA3FF))), "cell 0 0 1 2");
-		JLabel lblTitle = new JLabel("Plugin Manager");
+		JLabel lblTitle = new JLabel(I18n.t("plug.plugin_manager"));
 		lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 22f));
 		header.add(lblTitle, "cell 1 0");
-		lblTitleHeaderMessage = new JLabel("Choose and install your preferred add-ons");
+		lblTitleHeaderMessage = new JLabel(I18n.t("plug.choose_and_install_your_preferred_add"));
 		lblTitleHeaderMessage.setForeground(UIManager.getColor("Label.disabledForeground"));
 		header.add(lblTitleHeaderMessage, "cell 1 1");
 		lblSummary = new JLabel(" ");
-		lblSummary.setToolTipText("Available plugins, installed ones and updates waiting");
+		lblSummary.setToolTipText(I18n.t("plug.available_plugins_installed_ones_and_updates"));
 		lblSummary.setForeground(UIManager.getColor("Label.disabledForeground"));
 		header.add(lblSummary, "cell 2 0 1 2,aligny center");
 		getContentPane().add(header, "cell 0 0,growx");
@@ -168,12 +169,12 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 		String previousFilter = textFieldSearch != null ? textFieldSearch.getText() : "";
 		textFieldSearch = new JTextField();
 		textFieldSearch.setText(previousFilter);
-		textFieldSearch.putClientProperty("JTextField.placeholderText", "Filter plugins by name, description or status...");
-		textFieldSearch.setToolTipText("Type to filter the list (the text is matched on name, description and status)");
+		textFieldSearch.putClientProperty("JTextField.placeholderText", I18n.t("updater.filter_plugins_by_name_description_or"));
+		textFieldSearch.setToolTipText(I18n.t("plug.type_to_filter_the_list_the"));
 		panel.add(textFieldSearch, "cell 1 0,growx,h 36!");
 
-		btnRefreshFromRemote = new JButton("Refresh from remote", PluginIcons.of(PluginIcons.Kind.REFRESH, 16));
-		btnRefreshFromRemote.setToolTipText("Download the list of the available plugins again");
+		btnRefreshFromRemote = new JButton(I18n.t("plug.refresh_from_remote"), PluginIcons.of(PluginIcons.Kind.REFRESH, 16));
+		btnRefreshFromRemote.setToolTipText(I18n.t("plug.download_the_list_of_the_available"));
 		btnRefreshFromRemote.setCursor(GuiUtils.CURSOR_HAND);
 		panel.add(btnRefreshFromRemote, "cell 2 0,h 36!");
 		getContentPane().add(panel, "cell 0 1,growx");
@@ -462,16 +463,16 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 			String muted = "#8b949e";
 			if (plugin == null || !plugin.installationCompleted) {
 				label.setIcon(PluginIcons.of(PluginIcons.Kind.INFO, 18, PluginActionStyle.MUTED));
-				label.setText("<html><b>Not installed</b><br><font color=" + muted + ">Available to install</font></html>");
-				label.setToolTipText("Not installed yet");
+				label.setText(I18n.t("plug.not_installed_font_color") + muted + I18n.t("plug.available_to_install"));
+				label.setToolTipText(I18n.t("plug.not_installed_yet"));
 			} else if (plugin.isUpToDate()) {
 				label.setIcon(PluginIcons.of(PluginIcons.Kind.CHECK, 18, PluginActionStyle.GREEN));
-				label.setText("<html><b>Installed</b><br><font color=" + muted + ">Version " + plugin.getInstalledVersion() + "</font></html>");
-				label.setToolTipText("Installed and up to date");
+				label.setText(I18n.t("plug.installed_font_color") + muted + I18n.t("plug.version") + plugin.getInstalledVersion() + "</font></html>");
+				label.setToolTipText(I18n.t("plug.installed_and_up_to_date"));
 			} else {
 				label.setIcon(PluginIcons.of(PluginIcons.Kind.UPDATE, 18, PluginActionStyle.ORANGE));
-				label.setText("<html><b>Update available</b><br><font color=" + muted + ">" + plugin.getInstalledVersion() + " \u2192 " + plugin.getLastVersion() + "</font></html>");
-				label.setToolTipText("Installed version " + plugin.getInstalledVersion() + ", latest version " + plugin.getLastVersion());
+				label.setText(I18n.t("plug.update_available_font_color") + muted + ">" + plugin.getInstalledVersion() + " \u2192 " + plugin.getLastVersion() + "</font></html>");
+				label.setToolTipText(I18n.t("plug.installed_version") + plugin.getInstalledVersion() + I18n.t("plug.latest_version") + plugin.getLastVersion());
 			}
 			label.setIconTextGap(10);
 			label.setHorizontalAlignment(JLabel.LEFT);
@@ -494,7 +495,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	        JLabel labelItem = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	        String warningHtml = plugin.getWarnings().isEmpty()
 	        		? null
-	        		: GuiUtils.encapsulateInHtml("<b>Warnings found:</b> <br><br>" + GuiUtils.getAsHtmlList(plugin.getWarnings())); // Could be value.toString()
+	        		: GuiUtils.encapsulateInHtml(I18n.t("plug.warnings_found") + GuiUtils.getAsHtmlList(plugin.getWarnings())); // Could be value.toString()
 
 //	        warningHtml = GuiUtils.encapsulateInHtml("<b>This is a test:</b> <br>" + plugin.getName()); // TEST
 	        labelItem.setOpaque(false);
@@ -570,10 +571,10 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 					toUpdateCount++;
 				}
 			}
-			String alreadyInstalledStr = "Already installed (" + current.getInstalledVersion() + ")";
-			String notUpToDateStr = "Installed - to update (Installed version: " + current.getInstalledVersion() + ")";
+			String alreadyInstalledStr = I18n.t("plug.already_installed") + current.getInstalledVersion() + ")";
+			String notUpToDateStr = I18n.t("plug.installed_to_update_installed_version") + current.getInstalledVersion() + ")";
 			alreadyInstalledStr = current.isUpToDate() ? alreadyInstalledStr : notUpToDateStr;
-			String installedText = (installed) ? alreadyInstalledStr : "Not yet Installed";
+			String installedText = (installed) ? alreadyInstalledStr : I18n.t("plug.not_yet_installed");
 
 			JButton installOrRemoveBtn = new JButton(ButtonEditor.getButtonString(current, false));
 
@@ -581,7 +582,7 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 			model.addRow(new Object[]{noExtensionName, description, installedText, installOrRemoveBtn, current.getLastVersion()});
 		}
 
-		lblSummary.setText(pluginList.size() + " plugins   \u2022   " + installedCount + " installed   \u2022   " + toUpdateCount + " to update");
+		lblSummary.setText(pluginList.size() + I18n.t("plug.plugins") + installedCount + I18n.t("plug.installed") + toUpdateCount + I18n.t("plug.to_update"));
 		table.revalidate();
 		table.repaint();
 		table.setEnabled(true);
@@ -589,8 +590,8 @@ public class PluginManagerGUI extends JFrame implements IPluginManagerGui {
 	}
 
 	private boolean askIfSureToClose() {
-		String msg = "Are you sure to close Plugin Manager? There is an installation in progress. It will be interrupted";
-		if (dialogHelper.showYNOrNullDialogWarn(msg, "Exit plugin manager?")) {
+		String msg = I18n.t("plug.are_you_sure_to_close_plugin");
+		if (dialogHelper.showYNOrNullDialogWarn(msg, I18n.t("plug.exit_plugin_manager"))) {
 			return true;
 		}else {
 			return false;

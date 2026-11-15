@@ -48,13 +48,17 @@ import javax.swing.border.TitledBorder;
 /**
  * Translation of the whole interface with plain Java, no dependencies.
  * <p>
- * The texts of the code are the English ones and they are also the keys: a language pack is a UTF-8 text file
- * {@code /i18n/<code>.txt} in the resources, one line per text: {@code english<TAB>translation} ({@code \n} is a new line,
- * lines that start with # are comments). Every Swing component that is shown (label, button, menu, tooltip, tab title,
- * titled border, window title) is translated by a global listener, so the code does not need to call anything; a text
- * missing from the pack stays in English. Switching language translates again the windows that are already open.
+ * The code asks for a text by its ID: {@code I18n.t("app.about_screept")}. The texts live in the resources, one file per
+ * language {@code /i18n/<code>.properties} (UTF-8, {@code id=text}, {@code \n} is a new line, lines that start with # are
+ * comments) and every language uses the same ids: {@code en.properties} is the English one, the default of the application,
+ * and the master for the other packs. Only English and the language in use are kept in memory (a few hundred KB).
+ * A text missing from a pack is shown in English; an unknown id is shown as it is.
  * <p>
- * RULE: every new or changed user text must also be added to every pack in {@code /i18n}.
+ * Swing components that still use a plain English text (not yet migrated to ids) are translated anyway by a global listener
+ * (label, button, menu, tooltip, tab title, titled border, window title): the English text is matched to its id through
+ * {@code en.properties}. Switching language translates again the windows that are already open.
+ * <p>
+ * RULE: every new or changed user text needs its id in EVERY pack in {@code /i18n}.
  */
 public final class I18n {
 
@@ -95,7 +99,14 @@ public final class I18n {
 	private static final String HOOKED = "i18n.hooked";
 
 	private static volatile String current = "en";
-	private static volatile Map<String, String> table = Collections.emptyMap();
+	/** English text -> text of the current language (built from the packs through the ids): used for texts that are not asked by id yet */
+    private static volatile Map<String, String> table = Collections.emptyMap();
+	/** id -> text of the current language */
+	private static volatile Map<String, String> byId = Collections.emptyMap();
+	/** id -> English text (master) */
+	private static volatile Map<String, String> english;
+	/** Text given by {@link #t} (the very same String object) -> its English text, to translate it again when the language changes. Texts of every language already used stay here (small) */
+	private static final Map<String, String> SOURCES = Collections.synchronizedMap(new java.util.IdentityHashMap<String, String>());
 	/** Texts that start with a fixed part followed by something dynamic (a file name, a number...): pack lines that start with ~ */
 	private static volatile List<String[]> prefixes = Collections.emptyList();
 	/** Pack keys with {0}, {1}... in them: "Replace every {0} spaces with a tab" matches any number. regex, translation, argument numbers */
@@ -143,7 +154,24 @@ public final class I18n {
 	/** Changes the language of the application, translating also the windows that are already open */
 	public static synchronized void setLanguage(String code) {
 		current = normalize(code);
-		Map<String, String> loaded = "en".equals(current) ? Collections.<String, String>emptyMap() : load(current);
+		Map<String, String> en = englishPack();
+		Map<String, String> pack = "en".equals(current) ? en : load(current);
+		byId = pack;
+		for (Map.Entry<String, String> entry : pack.entrySet()) {
+			String master = en.get(entry.getKey());
+			if (master != null) {
+				SOURCES.put(entry.getValue(), master);
+			}
+		}
+		Map<String, String> loaded = new HashMap<String, String>();
+		if (!"en".equals(current)) {
+			for (Map.Entry<String, String> entry : en.entrySet()) {
+				String translation = pack.get(entry.getKey());
+				if (translation != null) {
+					loaded.put(entry.getKey().startsWith("prefix.") ? "~" + entry.getValue() : entry.getValue(), translation);
+				}
+			}
+		}
 		List<String[]> prefixList = new ArrayList<String[]>();
 		for (Map.Entry<String, String> entry : loaded.entrySet()) {
 			if (entry.getKey().startsWith("~")) {
@@ -193,17 +221,27 @@ public final class I18n {
 		}
 	}
 
-	/** Text translated in the current language, or the same text if it is not in the pack */
+	/** Text of the id in the current language; English if the pack has no such id; the id itself if nobody knows it */
+	public static String t(String id) {
+		String found = byId.get(id);
+		if (found == null) {
+			found = englishPack().get(id);
+		}
+		return found != null ? found : id;
+	}
+
+	/** Text translated in the current language starting from its English text (texts not migrated to ids), or the same text if it is not in the pack */
 	public static String tr(String english) {
 		return translateText(english);
 	}
 
 	/**
-	 * Text with variable parts: the English pattern is the key of the packs, {0}, {1}... are replaced by the arguments
-	 * (for example {@code fmt("File {0} exists, overwrite it?", name)}), so the whole sentence can be translated.
+	 * Text of an id with variable parts: {0}, {1}... in the text are replaced by the arguments
+	 * (for example {@code fmt("app.file_exists_overwrite", name)}), so the whole sentence can be translated.
+	 * Also accepts an English pattern that is not an id yet.
 	 */
-	public static String fmt(String englishPattern, Object... args) {
-		String text = translateText(englishPattern);
+	public static String fmt(String idOrEnglish, Object... args) {
+		String text = englishPack().containsKey(idOrEnglish) ? t(idOrEnglish) : translateText(idOrEnglish);
 		if (text == null || args == null) {
 			return text;
 		}
@@ -213,11 +251,29 @@ public final class I18n {
 		return text;
 	}
 
+	/** English text of a text given by {@link #t} (in any language), or the text itself */
+	private static String sourceOf(String shown) {
+		if (shown == null) {
+			return null;
+		}
+		String master = SOURCES.get(shown);
+		return master != null ? master : shown;
+	}
+
 	// ------------------------------------------------------------------ packs
 
+	private static Map<String, String> englishPack() {
+		Map<String, String> en = english;
+		if (en == null) {
+			en = load("en");
+			english = en;
+		}
+		return en;
+	}
+
 	private static Map<String, String> load(String code) {
-		Map<String, String> map = new HashMap<String, String>();
-		try (InputStream in = I18n.class.getResourceAsStream("/i18n/" + code + ".txt")) {
+		Map<String, String> map = new HashMap<String, String>(1024);
+		try (InputStream in = I18n.class.getResourceAsStream("/i18n/" + code + ".properties")) {
 			if (in == null) {
 				return map;
 			}
@@ -227,11 +283,11 @@ public final class I18n {
 					if (line.isEmpty() || line.charAt(0) == '#') {
 						continue;
 					}
-					int tab = line.indexOf('\t');
-					if (tab <= 0) {
+					int equal = line.indexOf('=');
+					if (equal <= 0) {
 						continue;
 					}
-					map.put(unescape(line.substring(0, tab)), unescape(line.substring(tab + 1)));
+					map.put(line.substring(0, equal).trim(), unescape(line.substring(equal + 1)));
 				}
 			}
 		} catch (Exception e) {
@@ -240,7 +296,7 @@ public final class I18n {
 		return map;
 	}
 
-	/** In the packs "\n" is a new line and "\\" a backslash */
+	/** Escapes of the packs (as in .properties): \\n new line, \\t tab, \\r, \\\\ backslash, \\ followed by a space, \\uXXXX */
 	private static String unescape(String s) {
 		if (s.indexOf('\\') < 0) {
 			return s;
@@ -248,9 +304,24 @@ public final class I18n {
 		StringBuilder out = new StringBuilder(s.length());
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
-			if (c == '\\' && i + 1 < s.length() && (s.charAt(i + 1) == 'n' || s.charAt(i + 1) == '\\')) {
-				out.append(s.charAt(i + 1) == 'n' ? '\n' : '\\');
-				i++;
+			if (c == '\\' && i + 1 < s.length()) {
+				char n = s.charAt(++i);
+				if (n == 'n') {
+					out.append('\n');
+				} else if (n == 't') {
+					out.append('\t');
+				} else if (n == 'r') {
+					out.append('\r');
+				} else if (n == 'u' && i + 4 < s.length()) {
+					try {
+						out.append((char) Integer.parseInt(s.substring(i + 1, i + 5), 16));
+						i += 4;
+					} catch (NumberFormatException e) {
+						out.append(n);
+					}
+				} else {
+					out.append(n);
+				}
 			} else {
 				out.append(c);
 			}
@@ -597,7 +668,7 @@ public final class I18n {
 		String source = (String) c.getClientProperty(sourceKey);
 		String last = (String) c.getClientProperty(lastKey);
 		if (source == null || !Objects.equals(currentValue, last)) {
-			source = currentValue; // first time, or the code has set a new text
+			source = sourceOf(currentValue); // first time, or the code has set a new text
 		}
 		String translated = translateText(source);
 		c.putClientProperty(sourceKey, source);
@@ -616,7 +687,7 @@ public final class I18n {
 		String last = (String) c.getClientProperty(LAST_BORDER);
 		String now = titled.getTitle();
 		if (source == null || !Objects.equals(now, last)) {
-			source = now;
+			source = sourceOf(now);
 		}
 		String translated = translateText(source);
 		c.putClientProperty(SOURCE_BORDER, source);
@@ -655,7 +726,7 @@ public final class I18n {
 			}
 			String[] entry = memory.get(i);
 			if (entry[0] == null || !Objects.equals(now, entry[1])) {
-				entry[0] = now;
+				entry[0] = sourceOf(now);
 			}
 			String translated = translateText(entry[0]);
 			if (!Objects.equals(translated, now)) {
@@ -672,11 +743,11 @@ public final class I18n {
 		}
 		String[] entry = WINDOW_TITLES.get(window);
 		if (entry == null) {
-			entry = new String[] {now, now};
+			entry = new String[] {sourceOf(now), now};
 			WINDOW_TITLES.put(window, entry);
 		}
 		if (!Objects.equals(now, entry[1])) {
-			entry[0] = now;
+			entry[0] = sourceOf(now);
 		}
 		String translated = translateText(entry[0]);
 		if (!Objects.equals(translated, now)) {

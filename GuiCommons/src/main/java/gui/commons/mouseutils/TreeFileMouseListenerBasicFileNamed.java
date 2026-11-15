@@ -11,6 +11,7 @@
  */
 package gui.commons.mouseutils;
 
+import various.common.light.i18n.I18n;
 import various.common.light.gui.ShortcutKeys;
 import java.awt.Color;
 import java.awt.Component;
@@ -144,26 +145,26 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 	public JPopupMenu getPopUpMenu() {
 	    JPopupMenu menu = new JPopupMenu();
 
-	    JMenuItem sysExplorerItem = new JMenuItem("View in system explorer");
+	    JMenuItem sysExplorerItem = new JMenuItem(I18n.t("common.view_in_system_explorer"));
 	    sysExplorerItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    sysExplorerItem.addActionListener(openInSystemExplorer());
 	    menu.add(sysExplorerItem);
 
-	    itemLoadFile = new JMenuItem("Open File");
+	    itemLoadFile = new JMenuItem(I18n.t("common.open_file"));
 	    itemLoadFile.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    menu.add(itemLoadFile);
 
-	    deleteItem = new JMenuItem("Delete selected files");
+	    deleteItem = new JMenuItem(I18n.t("common.delete_selected_files"));
 	    deleteItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    deleteItem.addActionListener(getDeleteActionListener());
 	    menu.add(deleteItem);
 
-	    JMenuItem refreshItem = new JMenuItem("Refresh tree");
+	    JMenuItem refreshItem = new JMenuItem(I18n.t("common.refresh_tree"));
 	    refreshItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    refreshItem.addActionListener(refreshListener());
 	    menu.add(refreshItem);
 
-	    JMenuItem propertiesItem = new JMenuItem("File Properties");
+	    JMenuItem propertiesItem = new JMenuItem(I18n.t("common.file_properties"));
 	    propertiesItem.setFont(GeneralConfig.DEFAULT_POP_UP_MENUS_FONT);
 	    propertiesItem.addActionListener(propertiesListener());
 	    menu.add(propertiesItem);
@@ -195,7 +196,7 @@ public class TreeFileMouseListenerBasicFileNamed implements KeyListener {
 			File targetDir = node.mFile.isDirectory()? node.mFile : node.mFile.getParentFile();
 			File unexistant = new File(targetDir.getAbsolutePath() + File.separator + "new_folder");
 			unexistant = FileVarious.uniqueJavaObjFile(unexistant);
-			String newName = dialogHelper.askForStringNullable("Specify the name of the folder to create:", "Specify folder name", unexistant.getName());
+			String newName = dialogHelper.askForStringNullable(I18n.t("gui.specify_the_name_of_the_folder"), I18n.t("gui.specify_folder_name"), unexistant.getName());
 
 			if(newName == null) {
 				return;

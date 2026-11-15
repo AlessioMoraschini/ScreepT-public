@@ -1,5 +1,6 @@
 package various.common.light.gui;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -285,7 +286,7 @@ public class ScreepTGuiFactory {
 
 	public static JButton getPinToTopButton(JFrame targetFrame, String iconFilePath) {
 		JButton pinToTopButton = getButton("", null, null, iconFilePath, true);
-		pinToTopButton.setToolTipText("Enable \"always on top\" over other windows (if supported)");
+		pinToTopButton.setToolTipText(I18n.t("common.enable_always_on_top_over_other"));
 
 		pinToTopButton.addActionListener((e) -> {
 			if (!targetFrame.isAlwaysOnTop()) {
@@ -298,12 +299,12 @@ public class ScreepTGuiFactory {
 
 				targetFrame.setAlwaysOnTop(true);
 				pinToTopButton.setIcon(new ImageIcon(iconFilePath));
-				pinToTopButton.setToolTipText("Disable \"always on top\" over other windows");
+				pinToTopButton.setToolTipText(I18n.t("common.disable_always_on_top_over_other"));
 
 			} else {
 				targetFrame.setAlwaysOnTop(false);
 				pinToTopButton.setIcon(new ImageIcon(iconFilePath));
-				pinToTopButton.setToolTipText("Enable \"always on top\" over other windows (if supported)");
+				pinToTopButton.setToolTipText(I18n.t("common.enable_always_on_top_over_other"));
 			}
 		});
 

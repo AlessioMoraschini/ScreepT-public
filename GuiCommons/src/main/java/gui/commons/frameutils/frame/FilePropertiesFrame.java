@@ -11,6 +11,7 @@
  */
 package gui.commons.frameutils.frame;
 
+import various.common.light.i18n.I18n;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -100,7 +101,7 @@ public class FilePropertiesFrame extends JFrame{
 		scrollPane.setViewportView(panel);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
-		lblFileName = new JLabel("File Name:");
+		lblFileName = new JLabel(I18n.t("gui.file_name"));
 		lblFileName.setForeground(Color.LIGHT_GRAY);
 		lblFileName.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblFileName, "cell 0 0,alignx center");
@@ -109,13 +110,13 @@ public class FilePropertiesFrame extends JFrame{
 		panel.add(dynLblFileName, "cell 1 0 3 1,growx");
 		
 		viewInFileSystemButton = new JButton("");
-		viewInFileSystemButton.setToolTipText("View in File System explorer");
+		viewInFileSystemButton.setToolTipText(I18n.t("gui.view_in_file_system_explorer"));
 		viewInFileSystemButton.setCursor(GuiUtils.CURSOR_HAND);
 		viewInFileSystemButton.setIcon(new ImageIcon(IconsPathConfigurator.ICON_COPY_DIR_STRUCTURE));
 		GuiUtilsExtended.makeTransparentJButton(viewInFileSystemButton);
 		panel.add(viewInFileSystemButton, "cell 4 0,grow");
 		
-		lblSize = new JLabel("File Size:");
+		lblSize = new JLabel(I18n.t("gui.file_size"));
 		lblSize.setForeground(Color.LIGHT_GRAY);
 		lblSize.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblSize, "cell 5 0,alignx right");
@@ -128,7 +129,7 @@ public class FilePropertiesFrame extends JFrame{
 		separator.setBackground(Color.GRAY);
 		panel.add(separator, "cell 0 1 8 1,growx");
 		
-		lblPath = new JLabel("File Path:");
+		lblPath = new JLabel(I18n.t("gui.file_path"));
 		lblPath.setForeground(Color.LIGHT_GRAY);
 		lblPath.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblPath, "cell 0 2,alignx center");
@@ -136,7 +137,7 @@ public class FilePropertiesFrame extends JFrame{
 		dynLblPath = ScreepTGuiFactory.getTextField(null, Color.DARK_GRAY, null, null, true);
 		panel.add(dynLblPath, "cell 1 2 4 1,growx");
 		
-		hashMd5Lbl = new JLabel("Hash MD5:");
+		hashMd5Lbl = new JLabel(I18n.t("gui.hash_md5"));
 		hashMd5Lbl.setForeground(Color.LIGHT_GRAY);
 		hashMd5Lbl.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(hashMd5Lbl, "cell 5 2,alignx right");
@@ -150,7 +151,7 @@ public class FilePropertiesFrame extends JFrame{
 		separator_1.setBackground(Color.GRAY);
 		panel.add(separator_1, "cell 0 3 8 1,growx");
 		
-		lblLastAccess = new JLabel("Last Access:");
+		lblLastAccess = new JLabel(I18n.t("gui.last_access"));
 		lblLastAccess.setForeground(Color.LIGHT_GRAY);
 		lblLastAccess.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblLastAccess, "cell 0 4,alignx right,aligny center");
@@ -159,7 +160,7 @@ public class FilePropertiesFrame extends JFrame{
 		dynLblLastAccess.setForeground(new Color(176, 196, 222));
 		panel.add(dynLblLastAccess, "cell 1 4,alignx left,aligny center");
 		
-		lblCreatedOn = new JLabel("Created on:");
+		lblCreatedOn = new JLabel(I18n.t("gui.created_on"));
 		lblCreatedOn.setForeground(Color.LIGHT_GRAY);
 		lblCreatedOn.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblCreatedOn, "cell 2 4,alignx right,aligny center");
@@ -168,7 +169,7 @@ public class FilePropertiesFrame extends JFrame{
 		dynLblCreationDate.setForeground(new Color(176, 196, 222));
 		panel.add(dynLblCreationDate, "cell 3 4 2 1,alignx left,aligny center");
 		
-		lblLastModified = new JLabel("Last Change:");
+		lblLastModified = new JLabel(I18n.t("gui.last_change"));
 		lblLastModified.setForeground(Color.LIGHT_GRAY);
 		lblLastModified.setFont(new Font("Tahoma", Font.BOLD, 14));
 		panel.add(lblLastModified, "cell 5 4,alignx right,aligny center");
@@ -249,7 +250,7 @@ public class FilePropertiesFrame extends JFrame{
 				if (fileUnderAnalysis.isFile()) {
 					hashMd5DynLbl.setText(ChecksumHasher.getFileHashBuffered(fileUnderAnalysis.getAbsolutePath(), HashingFunction.MD5));
 				} else {
-					hashMd5DynLbl.setText("Not a File... cannot hash!");
+					hashMd5DynLbl.setText(I18n.t("gui.not_a_file_cannot_hash"));
 				}
 			}
 			
@@ -279,37 +280,37 @@ public class FilePropertiesFrame extends JFrame{
 		
 		// CANREAD
 		if (fileUnderAnalysis.canRead()) {
-			dynLblCanRead.setText("Can Read");
+			dynLblCanRead.setText(I18n.t("gui.can_read"));
 			dynLblCanRead.setForeground(defaultGreen);
 		}else {
-			dynLblCanRead.setText("Cannot Read");
+			dynLblCanRead.setText(I18n.t("gui.cannot_read"));
 			dynLblCanRead.setForeground(defaultRed);
 		}
 		
 		// CANWRITE
 		if (fileUnderAnalysis.canWrite()) {
-			dynLblCanWrite.setText("Can Write");
+			dynLblCanWrite.setText(I18n.t("gui.can_write"));
 			dynLblCanWrite.setForeground(defaultGreen);
 		}else {
-			dynLblCanWrite.setText("Cannot Write");
+			dynLblCanWrite.setText(I18n.t("gui.cannot_write"));
 			dynLblCanWrite.setForeground(defaultRed);
 		}
 		
 		// CAN EXECUTE
 		if (fileUnderAnalysis.canExecute()) {
-			dynLblCanExecute.setText("Can Execute");
+			dynLblCanExecute.setText(I18n.t("gui.can_execute"));
 			dynLblCanExecute.setForeground(defaultGreen);
 		}else {
-			dynLblCanExecute.setText("Cannot Execute");
+			dynLblCanExecute.setText(I18n.t("gui.cannot_execute"));
 			dynLblCanExecute.setForeground(defaultRed);
 		}
 		
 		// HIDDEN FILE
 		if (fileUnderAnalysis.isHidden()) {
-			dynLblIsHidden.setText("Hidden File");
+			dynLblIsHidden.setText(I18n.t("gui.hidden_file"));
 			dynLblIsHidden.setForeground(defaultBlue);
 		}else {
-			dynLblIsHidden.setText("Visible File");
+			dynLblIsHidden.setText(I18n.t("gui.visible_file"));
 			dynLblIsHidden.setForeground(defaultGreen);
 		}
 		

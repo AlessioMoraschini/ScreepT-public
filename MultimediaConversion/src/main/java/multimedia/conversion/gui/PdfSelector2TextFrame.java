@@ -11,6 +11,7 @@
  */
 package multimedia.conversion.gui;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -184,7 +185,7 @@ public class PdfSelector2TextFrame extends JFrame {
 						displayPdf(selected);
 						selectedImageSource = selected;
 					} catch (IOException e1) {
-						dialogHelper.error("An error occurred, cannot load pdf :(",	"IO Error");
+						dialogHelper.error(I18n.t("misc.an_error_occurred_cannot_load_pdf"),	"IO Error");
 						logger.error(e1);
 					} finally {
 

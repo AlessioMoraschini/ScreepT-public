@@ -11,6 +11,7 @@
  */
 package gui.commons.label;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -112,8 +113,7 @@ public class ResourceUsageLabel extends JPanel {
 		editButton.setFocusable(false);
 		editButton.setMargin(new Insets(2, 3, 2, 3));
 		editButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		editButton.setToolTipText("<html><b>Change the maximum memory of ScreepT</b><br>Choose between the minimum set in the launcher and what the PC can give now.<br>"
-				+ "It is saved in the launcher settings and applies after a restart.</html>");
+		editButton.setToolTipText(I18n.t("memory.change_the_maximum_memory_of_screept"));
 		editButton.setMaximumSize(new Dimension(24, Short.MAX_VALUE));
 		editButton.setVisible(false);
 
@@ -196,7 +196,7 @@ public class ResourceUsageLabel extends JPanel {
 	}
 
 	private static String percent(double load) {
-		return load < 0 ? "CPU n/a" : String.format("CPU %d%%", Math.round(load * 100));
+		return load < 0 ? I18n.t("memory.cpu_n_a") : String.format("CPU %d%%", Math.round(load * 100));
 	}
 
 	private double processCpuLoad() {
@@ -207,17 +207,17 @@ public class ResourceUsageLabel extends JPanel {
 	}
 
 	private String details(long usedMb, long maxMb, double processCpu) {
-		StringBuilder html = new StringBuilder("<html><b>ScreepT resources usage</b><br>");
-		html.append("CPU (this application, all cores): ").append(processCpu < 0 ? "n/a" : Math.round(processCpu * 100) + "%").append("<br>");
-		html.append("Memory (Java heap): ").append(usedMb).append(" MB used of ").append(maxMb).append(" MB available")
-			.append(" (").append(runtime.totalMemory() / MB).append(" MB reserved)<br>");
-		html.append("Processors: ").append(os.getAvailableProcessors());
+		StringBuilder html = new StringBuilder(I18n.t("memory.screept_resources_usage"));
+		html.append(I18n.t("memory.cpu_this_application_all_cores")).append(processCpu < 0 ? "n/a" : Math.round(processCpu * 100) + "%").append("<br>");
+		html.append(I18n.t("memory.memory_java_heap")).append(usedMb).append(I18n.t("memory.mb_used_of")).append(maxMb).append(I18n.t("memory.mb_available"))
+			.append(" (").append(runtime.totalMemory() / MB).append(I18n.t("memory.mb_reserved"));
+		html.append(I18n.t("memory.processors")).append(os.getAvailableProcessors());
 		if (os instanceof com.sun.management.OperatingSystemMXBean) {
 			com.sun.management.OperatingSystemMXBean sunOs = (com.sun.management.OperatingSystemMXBean) os;
 			double systemCpu = sunOs.getSystemCpuLoad();
-			html.append("<br>System CPU: ").append(systemCpu < 0 ? "n/a" : Math.round(systemCpu * 100) + "%");
-			html.append("<br>System memory: ").append((sunOs.getTotalPhysicalMemorySize() - sunOs.getFreePhysicalMemorySize()) / MB)
-				.append(" MB used of ").append(sunOs.getTotalPhysicalMemorySize() / MB).append(" MB");
+			html.append(I18n.t("memory.system_cpu")).append(systemCpu < 0 ? "n/a" : Math.round(systemCpu * 100) + "%");
+			html.append(I18n.t("memory.system_memory")).append((sunOs.getTotalPhysicalMemorySize() - sunOs.getFreePhysicalMemorySize()) / MB)
+				.append(I18n.t("memory.mb_used_of")).append(sunOs.getTotalPhysicalMemorySize() / MB).append(" MB");
 		}
 		return html.append("</html>").toString();
 	}

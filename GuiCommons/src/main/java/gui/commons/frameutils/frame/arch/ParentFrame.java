@@ -11,6 +11,7 @@
  */
 package gui.commons.frameutils.frame.arch;
 
+import various.common.light.i18n.I18n;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -175,7 +176,7 @@ public class ParentFrame extends JFrame{
 
 					if (selectedFile.exists()) {
 						if (dialogHelper.yesOrNo("File " + selectedFile.getName()
-								+ " exists, overwrite it?", "Overwrite?")) {
+								+ " exists, overwrite it?", I18n.t("common.overwrite"))) {
 							done = FileWorker.writeStringToFile(outString, selectedFile, true);
 						}
 					} else {
@@ -198,7 +199,7 @@ public class ParentFrame extends JFrame{
 				}
 
 			} catch (IOException e1) {
-				dialogHelper.error("error Saving the selected file :(");
+				dialogHelper.error(I18n.t("common.error_saving_the_selected_file"));
 				logger.error("Exception happened!", e1);
 
 			} finally {

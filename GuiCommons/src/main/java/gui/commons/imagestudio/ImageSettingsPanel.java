@@ -11,6 +11,7 @@
  */
 package gui.commons.imagestudio;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.ButtonGroup;
@@ -158,13 +159,13 @@ public class ImageSettingsPanel extends JPanel {
 		JLabel hint = ToolStyle.mutedLabel("Import: .properties, .xmp (Camera Raw, Lightroom), .lrtemplate");
 		hint.setToolTipText(PhotoshopPresets.SUPPORTED_HINT);
 		p.add(hint, "span 2, wmin 0");
-		JButton save = ToolStyle.button("Save", null, "Save the settings in the preset file (asks before overwriting)");
+		JButton save = ToolStyle.button(I18n.t("common.save"), null, "Save the settings in the preset file (asks before overwriting)");
 		save.addActionListener(e -> savePreset());
-		JButton export = ToolStyle.button("Export...", null, "Save the settings to a file, to keep or share");
+		JButton export = ToolStyle.button(I18n.t("gui.export"), null, "Save the settings to a file, to keep or share");
 		export.addActionListener(e -> exportPreset());
-		JButton imp = ToolStyle.button("Import...", null, PhotoshopPresets.SUPPORTED_HINT);
+		JButton imp = ToolStyle.button(I18n.t("gui.import"), null, PhotoshopPresets.SUPPORTED_HINT);
 		imp.addActionListener(e -> importPresetFromUser());
-		JButton reset = ToolStyle.button("Reset all", null, "Every setting goes back to its default");
+		JButton reset = ToolStyle.button(I18n.t("gui.reset_all"), null, "Every setting goes back to its default");
 		reset.addActionListener(e -> resetAll());
 		p.add(imp);
 		p.add(export);
@@ -245,7 +246,7 @@ public class ImageSettingsPanel extends JPanel {
 		if (file == null) {
 			return;
 		}
-		if (file.exists() && javax.swing.JOptionPane.showConfirmDialog(this, "Overwrite " + file.getName() + "?", "File exists", javax.swing.JOptionPane.YES_NO_OPTION) != javax.swing.JOptionPane.YES_OPTION) {
+		if (file.exists() && javax.swing.JOptionPane.showConfirmDialog(this, "Overwrite " + file.getName() + "?", I18n.t("common.file_exists"), javax.swing.JOptionPane.YES_NO_OPTION) != javax.swing.JOptionPane.YES_OPTION) {
 			return;
 		}
 		writePreset(file);
@@ -423,7 +424,7 @@ public class ImageSettingsPanel extends JPanel {
 	private JPanel buildConvert() {
 		JPanel p = new JPanel(new MigLayout("insets 0, wrap 2, gapy 6, hidemode 3", "[][grow,fill]", ""));
 		p.setOpaque(false);
-		p.add(ToolStyle.mutedLabel("Format"));
+		p.add(ToolStyle.mutedLabel(I18n.t("common.format")));
 		comboFormat = new JComboBox<String>(ImageEdit.writableFormats().toArray(new String[0]));
 		comboFormat.setSelectedItem(settings.format);
 		ToolStyle.hand(comboFormat);
@@ -438,7 +439,7 @@ public class ImageSettingsPanel extends JPanel {
 		lblQuality = ToolStyle.mutedLabel("Quality: " + settings.quality);
 		p.add(lblQuality);
 		sliderQuality = new JSlider(1, 100, settings.quality);
-		sliderQuality.setToolTipText("JPEG quality: lower is smaller and worse");
+		sliderQuality.setToolTipText(I18n.t("gui.jpeg_quality_lower_is_smaller_and"));
 		sliderQuality.addChangeListener(e -> {
 			lblQuality.setText("Quality: " + sliderQuality.getValue());
 			if (!updating) {
@@ -448,17 +449,17 @@ public class ImageSettingsPanel extends JPanel {
 		});
 		p.add(sliderQuality);
 
-		chkProgressive = new JCheckBox("Progressive JPEG");
-		chkProgressive.setToolTipText("Loads blurry first, then sharp: better for the web");
+		chkProgressive = new JCheckBox(I18n.t("gui.progressive_jpeg"));
+		chkProgressive.setToolTipText(I18n.t("gui.loads_blurry_first_then_sharp_better"));
 		ToolStyle.hand(chkProgressive);
 		chkProgressive.addActionListener(e -> {
 			settings.progressive = chkProgressive.isSelected();
 			changed();
 		});
-		JLabel bgLabel = ToolStyle.mutedLabel("Transparency");
+		JLabel bgLabel = ToolStyle.mutedLabel(I18n.t("gui.transparency"));
 		btnBackground = new JButton("  ");
 		btnBackground.setBackground(settings.background);
-		btnBackground.setToolTipText("Color used instead of transparency in JPEG and BMP");
+		btnBackground.setToolTipText(I18n.t("gui.color_used_instead_of_transparency_in"));
 		btnBackground.setPreferredSize(new Dimension(60, 22));
 		btnBackground.addActionListener(e -> {
 			Color picked = JColorChooser.showDialog(this, "Color for transparent areas", settings.background);
@@ -487,7 +488,7 @@ public class ImageSettingsPanel extends JPanel {
 	private JPanel buildResize() {
 		JPanel p = new JPanel(new MigLayout("insets 0, wrap 2, gapy 6, hidemode 3", "[][grow,fill]", ""));
 		p.setOpaque(false);
-		p.add(ToolStyle.mutedLabel("Mode"));
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.mode")));
 		comboResize = new JComboBox<ImageSettings.ResizeMode>(ImageSettings.ResizeMode.values());
 		ToolStyle.hand(comboResize);
 		comboResize.addActionListener(e -> {
@@ -498,7 +499,7 @@ public class ImageSettingsPanel extends JPanel {
 		});
 		p.add(comboResize);
 
-		p.add(ToolStyle.mutedLabel("Quick size"));
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.quick_size")));
 		final String[] quickNames = {"Pick a common size...", "Full HD  1920 x 1080", "HD  1280 x 720", "4K  3840 x 2160", "Square  1080 x 1080",
 				"Story  1080 x 1920", "Facebook cover  820 x 312", "Icon  512 x 512", "Icon  256 x 256", "Thumbnail  320 x 240"};
 		final int[][] quickSizes = {null, {1920, 1080}, {1280, 720}, {3840, 2160}, {1080, 1080}, {1080, 1920}, {820, 312}, {512, 512}, {256, 256}, {320, 240}};
@@ -521,19 +522,19 @@ public class ImageSettingsPanel extends JPanel {
 		});
 		p.add(quick, "wmin 0");
 
-		p.add(ToolStyle.mutedLabel("Percent"));
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.percent")));
 
-		p.add(ToolStyle.mutedLabel("Percent"));
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.percent")));
 		spinPercent = spinner(settings.percent, 1, 800, v -> settings.percent = v);
 		p.add(spinPercent);
-		p.add(ToolStyle.mutedLabel("Width"));
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.width")));
 		spinWidth = spinner(settings.width, 1, 30000, v -> settings.width = v);
 		p.add(spinWidth);
-		p.add(ToolStyle.mutedLabel("Height"));
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.height")));
 		spinHeight = spinner(settings.height, 1, 30000, v -> settings.height = v);
 		p.add(spinHeight);
 
-		JLabel resamplingLabel = ToolStyle.mutedLabel("Quality");
+		JLabel resamplingLabel = ToolStyle.mutedLabel(I18n.t("gui.quality"));
 		comboResampling = new JComboBox<ImageSettings.Resampling>(ImageSettings.Resampling.values());
 		ToolStyle.hand(comboResampling);
 		comboResampling.addActionListener(e -> {
@@ -620,7 +621,7 @@ public class ImageSettingsPanel extends JPanel {
 		nerdOnly.add(nerd);
 		JPanel buttons = new JPanel(new MigLayout("insets 0, gapx 4", "[grow,fill][grow,fill]", ""));
 		buttons.setOpaque(false);
-		JButton auto = ToolStyle.button("Auto enhance", null, "Stretches the tones and adds a little vibrance: a good start for most photos");
+		JButton auto = ToolStyle.button(I18n.t("gui.auto_enhance"), null, "Stretches the tones and adds a little vibrance: a good start for most photos");
 		auto.addActionListener(e -> {
 			if (!settings.filters.contains(ImageEdit.Filter.AUTO_CONTRAST)) {
 				settings.filters.add(ImageEdit.Filter.AUTO_CONTRAST);
@@ -629,7 +630,7 @@ public class ImageSettingsPanel extends JPanel {
 			syncFromSettings();
 			changed();
 		});
-		JButton reset = ToolStyle.button("Reset", null, "Brings every slider back to zero");
+		JButton reset = ToolStyle.button(I18n.t("gui.reset"), null, "Brings every slider back to zero");
 		reset.addActionListener(e -> {
 			settings.resetColor();
 			syncFromSettings();
@@ -673,7 +674,7 @@ public class ImageSettingsPanel extends JPanel {
 	private JPanel buildCrop() {
 		JPanel p = new JPanel(new MigLayout("insets 0, wrap 3, gapy 2, hidemode 3", "[96!][grow,fill][30!,right]", ""));
 		p.setOpaque(false);
-		p.add(ToolStyle.mutedLabel("Ratio"), "wmin 0");
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.ratio")), "wmin 0");
 		final JComboBox<ImageSettings.CropRatio> ratio = new JComboBox<ImageSettings.CropRatio>(ImageSettings.CropRatio.values());
 		ToolStyle.hand(ratio);
 		ratio.setToolTipText("Biggest centered area with this shape, inside the margins below");
@@ -691,7 +692,7 @@ public class ImageSettingsPanel extends JPanel {
 		bind(p, "Bottom (%)", 0, 45, 0, () -> settings.cropBottom, v -> settings.cropBottom = v);
 		lblCropResult = ToolStyle.mutedLabel(" ");
 		p.add(lblCropResult, "span 3, wmin 0");
-		JButton reset = ToolStyle.button("Reset crop", null, "Keep the whole image");
+		JButton reset = ToolStyle.button(I18n.t("gui.reset_crop"), null, "Keep the whole image");
 		reset.addActionListener(e -> {
 			settings.resetCrop();
 			syncFromSettings();
@@ -729,7 +730,7 @@ public class ImageSettingsPanel extends JPanel {
 		bind(p, "Blur (px)", 0, 20, 0, () -> settings.blur, v -> settings.blur = v);
 		bind(p, "Vignette", 0, 100, 0, () -> settings.vignette, v -> settings.vignette = v);
 		bind(p, "Film grain", 0, 100, 0, () -> settings.grain, v -> settings.grain = v);
-		JButton reset = ToolStyle.button("Reset", null, "Turns every effect off");
+		JButton reset = ToolStyle.button(I18n.t("gui.reset"), null, "Turns every effect off");
 		reset.addActionListener(e -> {
 			settings.resetEffects();
 			syncFromSettings();
@@ -743,11 +744,11 @@ public class ImageSettingsPanel extends JPanel {
 		JPanel p = new JPanel(new MigLayout("insets 0, wrap 3, gapy 3, hidemode 3", "[96!][grow,fill][30!,right]", ""));
 		p.setOpaque(false);
 		bind(p, "Border (px)", 0, 200, 0, () -> settings.borderWidth, v -> settings.borderWidth = v);
-		p.add(ToolStyle.mutedLabel("Border color"), "wmin 0");
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.border_color")), "wmin 0");
 		p.add(colorButton("Border color", () -> settings.borderColor, c -> settings.borderColor = c), "span 2");
 		bind(p, "Corners (%)", 0, 50, 0, () -> settings.corners, v -> settings.corners = v);
 		p.add(new javax.swing.JSeparator(), "span 3, growx, gaptop 4, gapbottom 2");
-		p.add(ToolStyle.mutedLabel("Text"), "wmin 0");
+		p.add(ToolStyle.mutedLabel(I18n.t("common.text")), "wmin 0");
 		final javax.swing.JTextField text = new javax.swing.JTextField();
 		text.setToolTipText("Text written on the image, like a copyright line (empty: nothing)");
 		text.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
@@ -780,7 +781,7 @@ public class ImageSettingsPanel extends JPanel {
 			}
 		});
 		p.add(text, "span 2, growx, wmin 0");
-		p.add(ToolStyle.mutedLabel("Position"), "wmin 0");
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.position")), "wmin 0");
 		final JComboBox<ImageSettings.TextPosition> position = new JComboBox<ImageSettings.TextPosition>(ImageSettings.TextPosition.values());
 		ToolStyle.hand(position);
 		position.addActionListener(e -> {
@@ -793,7 +794,7 @@ public class ImageSettingsPanel extends JPanel {
 		p.add(position, "span 2, growx, wmin 0");
 		bind(p, "Text size (%)", 2, 30, 5, () -> settings.watermarkSize, v -> settings.watermarkSize = v);
 		bind(p, "Opacity (%)", 5, 100, 70, () -> settings.watermarkOpacity, v -> settings.watermarkOpacity = v);
-		p.add(ToolStyle.mutedLabel("Text color"), "wmin 0");
+		p.add(ToolStyle.mutedLabel(I18n.t("gui.text_color")), "wmin 0");
 		p.add(colorButton("Text color", () -> settings.watermarkColor, c -> settings.watermarkColor = c), "span 2");
 		return p;
 	}
@@ -811,7 +812,7 @@ public class ImageSettingsPanel extends JPanel {
 				changed();
 			}
 		});
-		slider.setToolTipText("Double click to reset");
+		slider.setToolTipText(I18n.t("gui.double_click_to_reset"));
 		slider.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -865,7 +866,7 @@ public class ImageSettingsPanel extends JPanel {
 		strength.setOpaque(false);
 		sFilterStrength = slider(strength, "Strength", 0, 100, 100, null, v -> settings.filterStrength = v);
 		p.add(strength, "growx");
-		JButton clear = ToolStyle.button("Clear filters", null, "Turn every filter off");
+		JButton clear = ToolStyle.button(I18n.t("gui.clear_filters"), null, "Turn every filter off");
 		clear.addActionListener(e -> {
 			settings.filters.clear();
 			settings.filterStrength = 100;
@@ -1056,22 +1057,22 @@ public class ImageSettingsPanel extends JPanel {
 	private JPanel buildTransform() {
 		JPanel p = new JPanel(new MigLayout("insets 0, wrap 2, gap 4", "[grow,fill][grow,fill]", ""));
 		p.setOpaque(false);
-		JButton left = ToolStyle.button("Rotate left", null, "Rotate 90 degrees counterclockwise (L)");
+		JButton left = ToolStyle.button(I18n.t("gui.rotate_left"), null, "Rotate 90 degrees counterclockwise (L)");
 		left.addActionListener(e -> {
 			settings.rotation = (settings.rotation + 270) % 360;
 			changed();
 		});
-		JButton right = ToolStyle.button("Rotate right", null, "Rotate 90 degrees clockwise (R)");
+		JButton right = ToolStyle.button(I18n.t("gui.rotate_right"), null, "Rotate 90 degrees clockwise (R)");
 		right.addActionListener(e -> {
 			settings.rotation = (settings.rotation + 90) % 360;
 			changed();
 		});
-		JButton flipH = ToolStyle.button("Flip horizontal", null, "Mirror left to right (H)");
+		JButton flipH = ToolStyle.button(I18n.t("gui.flip_horizontal"), null, "Mirror left to right (H)");
 		flipH.addActionListener(e -> {
 			settings.flipH = !settings.flipH;
 			changed();
 		});
-		JButton flipV = ToolStyle.button("Flip vertical", null, "Mirror top to bottom (V)");
+		JButton flipV = ToolStyle.button(I18n.t("gui.flip_vertical"), null, "Mirror top to bottom (V)");
 		flipV.addActionListener(e -> {
 			settings.flipV = !settings.flipV;
 			changed();

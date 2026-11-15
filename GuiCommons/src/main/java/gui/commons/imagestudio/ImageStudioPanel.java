@@ -11,6 +11,7 @@
  */
 package gui.commons.imagestudio;
 
+import various.common.light.i18n.I18n;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.datatransfer.DataFlavor;
@@ -202,7 +203,7 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 			btnCompare = new javax.swing.JToggleButton("Before");
 			btnCompare.putClientProperty("JButton.buttonType", "toolBarButton");
 			btnCompare.setMargin(new java.awt.Insets(3, 8, 3, 8));
-			btnCompare.setToolTipText("Show the image without the pending edits (B)");
+			btnCompare.setToolTipText(I18n.t("gui.show_the_image_without_the_pending"));
 			ToolStyle.hand(btnCompare);
 			btnCompare.addActionListener(e -> {
 				comparing = btnCompare.isSelected();
@@ -213,7 +214,7 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 			bar.add(btnCompare, "gapleft 4");
 		}
 		bar.add(new JLabel(), "growx, pushx, wmin 0");
-		final JLabel caption = ToolStyle.mutedLabel("Background");
+		final JLabel caption = ToolStyle.mutedLabel(I18n.t("common.background"));
 		bar.add(caption);
 		final JComboBox<String> background = new JComboBox<String>(new String[] {"Checker", "Dark", "Gray", "Light", "Black", "White"});
 		ToolStyle.hand(background);
@@ -253,13 +254,13 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 			scroll.getViewport().setOpaque(false);
 			scroll.getVerticalScrollBar().setUnitIncrement(16);
 			side.add(scroll, "grow");
-			JButton edit = ToolStyle.accent(ToolStyle.button("Edit in Image Studio", null, "Open this image in the Image Studio window: edits, filters, resize and export"), ToolStyle.BLUE);
+			JButton edit = ToolStyle.accent(ToolStyle.button(I18n.t("gui.edit_in_image_studio"), null, "Open this image in the Image Studio window: edits, filters, resize and export"), ToolStyle.BLUE);
 			edit.setEnabled(file != null);
 			edit.addActionListener(e -> {
 				ImageViewerFrame.loadIntoLastExistingInstance(file);
 				if (closeHandler != null) {
 					Object[] options = {"Keep tab", "Close tab"};
-					int choice = JOptionPane.showOptionDialog(this, "The image is open in the Image Studio window.\nClose this tab?", "Edit in Image Studio",
+					int choice = JOptionPane.showOptionDialog(this, "The image is open in the Image Studio window.\nClose this tab?", I18n.t("gui.edit_in_image_studio"),
 							JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 					if (choice == 1) {
 						closeHandler.run();
@@ -278,14 +279,14 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 		JPanel actions = new JPanel(new MigLayout("insets 0, gapx 6, gapy 6", "[grow,fill,sg a][grow,fill,sg a][grow,fill,sg a]", ""));
 		actions.setOpaque(false);
 		actions.add(new javax.swing.JSeparator(), "span 3, growx, wrap");
-		JButton export = ToolStyle.accent(ToolStyle.button("Export...", null, "Write the result in any format, with the quality set above (Ctrl+Shift+S)"), ToolStyle.GREEN);
+		JButton export = ToolStyle.accent(ToolStyle.button(I18n.t("gui.export"), null, "Write the result in any format, with the quality set above (Ctrl+Shift+S)"), ToolStyle.GREEN);
 		export.addActionListener(e -> exportAs());
 		actions.add(export, "span 3, growx, h 32!, wrap");
-		btnApply = ToolStyle.button("Apply", null, "Bake the adjustments, filters, rotation and resize in the image (with undo)");
+		btnApply = ToolStyle.button(I18n.t("gui.apply"), null, "Bake the adjustments, filters, rotation and resize in the image (with undo)");
 		btnApply.addActionListener(e -> applyEdits());
-		btnUndo = ToolStyle.button("Undo", null, "Undo the last applied edit (Ctrl+Z)");
+		btnUndo = ToolStyle.button(I18n.t("gui.undo"), null, "Undo the last applied edit (Ctrl+Z)");
 		btnUndo.addActionListener(e -> undoLast());
-		btnRevert = ToolStyle.button("Revert", null, "Discard every edit and reload the original image");
+		btnRevert = ToolStyle.button(I18n.t("gui.revert"), null, "Discard every edit and reload the original image");
 		btnRevert.addActionListener(e -> revertToOriginal());
 		actions.add(btnApply, "wmin 0");
 		actions.add(btnUndo, "wmin 0");
@@ -318,7 +319,7 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 		lblInfo.setFont(ToolStyle.mono(-1f));
 		details.add(lblInfo, "wmin 0");
 		details.add(histogram, "h 90!");
-		JButton metadata = ToolStyle.button("Image metadata...", null, "Format and metadata read by ImageIO");
+		JButton metadata = ToolStyle.button(I18n.t("gui.image_metadata"), null, "Format and metadata read by ImageIO");
 		metadata.addActionListener(e -> showMetadata());
 		details.add(metadata);
 		btnPsdSettings = ToolStyle.button("Camera Raw settings of the PSD...", null, "The XMP of this Photoshop file holds Camera Raw settings: read them as Image Studio settings");
@@ -671,9 +672,9 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 					return shown;
 				}
 			}, null);
-			lblStatus.setText("Image copied to the clipboard");
+			lblStatus.setText(I18n.t("gui.image_copied_to_the_clipboard"));
 		} catch (IllegalStateException e) {
-			lblStatus.setText("The clipboard is busy, try again");
+			lblStatus.setText(I18n.t("gui.the_clipboard_is_busy_try_again"));
 		}
 	}
 
@@ -695,7 +696,7 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 				settingsPanel.syncFromSettings();
 				setBaseImage(buffered, true);
 			} else {
-				lblStatus.setText("No image in the clipboard");
+				lblStatus.setText(I18n.t("gui.no_image_in_the_clipboard"));
 			}
 		} catch (Exception e) {
 			logger.error("Cannot paste the clipboard image", e);
@@ -725,7 +726,7 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 		} else {
 			target = new File(target.getParentFile(), target.getName() + "." + settings.format);
 		}
-		if (target.exists() && JOptionPane.showConfirmDialog(this, "Overwrite " + target.getName() + "?", "File exists", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+		if (target.exists() && JOptionPane.showConfirmDialog(this, "Overwrite " + target.getName() + "?", I18n.t("common.file_exists"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
 			return;
 		}
 		try {
@@ -752,13 +753,13 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 		lblMetaSummary = new JLabel("-");
 		lblMetaSummary.setFont(ToolStyle.font(-1f, java.awt.Font.PLAIN));
 		meta.add(lblMetaSummary, "wmin 0");
-		JButton show = ToolStyle.button("Show all metadata...", null, "Every tag the file carries (you can also clean from there)");
+		JButton show = ToolStyle.button(I18n.t("gui.show_all_metadata"), null, "Every tag the file carries (you can also clean from there)");
 		show.addActionListener(e -> showMetadata());
-		JButton copy = ToolStyle.button("Save a clean copy...", null, "A copy of the file without metadata; the original stays");
+		JButton copy = ToolStyle.button(I18n.t("gui.save_a_clean_copy"), null, "A copy of the file without metadata; the original stays");
 		copy.addActionListener(e -> saveCleanCopy());
 		JButton remove = ToolStyle.button("Remove from this file...", null, "Removes the metadata from the file itself (asks first)");
 		remove.addActionListener(e -> cleanThisFile());
-		JButton tool = ToolStyle.button("Cleaning tool...", null, "Remove the metadata from many files: folders, filters, drag and drop");
+		JButton tool = ToolStyle.button(I18n.t("gui.cleaning_tool"), null, "Remove the metadata from many files: folders, filters, drag and drop");
 		tool.addActionListener(e -> new MetadataCleanerDialog(SwingUtilities.getWindowAncestor(this), file).setVisible(true));
 		for (JButton b : new JButton[] {show, copy, remove, tool}) {
 			meta.add(b, "wmin 0");
@@ -897,7 +898,7 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 				return;
 			}
 			File target = chooser.getSelectedFile();
-			if (target.exists() && JOptionPane.showConfirmDialog(this, "Overwrite " + target.getName() + "?", "File exists", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+			if (target.exists() && JOptionPane.showConfirmDialog(this, "Overwrite " + target.getName() + "?", I18n.t("common.file_exists"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
 				return;
 			}
 			MetadataStripper.writeSafely(r.changed() ? r.output : java.nio.file.Files.readAllBytes(file.toPath()), target);

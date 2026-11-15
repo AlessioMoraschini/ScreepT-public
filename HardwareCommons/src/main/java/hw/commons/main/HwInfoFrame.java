@@ -11,6 +11,7 @@
  */
 package hw.commons.main;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -171,7 +172,7 @@ public class HwInfoFrame extends ParentFrame{
 
 		logger.info(this.getClass().getName() + " Starting...");
 
-		setTitle("Hardware Info Frame");
+		setTitle(I18n.t("hw.hardware_info_frame"));
 
 		// SW window icon
 		GuiUtilsExtended.setFrameIcon(IconsPathConfigurator.ICON_HW_INFO, this);
@@ -235,7 +236,7 @@ public class HwInfoFrame extends ParentFrame{
 		getContentPane().add(panelHeaderTitle, "cell 0 0 4 1,grow");
 		panelHeaderTitle.setLayout(new MigLayout("fill, inset 0", "[50%,grow,center][45%,grow,center]", "[:20px:45px,fill]"));
 
-		lblHardwareInfoTool = new JLabel("  Hardware Info Tool");
+		lblHardwareInfoTool = new JLabel(I18n.t("hw.hardware_info_tool"));
 		lblHardwareInfoTool.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblHardwareInfoTool.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblHardwareInfoTool.setHorizontalAlignment(SwingConstants.CENTER);
@@ -252,7 +253,7 @@ public class HwInfoFrame extends ParentFrame{
 		panelHeaderTitle.add(screeptInfoPanel, "cell 1 0,growx,aligny center");
 		screeptInfoPanel.setLayout(new MigLayout("fill, inset 1", "[90px:n][80,grow][90px:n][100px,grow]", "[::30px,grow,fill]"));
 
-		lblScreeptCpuUsage = new JLabel("ScreepT Cpu");
+		lblScreeptCpuUsage = new JLabel(I18n.t("hw.screept_cpu"));
 		lblScreeptCpuUsage.setForeground(Color.LIGHT_GRAY);
 		lblScreeptCpuUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		screeptInfoPanel.add(lblScreeptCpuUsage, "cell 0 0,alignx center,growy");
@@ -266,7 +267,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblScreeptCpuPerc.setEditable(false);
 		screeptInfoPanel.add(dynLblScreeptCpuPerc, "cell 1 0,growx,aligny center");
 
-		lblScreeptRamUsage = new JLabel("ScreepT Ram");
+		lblScreeptRamUsage = new JLabel(I18n.t("hw.screept_ram"));
 		lblScreeptRamUsage.setForeground(Color.LIGHT_GRAY);
 		lblScreeptRamUsage.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		screeptInfoPanel.add(lblScreeptRamUsage, "cell 2 0,alignx center,growy");
@@ -306,7 +307,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblArch.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		dynLblArch.setEditable(false);
 
-		lblOsName = new JLabel("OS Name");
+		lblOsName = new JLabel(I18n.t("hw.os_name"));
 		lblOsName.setForeground(Color.LIGHT_GRAY);
 		panelGeneral.add(lblOsName, "cell 2 0,alignx center");
 		lblOsName.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -317,7 +318,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblOsName.setForeground(new Color(72, 61, 139));
 		dynLblOsName.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-		lblOsVersion = new JLabel("OS Version");
+		lblOsVersion = new JLabel(I18n.t("hw.os_version"));
 		lblOsVersion.setForeground(Color.LIGHT_GRAY);
 		panelGeneral.add(lblOsVersion, "cell 4 0,alignx center");
 		lblOsVersion.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -328,7 +329,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblOsVersion.setForeground(new Color(72, 61, 139));
 		dynLblOsVersion.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-		lblJavaVersion = new JLabel("Java Version");
+		lblJavaVersion = new JLabel(I18n.t("hw.java_version"));
 		lblJavaVersion.setForeground(Color.LIGHT_GRAY);
 		panelGeneral.add(lblJavaVersion, "cell 6 0,alignx center");
 		lblJavaVersion.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -396,7 +397,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblCPU.setEditable(false);
 		panelCPU.add(dynLblCPU, "cell 1 0,growx");
 
-		lblNofSockets = new JLabel("Number of Sockets:");
+		lblNofSockets = new JLabel(I18n.t("hw.number_of_sockets"));
 		lblNofSockets.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelCPU.add(lblNofSockets, "cell 2 0,alignx center");
 
@@ -406,7 +407,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblCPUNofSockets.setEditable(false);
 		panelCPU.add(dynLblCPUNofSockets, "cell 3 0,growx");
 
-		lblCpuFrequency = new JLabel("Cpu Frequency:");
+		lblCpuFrequency = new JLabel(I18n.t("hw.cpu_frequency"));
 		lblCpuFrequency.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelCPU.add(lblCpuFrequency, "cell 4 0,alignx center");
 
@@ -426,7 +427,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblCPUVendor.setEditable(false);
 		panelCPU.add(dynLblCPUVendor, "cell 1 1,growx");
 
-		lblCpuCores = new JLabel("Number of Cores:");
+		lblCpuCores = new JLabel(I18n.t("hw.number_of_cores"));
 		lblCpuCores.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelCPU.add(lblCpuCores, "cell 2 1,alignx center");
 
@@ -436,7 +437,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblCPUNofCores.setEditable(false);
 		panelCPU.add(dynLblCPUNofCores, "cell 3 1,growx");
 
-		lblLogicalCores = new JLabel("Logical cores:");
+		lblLogicalCores = new JLabel(I18n.t("hw.logical_cores"));
 		lblLogicalCores.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelCPU.add(lblLogicalCores, "cell 4 1,alignx center");
 
@@ -532,7 +533,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblMoboVersion.setEditable(false);
 		panelMOBO.add(dynLblMoboVersion, "cell 5 0,growx");
 
-		lblSerialNumber = new JLabel("Serial Number:");
+		lblSerialNumber = new JLabel(I18n.t("hw.serial_number"));
 		lblSerialNumber.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelMOBO.add(lblSerialNumber, "cell 6 0,alignx center");
 
@@ -566,7 +567,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblHDWriteBytes.setEditable(false);
 		panelHD.add(dynLblHDWriteBytes, "cell 3 0,growx");
 
-		lblBytesWritten = new JLabel("Bytes written:");
+		lblBytesWritten = new JLabel(I18n.t("hw.bytes_written"));
 		lblBytesWritten.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelHD.add(lblBytesWritten, "cell 4 0,alignx center");
 
@@ -606,7 +607,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblHDReadBytes.setEditable(false);
 		panelHD.add(dynLblHDReadBytes, "cell 3 1,growx");
 
-		lblBytesRead = new JLabel("Bytes read:");
+		lblBytesRead = new JLabel(I18n.t("hw.bytes_read"));
 		lblBytesRead.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelHD.add(lblBytesRead, "cell 4 1,alignx center");
 
@@ -616,7 +617,7 @@ public class HwInfoFrame extends ParentFrame{
 		dynLblHdBytesRead.setEditable(false);
 		panelHD.add(dynLblHdBytesRead, "cell 5 1,growx");
 
-		lblHDSerial = new JLabel("Serial Number:");
+		lblHDSerial = new JLabel(I18n.t("hw.serial_number"));
 		lblHDSerial.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelHD.add(lblHDSerial, "cell 6 1,alignx center");
 
@@ -780,7 +781,7 @@ public class HwInfoFrame extends ParentFrame{
 		double cpuTemp = sysINFO.getHardware().getSensors().getCpuTemperature();
 		String usagePerc = new DecimalFormat("#,##0.##").format(currentUsage*100)+ "%";
 		String AVGPerc = new DecimalFormat("#,##0.##").format(avgUsageCurrent*100)+ "%";
-		String cpuVoltage = (cpuVolts != 0)? (new DecimalFormat("#,##0.####").format(cpuVolts)+ " Volts") : UNSELECTED;
+		String cpuVoltage = (cpuVolts != 0)? (new DecimalFormat("#,##0.####").format(cpuVolts)+ I18n.t("hw.volts")) : UNSELECTED;
 		String cputemperature = (cpuTemp != 0)? (new DecimalFormat("#,##0.####").format(cpuTemp)+ " °C") : UNSELECTED;
 		dynLblCpuUsage.setText(usagePerc);
 		dynLblCpuAvgUsage.setText(AVGPerc);
@@ -811,7 +812,7 @@ public class HwInfoFrame extends ParentFrame{
 		String displayInfoString = selDisplay.toString();
 		textAreaDisplay.setText(displayInfoString);
 		String[] splittedLinesString = displayInfoString.split("\n");
-		String name = "Monitor Name:";
+		String name = I18n.t("hw.monitor_name");
 
 		for (String splitted : splittedLinesString) {
 			if(splitted.indexOf(name)!=-1) {

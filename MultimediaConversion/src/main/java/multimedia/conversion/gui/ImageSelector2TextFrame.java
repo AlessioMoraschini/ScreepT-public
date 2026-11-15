@@ -11,6 +11,7 @@
  */
 package multimedia.conversion.gui;
 
+import various.common.light.i18n.I18n;
 import java.io.File;
 import java.io.IOException;
 
@@ -190,7 +191,7 @@ public class ImageSelector2TextFrame extends JFrame{
 								displayImage(selected);
 								selectedImageSource = selected;
 							} catch (IOException e1) {
-								dialogHelper.error("An error occurred, cannot load image :(", "IO Error");
+								dialogHelper.error(I18n.t("misc.an_error_occurred_cannot_load_image"), "IO Error");
 								logger.error(e);
 							} finally {
 

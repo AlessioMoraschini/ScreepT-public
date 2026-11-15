@@ -1,5 +1,6 @@
 package various.common.light.gui.selection.color;
 
+import various.common.light.i18n.I18n;
 import javax.swing.JPanel;
 import java.awt.Color;
 import net.miginfocom.swing.MigLayout;
@@ -48,7 +49,7 @@ public class ColorSelector extends JPanel {
 		setBackground(Color.LIGHT_GRAY);
 		setLayout(new MigLayout("", "[][grow][80px:n][:50px:50px][80px:n][:50px:50px]", "[grow]"));
 		
-		lblElementName = new JLabel("Element");
+		lblElementName = new JLabel(I18n.t("common.element"));
 		lblElementName.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblElementName.setText(elementOm.elementLabel);
 		add(lblElementName, "cell 0 0 2 1,alignx left,aligny center");
@@ -64,7 +65,7 @@ public class ColorSelector extends JPanel {
 		panelForeground.addMouseListener(panelMouseListener(panelForeground, false));
 		add(panelForeground, "cell 3 0,grow");
 		
-		lblBackground = new JLabel("Background");
+		lblBackground = new JLabel(I18n.t("common.background"));
 		lblBackground.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		add(lblBackground, "cell 4 0,alignx right");
 		

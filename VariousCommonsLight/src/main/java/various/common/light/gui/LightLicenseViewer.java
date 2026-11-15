@@ -1,5 +1,6 @@
 package various.common.light.gui;
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -218,7 +219,7 @@ public class LightLicenseViewer extends JDialog {
 			footer.add(btnDecline);
 			footer.add(btnAccept);
 		} else {
-			JButton close = new JButton("Close");
+			JButton close = new JButton(I18n.t("common.close"));
 			close.setCursor(GuiUtils.CURSOR_HAND);
 			close.setPreferredSize(new Dimension(130, 34));
 			close.addActionListener((e) -> dispose());

@@ -11,6 +11,7 @@
  */
 package gui.commons.tabs;
 
+import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -89,7 +90,7 @@ public class HtmlViewerTab extends JPanel implements TabContent {
 
 		JPanel bar = new JPanel(new MigLayout("insets 6 8 0 8, gapx 6", "[][][grow,fill]", "[]"));
 		bar.setOpaque(false);
-		JButton reload = ToolStyle.button("Reload", null, "Read the file again");
+		JButton reload = ToolStyle.button(I18n.t("common.reload"), null, "Read the file again");
 		reload.addActionListener(e -> load());
 		JButton browser = ToolStyle.button("Open in browser", null, "Show the page with the default browser");
 		browser.addActionListener(e -> browse(file.toURI().toString()));

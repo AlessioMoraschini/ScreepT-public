@@ -11,6 +11,7 @@
  */
 package gui.commons.frameutils.frame;
 
+import various.common.light.i18n.I18n;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
@@ -81,7 +82,7 @@ public class ImageViewerFrame extends JFrame {
 		active = true;
 
 		GuiUtils.setFrameIcon(IconsPathConfigurator.F_ICON_IMAGE, this);
-		setTitle("Image Studio");
+		setTitle(I18n.t("common.image_studio"));
 
 		getContentPane().setLayout(new MigLayout("fill, insets 10, gapy 8", "[grow,fill]", "[][grow,fill]"));
 
@@ -97,7 +98,7 @@ public class ImageViewerFrame extends JFrame {
 		clean.addActionListener(e -> new gui.commons.imagestudio.MetadataCleanerDialog(this, currentFile()).setVisible(true));
 		header.add(clean);
 		header.add(new JLabel(), "growx");
-		header.add(ToolStyle.mutedLabel("Mode"));
+		header.add(ToolStyle.mutedLabel(I18n.t("gui.mode")));
 		comboMode = new JComboBox<StudioMode>(StudioMode.values());
 		comboMode.setSelectedItem(StudioMode.current());
 		comboMode.setToolTipText("<html><b>Basic</b>: convert and resize.<br><b>Classic</b>: + adjustments, filters, rotate, flip.<br><b>Nerd</b>: + every option, histogram, grid.</html>");
@@ -226,7 +227,7 @@ public class ImageViewerFrame extends JFrame {
 		panel.dispose();
 		if (panels.isEmpty()) {
 			imageFile = null;
-			setTitle("Image Studio");
+			setTitle(I18n.t("common.image_studio"));
 		}
 	}
 

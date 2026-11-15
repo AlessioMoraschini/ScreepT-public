@@ -11,6 +11,7 @@
  */
 package gui.commons.frameutils.frame.panels;
 
+import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -155,7 +156,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		separator.setBackground(Color.GRAY);
 		mainPane.add(separator, "cell 0 0 4 1,growx");
 		
-		lblClipboardPanel = new JLabel("ClipBoard Panel");
+		lblClipboardPanel = new JLabel(I18n.t("common.clipboard_panel"));
 		lblClipboardPanel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblClipboardPanel.setForeground(Color.LIGHT_GRAY);
 		mainPane.add(lblClipboardPanel, "cell 4 0,alignx center,aligny top");
@@ -171,7 +172,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		mainPane.add(btnSave, "cell 0 1,alignx center");
 		btnSave.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		GuiUtilsExtended.makeTransparentJButton(btnSave);
-		btnSave.setToolTipText("Save current Clipboard");
+		btnSave.setToolTipText(I18n.t("common.save_current_clipboard"));
 		btnSave.setForeground(Color.BLACK);
 		btnSave.setIcon(new ImageIcon(IconsPathConfigurator.ICON_FILE_SAVE));
 		
@@ -180,14 +181,14 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		btnReload.setMinimumSize(new Dimension(20, 9));
 		btnReload.setMaximumSize(new Dimension(20, 20));
 		btnReload.setForeground(Color.BLACK);
-		btnReload.setToolTipText("Reload current Clipboard (be careful, unsaved changes will be lost)");
+		btnReload.setToolTipText(I18n.t("common.reload_current_clipboard_be_careful_unsaved"));
 		btnReload.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		GuiUtilsExtended.makeTransparentJButton(btnReload);
 		btnReload.setIcon(new ImageIcon(IconsPathConfigurator.ICON_RELOAD_CONF));
 		mainPane.add(btnReload, "cell 1 1,alignx center");
 		
 		btnAddNewClipboard = new JButton("");
-		btnAddNewClipboard.setToolTipText("Add new clipboard to this list");
+		btnAddNewClipboard.setToolTipText(I18n.t("common.add_new_clipboard_to_this_list"));
 		btnAddNewClipboard.setPreferredSize(new Dimension(20, 20));
 		btnAddNewClipboard.setMinimumSize(new Dimension(20, 9));
 		btnAddNewClipboard.setMaximumSize(new Dimension(20, 20));
@@ -201,13 +202,13 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		comboClipboards = new JComboBox<>(clipBoards);
 		comboClipboards.setCursor(GuiUtilsExtended.CURSOR_HAND);
 		comboClipboards.setFont(GeneralConfig.BUTTON_DEFAULT_FONT.deriveFont(Font.PLAIN));
-		comboClipboards.setToolTipText("Choose between loaded Clipboards");
+		comboClipboards.setToolTipText(I18n.t("common.choose_between_loaded_clipboards"));
 		comboClipboards.setForeground(Color.BLACK);
 		comboClipboards.setEditor( new TextPaneComboBoxEditor() );
 		mainPane.add(comboClipboards, "cell 3 1 3 1,growx");
 		
 		btnReloadClipboards = new JButton("");
-		btnReloadClipboards.setToolTipText("Reload Clipboard List");
+		btnReloadClipboards.setToolTipText(I18n.t("common.reload_clipboard_list"));
 		btnReloadClipboards.setPreferredSize(new Dimension(20, 20));
 		btnReloadClipboards.setMinimumSize(new Dimension(20, 9));
 		btnReloadClipboards.setMaximumSize(new Dimension(20, 20));
@@ -218,7 +219,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 		mainPane.add(btnReloadClipboards, "cell 6 1");
 		
 		btnOpenInFilesystem = new JButton("");
-		btnOpenInFilesystem.setToolTipText("Open current clipboard in File System");
+		btnOpenInFilesystem.setToolTipText(I18n.t("common.open_current_clipboard_in_file_system"));
 		btnOpenInFilesystem.setPreferredSize(new Dimension(20, 20));
 		btnOpenInFilesystem.setMinimumSize(new Dimension(20, 9));
 		btnOpenInFilesystem.setMaximumSize(new Dimension(20, 20));
@@ -304,10 +305,10 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 						if (options.getLastFileOpenedClipboard() != null) {
 							try {
 								if (!addNewClipboardGui()) {
-									dialogHelper.error("File not saved, maybe folder it's not acessible or locked by an other program?!", (String)null);
+									dialogHelper.error(I18n.t("common.file_not_saved_maybe_folder_it"), (String)null);
 								}
 							} catch (IOException e1) {
-								dialogHelper.error("IOException while trying to create new File!", (String)null);
+								dialogHelper.error(I18n.t("common.ioexception_while_trying_to_create_new"), (String)null);
 								logger.error("Error adding new Clipboard panel from scratch.");
 							}
 						}
@@ -371,7 +372,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				isReloadingCombo.set(true);
-				if (dialogHelper.yesOrNo("Wanna save current before reload?", "save current before reload?")) {
+				if (dialogHelper.yesOrNo(I18n.t("common.wanna_save_current_before_reload"), "save current before reload?")) {
 					saveCurrClipboardSilent();
 				}
 				isReloadingCombo.set(false);
@@ -419,11 +420,11 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 				logger.debug("Current clipboard written: " + selected);
 				dialogHelper.info("Current clipboard written: " + selected.getAbsolutePath(), " saved!");
 			}else {
-				dialogHelper.error("There was an error writing to "+ selected, "Error during file write");
+				dialogHelper.error("There was an error writing to "+ selected, I18n.t("common.error_during_file_write"));
 				logger.error("There was an error writing to " + selected);
 			}
 		}else {
-			dialogHelper.warn("Given file is NULL, cannot write.", null);
+			dialogHelper.warn(I18n.t("common.given_file_is_null_cannot_write"), null);
 			logger.error("Given file is NULL, cannot write.");
 		}
 	}
@@ -450,7 +451,7 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 			File selected = dataMap.get(target);
 			// Create fake safe unexisting file to avoid null pointer
 			if (selected == null) {
-				dialogHelper.warn("Given file has not been found, cannot load content.", null);
+				dialogHelper.warn(I18n.t("common.given_file_has_not_been_found"), null);
 				logger.error("Given file has not been found, cannot load content.");
 				return;
 			}
@@ -465,9 +466,9 @@ public class ClipboardPanelLight  extends ParentPanel implements IParentPanel{
 	}
 	
 	public boolean addNewClipboardGui() throws IOException {
-		String newName = dialogHelper.askForStringNullable("Choose a name for the new Clipboard (If existing a new unique name like \"xxxx(1).ext\" will be created)", "Specify new clipboard name");
+		String newName = dialogHelper.askForStringNullable(I18n.t("common.choose_a_name_for_the_new"), "Specify new clipboard name");
 		if(newName != null && newName.equals("")) {
-			dialogHelper.warn("Cannot create File without name", "Must specify a name!");
+			dialogHelper.warn(I18n.t("common.cannot_create_file_without_name"), "Must specify a name!");
 			return true;
 		}else if(newName == null) {
 			return true;

@@ -1,5 +1,6 @@
 package various.common.light.utility;
 
+import various.common.light.i18n.I18n;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -55,7 +56,7 @@ public class SystemClipboardUtils {
 					boolean sameType = (dir.isFile() && file.isFile()) || (dir.isDirectory() && file.isDirectory());
 					return sameType && file.getName().equals(name);
 				}).length > 0) {
-					copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", "Overwrite?");
+					copy = dialogHelper.yesOrNo(destination + " already contains " + file.getName() + ", are you sure to overwrite?", I18n.t("common.overwrite"));
 				}
 				if (copy) {
 					FileUtils.copyToDirectory(file, destination);

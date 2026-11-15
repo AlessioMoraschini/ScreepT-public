@@ -11,6 +11,7 @@
  */
 package gui.commons.imagestudio;
 
+import various.common.light.i18n.I18n;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -88,7 +89,7 @@ public class MetadataCleanerDialog extends JDialog {
 	private final List<Entry> entries = new ArrayList<Entry>();
 	private final AbstractTableModel model = new AbstractTableModel() {
 		private static final long serialVersionUID = 1L;
-		private final String[] names = {"File", "Folder", "Size", "Metadata found", "Result"};
+		private final String[] names = {"File", "Folder", "Size", I18n.t("batch.metadata_found"), "Result"};
 
 		@Override
 		public int getRowCount() {
@@ -123,50 +124,50 @@ public class MetadataCleanerDialog extends JDialog {
 		}
 	};
 	private final JTable table = new JTable(model);
-	private final JLabel lblCount = ToolStyle.mutedLabel("0 files");
+	private final JLabel lblCount = ToolStyle.mutedLabel(I18n.t("batch.0_files"));
 
 	// filters
-	private final JCheckBox chkSub = new JCheckBox("Include sub-folders", true);
+	private final JCheckBox chkSub = new JCheckBox(I18n.t("batch.include_sub_folders"), true);
 	private final JCheckBox chkJpeg = new JCheckBox("JPEG", true);
 	private final JCheckBox chkPng = new JCheckBox("PNG", true);
 	private final JCheckBox chkWebp = new JCheckBox("WebP", true);
 	private final JCheckBox chkGif = new JCheckBox("GIF", true);
-	private final JCheckBox chkOther = new JCheckBox("Others (TIFF, BMP...)", false);
+	private final JCheckBox chkOther = new JCheckBox(I18n.t("batch.others_tiff_bmp"), false);
 	private final JTextField fieldFilter = new JTextField();
 
 	// what to remove
-	private final JRadioButton rbAll = new JRadioButton("Everything (EXIF, GPS, XMP, IPTC, comments, thumbnails)", true);
-	private final JRadioButton rbLocation = new JRadioButton("Only the location (GPS)");
-	private final JCheckBox chkIcc = new JCheckBox("Keep the color profile (ICC)", true);
-	private final JCheckBox chkOrientation = new JCheckBox("Keep the orientation (photos stay upright)", true);
-	private final JCheckBox chkTrailing = new JCheckBox("Remove data after the image end (motion photo video, extra images)", true);
-	private final JCheckBox chkReencode = new JCheckBox("Also clean TIFF and others by re-saving them", false);
+	private final JRadioButton rbAll = new JRadioButton(I18n.t("batch.everything_exif_gps_xmp_iptc_comments"), true);
+	private final JRadioButton rbLocation = new JRadioButton(I18n.t("batch.only_the_location_gps"));
+	private final JCheckBox chkIcc = new JCheckBox(I18n.t("batch.keep_the_color_profile_icc"), true);
+	private final JCheckBox chkOrientation = new JCheckBox(I18n.t("batch.keep_the_orientation_photos_stay_upright"), true);
+	private final JCheckBox chkTrailing = new JCheckBox(I18n.t("batch.remove_data_after_the_image_end"), true);
+	private final JCheckBox chkReencode = new JCheckBox(I18n.t("batch.also_clean_tiff_and_others_by"), false);
 
 	// output
-	private final JRadioButton rbCopies = new JRadioButton("Save clean copies in a folder", true);
-	private final JRadioButton rbReplace = new JRadioButton("Replace the originals (cannot be undone)");
+	private final JRadioButton rbCopies = new JRadioButton(I18n.t("batch.save_clean_copies_in_a_folder"), true);
+	private final JRadioButton rbReplace = new JRadioButton(I18n.t("batch.replace_the_originals_cannot_be_undone"));
 	private final JTextField fieldTarget = new JTextField();
-	private final JButton btnBrowse = ToolStyle.button("Browse...", null, "Choose the target folder");
+	private final JButton btnBrowse = ToolStyle.button(I18n.t("gui.browse"), null, I18n.t("batch.choose_the_target_folder"));
 	private final JTextField fieldPattern = new JTextField("{name}");
-	private final JComboBox<String> comboCollision = new JComboBox<String>(new String[] {"Add a number if the name is taken", "Overwrite the existing file", "Skip the existing file"});
-	private final JCheckBox chkStructure = new JCheckBox("Keep the sub-folder structure", true);
-	private final JCheckBox chkCopyClean = new JCheckBox("Copy also the files without metadata", true);
-	private final JCheckBox chkBackup = new JCheckBox("Move the originals to a backup folder first");
+	private final JComboBox<String> comboCollision = new JComboBox<String>(new String[] {I18n.t("batch.add_a_number_if_the_name"), I18n.t("batch.overwrite_the_existing_file"), I18n.t("batch.skip_the_existing_file")});
+	private final JCheckBox chkStructure = new JCheckBox(I18n.t("batch.keep_the_sub_folder_structure"), true);
+	private final JCheckBox chkCopyClean = new JCheckBox(I18n.t("batch.copy_also_the_files_without_metadata"), true);
+	private final JCheckBox chkBackup = new JCheckBox(I18n.t("batch.move_the_originals_to_a_backup"));
 	private final JTextField fieldBackup = new JTextField();
-	private final JButton btnBackupBrowse = ToolStyle.button("Browse...", null, "Choose the backup folder");
-	private final JCheckBox chkDate = new JCheckBox("Keep the modified date of the files", true);
+	private final JButton btnBackupBrowse = ToolStyle.button(I18n.t("gui.browse"), null, I18n.t("common.choose_the_backup_folder"));
+	private final JCheckBox chkDate = new JCheckBox(I18n.t("batch.keep_the_modified_date_of_the"), true);
 
 	private final JProgressBar progress = new JProgressBar();
 	private final JLabel lblProgress = ToolStyle.mutedLabel(" ");
 	private final JButton btnRun;
-	private final JButton btnOpen = ToolStyle.button("Open target folder", null, "Show the folder with the clean copies");
+	private final JButton btnOpen = ToolStyle.button(I18n.t("batch.open_target_folder"), null, I18n.t("batch.show_the_folder_with_the_clean"));
 	private CleanWorker worker;
 	private File lastTarget;
 
 	public MetadataCleanerDialog(Window owner, File suggestedFile) {
-		super(owner, "Clean metadata", ModalityType.MODELESS);
+		super(owner, I18n.t("batch.clean_metadata"), ModalityType.MODELESS);
 		setLayout(new MigLayout("fill, insets 12, gapy 8, gapx 10", "[grow,fill][400!]", "[grow,fill][]"));
-		btnRun = ToolStyle.accent(ToolStyle.button("Clean the files", null, "Remove the metadata from every file of the list"), ToolStyle.GREEN);
+		btnRun = ToolStyle.accent(ToolStyle.button(I18n.t("batch.clean_the_files"), null, I18n.t("batch.remove_the_metadata_from_every_file")), ToolStyle.GREEN);
 
 		add(buildFiles(), "grow");
 		add(buildOptions(), "grow, wrap");
@@ -200,17 +201,17 @@ public class MetadataCleanerDialog extends JDialog {
 
 	private JPanel buildFiles() {
 		JPanel card = ToolStyle.card(new MigLayout("insets 12, wrap 1, gapy 6", "[grow,fill]", "[][][][][grow,fill][]"));
-		card.add(ToolStyle.caption("1. Files to clean (drop files or folders here)"));
+		card.add(ToolStyle.caption(I18n.t("batch.1_files_to_clean_drop_files")));
 
 		JPanel buttons = new JPanel(new MigLayout("insets 0, gapx 4", "[][][][][grow,fill][]", "[]"));
 		buttons.setOpaque(false);
-		JButton addFiles = ToolStyle.button("Add files...", null, "Choose image files");
+		JButton addFiles = ToolStyle.button(I18n.t("batch.add_files"), null, I18n.t("batch.choose_image_files"));
 		addFiles.addActionListener(e -> addFilesDialog());
-		JButton addFolder = ToolStyle.button("Add folder...", null, "Add the images of a folder (sub-folders if ticked), with the filters below");
+		JButton addFolder = ToolStyle.button(I18n.t("batch.add_folder"), null, I18n.t("batch.add_the_images_of_a_folder"));
 		addFolder.addActionListener(e -> addFolderDialog());
-		JButton remove = ToolStyle.button("Remove", null, "Remove the selected files from the list");
+		JButton remove = ToolStyle.button("Remove", null, I18n.t("batch.remove_the_selected_files_from_the"));
 		remove.addActionListener(e -> removeSelected());
-		JButton clear = ToolStyle.button("Clear", null, "Empty the list");
+		JButton clear = ToolStyle.button("Clear", null, I18n.t("batch.empty_the_list"));
 		clear.addActionListener(e -> {
 			if (worker == null) {
 				entries.clear();
@@ -218,7 +219,7 @@ public class MetadataCleanerDialog extends JDialog {
 				updateCount();
 			}
 		});
-		JButton analyze = ToolStyle.button("Check metadata", null, "Look inside the files to see what they carry (nothing is changed)");
+		JButton analyze = ToolStyle.button(I18n.t("batch.check_metadata"), null, I18n.t("batch.look_inside_the_files_to_see"));
 		analyze.addActionListener(e -> analyzeAll());
 		buttons.add(addFiles);
 		buttons.add(addFolder);
@@ -235,8 +236,8 @@ public class MetadataCleanerDialog extends JDialog {
 			ToolStyle.hand(box);
 			filters.add(box);
 		}
-		fieldFilter.putClientProperty("JTextField.placeholderText", "Name contains... (comma separated)");
-		fieldFilter.setToolTipText("Only the files whose name contains one of these words are added");
+		fieldFilter.putClientProperty("JTextField.placeholderText", I18n.t("gui.name_contains_comma_separated"));
+		fieldFilter.setToolTipText(I18n.t("batch.only_the_files_whose_name_contains"));
 		filters.add(fieldFilter);
 		card.add(filters);
 
@@ -244,7 +245,7 @@ public class MetadataCleanerDialog extends JDialog {
 		row.setOpaque(false);
 		ToolStyle.hand(chkSub);
 		row.add(chkSub);
-		row.add(ToolStyle.mutedLabel("The filters apply to what you add from now on"));
+		row.add(ToolStyle.mutedLabel(I18n.t("batch.the_filters_apply_to_what_you")));
 		card.add(row);
 
 		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -273,7 +274,7 @@ public class MetadataCleanerDialog extends JDialog {
 
 	private JPanel buildOptions() {
 		JPanel card = ToolStyle.card(new MigLayout("insets 12, wrap 1, gapy 4", "[grow,fill]", ""));
-		card.add(ToolStyle.caption("2. What to remove"));
+		card.add(ToolStyle.caption(I18n.t("batch.2_what_to_remove")));
 		ButtonGroup group = new ButtonGroup();
 		group.add(rbAll);
 		group.add(rbLocation);
@@ -281,26 +282,26 @@ public class MetadataCleanerDialog extends JDialog {
 			ToolStyle.hand(radio);
 			card.add(radio, "wmin 0");
 		}
-		rbAll.setToolTipText("Camera, lens, date, GPS, software, thumbnails, comments, copyright, IPTC, XMP...");
-		rbLocation.setToolTipText("Zeroes the GPS data of the EXIF (and removes an XMP that carries a location); everything else stays");
+		rbAll.setToolTipText(I18n.t("batch.camera_lens_date_gps_software_thumbnails"));
+		rbLocation.setToolTipText(I18n.t("batch.zeroes_the_gps_data_of_the"));
 		card.add(new javax.swing.JSeparator(), "growx, gaptop 4, gapbottom 2");
 		for (JCheckBox box : new JCheckBox[] {chkIcc, chkOrientation, chkTrailing, chkReencode}) {
 			ToolStyle.hand(box);
 			card.add(box, "wmin 0");
 		}
-		chkIcc.setToolTipText("Without the profile the colors can look different on some screens");
-		chkOrientation.setToolTipText("Writes a tiny EXIF with only the orientation: photos taken sideways keep showing upright");
-		chkTrailing.setToolTipText("Some files carry a video or other images after the end of the picture: this removes them too");
-		chkReencode.setToolTipText("TIFF and the formats that cannot be cleaned directly are decoded and saved again without metadata");
+		chkIcc.setToolTipText(I18n.t("batch.without_the_profile_the_colors_can"));
+		chkOrientation.setToolTipText(I18n.t("batch.writes_a_tiny_exif_with_only"));
+		chkTrailing.setToolTipText(I18n.t("batch.some_files_carry_a_video_or"));
+		chkReencode.setToolTipText(I18n.t("batch.tiff_and_the_formats_that_cannot"));
 		rbLocation.addActionListener(e -> updateOptionsEnabled());
 		rbAll.addActionListener(e -> updateOptionsEnabled());
-		card.add(ToolStyle.mutedLabel("<html>JPEG, PNG, WebP and GIF are cleaned without touching the pixels:<br>no re-encoding, no quality loss.</html>"), "gaptop 6, wmin 0");
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.jpeg_png_webp_and_gif_are")), "gaptop 6, wmin 0");
 		return card;
 	}
 
 	private JPanel buildOutput() {
 		JPanel card = ToolStyle.card(new MigLayout("insets 12 14 12 14, gapx 10, gapy 6", "[][grow,fill][][grow,fill]", ""));
-		card.add(ToolStyle.caption("3. Output"), "span 4, wrap");
+		card.add(ToolStyle.caption(I18n.t("batch.3_output")), "span 4, wrap");
 		ButtonGroup group = new ButtonGroup();
 		group.add(rbCopies);
 		group.add(rbReplace);
@@ -311,40 +312,40 @@ public class MetadataCleanerDialog extends JDialog {
 		card.add(rbCopies, "span 2");
 		card.add(rbReplace, "span 2, wrap");
 
-		card.add(ToolStyle.mutedLabel("Target folder"));
-		fieldTarget.putClientProperty("JTextField.placeholderText", "Where the clean copies are written (required)");
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.target_folder")));
+		fieldTarget.putClientProperty("JTextField.placeholderText", I18n.t("gui.where_the_clean_copies_are_written"));
 		JPanel target = new JPanel(new MigLayout("insets 0, gapx 4", "[grow,fill][]", "[]"));
 		target.setOpaque(false);
 		target.add(fieldTarget);
-		btnBrowse.addActionListener(e -> chooseFolder(fieldTarget, "Target folder"));
+		btnBrowse.addActionListener(e -> chooseFolder(fieldTarget, I18n.t("batch.target_folder")));
 		target.add(btnBrowse);
 		card.add(target);
-		chkBackup.setToolTipText("The original of each file is moved there before the clean one takes its place");
+		chkBackup.setToolTipText(I18n.t("batch.the_original_of_each_file_is"));
 		ToolStyle.hand(chkBackup);
 		chkBackup.addActionListener(e -> updateOutputEnabled());
 		card.add(chkBackup, "span 2, wrap");
 
-		card.add(ToolStyle.mutedLabel("Name pattern"));
-		fieldPattern.setToolTipText("<html>Tokens: <b>{name}</b> original name, <b>{n}</b> number in the list, <b>{date}</b> today (yyyyMMdd).<br>Example: <b>{name}_clean</b>. The extension stays the same.</html>");
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.name_pattern")));
+		fieldPattern.setToolTipText(I18n.t("batch.tokens_name_original_name_n_number"));
 		card.add(fieldPattern);
-		card.add(ToolStyle.mutedLabel("Backup folder"));
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.backup_folder")));
 		JPanel backup = new JPanel(new MigLayout("insets 0, gapx 4", "[grow,fill][]", "[]"));
 		backup.setOpaque(false);
 		backup.add(fieldBackup);
-		btnBackupBrowse.addActionListener(e -> chooseFolder(fieldBackup, "Backup folder"));
+		btnBackupBrowse.addActionListener(e -> chooseFolder(fieldBackup, I18n.t("batch.backup_folder")));
 		backup.add(btnBackupBrowse);
 		card.add(backup, "wrap");
 
-		card.add(ToolStyle.mutedLabel("If the name exists"));
+		card.add(ToolStyle.mutedLabel(I18n.t("batch.if_the_name_exists")));
 		card.add(comboCollision);
 		card.add(chkStructure, "span 2, wrap");
 		ToolStyle.hand(chkStructure);
-		chkStructure.setToolTipText("For the files added from a folder: the clean copies keep their sub-folders inside the target");
+		chkStructure.setToolTipText(I18n.t("batch.for_the_files_added_from_a"));
 		card.add(chkDate, "span 2");
 		ToolStyle.hand(chkDate);
 		card.add(chkCopyClean, "span 2, wrap");
 		ToolStyle.hand(chkCopyClean);
-		chkCopyClean.setToolTipText("So the target folder holds every file, also those that had nothing to remove");
+		chkCopyClean.setToolTipText(I18n.t("batch.so_the_target_folder_holds_every"));
 
 		JPanel run = new JPanel(new MigLayout("insets 0, gapx 8", "[grow,fill][][][]", "[]"));
 		run.setOpaque(false);
@@ -359,7 +360,7 @@ public class MetadataCleanerDialog extends JDialog {
 		btnRun.setPreferredSize(new Dimension(190, 36));
 		btnRun.addActionListener(e -> startOrCancel());
 		run.add(btnRun);
-		JButton close = ToolStyle.button("Close", null, "Close this window (Esc)");
+		JButton close = ToolStyle.button(I18n.t("common.close"), null, I18n.t("batch.close_this_window_esc"));
 		close.addActionListener(e -> requestClose());
 		run.add(close);
 		card.add(run, "span 4, growx, gaptop 6");
@@ -385,7 +386,7 @@ public class MetadataCleanerDialog extends JDialog {
 		chkBackup.setEnabled(!copies);
 		fieldBackup.setEnabled(!copies && chkBackup.isSelected());
 		btnBackupBrowse.setEnabled(!copies && chkBackup.isSelected());
-		btnRun.setText(copies ? "Clean the files" : "Replace with clean files");
+		btnRun.setText(copies ? I18n.t("batch.clean_the_files") : I18n.t("batch.replace_with_clean_files"));
 	}
 
 	private void chooseFolder(JTextField field, String title) {
@@ -402,7 +403,7 @@ public class MetadataCleanerDialog extends JDialog {
 	private void addFilesDialog() {
 		NativeFileChooser chooser = new NativeFileChooser();
 		chooser.setMultiSelectionEnabled(true);
-		chooser.setDialogTitle("Add images");
+		chooser.setDialogTitle(I18n.t("batch.add_images_2"));
 		if (chooser.showDialog(this, "Add") == NativeFileChooser.APPROVE_OPTION) {
 			addPaths(chooser.getSelectedFiles());
 		}
@@ -411,7 +412,7 @@ public class MetadataCleanerDialog extends JDialog {
 	private void addFolderDialog() {
 		NativeFileChooser chooser = new NativeFileChooser();
 		chooser.setFileSelectionMode(NativeFileChooser.DIRECTORIES_ONLY);
-		chooser.setDialogTitle("Add a folder of images");
+		chooser.setDialogTitle(I18n.t("batch.add_a_folder_of_images"));
 		if (chooser.showDialog(this, "Add") == NativeFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
 			addPaths(new File[] {chooser.getSelectedFile()});
 		}
@@ -519,7 +520,7 @@ public class MetadataCleanerDialog extends JDialog {
 		for (Entry e : entries) {
 			total += e.size;
 		}
-		lblCount.setText(entries.size() + (entries.size() == 1 ? " file" : " files") + (entries.isEmpty() ? "" : " (" + ConversionUtils.coolFileSize(total) + ")"));
+		lblCount.setText(entries.size() + (entries.size() == 1 ? I18n.t("batch.file") : I18n.t("batch.files")) + (entries.isEmpty() ? "" : " (" + ConversionUtils.coolFileSize(total) + ")"));
 	}
 
 	private void analyzeAll() {
@@ -582,31 +583,31 @@ public class MetadataCleanerDialog extends JDialog {
 			return;
 		}
 		if (entries.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Add some files first.", "Clean metadata", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, I18n.t("batch.add_some_files_first"), I18n.t("batch.clean_metadata"), JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		boolean replace = rbReplace.isSelected();
 		File target = null;
 		File backup = null;
 		if (replace) {
-			String text = "<html>The metadata will be removed <b>from the original files</b>, which are overwritten:<br>"
-					+ entries.size() + " files. This cannot be undone" + (chkBackup.isSelected() ? " (a backup of the originals is made)." : ", and you chose no backup.")
-					+ "<br><br>Continue?</html>";
-			Object[] options = {"Cancel", "Replace the files"};
-			int choice = JOptionPane.showOptionDialog(this, text, "Replace the originals", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+			String text = I18n.t("batch.the_metadata_will_be_removed_from")
+					+ entries.size() + I18n.t("batch.files_this_cannot_be_undone") + (chkBackup.isSelected() ? I18n.t("batch.a_backup_of_the_originals_is") : I18n.t("batch.and_you_chose_no_backup"))
+					+ I18n.t("batch.continue");
+			Object[] options = {"Cancel", I18n.t("batch.replace_the_files")};
+			int choice = JOptionPane.showOptionDialog(this, text, I18n.t("batch.replace_the_originals"), JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 			if (choice != 1) {
 				return;
 			}
 			if (chkBackup.isSelected()) {
 				if (fieldBackup.getText().trim().isEmpty()) {
-					JOptionPane.showMessageDialog(this, "Choose the backup folder.", "Clean metadata", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(this, I18n.t("batch.choose_the_backup_folder"), I18n.t("batch.clean_metadata"), JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				backup = new File(fieldBackup.getText().trim());
 			}
 		} else {
 			if (fieldTarget.getText().trim().isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Choose the target folder.", "Clean metadata", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, I18n.t("batch.choose_the_target_folder_2"), I18n.t("batch.clean_metadata"), JOptionPane.WARNING_MESSAGE);
 				fieldTarget.requestFocusInWindow();
 				return;
 			}
@@ -620,7 +621,7 @@ public class MetadataCleanerDialog extends JDialog {
 		btnOpen.setEnabled(false);
 		worker = new CleanWorker(new ArrayList<Entry>(entries), readOptions(), replace, target, backup, fieldPattern.getText().trim().isEmpty() ? "{name}" : fieldPattern.getText().trim(),
 				comboCollision.getSelectedIndex(), chkStructure.isSelected(), chkCopyClean.isSelected(), chkDate.isSelected());
-		btnRun.setText("Cancel");
+		btnRun.setText(I18n.t("common.cancel"));
 		progress.setValue(0);
 		progress.setMaximum(entries.size());
 		worker.execute();
@@ -644,7 +645,7 @@ public class MetadataCleanerDialog extends JDialog {
 
 	private void requestClose() {
 		if (worker != null) {
-			if (JOptionPane.showConfirmDialog(this, "A cleaning is running. Stop it and close?", "Clean metadata", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+			if (JOptionPane.showConfirmDialog(this, I18n.t("batch.a_cleaning_is_running_stop_it"), I18n.t("batch.clean_metadata"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
 				return;
 			}
 			worker.cancel(true);
@@ -693,7 +694,7 @@ public class MetadataCleanerDialog extends JDialog {
 					e.result = handle(e, i + 1, today);
 				} catch (IOException | RuntimeException ex) {
 					failed++;
-					e.result = "Error: " + ex.getMessage();
+					e.result = I18n.t("batch.error") + ex.getMessage();
 					logger.error("Cannot clean " + e.file, ex);
 				}
 				publish(i + 1);
@@ -706,12 +707,12 @@ public class MetadataCleanerDialog extends JDialog {
 			MetadataStripper.Result r = MetadataStripper.processFile(e.file, options);
 			if (!r.supported) {
 				skipped++;
-				return "Not supported";
+				return I18n.t("batch.not_supported");
 			}
 			if (replace) {
 				if (!r.changed()) {
 					unchanged++;
-					return "Nothing to remove";
+					return I18n.t("batch.nothing_to_remove");
 				}
 				if (backup != null) {
 					File saved = unique(new File(backup, e.file.getName()));
@@ -726,24 +727,24 @@ public class MetadataCleanerDialog extends JDialog {
 				}
 				cleaned++;
 				saved += e.size - r.output.length;
-				return "Cleaned (-" + ConversionUtils.coolFileSize(Math.max(0, e.size - r.output.length)) + ")";
+				return I18n.t("batch.cleaned") + ConversionUtils.coolFileSize(Math.max(0, e.size - r.output.length)) + ")";
 			}
 			if (!r.changed() && !copyClean) {
 				unchanged++;
-				return "Nothing to remove (not copied)";
+				return I18n.t("batch.nothing_to_remove_not_copied");
 			}
 			File destination = destinationOf(e, number, today);
 			if (destination.exists()) {
 				if (collision == 2) {
 					skipped++;
-					return "Skipped: " + destination.getName() + " exists";
+					return I18n.t("batch.skipped_2") + destination.getName() + I18n.t("batch.exists");
 				} else if (collision == 0) {
 					destination = unique(destination);
 				}
 			}
 			if (destination.getAbsoluteFile().equals(e.file.getAbsoluteFile())) {
 				skipped++;
-				return "Skipped: same file as the original";
+				return I18n.t("batch.skipped_same_file_as_the_original");
 			}
 			if (r.changed()) {
 				MetadataStripper.writeSafely(r.output, destination);
@@ -760,7 +761,7 @@ public class MetadataCleanerDialog extends JDialog {
 			if (keepDate) {
 				destination.setLastModified(modified);
 			}
-			return r.changed() ? "Cleaned (-" + ConversionUtils.coolFileSize(Math.max(0, e.size - r.output.length)) + ")" : "Copied (no metadata)";
+			return r.changed() ? I18n.t("batch.cleaned") + ConversionUtils.coolFileSize(Math.max(0, e.size - r.output.length)) + ")" : I18n.t("batch.copied_no_metadata");
 		}
 
 		private File destinationOf(Entry e, int number, String today) {
@@ -808,8 +809,8 @@ public class MetadataCleanerDialog extends JDialog {
 
 		@Override
 		protected void done() {
-			String text = (isCancelled() ? "Stopped. " : "Done. ") + cleaned + " cleaned, " + unchanged + " without metadata" + (skipped > 0 ? ", " + skipped + " skipped" : "")
-					+ (failed > 0 ? ", " + failed + " failed" : "") + (saved > 0 ? ", " + ConversionUtils.coolFileSize(saved) + " removed" : "");
+			String text = (isCancelled() ? I18n.t("batch.stopped_2") : I18n.t("batch.done")) + cleaned + I18n.t("batch.cleaned_2") + unchanged + I18n.t("batch.without_metadata") + (skipped > 0 ? ", " + skipped + I18n.t("batch.skipped_3") : "")
+					+ (failed > 0 ? ", " + failed + I18n.t("batch.failed") : "") + (saved > 0 ? ", " + ConversionUtils.coolFileSize(saved) + I18n.t("batch.removed") : "");
 			finished(text);
 		}
 	}
