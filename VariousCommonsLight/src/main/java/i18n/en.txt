@@ -1,0 +1,728 @@
+# English master of the language packs: same keys as every pack, value = the English text. Not loaded at runtime.
+(See tabSize in textEditor subHead panel)	(See tabSize in textEditor subHead panel)
+A restart is required to apply changes, restart now?	A restart is required to apply changes, restart now?
+About - ScreepT	About - ScreepT
+Adapt text width (word wrap)	Adapt text width (word wrap)
+Add Custom Template	Add Custom Template
+Add Selection to Templates	Add Selection to Templates
+Add current configuration to this list	Add current configuration to this list
+Add key Image to Dictionary	Add key Image to Dictionary
+Add new clipboard to this list	Add new clipboard to this list
+Add new file	Add new file
+Add new folder	Add new folder
+Add to Windows context menu after right click on file	Add to Windows context menu after right click on file
+Allow fractional fonts	Allow fractional fonts
+An error occurred :(	An error occurred :(
+An error occurred copying file, so file is still to its original position	An error occurred copying file, so file is still to its original position
+An error occurred moving file, so file is still to its original position	An error occurred moving file, so file is still to its original position
+An error occurred while saving, do you want to exit anyway?	An error occurred while saving, do you want to exit anyway?
+An error occurred!	An error occurred!
+An error occurred, cannot load image :(	An error occurred, cannot load image :(
+An error occurred, cannot load pdf :(	An error occurred, cannot load pdf :(
+An error occurred: cannot save theme to file.<br>{0}	An error occurred: cannot save theme to file.<br>{0}
+Animate brackets	Animate brackets
+Antialiasing enabled	Antialiasing enabled
+Appearance	Appearance
+Apply	Apply
+Are you sure to delete	Are you sure to delete
+Are you sure to delete {0} from disk(cannot be undone)? All eventual selected folders will be deleted with all the file contained in them!	Are you sure to delete {0} from disk(cannot be undone)? All eventual selected folders will be deleted with all the file contained in them!
+Are you sure to delete?	Are you sure to delete?
+Are you sure to overwrite current configuration?	Are you sure to overwrite current configuration?
+Are you sure to reload current theme? all unsaved changes will be lost	Are you sure to reload current theme? all unsaved changes will be lost
+Are you sure to remove all tabs?	Are you sure to remove all tabs?
+Are you sure you want to overwrite	Are you sure you want to overwrite
+At start ScreepT checks whether a new version is available.	At start ScreepT checks whether a new version is available.
+Auto check for file changes	Auto check for file changes
+Auto enhance	Auto enhance
+Auto-check updates	Auto-check updates
+Auto-indentation	Auto-indentation
+Autosave interval, in seconds	Autosave interval, in seconds
+Autosave temp files	Autosave temp files
+Autoscroll	Autoscroll
+Autostart	Autostart
+Autostart, launcher and updates check	Autostart, launcher and updates check
+Background	Background
+Border color	Border color
+Both brackets of the pair are highlighted, not only the matching one.	Both brackets of the pair are highlighted, not only the matching one.
+Brackets and occurrences	Brackets and occurrences
+Brackets matching	Brackets matching
+Brings every option of this window back to the value it had when the window was opened.	Brings every option of this window back to the value it had when the window was opened.
+Browse...	Browse...
+Calculating...	Calculating...
+Calculator	Calculator
+Can Execute	Can Execute
+Can Read	Can Read
+Can Write	Can Write
+Cancel	Cancel
+Cannot Copy!	Cannot Copy!
+Cannot Execute	Cannot Execute
+Cannot Move!	Cannot Move!
+Cannot Read	Cannot Read
+Cannot Write	Cannot Write
+Cannot add it to the context menu:\n	Cannot add it to the context menu:\n
+Cannot change tree depth when workspace view is selected!	Cannot change tree depth when workspace view is selected!
+Cannot create File without name	Cannot create File without name
+Cannot export the html file :(	Cannot export the html file :(
+Cannot export the image:	Cannot export the image:
+Cannot import: invalid theme	Cannot import: invalid theme
+Cannot load syntax scheme, an error occurred	Cannot load syntax scheme, an error occurred
+Cannot load the image:	Cannot load the image:
+Cannot load theme, an error occurred	Cannot load theme, an error occurred
+Cannot open current file in screept because it does not exist.	Cannot open current file in screept because it does not exist.
+Cannot open the browser:	Cannot open the browser:
+Cannot open the web browser :(	Cannot open the web browser :(
+Cannot optimize ScreepT's resources usage, something has gone wrong!	Cannot optimize ScreepT's resources usage, something has gone wrong!
+Cannot read updates, an error occurred :(	Cannot read updates, an error occurred :(
+Cannot remove it from the context menu:\n	Cannot remove it from the context menu:\n
+Cannot rename current file	Cannot rename current file
+Cannot rename!	Cannot rename!
+Cannot restart as administrator: neither ScreepT.bat nor ScreepT.exe found	Cannot restart as administrator: neither ScreepT.bat nor ScreepT.exe found
+Cannot retrieve file	Cannot retrieve file
+Cannot retrieve remote update data, server is unreachable.	Cannot retrieve remote update data, server is unreachable.
+Cannot save the image:	Cannot save the image:
+Cannot save the markdown file :(	Cannot save the markdown file :(
+Change file Panel background	Change file Panel background
+Change font and text-properties	Change font and text-properties
+Change the maximum memory of ScreepT	Change the maximum memory of ScreepT
+Charset ScreepT uses by default to read and write text files.\n\nChange it only if your files are not UTF-8 and special characters look wrong.	Charset ScreepT uses by default to read and write text files.\n\nChange it only if your files are not UTF-8 and special characters look wrong.
+Charset:	Charset:
+Check File hash...	Check File hash...
+Check for software updates...	Check for software updates...
+Choose a name for the configuration to save	Choose a name for the configuration to save
+Choose a name for the new Clipboard (If existing a new unique name like "xxxx(1).ext" will be created)	Choose a name for the new Clipboard (If existing a new unique name like "xxxx(1).ext" will be created)
+Choose between loaded Clipboards	Choose between loaded Clipboards
+Choose between the minimum set in the launcher and what the PC can give now.	Choose between the minimum set in the launcher and what the PC can give now.
+Choose file extension	Choose file extension
+Choose general application Charset to use	Choose general application Charset to use
+Choose general language used (not yet implemented)	Choose general language used (not yet implemented)
+Choose name and folder, save current file	Choose name and folder, save current file
+Choose name used to customize messages and various dialogs and advices	Choose name used to customize messages and various dialogs and advices
+Choose preferred style scheme	Choose preferred style scheme
+Choose security level used for passwords check	Choose security level used for passwords check
+Choose the language of the application	Choose the language of the application
+Cleaning skipped as requested.	Cleaning skipped as requested.
+Cleaning tool...	Cleaning tool...
+Clear Text?	Clear Text?
+Clear filters	Clear filters
+Clear whitespace lines	Clear whitespace lines
+Click this to change your preferred workspace	Click this to change your preferred workspace
+Clicking this you will toggle ON/OFF current workspace view.	Clicking this you will toggle ON/OFF current workspace view.
+ClipBoard Panel	ClipBoard Panel
+Clipboard tool	Clipboard tool
+Close	Close
+Close all	Close all
+Close curly braces	Close curly braces
+Close markup tags	Close markup tags
+Close this dialog and discard every change	Close this dialog and discard every change
+Close this dialog and use current settings with explicit save on phisical file	Close this dialog and use current settings with explicit save on phisical file
+Close this dialog and use current settings without explicit save on phisical file	Close this dialog and use current settings without explicit save on phisical file
+Closes the window and drops every change made here: the previous settings are restored.	Closes the window and drops every change made here: the previous settings are restored.
+Closes the window and uses the current settings for this session. They are written to the configuration file only when it is saved (autosave or on exit).	Closes the window and uses the current settings for this session. They are written to the configuration file only when it is saved (autosave or on exit).
+Closes the window, keeps the current settings and writes them to the configuration file.	Closes the window, keeps the current settings and writes them to the configuration file.
+Code folding	Code folding
+Collapse children nodes	Collapse children nodes
+Color Theme editor	Color Theme editor
+Color picker	Color picker
+Color picker/converter	Color picker/converter
+Color theme of the text editor (syntax colors, background, selection).\n\n	Color theme of the text editor (syntax colors, background, selection).\n\n
+Color used instead of transparency in JPEG and BMP	Color used instead of transparency in JPEG and BMP
+Concatenate Lines	Concatenate Lines
+Configuration Exported!	Configuration Exported!
+Configuration Loaded!	Configuration Loaded!
+Configuration Manager Module	Configuration Manager Module
+Configuration Resetted!	Configuration Resetted!
+Configuration Saved as new Default!	Configuration Saved as new Default!
+Configuration autosave	Configuration autosave
+Configuration not saved!	Configuration not saved!
+Configuration reloaded!	Configuration reloaded!
+Copy	Copy
+Copy all	Copy all
+Copy all selected text to OS clipboards (keeping style)	Copy all selected text to OS clipboards (keeping style)
+Copy current file here	Copy current file here
+Copy directory structure (Copy folders, not files)	Copy directory structure (Copy folders, not files)
+Copy selected file paths	Copy selected file paths
+Copy with syntax highlighting	Copy with syntax highlighting
+Create a new empty tab	Create a new empty tab
+Create directory from String path	Create directory from String path
+Created on:	Created on:
+Creepter Module - Crypt and Decrypt files	Creepter Module - Crypt and Decrypt files
+Crypt and export current opened file. (using ScreepT module)	Crypt and export current opened file. (using ScreepT module)
+Crypt text with given key	Crypt text with given key
+Crypt/Decrypt selected or all text	Crypt/Decrypt selected or all text
+Current clipboard written: {0}	Current clipboard written: {0}
+Current file:	Current file:
+Customize Graphics	Customize Graphics
+Customize...	Customize...
+Cut	Cut
+Decode current selected/all text using base 64 (release control key and click to encode)	Decode current selected/all text using base 64 (release control key and click to encode)
+Decrypt text with given key	Decrypt text with given key
+Decryption completed!	Decryption completed!
+Default EOL	Default EOL
+Delete	Delete
+Delete Directory's content (All except selected)	Delete Directory's content (All except selected)
+Delete Directory's content by extension	Delete Directory's content by extension
+Delete selected Configuration files	Delete selected Configuration files
+Delete selected Key Images	Delete selected Key Images
+Delete selected files	Delete selected files
+Delete?	Delete?
+Dictionary used by the spellchecker of the text editor.\n\nThe spellchecker is switched on and off from the text editor toolbar.	Dictionary used by the spellchecker of the text editor.\n\nThe spellchecker is switched on and off from the text editor toolbar.
+Disable "always on top" over other windows	Disable "always on top" over other windows
+Discard	Discard
+Display	Display
+Displayed:	Displayed:
+Do you want to be asked if any file is changed or unsaved?	Do you want to be asked if any file is changed or unsaved?
+Do you want to reinstall it anyway from the server?	Do you want to reinstall it anyway from the server?
+Do you want to save current file?	Do you want to save current file?
+Double click to reset	Double click to reset
+Draws a mark at the end of every line, so you can see where lines end and spot trailing spaces.	Draws a mark at the end of every line, so you can see where lines end and spot trailing spaces.
+Draws a mark for spaces, tabs and empty lines, to see exactly what is in the text.	Draws a mark for spaces, tabs and empty lines, to see exactly what is in the text.
+Draws a vertical guide line at every tab stop in the indentation of each line (only for indentation made of tab characters, not spaces). Color: 'Tab lines' in the theme editor.	Draws a vertical guide line at every tab stop in the indentation of each line (only for indentation made of tab characters, not spaces). Color: 'Tab lines' in the theme editor.
+EOL:	EOL:
+Edit	Edit
+Edit in Image Studio	Edit in Image Studio
+Editing	Editing
+Element	Element
+Emptied and Deleted!	Emptied and Deleted!
+Empty all content (doesn't delete folders)	Empty all content (doesn't delete folders)
+Empty password	Empty password
+Emulated tabs with spaces	Emulated tabs with spaces
+Enable "always on top" over other windows (if supported)	Enable "always on top" over other windows (if supported)
+Enable/Disable ScreepT to be automatically launched at System startup.	Enable/Disable ScreepT to be automatically launched at System startup.
+Enable/Disable automatic check for updates at start	Enable/Disable automatic check for updates at start
+Enable/Disable error dialog in case of general warnings detected by the application	Enable/Disable error dialog in case of general warnings detected by the application
+Enable/Disable periodic autosave (also when exiting application) current configuration will be automatically saved	Enable/Disable periodic autosave (also when exiting application) current configuration will be automatically saved
+Enable/disable output text area auto-scroll feature	Enable/disable output text area auto-scroll feature
+Encode current selected/all text using base 64 (click this with control key pressed to decode)	Encode current selected/all text using base 64 (click this with control key pressed to decode)
+Encode selected/all text to base 64 (press ctrl to decode base 64)	Encode selected/all text to base 64 (press ctrl to decode base 64)
+Encoding	Encoding
+Encoding, line endings and configuration autosave	Encoding, line endings and configuration autosave
+Encryption completed!	Encryption completed!
+Enter USERNAME	Enter USERNAME
+Enter a command and launch on active process. (to launch command, press enter or click play button)	Enter a command and launch on active process. (to launch command, press enter or click play button)
+Erase Logs	Erase Logs
+Erase the content of the current opened file displayed (without save)	Erase the content of the current opened file displayed (without save)
+Error	Error
+Error creating new file	Error creating new file
+Error during file write	Error during file write
+Error opening file :(	Error opening file :(
+Error opening:	Error opening:
+Error trying to set upper ancestor in file tree :(	Error trying to set upper ancestor in file tree :(
+Exception advices	Exception advices
+Exit	Exit
+Expand children nodes	Expand children nodes
+Export	Export
+Export Current Configuration	Export Current Configuration
+Export Event Log	Export Event Log
+Export selected configurations	Export selected configurations
+Export selected key Images	Export selected key Images
+Export...	Export...
+Exported:	Exported:
+Extra space between the lines of the text editor	Extra space between the lines of the text editor
+Fade highlight	Fade highlight
+File	File
+File Hash checker	File Hash checker
+File Moved	File Moved
+File Name:	File Name:
+File Path:	File Path:
+File Properties	File Properties
+File Size:	File Size:
+File added to templates :)	File added to templates :)
+File content search	File content search
+File does not exist	File does not exist
+File does not exist anymore!	File does not exist anymore!
+File exists	File exists
+File exists, wanna overwrite?	File exists, wanna overwrite?
+File has unsaved changes, do you want to save it before to change tail mode?	File has unsaved changes, do you want to save it before to change tail mode?
+File is not saved, do you want to save it?	File is not saved, do you want to save it?
+File name quick search	File name quick search
+File not created	File not created
+File not saved, maybe folder it's not acessible or locked by an other program?!	File not saved, maybe folder it's not acessible or locked by an other program?!
+File properties	File properties
+File tree	File tree
+File {0} exists, overwrite it?	File {0} exists, overwrite it?
+Files	Files
+Files And Directories	Files And Directories
+Fill	Fill
+Filter by extension or viewer (type to narrow the list)	Filter by extension or viewer (type to narrow the list)
+Filter documents	Filter documents
+Filter plugins by name, description or status...	Filter plugins by name, description or status...
+Find	Find
+Find in the text (Ctrl+F)	Find in the text (Ctrl+F)
+Flip horizontal	Flip horizontal
+Flip vertical	Flip vertical
+Focusable tips	Focusable tips
+Folder	Folder
+Folder does not exist anymore!	Folder does not exist anymore!
+Font	Font
+Font family and size of the text editor.\n\nA monospaced font (for example Consolas) is the best choice: the rectangular selection	Font family and size of the text editor.\n\nA monospaced font (for example Consolas) is the best choice: the rectangular selection
+Font, line spacing and spellchecker	Font, line spacing and spellchecker
+Fonts and graphic elements size; Custom keeps your own values	Fonts and graphic elements size; Custom keeps your own values
+Format	Format
+Format Code according to current selected language (if supported)	Format Code according to current selected language (if supported)
+Full Screen Mode	Full Screen Mode
+GUI style	GUI style
+General	General
+General Options	General Options
+General Options Saved :)	General Options Saved :)
+Generate Key Image	Generate Key Image
+Generate Password	Generate Password
+Generic options	Generic options
+Given file has not been found, cannot load content.	Given file has not been found, cannot load content.
+Given file is NULL, cannot write.	Given file is NULL, cannot write.
+Go to Line number	Go to Line number
+Graphic preferences	Graphic preferences
+Hardware info tool not found in this installation, download plugin and restart in order to use it	Hardware info tool not found in this installation, download plugin and restart in order to use it
+Hash MD5:	Hash MD5:
+Height	Height
+Help	Help
+Hidden File	Hidden File
+Hide launcher at start	Hide launcher at start
+Highlight 2nd languages	Highlight 2nd languages
+How text is rendered and highlighted	How text is rendered and highlighted
+Hyperlinks enabled	Hyperlinks enabled
+IOException while trying to create new File!	IOException while trying to create new File!
+If selected tabs will be o one line, else they will be always visible organized in rows	If selected tabs will be o one line, else they will be always visible organized in rows
+If selected the tabs of the text editor are on one line, else they are organized in rows and always visible	If selected the tabs of the text editor are on one line, else they are organized in rows and always visible
+If you want to modify the memory used by ScreepT	If you want to modify the memory used by ScreepT
+Image Studio	Image Studio
+Image copied to the clipboard	Image copied to the clipboard
+Image metadata...	Image metadata...
+Image type not supported! Do you want to open Image Studio to convert it?	Image type not supported! Do you want to open Image Studio to convert it?
+Import	Import
+Import configuration file or directory content	Import configuration file or directory content
+Import configuration from other installation	Import configuration from other installation
+Import...	Import...
+Import/Export crypted workspace	Import/Export crypted workspace
+Import/Export/Modify themes, or define your own	Import/Export/Modify themes, or define your own
+Import/export crypted workspace using Creept	Import/export crypted workspace using Creept
+In HTML and XML files, typing the end of an opening tag adds the matching closing tag automatically.	In HTML and XML files, typing the end of an opening tag adds the matching closing tag automatically.
+In files that mix languages (for example HTML with JavaScript or CSS) the embedded code gets its own syntax colors.	In files that mix languages (for example HTML with JavaScript or CSS) the embedded code gets its own syntax colors.
+Increase by one level tree depth	Increase by one level tree depth
+Information	Information
+Inject template	Inject template
+Inline Tabs	Inline Tabs
+Inline tabs (one scrolling line)	Inline tabs (one scrolling line)
+Insert classic test text "Lorem Ipsum"	Insert classic test text "Lorem Ipsum"
+Install plugins...	Install plugins...
+Interactive	Interactive
+Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output	Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output
+Interface size	Interface size
+Interline	Interline
+Interline: extra space between lines of text.\n\nEach one has a slider and a box with the exact value.	Interline: extra space between lines of text.\n\nEach one has a slider and a box with the exact value.
+Invalid name, theme not saved!	Invalid name, theme not saved!
+Invalid selection.	Invalid selection.
+It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.
+It replaces the application files with a clean copy, your settings and data are kept.	It replaces the application files with a clean copy, your settings and data are kept.
+It seems that "Always on top" is not supported on this system :(	It seems that "Always on top" is not supported on this system :(
+It was not possible to verify integrity of downloaded updates, install anyway?	It was not possible to verify integrity of downloaded updates, install anyway?
+JPEG quality: lower is smaller and worse	JPEG quality: lower is smaller and worse
+Keeps a temporary copy of the files you are editing and saves it periodically, so work can be recovered after a crash.\n\n	Keeps a temporary copy of the files you are editing and saves it periodically, so work can be recovered after a crash.\n\n
+Language	Language
+Language of the application. Not implemented yet: for now ScreepT speaks English.	Language of the application. Not implemented yet: for now ScreepT speaks English.
+Language of the sample text	Language of the sample text
+Last Access:	Last Access:
+Last Change:	Last Change:
+Last opened files	Last opened files
+Last selected workspaces	Last selected workspaces
+Launch ScreepT automatically when you log in to the system. The button beside it opens the autostart folder of your system.	Launch ScreepT automatically when you log in to the system. The button beside it opens the autostart folder of your system.
+Launch at system startup	Launch at system startup
+Launch selected text or current contiguous text block	Launch selected text or current contiguous text block
+Launcher Settings	Launcher Settings
+Length:	Length:
+Lets you collapse and expand blocks of code (functions, classes, tags) with the markers in the left margin.	Lets you collapse and expand blocks of code (functions, classes, tags) with the markers in the left margin.
+License - ScreepT	License - ScreepT
+Line ending used for new files	Line ending used for new files
+Line ending used for new files: LF (Linux / macOS), CRLF (Windows) or CR.\n\nExisting files keep the line endings they already have unless you convert them.	Line ending used for new files: LF (Linux / macOS), CRLF (Windows) or CR.\n\nExisting files keep the line endings they already have unless you convert them.
+Lines concatenation mode:	Lines concatenation mode:
+Lines that contain only spaces or tabs are cleaned when you leave them, so no invisible trailing whitespace remains.	Lines that contain only spaces or tabs are cleaned when you leave them, so no invisible trailing whitespace remains.
+Lines:	Lines:
+Links found in the text (web addresses, file paths) become clickable with Ctrl + click.	Links found in the text (web addresses, file paths) become clickable with Ctrl + click.
+Live cmd:	Live cmd:
+Load Custom Configuration	Load Custom Configuration
+Load Image & Details	Load Image & Details
+Load Selected configuration	Load Selected configuration
+Load configuration from other installation	Load configuration from other installation
+Load file into text area	Load file into text area
+Load source File	Load source File
+Loading	Loading
+Loads blurry first, then sharp: better for the web	Loads blurry first, then sharp: better for the web
+Lock	Lock
+Log font size	Log font size
+Log level	Log level
+Log level chosen at application start	Log level chosen at application start
+LogSearch	LogSearch
+Login failed	Login failed
+Logs deleted - as you asked ;)	Logs deleted - as you asked ;)
+Logs not deleted - as you asked ;)	Logs not deleted - as you asked ;)
+Long lines wrap at the edge of the editor instead of running out of the window, so no horizontal scrolling is needed.	Long lines wrap at the edge of the editor instead of running out of the window, so no horizontal scrolling is needed.
+Look and feel of the whole application: ScreepT Dark (the default dark theme), the classic light styles, Nimbus and others.\n\n	Look and feel of the whole application: ScreepT Dark (the default dark theme), the classic light styles, Nimbus and others.\n\n
+Look and feel, theme and interface size	Look and feel, theme and interface size
+Lowercase after significant brokers	Lowercase after significant brokers
+Makes selected/all initial characters uppercase	Makes selected/all initial characters uppercase
+Makes selected/all text lowercase	Makes selected/all text lowercase
+Makes selected/all text uppercase or lowercase	Makes selected/all text uppercase or lowercase
+Makes text lowerCase after dots, or a significat line broker	Makes text lowerCase after dots, or a significat line broker
+Makes text uppercase after dots, or a significat line broker	Makes text uppercase after dots, or a significat line broker
+Margin	Margin
+Margin and interline	Margin and interline
+Margin:	Margin:
+Margin: space between the border of the text editor and the text.\n\n	Margin: space between the border of the text editor and the text.\n\n
+Mark end of line	Mark end of line
+Mark occurrences	Mark occurrences
+Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)	Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)
+Max file size (MB)	Max file size (MB)
+Menu font size	Menu font size
+Metadata removed from	Metadata removed from
+Mode	Mode
+Move current file here	Move current file here
+Move current file?	Move current file?
+NB:	NB:
+Name contains... (comma separated)	Name contains... (comma separated)
+Neither ScreepT.exe nor ScreepT.bat found in the installation folder.	Neither ScreepT.exe nor ScreepT.bat found in the installation folder.
+Network	Network
+Network Info	Network Info
+New	New
+New...	New...
+Nimbus dark theme	Nimbus dark theme
+Nimbus size variant	Nimbus size variant
+No	No
+No File	No File
+No file selected	No file selected
+No image in the clipboard	No image in the clipboard
+No text is selected	No text is selected
+Normalize End Of Line	Normalize End Of Line
+Normalize to LF (\\n) - Linux's default	Normalize to LF (\\n) - Linux's default
+Normalize to LF and write to file (\\n) - Linux's default	Normalize to LF and write to file (\\n) - Linux's default
+Normalize to Mac CR (\r) - Old MAC's default	Normalize to Mac CR (\r) - Old MAC's default
+Normalize to Mac CR and write to file (\r) - Old MAC's default	Normalize to Mac CR and write to file (\r) - Old MAC's default
+Normalize to Windows CRLF (\r\\n) - Windows' default	Normalize to Windows CRLF (\r\\n) - Windows' default
+Normalize to Windows CRLF and write to file (\r\\n) - Windows' default	Normalize to Windows CRLF and write to file (\r\\n) - Windows' default
+Not a File... cannot hash!	Not a File... cannot hash!
+Nothing selected, exiting.	Nothing selected, exiting.
+Nothing to download, current version is up to date :)	Nothing to download, current version is up to date :)
+OK	OK
+Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?	Oooops... an error occurred. Continue anyway (you'll lose all unsaved changes)?
+Open	Open
+Open Escape sequences / special characters replacement panel - Selected/all text	Open Escape sequences / special characters replacement panel - Selected/all text
+Open File	Open File
+Open ScreepT temp folder	Open ScreepT temp folder
+Open Templates folder with OS File Explorer	Open Templates folder with OS File Explorer
+Open autostart folder in File System	Open autostart folder in File System
+Open calculator	Open calculator
+Open color sampler	Open color sampler
+Open current clipboard in File System	Open current clipboard in File System
+Open current installation folder	Open current installation folder
+Open folder	Open folder
+Open network options configuration panel	Open network options configuration panel
+Open templates manager	Open templates manager
+Open with browser	Open with browser
+Opens the network options, where you can set the proxy ScreepT uses to reach the internet (for example for the updates check).	Opens the network options, where you can set the proxy ScreepT uses to reach the internet (for example for the updates check).
+Options	Options
+Original deleted.	Original deleted.
+Overwrite	Overwrite
+Overwrite?	Overwrite?
+Paint matched bracket pairs	Paint matched bracket pairs
+Paint occurrences border	Paint occurrences border
+Password checks and proxy	Password checks and proxy
+Password is empty...Fill password text-field!	Password is empty...Fill password text-field!
+Password security	Password security
+Paste	Paste
+Path	Path
+Path of the file or folder to hash (Enter to load)	Path of the file or folder to hash (Enter to load)
+Pending plugin updates have been installed correctly!	Pending plugin updates have been installed correctly!
+Percent	Percent
+Please enter a password, empty key text!	Please enter a password, empty key text!
+Please insert a name for the image to be added (Otherwise current date will be used as filename)	Please insert a name for the image to be added (Otherwise current date will be used as filename)
+Please insert your name:	Please insert your name:
+Please select a directory!	Please select a directory!
+Please select a file!	Please select a file!
+Please select a valid '.png' file!	Please select a valid '.png' file!
+Please select a workspace before to export	Please select a workspace before to export
+Please select a workspace before to import	Please select a workspace before to import
+Please specify a name for the template:	Please specify a name for the template:
+Please specify a valid 'zip' file!	Please specify a valid 'zip' file!
+Plugins	Plugins
+Position	Position
+Position:	Position:
+Preferences	Preferences
+Preview	Preview
+Preview failed:	Preview failed:
+Preview selected configuration	Preview selected configuration
+Procedure aborted	Procedure aborted
+Progressive JPEG	Progressive JPEG
+Proxy settings...	Proxy settings...
+Quality	Quality
+Quality:	Quality:
+Quick notes	Quick notes
+Quick size	Quick size
+Ratio	Ratio
+Read Image & Details	Read Image & Details
+Read Image and parse text	Read Image and parse text
+Read Pdf and parse text	Read Pdf and parse text
+Reading the files of the folder...	Reading the files of the folder...
+Really want to Reset standard ScreepT configuration? Unsaved changes will be lost!	Really want to Reset standard ScreepT configuration? Unsaved changes will be lost!
+Really want to load default config(unsaved changes will be lost)?	Really want to load default config(unsaved changes will be lost)?
+Really want to overwrite default configuration?	Really want to overwrite default configuration?
+Redo	Redo
+Redo Last	Redo Last
+Reduce by one level tree depth	Reduce by one level tree depth
+Refresh tree	Refresh tree
+Reload	Reload
+Reload Clipboard List	Reload Clipboard List
+Reload Configuration	Reload Configuration
+Reload Templates List	Reload Templates List
+Reload current Clipboard (be careful, unsaved changes will be lost)	Reload current Clipboard (be careful, unsaved changes will be lost)
+Reload current file from Disk	Reload current file from Disk
+Remove All loaded Tabs!!!	Remove All loaded Tabs!!!
+Remove from Windows file right click context menu	Remove from Windows file right click context menu
+Remove spaces from selected/all text	Remove spaces from selected/all text
+Remove spaces from selected/all text)	Remove spaces from selected/all text)
+Remove specific words from selected/all text	Remove specific words from selected/all text
+Rename	Rename
+Rename selected (files only)	Rename selected (files only)
+Replace	Replace
+Replace every tab with {0} spaces {1}	Replace every tab with {0} spaces {1}
+Replace every {0} spaces with a tab {1}	Replace every {0} spaces with a tab {1}
+Replace text	Replace text
+Reset	Reset
+Reset Configuration manager	Reset Configuration manager
+Reset CreepT	Reset CreepT
+Reset Original Configuration	Reset Original Configuration
+Reset Text Editor	Reset Text Editor
+Reset all	Reset all
+Reset all Panels	Reset all Panels
+Reset crop	Reset crop
+Reset default text-graphics values reading them from current configuration file.	Reset default text-graphics values reading them from current configuration file.
+Reset initial values	Reset initial values
+Reset panels...	Reset panels...
+Resources usage was already optimized, but I've done my best to improve it ;)	Resources usage was already optimized, but I've done my best to improve it ;)
+Restart	Restart
+Restart as administrator	Restart as administrator
+Result number limited to	Result number limited to
+Return to Welcome Page	Return to Welcome Page
+Revert	Revert
+Rotate left	Rotate left
+Rotate right	Rotate right
+Round selection edges	Round selection edges
+Save	Save
+Save Current Configuration	Save Current Configuration
+Save Current Configuration as Default	Save Current Configuration as Default
+Save Values	Save Values
+Save a clean copy...	Save a clean copy...
+Save as...	Save as...
+Save current Clipboard	Save current Clipboard
+Save current file	Save current file
+Save current file as...	Save current file as...
+Saved!	Saved!
+Saved:	Saved:
+ScreepT must be restarted to begin update procedure: do you want to restart now?	ScreepT must be restarted to begin update procedure: do you want to restart now?
+ScreepT's Resources usage optimized.	ScreepT's Resources usage optimized.
+Scroll tabs with mouse wheel	Scroll tabs with mouse wheel
+Search an element (comment, caret, gutter...)	Search an element (comment, caret, gutter...)
+Search completed with <b>{0}</b> results! </br><u>{1}</u>	Search completed with <b>{0}</b> results! </br><u>{1}</u>
+Search files by name	Search files by name
+Search for text in selected files content	Search for text in selected files content
+Search for text into file(s) with various options	Search for text into file(s) with various options
+Search in terminal	Search in terminal
+Search in the guide (Ctrl+F)	Search in the guide (Ctrl+F)
+Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)	Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)
+Search interrupted by user!	Search interrupted by user!
+Search options (Ctrl+F)	Search options (Ctrl+F)
+Search recursively files in workspace or custom folder by entering wildcard file name to search for	Search recursively files in workspace or custom folder by entering wildcard file name to search for
+Search text into current editor	Search text into current editor
+Search text into files	Search text into files
+Security and network	Security and network
+Security level used when ScreepT checks passwords (for example in the crypter).	Security level used when ScreepT checks passwords (for example in the crypter).
+Sel. Column:	Sel. Column:
+Sel. length:	Sel. length:
+Sel. line:	Sel. line:
+Select a directory!	Select a directory!
+Select all	Select all
+Select all nodes	Select all nodes
+Select language	Select language
+Select source before to search!	Select source before to search!
+Selecting a word highlights all its other occurrences in the file.	Selecting a word highlights all its other occurrences in the file.
+Selection is not a folder!	Selection is not a folder!
+Set bold style to all text	Set bold style to all text
+Settings	Settings
+Settings saved :)	Settings saved :)
+Show Tabs	Show Tabs
+Show all metadata...	Show all metadata...
+Show bracket popup	Show bracket popup
+Show the image without the pending edits (B)	Show the image without the pending edits (B)
+Show whitespaces and empty lines	Show whitespaces and empty lines
+Show/hide document map panel	Show/hide document map panel
+Show/hide file document clipboard panel	Show/hide file document clipboard panel
+Show/hide file explorer panel	Show/hide file explorer panel
+Show/hide the Quick notes - (Ctrl+Alt+N)	Show/hide the Quick notes - (Ctrl+Alt+N)
+Shows an advice window when an exception happens inside ScreepT, so you know that something went wrong.\n\nErrors are written to the log in any case.	Shows an advice window when an exception happens inside ScreepT, so you know that something went wrong.\n\nErrors are written to the log in any case.
+Size	Size
+Size of fonts and graphic elements of the whole interface: Mini, Small, Medium, Big, XXL or Custom.\n\n	Size of fonts and graphic elements of the whole interface: Mini, Small, Medium, Big, XXL or Custom.\n\n
+Size of the font used by the log area at the bottom of the application.	Size of the font used by the log area at the bottom of the application.
+Size of the sample text (only the preview)	Size of the sample text (only the preview)
+Size:	Size:
+Smooths the edges of the letters in the text editor. Turn it off only if text looks blurry on your screen.	Smooths the edges of the letters in the text editor. Turn it off only if text looks blurry on your screen.
+Some texts may stay in English until translated	Some texts may stay in English until translated
+Something has gone wrong :(	Something has gone wrong :(
+Something has gone wrong, it's possible that UTF charset can be causing problems :(	Something has gone wrong, it's possible that UTF charset can be causing problems :(
+Something went wrong :( Some files may still contain stuff.	Something went wrong :( Some files may still contain stuff.
+Sorround with tag	Sorround with tag
+Sorry, something went wrong :(	Sorry, something went wrong :(
+Space between the border of the text editor and the text	Space between the border of the text editor and the text
+Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable	Speak the text written in the text area (only english). Use the upper slider to change speed before to play, press again to disable
+Specify folder name	Specify folder name
+Specify new name	Specify new name
+Specify the name of the folder to create:	Specify the name of the folder to create:
+Specify the tag to use for sorrounding	Specify the tag to use for sorrounding
+Specify the word you want to remove	Specify the word you want to remove
+Specify theme file name	Specify theme file name
+Spellchecker dictionary	Spellchecker dictionary
+Start	Start
+Startup and updates	Startup and updates
+Stop execution	Stop execution
+Stop process?	Stop process?
+Style	Style
+Switch Immersive Mode ON/OFF (Press ESC to exit)	Switch Immersive Mode ON/OFF (Press ESC to exit)
+Sync clipboard style	Sync clipboard style
+System Console	System Console
+System Info	System Info
+Tab size:	Tab size:
+Template Added to collection.	Template Added to collection.
+Templates	Templates
+Templates Manager	Templates Manager
+Templates manager -	Templates manager -
+Tesseract not found on this installation: update your libraries plugin to use this function!	Tesseract not found on this installation: update your libraries plugin to use this function!
+Text	Text
+Text Editor Module	Text Editor Module
+Text color	Text color
+Text editor	Text editor
+Text editor font: a monospaced one (e.g. Consolas) keeps rectangular selections aligned	Text editor font: a monospaced one (e.g. Consolas) keeps rectangular selections aligned
+Text transformation	Text transformation
+Text-Editor	Text-Editor
+TextToSpeech not found on this installation: update your libraries plugin to use this function!	TextToSpeech not found on this installation: update your libraries plugin to use this function!
+The Tab key inserts spaces instead of a tab character; the number of spaces is the tab size of the editor.	The Tab key inserts spaces instead of a tab character; the number of spaces is the tab size of the editor.
+The change is applied immediately to every open window. Discard brings back the previous style.	The change is applied immediately to every open window. Discard brings back the previous style.
+The changes of the current theme are not saved: switch theme and lose them?	The changes of the current theme are not saved: switch theme and lose them?
+The clipboard is busy, try again	The clipboard is busy, try again
+The clipboard panel uses the same colors and syntax style as the text editor.	The clipboard panel uses the same colors and syntax style as the text editor.
+The highlight of the current line fades out softly instead of being drawn as a solid band.	The highlight of the current line fades out softly instead of being drawn as a solid band.
+The highlight of the matching bracket is animated, so it is easier to notice.	The highlight of the matching bracket is animated, so it is easier to notice.
+The highlighted occurrences also get a border around them.	The highlighted occurrences also get a border around them.
+The launcher window (loading progress) is not shown while ScreepT starts.	The launcher window (loading progress) is not shown while ScreepT starts.
+The name ScreepT uses to customize messages, dialogs and advices. It is also the name the home assistant calls you by.	The name ScreepT uses to customize messages, dialogs and advices. It is also the name the home assistant calls you by.
+The selection of text has rounded corners instead of square ones.	The selection of text has rounded corners instead of square ones.
+The tabs of the open files stay on one scrolling line.	The tabs of the open files stay on one scrolling line.
+The text itself is not modified.	The text itself is not modified.
+Theme	Theme
+Theme Editor	Theme Editor
+Theme import failed! (See logs for details)	Theme import failed! (See logs for details)
+Theme imported.	Theme imported.
+There are Files changed after decrypt.. do you want to return to ScreepT view?	There are Files changed after decrypt.. do you want to return to ScreepT view?
+There are changes not saved: close the theme editor and lose them?	There are changes not saved: close the theme editor and lose them?
+There was an error writing to {0}	There was an error writing to {0}
+This function will collapse tree expanded elements	This function will collapse tree expanded elements
+This function will reselect current file into file tree(if found)	This function will reselect current file into file tree(if found)
+This name already exists, wanna overwrite?	This name already exists, wanna overwrite?
+This number will be used as number of spaces for each tab pressed.	This number will be used as number of spaces for each tab pressed.
+This type of file is not fully supported [{0}] : Load anyway?	This type of file is not fully supported [{0}] : Load anyway?
+This will lock/unlock sync of file tree and current file opened in editor.	This will lock/unlock sync of file tree and current file opened in editor.
+This will show/hide the integrated console panel	This will show/hide the integrated console panel
+Tips and auto-completion hints can take the focus, so you can scroll and select inside them.	Tips and auto-completion hints can take the focus, so you can scroll and select inside them.
+Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.	Toggle SpellChecker ON/OFF - (NB: this can be really slow with custom dictionaries, I suggest you to turn off this feature when you are not using it.
+Toggle footer panel visibility on/off	Toggle footer panel visibility on/off
+Toggle header panel visibility on/off	Toggle header panel visibility on/off
+Toggle sub-header panel visibility on/off	Toggle sub-header panel visibility on/off
+Tools	Tools
+Transparency	Transparency
+Turn tail -f modality ON/OFF for current tab. When active text will be automatically refreshed from file, but cannot be edited.	Turn tail -f modality ON/OFF for current tab. When active text will be automatically refreshed from file, but cannot be edited.
+Typing an opening curly brace adds the closing one automatically.	Typing an opening curly brace adds the closing one automatically.
+Typing helpers, tabs and files	Typing helpers, tabs and files
+Undo	Undo
+Undo Last	Undo Last
+Unexisting file	Unexisting file
+Updates will be installed when you'll close current session	Updates will be installed when you'll close current session
+Uppercase First letter - Files&Directories	Uppercase First letter - Files&Directories
+Uppercase after significant brokers	Uppercase after significant brokers
+Uppercase first letters	Uppercase first letters
+Uppercase/Lowercase text	Uppercase/Lowercase text
+Use as Key	Use as Key
+Use as workspace	Use as workspace
+Use custom folder:	Use custom folder:
+Use the slider or type the value in the box: both follow each other.	Use the slider or type the value in the box: both follow each other.
+Use workspace	Use workspace
+Use workspace:	Use workspace:
+User Guide	User Guide
+User name	User name
+User name, language and sounds	User name, language and sounds
+Username must be between 1-26 characters!	Username must be between 1-26 characters!
+Uses fractional font metrics: letters are spaced more precisely, especially with non-integer scaling.	Uses fractional font metrics: letters are spaced more precisely, especially with non-integer scaling.
+Various	Various
+Verbosity of the application log, chosen when the application starts. A more detailed level helps to investigate problems but writes more.	Verbosity of the application log, chosen when the application starts. A more detailed level helps to investigate problems but writes more.
+View	View
+View Key Dictionary	View Key Dictionary
+View in Command line	View in Command line
+View in File System explorer	View in File System explorer
+View in System Explorer	View in System Explorer
+View in system explorer	View in system explorer
+View lineFeeds (From File)	View lineFeeds (From File)
+View lineFeeds (From Loaded Text)	View lineFeeds (From Loaded Text)
+View the properties of current file.	View the properties of current file.
+Viewer associations...	Viewer associations...
+Viewers	Viewers
+Visible File	Visible File
+Visit Website	Visit Website
+Voice rate (Text speaker plugin)	Voice rate (Text speaker plugin)
+Volume	Volume
+Volume of the application sounds	Volume of the application sounds
+Volume of the application sounds (clicks, alerts). Move the slider to hear the difference; the number beside it is the current value.	Volume of the application sounds (clicks, alerts). Move the slider to hear the difference; the number beside it is the current value.
+Wanna reload? If document is different or changed by another application, you will lose all unsaved changes... Continue?	Wanna reload? If document is different or changed by another application, you will lose all unsaved changes... Continue?
+Wanna save current before reload?	Wanna save current before reload?
+Warning	Warning
+Watches the open files: when another program modifies one of them, ScreepT notices it and lets you reload it.	Watches the open files: when another program modifies one of them, ScreepT notices it and lets you reload it.
+What's new (changelog)	What's new (changelog)
+When checked, language selector will not be auto updated according to current file type	When checked, language selector will not be auto updated according to current file type
+When checked, launcher will not be shown on startup	When checked, launcher will not be shown on startup
+When executing, all executed lines will be concatenated with chosen mode	When executing, all executed lines will be concatenated with chosen mode
+When selected, the text will be cropped to adapt the size of the text area	When selected, the text will be cropped to adapt the size of the text area
+When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)	When selected, the text will be cropped to adapt the size of the text area (without breaking words into fragments)
+When the cursor is next to a bracket, the matching bracket is highlighted.	When the cursor is next to a bracket, the matching bracket is highlighted.
+When the matching bracket is out of the visible area, a small popup shows the line it is on.	When the matching bracket is out of the visible area, a small popup shows the line it is on.
+When you press Enter, the new line starts with the same indentation as the previous one.	When you press Enter, the new line starts with the same indentation as the previous one.
+Where the clean copies are written (required)	Where the clean copies are written (required)
+Where the new images are written (required)	Where the new images are written (required)
+Width	Width
+Windows contextual menu management	Windows contextual menu management
+Workspace:	Workspace:
+Yes	Yes
+You can also define your own theme from the Text editor menu.	You can also define your own theme from the Text editor menu.
+Your original file is not touched until you save.	Your original file is not touched until you save.
+[No file loaded]	[No file loaded]
+change font size	change font size
+error Saving the selected file :(	error Saving the selected file :(
+every	every
+go to next tab in history(if available)	go to next tab in history(if available)
+go to previous tab in history(if available)	go to previous tab in history(if available)
+remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors.	remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors.
+seconds	seconds
+selected files	selected files
+you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well).	you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well).
+{0} is not saved, do you want to save it before to crypt?	{0} is not saved, do you want to save it before to crypt?
+{0} results found!	{0} results found!
+{0} saved!	{0} saved!
+~Are you sure to delete	Are you sure to delete
+~Are you sure to move current file into [	Are you sure to move current file into [
+~Are you sure you want to overwrite	Are you sure you want to overwrite
+~Cannot export the image:	Cannot export the image:
+~Cannot load the image:	Cannot load the image:
+~Cannot open the browser:	Cannot open the browser:
+~Cannot save the image:	Cannot save the image:
+~Copy of	Copy of
+~Create New file in	Create New file in
+~Exported:	Exported:
+~Loading	Loading
+~Metadata removed from	Metadata removed from
+~Plese specify a name for the file to save in	Plese specify a name for the file to save in
+~Preview failed:	Preview failed:
+~Result number limited to	Result number limited to
+~Saved:	Saved:
+~Specify new name for	Specify new name for
