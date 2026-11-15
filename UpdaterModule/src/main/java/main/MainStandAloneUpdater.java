@@ -613,7 +613,12 @@ public class MainStandAloneUpdater {
 			UpdateProgressPanel.forceDisposeSafe(panel);
 			if(!validLogin) {
 				String why = dumper.getLastError();
-				dialogHelper.error(why == null ? "Login failed" : "Login failed: " + why);
+				int choice = javax.swing.JOptionPane.showOptionDialog(null, why == null ? "Login failed" : "Login failed: " + why, "Login failed",
+						javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.ERROR_MESSAGE, null, new Object[] { "Retry", "Abort" }, "Retry");
+				if (choice != 0) {
+					logger.error("Uploader aborted by the user (login failed)");
+					System.exit(1);
+				}
 				PSW = "";
 			}
 
@@ -666,7 +671,10 @@ public class MainStandAloneUpdater {
 			if (uploadError == null) {
 				new JOptionHelper(null).info("FTP upload completed!", "Upload completed");
 			} else {
-				new JOptionHelper(null).error("FTP upload FAILED, remaining files NOT uploaded:\n" + uploadError, "Upload failed");
+				javax.swing.JOptionPane.showOptionDialog(null, "FTP upload FAILED, remaining files NOT uploaded:\n" + uploadError, "Upload failed",
+						javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.ERROR_MESSAGE, null, new Object[] { "Abort" }, "Abort");
+				logger.error("Uploader closed with the Abort button");
+				System.exit(1); // non-zero exit code: the publish script stops here
 			}
 		}
 	}

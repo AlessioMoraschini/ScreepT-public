@@ -39,6 +39,8 @@ public class FtpDumper {
 	public static int READ_TIMEOUT = 60000;
 	public static int MAX_UPLOAD_ATTEMPTS = 3;
 	private static final long RETRY_PAUSE_MS = 2000;
+	/** A port that is not the standard FTP one is tried this long before falling back to 21 */
+	private static final int ALTERNATIVE_PORT_PROBE_MS = 8000;
 	
 	private UploadAction uploadAction = new UploadAction(){};
 	private DownloadAction downloadAction = new DownloadAction(){};
@@ -52,6 +54,8 @@ public class FtpDumper {
 	
 	private boolean connected = false;
 	private String lastError = null;
+	/** Port that really answered (-1 until the first connection) */
+	private int workingPort = -1;
 	/** Folder the server puts the user in after the login: relative folders start from here */
 	private String homeDir = "/";
 		
@@ -127,8 +131,7 @@ public class FtpDumper {
 			// Timeouts must be set BEFORE connect(), otherwise an unreachable server blocks forever
 			ftps.setConnectTimeout(CONNECTION_TIMEOUT);
 			ftps.setDefaultTimeout(READ_TIMEOUT);
-			ftps.setDefaultPort(port);
-			ftps.connect(hostFTP);
+			openControlConnection(ftps);
 			ftps.setSoTimeout(READ_TIMEOUT);
 			ftps.setDataTimeout(READ_TIMEOUT);
             ftps.setKeepAlive(true);
@@ -136,7 +139,7 @@ public class FtpDumper {
             res = ftps.login(usr, psw);
         }catch(Exception e){
 			logger.error("Cannot connect to server: ", e);
-			lastError = "Cannot connect to " + hostFTP + ":" + port + " (" + describe(e) + ")";
+			lastError = "Cannot connect to " + hostFTP + ":" + (workingPort > 0 ? workingPort : port) + " (" + describe(e) + ")";
 			try { ftps.disconnect(); } catch (Exception ignored) { }
 			ConnectException ce = new ConnectException(lastError);
 			ce.initCause(e);
@@ -166,6 +169,41 @@ public class FtpDumper {
 		return res;
 	}
 	
+	/**
+	 * Opens the control connection on the configured port. FTPS runs on 21: a configured port that does not answer (22, for
+	 * instance, is SFTP) is tried briefly and then replaced by 21, and the port that worked is remembered.
+	 */
+	private void openControlConnection(FTPSClient client) throws IOException {
+		int[] candidates;
+		if (workingPort > 0) {
+			candidates = new int[] { workingPort };
+		} else if (port <= 0 || port == 21) {
+			candidates = new int[] { 21 };
+		} else {
+			candidates = new int[] { port, 21 };
+		}
+		IOException last = null;
+		for (int i = 0; i < candidates.length; i++) {
+			boolean hasAlternative = i < candidates.length - 1;
+			try {
+				client.setConnectTimeout(hasAlternative ? Math.min(CONNECTION_TIMEOUT, ALTERNATIVE_PORT_PROBE_MS) : CONNECTION_TIMEOUT);
+				client.connect(hostFTP, candidates[i]);
+				workingPort = candidates[i];
+				if (workingPort != port) {
+					logger.warn("Port " + port + " does not answer: connected on the standard FTP port " + workingPort + " (fix the PORT of the configuration)");
+				}
+				return;
+			} catch (IOException e) {
+				last = e;
+				try { client.disconnect(); } catch (Exception ignored) { }
+				if (hasAlternative) {
+					logger.warn("Port " + candidates[i] + " not reachable (" + describe(e) + "): trying the standard FTP port 21");
+				}
+			}
+		}
+		throw last;
+	}
+
 	/** Human readable reason of the last failed connect/upload, or null if none. */
 	public String getLastError() {
 		return lastError;
