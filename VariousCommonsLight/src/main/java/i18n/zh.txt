@@ -1,0 +1,222 @@
+# ScreepT language pack (zh): english<TAB>translation. Every new UI text must be added here.
+About - ScreepT	关于 - ScreepT
+Add to Windows context menu after right click on file	添加到 Windows 右键菜单（右键单击文件）
+Apply	应用
+Auto enhance	自动增强
+Auto-check updates	自动检查更新
+Autosave interval, in seconds	自动保存间隔（秒）
+Background	背景
+Border color	边框颜色
+Browse...	浏览...
+Calculator	计算器
+Cancel	取消
+Cannot load the image:	无法加载图像：
+Cannot save the image:	无法保存图像：
+Cannot export the image:	无法导出图像：
+Charset:	字符集：
+Check for software updates...	检查软件更新...
+Choose general application Charset to use	选择应用程序使用的通用字符集
+Choose general language used (not yet implemented)	选择应用程序的通用语言
+Choose security level used for passwords check	选择密码检查的安全级别
+Cleaning tool...	清理工具...
+Clear filters	清除筛选
+Clipboard tool	剪贴板工具
+Close	关闭
+Color Theme editor	颜色主题编辑器
+Color picker	取色器
+Color used instead of transparency in JPEG and BMP	JPEG 和 BMP 中代替透明的颜色
+Configuration Manager Module	配置管理模块
+Copy	复制
+Copy all	全部复制
+Copy directory structure (Copy folders, not files)	复制目录结构（复制文件夹，不含文件）
+Creepter Module - Crypt and Decrypt files	Creepter 模块 - 加密和解密文件
+Crypt/Decrypt selected or all text	加密/解密所选文本或全部文本
+Customize Graphics	自定义界面
+Decryption completed!	解密完成！
+Encryption completed!	加密完成！
+Delete Directory's content (All except selected)	删除目录内容（所选项除外）
+Delete Directory's content by extension	按扩展名删除目录内容
+Disable "always on top" over other windows	取消窗口“置顶”
+Enable "always on top" over other windows (if supported)	窗口置顶（如果支持）
+Double click to reset	双击重置
+EOL:	换行符：
+Edit in Image Studio	在 Image Studio 中编辑
+Element	元素
+Empty all content (doesn't delete folders)	清空所有内容（不删除文件夹）
+Erase Logs	清除日志
+Exception advices	异常提示
+Exit	退出
+Export	导出
+Export...	导出...
+Export Current Configuration	导出当前配置
+Export Event Log	导出事件日志
+File	文件
+File Hash checker	文件哈希校验
+File Properties	文件属性
+File content search	文件内容搜索
+File name quick search	按文件名快速搜索
+Files And Directories	文件和目录
+Fill	填充
+Flip horizontal	水平翻转
+Flip vertical	垂直翻转
+Folder	文件夹
+Format	格式
+Full Screen Mode	全屏模式
+General Options	常规选项
+Generate Key Image	生成密钥图像
+Generate Password	生成密码
+Height	高度
+Help	帮助
+Hide launcher at start	启动时隐藏启动器
+Image Studio	Image Studio
+Image copied to the clipboard	图像已复制到剪贴板
+Image metadata...	图像元数据...
+Import	导入
+Import...	导入...
+Import/Export crypted workspace	导入/导出加密工作区
+Inline Tabs	内联标签页
+Install plugins...	安装插件...
+JPEG quality: lower is smaller and worse	JPEG 质量：越低文件越小，画质越差
+Language of the sample text	示例文本的语言
+Last opened files	最近打开的文件
+Last selected workspaces	最近选择的工作区
+Launch at system startup	随系统启动
+Launcher Settings	启动器设置
+Length:	长度：
+License - ScreepT	许可证 - ScreepT
+Line ending used for new files	新文件使用的换行符
+Lines:	行数：
+Load Custom Configuration	加载自定义配置
+Load configuration from other installation	从其他安装加载配置
+Loading	正在加载
+Loads blurry first, then sharp: better for the web	先模糊后清晰加载：更适合网页
+Lock	锁定
+Log level chosen at application start	应用程序启动时选择的日志级别
+LogSearch	LogSearch
+Margin:	边距：
+Mode	模式
+Network Info	网络信息
+No file selected	未选择文件
+No image in the clipboard	剪贴板中没有图像
+Open ScreepT temp folder	打开 ScreepT 临时文件夹
+Open autostart folder in File System	打开自动启动文件夹
+Open current installation folder	打开当前安装文件夹
+Open folder	打开文件夹
+Open network options configuration panel	打开网络选项配置面板
+Percent	百分比
+Plugins	插件
+Position	位置
+Preferences	首选项
+Preview	预览
+Progressive JPEG	渐进式 JPEG
+Proxy settings...	代理设置...
+Quality	质量
+Quick notes	快速笔记
+Quick size	快速尺寸
+Ratio	比例
+Refresh tree	刷新目录树
+Reload	重新加载
+Reload Configuration	重新加载配置
+Remove from Windows file right click context menu	从 Windows 右键菜单中移除
+Reset	重置
+Reset Configuration manager	重置配置管理器
+Reset Original Configuration	恢复原始配置
+Reset Text Editor	重置文本编辑器
+Reset all	全部重置
+Reset all Panels	重置所有面板
+Reset crop	重置裁剪
+Reset panels...	重置面板...
+Restart	重新启动
+Restart as administrator	以管理员身份重新启动
+Return to Welcome Page	返回欢迎页
+Revert	还原
+Rotate left	向左旋转
+Rotate right	向右旋转
+Save	保存
+Save Current Configuration	保存当前配置
+Save Current Configuration as Default	将当前配置保存为默认
+Save a clean copy...	保存干净副本...
+Save as...	另存为...
+Search files by name	按名称搜索文件
+Search text into files	在文件中搜索文本
+Show Tabs	显示制表符
+Show all metadata...	显示所有元数据...
+Show the image without the pending edits (B)	显示未应用修改的图像 (B)
+Show/hide the Quick notes - (Ctrl+Alt+N)	显示/隐藏快速笔记 - (Ctrl+Alt+N)
+Size	大小
+Size of the sample text (only the preview)	示例文本大小（仅预览）
+Start	开始
+Style	样式
+Switch Immersive Mode ON/OFF (Press ESC to exit)	开启/关闭沉浸模式（按 ESC 退出）
+System Console	系统控制台
+System Info	系统信息
+Tab size:	制表符大小：
+Templates	模板
+Text	文本
+Text Editor Module	文本编辑器模块
+Text color	文字颜色
+Text transformation	文本转换
+Text-Editor	文本编辑器
+The clipboard is busy, try again	剪贴板正忙，请重试
+Theme	主题
+Theme Editor	主题编辑器
+Transparency	透明度
+Undo	撤销
+Use custom folder:	使用自定义文件夹：
+Use workspace:	使用工作区：
+User Guide	用户指南
+Various	其他
+View Key Dictionary	查看密钥字典
+View in system explorer	在资源管理器中查看
+Visit Website	访问网站
+Voice rate (Text speaker plugin)	语速（文本朗读插件）
+Volume of the application sounds	应用程序声音音量
+What's new (changelog)	更新内容（更新日志）
+Width	宽度
+Windows contextual menu management	Windows 右键菜单管理
+every	每
+seconds	秒
+Yes	是
+No	否
+OK	确定
+Open	打开
+Language	语言
+Select language	选择语言
+Choose the language of the application	选择应用程序语言
+Some texts may stay in English until translated	部分文本在翻译之前可能仍为英文
+Search an element (comment, caret, gutter...)	搜索元素（注释、光标、行号栏...）
+Preview failed:	预览失败：
+Metadata removed from	已移除元数据：
+Saved:	已保存：
+Exported:	已导出：
+Current file:	当前文件：
+File tree	文件树
+Displayed:	显示：
+Sel. Column:	选中列：
+Sel. length:	选中长度：
+Sel. line:	选中行：
+Position:	位置：
+Size:	大小：
+Quality:	质量：
+Use workspace	使用工作区
+Reading the files of the folder...	正在读取文件夹中的文件...
+Result number limited to	结果数量限制为
+Overwrite	覆盖
+Close all	全部关闭
+Select all	全选
+Cut	剪切
+Paste	粘贴
+Redo	重做
+Find	查找
+Replace	替换
+Delete	删除
+Rename	重命名
+New	新建
+Edit	编辑
+View	视图
+Tools	工具
+Options	选项
+Settings	设置
+Warning	警告
+Error	错误
+Information	信息

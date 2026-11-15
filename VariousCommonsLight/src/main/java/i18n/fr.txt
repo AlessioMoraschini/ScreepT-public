@@ -1,0 +1,222 @@
+# ScreepT language pack (fr): english<TAB>translation. Every new UI text must be added here.
+About - ScreepT	À propos - ScreepT
+Add to Windows context menu after right click on file	Ajouter au menu contextuel de Windows (clic droit sur un fichier)
+Apply	Appliquer
+Auto enhance	Amélioration automatique
+Auto-check updates	Rechercher les mises à jour automatiquement
+Autosave interval, in seconds	Intervalle de sauvegarde automatique, en secondes
+Background	Arrière-plan
+Border color	Couleur de la bordure
+Browse...	Parcourir...
+Calculator	Calculatrice
+Cancel	Annuler
+Cannot load the image:	Impossible de charger l'image :
+Cannot save the image:	Impossible d'enregistrer l'image :
+Cannot export the image:	Impossible d'exporter l'image :
+Charset:	Jeu de caractères :
+Check for software updates...	Rechercher des mises à jour du logiciel...
+Choose general application Charset to use	Choisissez le jeu de caractères général de l'application
+Choose general language used (not yet implemented)	Choisissez la langue générale de l'application
+Choose security level used for passwords check	Choisissez le niveau de sécurité pour la vérification des mots de passe
+Cleaning tool...	Outil de nettoyage...
+Clear filters	Effacer les filtres
+Clipboard tool	Outil presse-papiers
+Close	Fermer
+Color Theme editor	Éditeur de thèmes de couleurs
+Color picker	Sélecteur de couleur
+Color used instead of transparency in JPEG and BMP	Couleur utilisée à la place de la transparence en JPEG et BMP
+Configuration Manager Module	Module de gestion de la configuration
+Copy	Copier
+Copy all	Tout copier
+Copy directory structure (Copy folders, not files)	Copier la structure des dossiers (dossiers, pas fichiers)
+Creepter Module - Crypt and Decrypt files	Module Creepter - Chiffrer et déchiffrer des fichiers
+Crypt/Decrypt selected or all text	Chiffrer/déchiffrer le texte sélectionné ou tout
+Customize Graphics	Personnaliser l'affichage
+Decryption completed!	Déchiffrement terminé !
+Encryption completed!	Chiffrement terminé !
+Delete Directory's content (All except selected)	Supprimer le contenu du dossier (tout sauf la sélection)
+Delete Directory's content by extension	Supprimer le contenu du dossier par extension
+Disable "always on top" over other windows	Désactiver « toujours au premier plan » sur les autres fenêtres
+Enable "always on top" over other windows (if supported)	Activer « toujours au premier plan » sur les autres fenêtres (si pris en charge)
+Double click to reset	Double-clic pour réinitialiser
+EOL:	Fin de ligne :
+Edit in Image Studio	Modifier dans Image Studio
+Element	Élément
+Empty all content (doesn't delete folders)	Vider tout le contenu (ne supprime pas les dossiers)
+Erase Logs	Effacer les journaux
+Exception advices	Avertissements d'exception
+Exit	Quitter
+Export	Exporter
+Export...	Exporter...
+Export Current Configuration	Exporter la configuration actuelle
+Export Event Log	Exporter le journal des événements
+File	Fichier
+File Hash checker	Vérificateur de hash de fichiers
+File Properties	Propriétés du fichier
+File content search	Recherche dans le contenu des fichiers
+File name quick search	Recherche rapide par nom de fichier
+Files And Directories	Fichiers et dossiers
+Fill	Remplissage
+Flip horizontal	Retourner horizontalement
+Flip vertical	Retourner verticalement
+Folder	Dossier
+Format	Format
+Full Screen Mode	Mode plein écran
+General Options	Options générales
+Generate Key Image	Générer une image clé
+Generate Password	Générer un mot de passe
+Height	Hauteur
+Help	Aide
+Hide launcher at start	Masquer le launcher au démarrage
+Image Studio	Image Studio
+Image copied to the clipboard	Image copiée dans le presse-papiers
+Image metadata...	Métadonnées de l'image...
+Import	Importer
+Import...	Importer...
+Import/Export crypted workspace	Importer/exporter l'espace de travail chiffré
+Inline Tabs	Onglets en ligne
+Install plugins...	Installer des plugins...
+JPEG quality: lower is smaller and worse	Qualité JPEG : plus basse = plus petit et moins bon
+Language of the sample text	Langage du texte d'exemple
+Last opened files	Derniers fichiers ouverts
+Last selected workspaces	Derniers espaces de travail sélectionnés
+Launch at system startup	Lancer au démarrage du système
+Launcher Settings	Paramètres du launcher
+Length:	Longueur :
+License - ScreepT	Licence - ScreepT
+Line ending used for new files	Fin de ligne utilisée pour les nouveaux fichiers
+Lines:	Lignes :
+Load Custom Configuration	Charger une configuration personnalisée
+Load configuration from other installation	Charger la configuration d'une autre installation
+Loading	Chargement
+Loads blurry first, then sharp: better for the web	Charge d'abord flou puis net : mieux pour le web
+Lock	Verrouiller
+Log level chosen at application start	Niveau de journalisation choisi au démarrage de l'application
+LogSearch	LogSearch
+Margin:	Marge :
+Mode	Mode
+Network Info	Infos réseau
+No file selected	Aucun fichier sélectionné
+No image in the clipboard	Aucune image dans le presse-papiers
+Open ScreepT temp folder	Ouvrir le dossier temporaire de ScreepT
+Open autostart folder in File System	Ouvrir le dossier de démarrage automatique
+Open current installation folder	Ouvrir le dossier d'installation actuel
+Open folder	Ouvrir le dossier
+Open network options configuration panel	Ouvrir le panneau des options réseau
+Percent	Pourcentage
+Plugins	Plugins
+Position	Position
+Preferences	Préférences
+Preview	Aperçu
+Progressive JPEG	JPEG progressif
+Proxy settings...	Paramètres du proxy...
+Quality	Qualité
+Quick notes	Notes rapides
+Quick size	Taille rapide
+Ratio	Rapport
+Refresh tree	Actualiser l'arborescence
+Reload	Recharger
+Reload Configuration	Recharger la configuration
+Remove from Windows file right click context menu	Retirer du menu contextuel de Windows
+Reset	Réinitialiser
+Reset Configuration manager	Réinitialiser le gestionnaire de configuration
+Reset Original Configuration	Réinitialiser la configuration d'origine
+Reset Text Editor	Réinitialiser l'éditeur de texte
+Reset all	Tout réinitialiser
+Reset all Panels	Réinitialiser tous les panneaux
+Reset crop	Réinitialiser le recadrage
+Reset panels...	Réinitialiser les panneaux...
+Restart	Redémarrer
+Restart as administrator	Redémarrer en tant qu'administrateur
+Return to Welcome Page	Retour à la page d'accueil
+Revert	Rétablir
+Rotate left	Pivoter à gauche
+Rotate right	Pivoter à droite
+Save	Enregistrer
+Save Current Configuration	Enregistrer la configuration actuelle
+Save Current Configuration as Default	Enregistrer la configuration actuelle par défaut
+Save a clean copy...	Enregistrer une copie propre...
+Save as...	Enregistrer sous...
+Search files by name	Rechercher des fichiers par nom
+Search text into files	Rechercher du texte dans les fichiers
+Show Tabs	Afficher les tabulations
+Show all metadata...	Afficher toutes les métadonnées...
+Show the image without the pending edits (B)	Afficher l'image sans les modifications en attente (B)
+Show/hide the Quick notes - (Ctrl+Alt+N)	Afficher/masquer les notes rapides - (Ctrl+Alt+N)
+Size	Taille
+Size of the sample text (only the preview)	Taille du texte d'exemple (aperçu uniquement)
+Start	Démarrer
+Style	Style
+Switch Immersive Mode ON/OFF (Press ESC to exit)	Activer/désactiver le mode immersif (ÉCHAP pour quitter)
+System Console	Console système
+System Info	Infos système
+Tab size:	Taille des tabulations :
+Templates	Modèles
+Text	Texte
+Text Editor Module	Module Éditeur de texte
+Text color	Couleur du texte
+Text transformation	Transformation de texte
+Text-Editor	Éditeur de texte
+The clipboard is busy, try again	Le presse-papiers est occupé, réessayez
+Theme	Thème
+Theme Editor	Éditeur de thèmes
+Transparency	Transparence
+Undo	Annuler
+Use custom folder:	Utiliser un dossier personnalisé :
+Use workspace:	Utiliser l'espace de travail :
+User Guide	Guide de l'utilisateur
+Various	Divers
+View Key Dictionary	Afficher le dictionnaire de clés
+View in system explorer	Afficher dans l'explorateur
+Visit Website	Visiter le site web
+Voice rate (Text speaker plugin)	Débit de la voix (plugin de lecture)
+Volume of the application sounds	Volume des sons de l'application
+What's new (changelog)	Nouveautés (journal des modifications)
+Width	Largeur
+Windows contextual menu management	Gestion du menu contextuel de Windows
+every	chaque
+seconds	secondes
+Yes	Oui
+No	Non
+OK	OK
+Open	Ouvrir
+Language	Langue
+Select language	Choisir la langue
+Choose the language of the application	Choisissez la langue de l'application
+Some texts may stay in English until translated	Certains textes peuvent rester en anglais tant qu'ils ne sont pas traduits
+Search an element (comment, caret, gutter...)	Rechercher un élément (commentaire, curseur, gouttière...)
+Preview failed:	Échec de l'aperçu :
+Metadata removed from	Métadonnées supprimées de
+Saved:	Enregistré :
+Exported:	Exporté :
+Current file:	Fichier actuel :
+File tree	Arborescence
+Displayed:	Affiché :
+Sel. Column:	Col. sél. :
+Sel. length:	Long. sél. :
+Sel. line:	Ligne sél. :
+Position:	Position :
+Size:	Taille :
+Quality:	Qualité :
+Use workspace	Utiliser l'espace de travail
+Reading the files of the folder...	Lecture des fichiers du dossier...
+Result number limited to	Nombre de résultats limité à
+Overwrite	Écraser
+Close all	Tout fermer
+Select all	Tout sélectionner
+Cut	Couper
+Paste	Coller
+Redo	Rétablir
+Find	Rechercher
+Replace	Remplacer
+Delete	Supprimer
+Rename	Renommer
+New	Nouveau
+Edit	Modifier
+View	Affichage
+Tools	Outils
+Options	Options
+Settings	Paramètres
+Warning	Avertissement
+Error	Erreur
+Information	Information

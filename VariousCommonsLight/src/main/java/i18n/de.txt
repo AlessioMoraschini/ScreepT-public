@@ -1,0 +1,222 @@
+# ScreepT language pack (de): english<TAB>translation. Every new UI text must be added here.
+About - ScreepT	Über - ScreepT
+Add to Windows context menu after right click on file	Zum Windows-Kontextmenü hinzufügen (Rechtsklick auf eine Datei)
+Apply	Übernehmen
+Auto enhance	Automatisch verbessern
+Auto-check updates	Automatisch nach Updates suchen
+Autosave interval, in seconds	Intervall für automatisches Speichern, in Sekunden
+Background	Hintergrund
+Border color	Rahmenfarbe
+Browse...	Durchsuchen...
+Calculator	Taschenrechner
+Cancel	Abbrechen
+Cannot load the image:	Das Bild kann nicht geladen werden:
+Cannot save the image:	Das Bild kann nicht gespeichert werden:
+Cannot export the image:	Das Bild kann nicht exportiert werden:
+Charset:	Zeichensatz:
+Check for software updates...	Nach Software-Updates suchen...
+Choose general application Charset to use	Allgemeinen Zeichensatz der Anwendung wählen
+Choose general language used (not yet implemented)	Allgemeine Sprache der Anwendung wählen
+Choose security level used for passwords check	Sicherheitsstufe für die Passwortprüfung wählen
+Cleaning tool...	Bereinigungswerkzeug...
+Clear filters	Filter löschen
+Clipboard tool	Zwischenablage-Werkzeug
+Close	Schließen
+Color Theme editor	Farbthemen-Editor
+Color picker	Farbwähler
+Color used instead of transparency in JPEG and BMP	Farbe anstelle der Transparenz in JPEG und BMP
+Configuration Manager Module	Konfigurationsverwaltung
+Copy	Kopieren
+Copy all	Alles kopieren
+Copy directory structure (Copy folders, not files)	Verzeichnisstruktur kopieren (Ordner, keine Dateien)
+Creepter Module - Crypt and Decrypt files	Creepter-Modul - Dateien ver- und entschlüsseln
+Crypt/Decrypt selected or all text	Ausgewählten oder gesamten Text ver-/entschlüsseln
+Customize Graphics	Darstellung anpassen
+Decryption completed!	Entschlüsselung abgeschlossen!
+Encryption completed!	Verschlüsselung abgeschlossen!
+Delete Directory's content (All except selected)	Verzeichnisinhalt löschen (alles außer der Auswahl)
+Delete Directory's content by extension	Verzeichnisinhalt nach Endung löschen
+Disable "always on top" over other windows	„Immer im Vordergrund“ vor anderen Fenstern deaktivieren
+Enable "always on top" over other windows (if supported)	„Immer im Vordergrund“ vor anderen Fenstern aktivieren (falls unterstützt)
+Double click to reset	Doppelklick zum Zurücksetzen
+EOL:	Zeilenende:
+Edit in Image Studio	In Image Studio bearbeiten
+Element	Element
+Empty all content (doesn't delete folders)	Gesamten Inhalt leeren (Ordner bleiben erhalten)
+Erase Logs	Protokolle löschen
+Exception advices	Hinweise bei Ausnahmen
+Exit	Beenden
+Export	Exportieren
+Export...	Exportieren...
+Export Current Configuration	Aktuelle Konfiguration exportieren
+Export Event Log	Ereignisprotokoll exportieren
+File	Datei
+File Hash checker	Datei-Hash-Prüfung
+File Properties	Dateieigenschaften
+File content search	Suche im Dateiinhalt
+File name quick search	Schnellsuche nach Dateinamen
+Files And Directories	Dateien und Verzeichnisse
+Fill	Füllung
+Flip horizontal	Horizontal spiegeln
+Flip vertical	Vertikal spiegeln
+Folder	Ordner
+Format	Format
+Full Screen Mode	Vollbildmodus
+General Options	Allgemeine Optionen
+Generate Key Image	Schlüsselbild erzeugen
+Generate Password	Passwort erzeugen
+Height	Höhe
+Help	Hilfe
+Hide launcher at start	Launcher beim Start ausblenden
+Image Studio	Image Studio
+Image copied to the clipboard	Bild in die Zwischenablage kopiert
+Image metadata...	Bildmetadaten...
+Import	Importieren
+Import...	Importieren...
+Import/Export crypted workspace	Verschlüsselten Arbeitsbereich importieren/exportieren
+Inline Tabs	Inline-Tabs
+Install plugins...	Plugins installieren...
+JPEG quality: lower is smaller and worse	JPEG-Qualität: niedriger = kleiner und schlechter
+Language of the sample text	Sprache des Beispieltextes
+Last opened files	Zuletzt geöffnete Dateien
+Last selected workspaces	Zuletzt gewählte Arbeitsbereiche
+Launch at system startup	Beim Systemstart starten
+Launcher Settings	Launcher-Einstellungen
+Length:	Länge:
+License - ScreepT	Lizenz - ScreepT
+Line ending used for new files	Zeilenende für neue Dateien
+Lines:	Zeilen:
+Load Custom Configuration	Benutzerdefinierte Konfiguration laden
+Load configuration from other installation	Konfiguration einer anderen Installation laden
+Loading	Wird geladen
+Loads blurry first, then sharp: better for the web	Lädt zuerst unscharf, dann scharf: besser fürs Web
+Lock	Sperren
+Log level chosen at application start	Beim Start gewählte Protokollstufe
+LogSearch	LogSearch
+Margin:	Rand:
+Mode	Modus
+Network Info	Netzwerkinfo
+No file selected	Keine Datei ausgewählt
+No image in the clipboard	Kein Bild in der Zwischenablage
+Open ScreepT temp folder	Temporären ScreepT-Ordner öffnen
+Open autostart folder in File System	Autostart-Ordner im Dateisystem öffnen
+Open current installation folder	Aktuellen Installationsordner öffnen
+Open folder	Ordner öffnen
+Open network options configuration panel	Netzwerkoptionen-Panel öffnen
+Percent	Prozent
+Plugins	Plugins
+Position	Position
+Preferences	Einstellungen
+Preview	Vorschau
+Progressive JPEG	Progressives JPEG
+Proxy settings...	Proxy-Einstellungen...
+Quality	Qualität
+Quick notes	Schnellnotizen
+Quick size	Schnellgröße
+Ratio	Verhältnis
+Refresh tree	Baum aktualisieren
+Reload	Neu laden
+Reload Configuration	Konfiguration neu laden
+Remove from Windows file right click context menu	Aus dem Windows-Kontextmenü entfernen
+Reset	Zurücksetzen
+Reset Configuration manager	Konfigurationsverwaltung zurücksetzen
+Reset Original Configuration	Ursprüngliche Konfiguration wiederherstellen
+Reset Text Editor	Texteditor zurücksetzen
+Reset all	Alles zurücksetzen
+Reset all Panels	Alle Panels zurücksetzen
+Reset crop	Zuschnitt zurücksetzen
+Reset panels...	Panels zurücksetzen...
+Restart	Neu starten
+Restart as administrator	Als Administrator neu starten
+Return to Welcome Page	Zurück zur Startseite
+Revert	Zurücksetzen
+Rotate left	Nach links drehen
+Rotate right	Nach rechts drehen
+Save	Speichern
+Save Current Configuration	Aktuelle Konfiguration speichern
+Save Current Configuration as Default	Aktuelle Konfiguration als Standard speichern
+Save a clean copy...	Bereinigte Kopie speichern...
+Save as...	Speichern unter...
+Search files by name	Dateien nach Namen suchen
+Search text into files	Text in Dateien suchen
+Show Tabs	Tabs anzeigen
+Show all metadata...	Alle Metadaten anzeigen...
+Show the image without the pending edits (B)	Bild ohne die ausstehenden Änderungen anzeigen (B)
+Show/hide the Quick notes - (Ctrl+Alt+N)	Schnellnotizen ein-/ausblenden - (Strg+Alt+N)
+Size	Größe
+Size of the sample text (only the preview)	Größe des Beispieltextes (nur Vorschau)
+Start	Starten
+Style	Stil
+Switch Immersive Mode ON/OFF (Press ESC to exit)	Immersiver Modus ein/aus (ESC zum Beenden)
+System Console	Systemkonsole
+System Info	Systeminfo
+Tab size:	Tab-Größe:
+Templates	Vorlagen
+Text	Text
+Text Editor Module	Texteditor-Modul
+Text color	Textfarbe
+Text transformation	Texttransformation
+Text-Editor	Texteditor
+The clipboard is busy, try again	Die Zwischenablage ist belegt, bitte erneut versuchen
+Theme	Design
+Theme Editor	Design-Editor
+Transparency	Transparenz
+Undo	Rückgängig
+Use custom folder:	Eigenen Ordner verwenden:
+Use workspace:	Arbeitsbereich verwenden:
+User Guide	Benutzerhandbuch
+Various	Verschiedenes
+View Key Dictionary	Schlüsselwörterbuch anzeigen
+View in system explorer	Im Datei-Explorer anzeigen
+Visit Website	Website besuchen
+Voice rate (Text speaker plugin)	Sprechgeschwindigkeit (Vorlese-Plugin)
+Volume of the application sounds	Lautstärke der Anwendungstöne
+What's new (changelog)	Neuigkeiten (Änderungsprotokoll)
+Width	Breite
+Windows contextual menu management	Verwaltung des Windows-Kontextmenüs
+every	jede
+seconds	Sekunden
+Yes	Ja
+No	Nein
+OK	OK
+Open	Öffnen
+Language	Sprache
+Select language	Sprache wählen
+Choose the language of the application	Wähle die Sprache der Anwendung
+Some texts may stay in English until translated	Manche Texte bleiben auf Englisch, bis sie übersetzt sind
+Search an element (comment, caret, gutter...)	Element suchen (Kommentar, Cursor, Zeilennummernleiste...)
+Preview failed:	Vorschau fehlgeschlagen:
+Metadata removed from	Metadaten entfernt aus
+Saved:	Gespeichert:
+Exported:	Exportiert:
+Current file:	Aktuelle Datei:
+File tree	Dateibaum
+Displayed:	Angezeigt:
+Sel. Column:	Sel. Spalte:
+Sel. length:	Sel. Länge:
+Sel. line:	Sel. Zeile:
+Position:	Position:
+Size:	Größe:
+Quality:	Qualität:
+Use workspace	Arbeitsbereich verwenden
+Reading the files of the folder...	Dateien des Ordners werden gelesen...
+Result number limited to	Anzahl der Ergebnisse begrenzt auf
+Overwrite	Überschreiben
+Close all	Alle schließen
+Select all	Alles auswählen
+Cut	Ausschneiden
+Paste	Einfügen
+Redo	Wiederholen
+Find	Suchen
+Replace	Ersetzen
+Delete	Löschen
+Rename	Umbenennen
+New	Neu
+Edit	Bearbeiten
+View	Ansicht
+Tools	Werkzeuge
+Options	Optionen
+Settings	Einstellungen
+Warning	Warnung
+Error	Fehler
+Information	Information

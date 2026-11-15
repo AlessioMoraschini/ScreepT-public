@@ -1,0 +1,222 @@
+# ScreepT language pack (it): english<TAB>translation. Every new UI text must be added here.
+About - ScreepT	Informazioni - ScreepT
+Add to Windows context menu after right click on file	Aggiungi al menu contestuale di Windows (tasto destro su un file)
+Apply	Applica
+Auto enhance	Miglioramento automatico
+Auto-check updates	Controlla aggiornamenti automaticamente
+Autosave interval, in seconds	Intervallo di salvataggio automatico, in secondi
+Background	Sfondo
+Border color	Colore del bordo
+Browse...	Sfoglia...
+Calculator	Calcolatrice
+Cancel	Annulla
+Cannot load the image:	Impossibile caricare l'immagine:
+Cannot save the image:	Impossibile salvare l'immagine:
+Cannot export the image:	Impossibile esportare l'immagine:
+Charset:	Charset:
+Check for software updates...	Cerca aggiornamenti del software...
+Choose general application Charset to use	Scegli il charset generale dell'applicazione
+Choose general language used (not yet implemented)	Scegli la lingua generale dell'applicazione
+Choose security level used for passwords check	Scegli il livello di sicurezza per il controllo delle password
+Cleaning tool...	Strumento di pulizia...
+Clear filters	Cancella filtri
+Clipboard tool	Strumento appunti
+Close	Chiudi
+Color Theme editor	Editor dei temi colore
+Color picker	Selettore colore
+Color used instead of transparency in JPEG and BMP	Colore usato al posto della trasparenza in JPEG e BMP
+Configuration Manager Module	Modulo Gestione configurazione
+Copy	Copia
+Copy all	Copia tutto
+Copy directory structure (Copy folders, not files)	Copia la struttura delle cartelle (cartelle, non file)
+Creepter Module - Crypt and Decrypt files	Modulo Creepter - Cripta e decripta file
+Crypt/Decrypt selected or all text	Cripta/decripta il testo selezionato o tutto
+Customize Graphics	Personalizza grafica
+Decryption completed!	Decifratura completata!
+Encryption completed!	Cifratura completata!
+Delete Directory's content (All except selected)	Elimina il contenuto della cartella (tutto tranne la selezione)
+Delete Directory's content by extension	Elimina il contenuto della cartella per estensione
+Disable "always on top" over other windows	Disattiva "sempre in primo piano" sulle altre finestre
+Enable "always on top" over other windows (if supported)	Attiva "sempre in primo piano" sulle altre finestre (se supportato)
+Double click to reset	Doppio clic per ripristinare
+EOL:	Fine riga:
+Edit in Image Studio	Modifica in Image Studio
+Element	Elemento
+Empty all content (doesn't delete folders)	Svuota tutto il contenuto (non elimina le cartelle)
+Erase Logs	Cancella i log
+Exception advices	Avvisi per le eccezioni
+Exit	Esci
+Export	Esporta
+Export...	Esporta...
+Export Current Configuration	Esporta la configurazione corrente
+Export Event Log	Esporta il registro eventi
+File	File
+File Hash checker	Verifica hash dei file
+File Properties	Proprietà del file
+File content search	Ricerca nel contenuto dei file
+File name quick search	Ricerca rapida per nome file
+Files And Directories	File e cartelle
+Fill	Riempimento
+Flip horizontal	Rifletti orizzontalmente
+Flip vertical	Rifletti verticalmente
+Folder	Cartella
+Format	Formato
+Full Screen Mode	Modalità schermo intero
+General Options	Opzioni generali
+Generate Key Image	Genera immagine chiave
+Generate Password	Genera password
+Height	Altezza
+Help	Aiuto
+Hide launcher at start	Nascondi il launcher all'avvio
+Image Studio	Image Studio
+Image copied to the clipboard	Immagine copiata negli appunti
+Image metadata...	Metadati dell'immagine...
+Import	Importa
+Import...	Importa...
+Import/Export crypted workspace	Importa/esporta workspace cifrato
+Inline Tabs	Tab in linea
+Install plugins...	Installa plugin...
+JPEG quality: lower is smaller and worse	Qualità JPEG: più bassa = file più piccolo e qualità peggiore
+Language of the sample text	Linguaggio del testo di esempio
+Last opened files	Ultimi file aperti
+Last selected workspaces	Ultimi workspace selezionati
+Launch at system startup	Avvia all'avvio del sistema
+Launcher Settings	Impostazioni del launcher
+Length:	Lunghezza:
+License - ScreepT	Licenza - ScreepT
+Line ending used for new files	Fine riga usata per i nuovi file
+Lines:	Righe:
+Load Custom Configuration	Carica configurazione personalizzata
+Load configuration from other installation	Carica la configurazione da un'altra installazione
+Loading	Caricamento
+Loads blurry first, then sharp: better for the web	Carica prima sfocato, poi nitido: meglio per il web
+Lock	Blocca
+Log level chosen at application start	Livello di log scelto all'avvio dell'applicazione
+LogSearch	LogSearch
+Margin:	Margine:
+Mode	Modalità
+Network Info	Info di rete
+No file selected	Nessun file selezionato
+No image in the clipboard	Nessuna immagine negli appunti
+Open ScreepT temp folder	Apri la cartella temporanea di ScreepT
+Open autostart folder in File System	Apri la cartella di avvio automatico
+Open current installation folder	Apri la cartella di installazione corrente
+Open folder	Apri cartella
+Open network options configuration panel	Apri il pannello delle opzioni di rete
+Percent	Percentuale
+Plugins	Plugin
+Position	Posizione
+Preferences	Preferenze
+Preview	Anteprima
+Progressive JPEG	JPEG progressivo
+Proxy settings...	Impostazioni proxy...
+Quality	Qualità
+Quick notes	Note rapide
+Quick size	Dimensione rapida
+Ratio	Rapporto
+Refresh tree	Aggiorna albero
+Reload	Ricarica
+Reload Configuration	Ricarica configurazione
+Remove from Windows file right click context menu	Rimuovi dal menu contestuale di Windows
+Reset	Ripristina
+Reset Configuration manager	Ripristina il gestore configurazione
+Reset Original Configuration	Ripristina la configurazione originale
+Reset Text Editor	Ripristina l'editor di testo
+Reset all	Ripristina tutto
+Reset all Panels	Ripristina tutti i pannelli
+Reset crop	Ripristina ritaglio
+Reset panels...	Ripristina pannelli...
+Restart	Riavvia
+Restart as administrator	Riavvia come amministratore
+Return to Welcome Page	Torna alla pagina di benvenuto
+Revert	Annulla modifiche
+Rotate left	Ruota a sinistra
+Rotate right	Ruota a destra
+Save	Salva
+Save Current Configuration	Salva la configurazione corrente
+Save Current Configuration as Default	Salva la configurazione corrente come predefinita
+Save a clean copy...	Salva una copia pulita...
+Save as...	Salva con nome...
+Search files by name	Cerca file per nome
+Search text into files	Cerca testo nei file
+Show Tabs	Mostra tab
+Show all metadata...	Mostra tutti i metadati...
+Show the image without the pending edits (B)	Mostra l'immagine senza le modifiche in sospeso (B)
+Show/hide the Quick notes - (Ctrl+Alt+N)	Mostra/nascondi le note rapide - (Ctrl+Alt+N)
+Size	Dimensione
+Size of the sample text (only the preview)	Dimensione del testo di esempio (solo anteprima)
+Start	Avvia
+Style	Stile
+Switch Immersive Mode ON/OFF (Press ESC to exit)	Attiva/disattiva la modalità immersiva (ESC per uscire)
+System Console	Console di sistema
+System Info	Info di sistema
+Tab size:	Dimensione tab:
+Templates	Modelli
+Text	Testo
+Text Editor Module	Modulo Editor di testo
+Text color	Colore del testo
+Text transformation	Trasformazione del testo
+Text-Editor	Editor di testo
+The clipboard is busy, try again	Gli appunti sono occupati, riprova
+Theme	Tema
+Theme Editor	Editor dei temi
+Transparency	Trasparenza
+Undo	Annulla
+Use custom folder:	Usa cartella personalizzata:
+Use workspace:	Usa workspace:
+User Guide	Guida utente
+Various	Varie
+View Key Dictionary	Visualizza il dizionario delle chiavi
+View in system explorer	Mostra nel file manager
+Visit Website	Visita il sito web
+Voice rate (Text speaker plugin)	Velocità della voce (plugin sintesi vocale)
+Volume of the application sounds	Volume dei suoni dell'applicazione
+What's new (changelog)	Novità (changelog)
+Width	Larghezza
+Windows contextual menu management	Gestione del menu contestuale di Windows
+every	ogni
+seconds	secondi
+Yes	Sì
+No	No
+OK	OK
+Open	Apri
+Language	Lingua
+Select language	Seleziona la lingua
+Choose the language of the application	Scegli la lingua dell'applicazione
+Some texts may stay in English until translated	Alcuni testi possono restare in inglese finché non vengono tradotti
+Search an element (comment, caret, gutter...)	Cerca un elemento (commento, cursore, gutter...)
+Preview failed:	Anteprima non riuscita:
+Metadata removed from	Metadati rimossi da
+Saved:	Salvato:
+Exported:	Esportato:
+Current file:	File corrente:
+File tree	Albero dei file
+Displayed:	Visualizzato:
+Sel. Column:	Col. selez.:
+Sel. length:	Lungh. selez.:
+Sel. line:	Riga selez.:
+Position:	Posizione:
+Size:	Dimensione:
+Quality:	Qualità:
+Use workspace	Usa workspace
+Reading the files of the folder...	Lettura dei file della cartella...
+Result number limited to	Numero di risultati limitato a
+Overwrite	Sovrascrivi
+Close all	Chiudi tutto
+Select all	Seleziona tutto
+Cut	Taglia
+Paste	Incolla
+Redo	Ripeti
+Find	Trova
+Replace	Sostituisci
+Delete	Elimina
+Rename	Rinomina
+New	Nuovo
+Edit	Modifica
+View	Visualizza
+Tools	Strumenti
+Options	Opzioni
+Settings	Impostazioni
+Warning	Attenzione
+Error	Errore
+Information	Informazione
