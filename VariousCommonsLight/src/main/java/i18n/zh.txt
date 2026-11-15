@@ -726,3 +726,21 @@ Cannot retrieve file	无法获取文件
 ~Plese specify a name for the file to save in	请为要保存到以下位置的文件指定名称：
 ~Copy of	复制自
 ~Are you sure to move current file into [	确定要将当前文件移动到 [
+Backup and import	备份与导入
+Back up notes to...	将笔记备份到...
+Update backup	更新备份
+Choose a backup folder first	请先选择备份文件夹
+Import notes from backup...	从备份导入笔记...
+Choose the backup folder	选择备份文件夹
+Quick notes saved to {0}	快速笔记已保存到 {0}
+Backup saved	备份已保存
+Cannot save the backup: {0}	无法保存备份：{0}
+Backup failed	备份失败
+Choose a quick notes backup	选择快速笔记备份
+This file is not a ScreepT quick notes backup.	此文件不是 ScreepT 快速笔记的备份。
+Import failed	导入失败
+Importing replaces your {0} current notes with the {1} notes of the backup. The current notes will be lost.	导入将用备份中的 {1} 条笔记替换当前的 {0} 条笔记，当前笔记将会丢失。
+Import notes	导入笔记
+Back up current notes first	先备份当前笔记
+Choose where to back up the current notes	选择当前笔记的备份位置
+Cannot import the notes: {0}	无法导入笔记：{0}

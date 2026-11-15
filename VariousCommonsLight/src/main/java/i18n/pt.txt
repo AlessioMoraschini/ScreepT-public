@@ -726,3 +726,21 @@ Cannot retrieve file	Não foi possível recuperar o arquivo
 ~Plese specify a name for the file to save in	Especifique um nome para o arquivo a salvar em
 ~Copy of	Cópia de
 ~Are you sure to move current file into [	Tem certeza de que deseja mover o arquivo atual para [
+Backup and import	Backup e importação
+Back up notes to...	Guardar as notas em...
+Update backup	Atualizar backup
+Choose a backup folder first	Escolha primeiro uma pasta de backup
+Import notes from backup...	Importar notas de um backup...
+Choose the backup folder	Escolha a pasta de backup
+Quick notes saved to {0}	Notas rápidas guardadas em {0}
+Backup saved	Backup guardado
+Cannot save the backup: {0}	Não é possível guardar o backup: {0}
+Backup failed	Falha no backup
+Choose a quick notes backup	Escolha um backup das notas rápidas
+This file is not a ScreepT quick notes backup.	Este ficheiro não é um backup das notas rápidas do ScreepT.
+Import failed	Falha na importação
+Importing replaces your {0} current notes with the {1} notes of the backup. The current notes will be lost.	A importação substitui as suas {0} notas atuais pelas {1} notas do backup. As notas atuais serão perdidas.
+Import notes	Importar notas
+Back up current notes first	Fazer primeiro o backup das notas atuais
+Choose where to back up the current notes	Escolha onde guardar o backup das notas atuais
+Cannot import the notes: {0}	Não é possível importar as notas: {0}

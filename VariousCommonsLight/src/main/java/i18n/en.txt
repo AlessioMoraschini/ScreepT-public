@@ -726,3 +726,21 @@ you can setup it in the launcher under max memory, min memory, and stack size (r
 ~Result number limited to	Result number limited to
 ~Saved:	Saved:
 ~Specify new name for	Specify new name for
+Backup and import	Backup and import
+Back up notes to...	Back up notes to...
+Update backup	Update backup
+Choose a backup folder first	Choose a backup folder first
+Import notes from backup...	Import notes from backup...
+Choose the backup folder	Choose the backup folder
+Quick notes saved to {0}	Quick notes saved to {0}
+Backup saved	Backup saved
+Cannot save the backup: {0}	Cannot save the backup: {0}
+Backup failed	Backup failed
+Choose a quick notes backup	Choose a quick notes backup
+This file is not a ScreepT quick notes backup.	This file is not a ScreepT quick notes backup.
+Import failed	Import failed
+Importing replaces your {0} current notes with the {1} notes of the backup. The current notes will be lost.	Importing replaces your {0} current notes with the {1} notes of the backup. The current notes will be lost.
+Import notes	Import notes
+Back up current notes first	Back up current notes first
+Choose where to back up the current notes	Choose where to back up the current notes
+Cannot import the notes: {0}	Cannot import the notes: {0}

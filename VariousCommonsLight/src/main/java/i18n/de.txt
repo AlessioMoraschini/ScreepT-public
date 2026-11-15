@@ -726,3 +726,21 @@ Cannot retrieve file	Die Datei kann nicht abgerufen werden
 ~Plese specify a name for the file to save in	Namen für die Datei angeben, die gespeichert wird in
 ~Copy of	Kopie von
 ~Are you sure to move current file into [	Datei wirklich verschieben nach [
+Backup and import	Sicherung und Import
+Back up notes to...	Notizen sichern unter...
+Update backup	Sicherung aktualisieren
+Choose a backup folder first	Wähle zuerst einen Sicherungsordner
+Import notes from backup...	Notizen aus Sicherung importieren...
+Choose the backup folder	Sicherungsordner wählen
+Quick notes saved to {0}	Schnellnotizen gespeichert in {0}
+Backup saved	Sicherung gespeichert
+Cannot save the backup: {0}	Die Sicherung kann nicht gespeichert werden: {0}
+Backup failed	Sicherung fehlgeschlagen
+Choose a quick notes backup	Sicherung der Schnellnotizen wählen
+This file is not a ScreepT quick notes backup.	Diese Datei ist keine Sicherung der ScreepT-Schnellnotizen.
+Import failed	Import fehlgeschlagen
+Importing replaces your {0} current notes with the {1} notes of the backup. The current notes will be lost.	Der Import ersetzt deine {0} aktuellen Notizen durch die {1} Notizen der Sicherung. Die aktuellen Notizen gehen verloren.
+Import notes	Notizen importieren
+Back up current notes first	Zuerst die aktuellen Notizen sichern
+Choose where to back up the current notes	Wähle, wo die aktuellen Notizen gesichert werden
+Cannot import the notes: {0}	Die Notizen können nicht importiert werden: {0}
