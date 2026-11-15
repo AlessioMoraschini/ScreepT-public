@@ -333,6 +333,30 @@ public class ImageSettingsPanel extends JPanel {
 		}
 	}
 
+	/** Called with true while the Crop section is open: the studio then shows the whole image with the crop drawn on it */
+	public void setCropEditListener(java.util.function.Consumer<Boolean> listener) {
+		accordion.setExpandListener((title, open) -> {
+			if (SEC_CROP.equals(title)) {
+				listener.accept(open);
+			}
+		});
+	}
+
+	public boolean isCropEditing() {
+		return accordion.isExpanded(SEC_CROP);
+	}
+
+	/** Crop drawn by hand on the image: x0, y0, x1, y1 as fractions of the image. The sliders follow, the ratio becomes free */
+	public void applyCropRect(double[] r) {
+		settings.cropRatio = ImageSettings.CropRatio.FREE;
+		settings.cropLeft = (int) Math.round(r[0] * 100);
+		settings.cropTop = (int) Math.round(r[1] * 100);
+		settings.cropRight = (int) Math.round((1 - r[2]) * 100);
+		settings.cropBottom = (int) Math.round((1 - r[3]) * 100);
+		syncFromSettings();
+		updatePresetLabel();
+	}
+
 	/** Size of the image the settings apply to: shown as the result of the resize */
 	public void setBaseSize(int w, int h) {
 		baseWidth = w;

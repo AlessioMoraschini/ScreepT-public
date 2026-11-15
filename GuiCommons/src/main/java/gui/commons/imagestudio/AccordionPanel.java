@@ -43,6 +43,21 @@ public class AccordionPanel extends JPanel {
 
 	private final List<Section> sections = new ArrayList<Section>();
 	private boolean exclusive = true;
+	private java.util.function.BiConsumer<String, Boolean> expandListener;
+
+	/** Called with the title and the new state every time a section opens or closes */
+	public void setExpandListener(java.util.function.BiConsumer<String, Boolean> listener) {
+		this.expandListener = listener;
+	}
+
+	public boolean isExpanded(String title) {
+		for (Section section : sections) {
+			if (section.title.equals(title)) {
+				return section.expanded;
+			}
+		}
+		return false;
+	}
 
 	public AccordionPanel() {
 		super(new MigLayout("insets 0, wrap 1, gapy 2, hidemode 3", "[grow,fill]", ""));
@@ -218,6 +233,9 @@ public class AccordionPanel extends JPanel {
 			titleLabel.repaint();
 			if (expanded) {
 				owner.opened(this);
+			}
+			if (owner.expandListener != null) {
+				owner.expandListener.accept(title, expanded);
 			}
 			owner.revalidate();
 			owner.repaint();

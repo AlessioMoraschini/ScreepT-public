@@ -92,6 +92,9 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 	private BufferedImage original;
 	private BufferedImage base;
 	private BufferedImage preview;
+	/** The Crop section is open: the canvas shows the whole image (no crop, no rotation) with the crop drawn on it */
+	private boolean cropEditing;
+	private String cropEditFingerprint;
 	private final LinkedList<BufferedImage> undo = new LinkedList<BufferedImage>();
 	private boolean pasted;
 	private Runnable changeListener;
@@ -137,11 +140,37 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 
 		canvas.setPixelListener(lblPixel::setText);
 		canvas.setZoomListener(lblZoom::setText);
+		canvas.setCropOverlay(new ImageCanvas.CropOverlay() {
+			@Override
+			public double[] rect() {
+				BufferedImage shown = canvas.getImage();
+				if (!cropEditing || shown == null) {
+					return null;
+				}
+				int[] r = ImageEdit.cropRect(shown.getWidth(), shown.getHeight(), settings);
+				return new double[] {r[0] / (double) shown.getWidth(), r[1] / (double) shown.getHeight(),
+						(r[0] + r[2]) / (double) shown.getWidth(), (r[1] + r[3]) / (double) shown.getHeight()};
+			}
+
+			@Override
+			public void dragged(double[] rect, boolean finished) {
+				settingsPanel.applyCropRect(rect);
+				onSettingsChanged();
+			}
+		});
+
 
 		previewTimer = new Timer(PREVIEW_DELAY_MS, e -> renderPreview());
 		previewTimer.setRepeats(false);
 		estimateTimer = new Timer(ESTIMATE_DELAY_MS, e -> renderEstimate());
 		estimateTimer.setRepeats(false);
+		settingsPanel.setCropEditListener(open -> {
+			cropEditing = open;
+			cropEditFingerprint = open ? fingerprintWithoutCrop() : null;
+			previewTimer.stop();
+			renderPreview();
+			canvas.repaint();
+		});
 
 		if (readOnly) {
 			modeListener = null;
@@ -461,7 +490,26 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 
 	// ------------------------------------------------------------------ preview
 
+	private String fingerprintWithoutCrop() {
+		ImageSettings copy = settings.copy();
+		copy.resetCrop();
+		return ImageSettingsStore.fingerprint(copy);
+	}
+
 	private void onSettingsChanged() {
+		if (cropEditing) {
+			// the crop is drawn live on the canvas: the image itself is rendered again only when something else changes
+			canvas.repaint();
+			String fp = fingerprintWithoutCrop();
+			if (!fp.equals(cropEditFingerprint)) {
+				cropEditFingerprint = fp;
+				previewTimer.restart();
+			}
+			refreshInfo();
+			scheduleEstimate();
+			fireChanged();
+			return;
+		}
 		previewTimer.restart();
 		scheduleEstimate();
 		fireChanged();
@@ -473,6 +521,15 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 		}
 		final BufferedImage source = base;
 		final ImageSettings snapshot = settings.copy();
+		final boolean editingCrop = cropEditing;
+		if (editingCrop) {
+			// crop is applied first in the pipeline: show the image before it, so the rectangle matches what will be cut
+			snapshot.resetCrop();
+			snapshot.straighten = 0;
+			snapshot.rotation = 0;
+			snapshot.flipH = false;
+			snapshot.flipV = false;
+		}
 		final int sequence = ++previewSequence;
 		if (snapshot.isIdentity()) {
 			preview = null;
@@ -492,7 +549,16 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 					return; // a newer render is on its way
 				}
 				try {
-					preview = get();
+					BufferedImage result = get();
+					if (editingCrop != cropEditing) {
+						return;
+					}
+					if (editingCrop) {
+						preview = null; // export and estimate must not use the image without crop
+						canvas.setImage(comparing ? base : result, false);
+						return;
+					}
+					preview = result;
 					canvas.setImage(comparing ? base : preview, false);
 					histogram.setImage(preview);
 					refreshInfo();

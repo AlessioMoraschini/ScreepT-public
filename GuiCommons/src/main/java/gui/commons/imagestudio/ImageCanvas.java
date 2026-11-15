@@ -42,6 +42,32 @@ public class ImageCanvas extends JComponent {
 	private double dragOffsetX;
 	private double dragOffsetY;
 
+	/** Crop drawn over the image and editable by hand: rectangle as fractions (x0, y0, x1, y1) of the shown image */
+	public interface CropOverlay {
+		/** null while the crop is not being edited */
+		double[] rect();
+
+		void dragged(double[] rect, boolean finished);
+	}
+
+	private static final int HIT_L = 1;
+	private static final int HIT_R = 2;
+	private static final int HIT_T = 4;
+	private static final int HIT_B = 8;
+	private static final int HIT_MOVE = 16;
+	private static final int HANDLE = 9;
+	private static final double MIN_SIZE = 0.10;
+	private static final double MAX_MARGIN = 0.45;
+	private CropOverlay cropOverlay;
+	private int cropHit;
+	private double[] cropStartRect;
+	private Point cropStartPoint;
+
+	public void setCropOverlay(CropOverlay overlay) {
+		this.cropOverlay = overlay;
+		repaint();
+	}
+
 	private String backgroundStyle = "Checker";
 	private int interpolation = 0;
 	private boolean grid;
@@ -57,6 +83,13 @@ public class ImageCanvas extends JComponent {
 		MouseAdapter mouse = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
+				int hit = hitCrop(e.getPoint());
+				if (hit != 0) {
+					cropHit = hit;
+					cropStartRect = cropOverlay.rect().clone();
+					cropStartPoint = e.getPoint();
+					return;
+				}
 				dragStart = e.getPoint();
 				dragOffsetX = offsetX;
 				dragOffsetY = offsetY;
@@ -65,6 +98,10 @@ public class ImageCanvas extends JComponent {
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
+				if (cropHit != 0 && shown != null) {
+					cropOverlay.dragged(dragCrop(e.getPoint()), false);
+					return;
+				}
 				if (dragStart != null && shown != null) {
 					fitMode = false;
 					offsetX = dragOffsetX + (e.getX() - dragStart.x);
@@ -76,12 +113,19 @@ public class ImageCanvas extends JComponent {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				if (cropHit != 0 && shown != null) {
+					cropOverlay.dragged(dragCrop(e.getPoint()), true);
+					cropHit = 0;
+					setCursor(cropCursor(hitCrop(e.getPoint())));
+					return;
+				}
 				dragStart = null;
 				setCursor(Cursor.getDefaultCursor());
 			}
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
+				setCursor(cropCursor(hitCrop(e.getPoint())));
 				report(e.getPoint());
 			}
 
@@ -282,6 +326,7 @@ public class ImageCanvas extends JComponent {
 			}
 		}
 		g.drawImage(source, (int) Math.round(offsetX), (int) Math.round(offsetY), dw, dh, null);
+		paintCrop(g, img);
 		if (grid && scale >= 8) {
 			g.setColor(new Color(128, 128, 128, 120));
 			int x0 = (int) Math.max(0, Math.floor(-offsetX / scale));
@@ -298,6 +343,155 @@ public class ImageCanvas extends JComponent {
 			}
 		}
 		g.dispose();
+	}
+
+	/** Screen rectangle of the crop: x, y, width, height */
+	private int[] cropScreenRect() {
+		double[] r = cropOverlay == null || shown == null ? null : cropOverlay.rect();
+		if (r == null) {
+			return null;
+		}
+		int x0 = (int) Math.round(offsetX + r[0] * shown.getWidth() * scale);
+		int y0 = (int) Math.round(offsetY + r[1] * shown.getHeight() * scale);
+		int x1 = (int) Math.round(offsetX + r[2] * shown.getWidth() * scale);
+		int y1 = (int) Math.round(offsetY + r[3] * shown.getHeight() * scale);
+		return new int[] {x0, y0, x1 - x0, y1 - y0};
+	}
+
+	private void paintCrop(Graphics2D g, BufferedImage img) {
+		int[] c = cropScreenRect();
+		if (c == null) {
+			return;
+		}
+		int ix = (int) Math.round(offsetX);
+		int iy = (int) Math.round(offsetY);
+		int iw = (int) Math.round(img.getWidth() * scale);
+		int ih = (int) Math.round(img.getHeight() * scale);
+		g.setColor(new Color(0, 0, 0, 150));
+		g.fillRect(ix, iy, iw, c[1] - iy);
+		g.fillRect(ix, c[1] + c[3], iw, iy + ih - c[1] - c[3]);
+		g.fillRect(ix, c[1], c[0] - ix, c[3]);
+		g.fillRect(c[0] + c[2], c[1], ix + iw - c[0] - c[2], c[3]);
+		g.setColor(new Color(255, 255, 255, 70));
+		for (int i = 1; i <= 2; i++) {
+			g.drawLine(c[0] + c[2] * i / 3, c[1], c[0] + c[2] * i / 3, c[1] + c[3]);
+			g.drawLine(c[0], c[1] + c[3] * i / 3, c[0] + c[2], c[1] + c[3] * i / 3);
+		}
+		g.setColor(Color.BLACK);
+		g.drawRect(c[0] - 1, c[1] - 1, c[2] + 2, c[3] + 2);
+		g.setColor(Color.WHITE);
+		g.drawRect(c[0], c[1], c[2], c[3]);
+		for (int[] h : handles(c)) {
+			g.setColor(Color.WHITE);
+			g.fillRect(h[0] - HANDLE / 2, h[1] - HANDLE / 2, HANDLE, HANDLE);
+			g.setColor(Color.BLACK);
+			g.drawRect(h[0] - HANDLE / 2, h[1] - HANDLE / 2, HANDLE, HANDLE);
+		}
+		// size readout inside the crop
+		double[] rect = cropOverlay.rect();
+		String text = Math.round((rect[2] - rect[0]) * img.getWidth()) + " x " + Math.round((rect[3] - rect[1]) * img.getHeight());
+		java.awt.FontMetrics fm = g.getFontMetrics();
+		int tw = fm.stringWidth(text) + 10;
+		if (c[2] > tw + 8 && c[3] > fm.getHeight() + 8) {
+			g.setColor(new Color(0, 0, 0, 160));
+			g.fillRect(c[0] + 4, c[1] + 4, tw, fm.getHeight() + 2);
+			g.setColor(Color.WHITE);
+			g.drawString(text, c[0] + 9, c[1] + 4 + fm.getAscent() + 1);
+		}
+	}
+
+	/** Handles: x, y, hit code */
+	private int[][] handles(int[] c) {
+		int mx = c[0] + c[2] / 2;
+		int my = c[1] + c[3] / 2;
+		int r = c[0] + c[2];
+		int b = c[1] + c[3];
+		return new int[][] {
+				{c[0], c[1], HIT_L | HIT_T}, {mx, c[1], HIT_T}, {r, c[1], HIT_R | HIT_T}, {r, my, HIT_R},
+				{r, b, HIT_R | HIT_B}, {mx, b, HIT_B}, {c[0], b, HIT_L | HIT_B}, {c[0], my, HIT_L}};
+	}
+
+	private int hitCrop(Point p) {
+		int[] c = cropScreenRect();
+		if (c == null) {
+			return 0;
+		}
+		for (int[] h : handles(c)) {
+			if (Math.abs(p.x - h[0]) <= HANDLE && Math.abs(p.y - h[1]) <= HANDLE) {
+				return h[2];
+			}
+		}
+		int edge = 5;
+		boolean insideX = p.x >= c[0] - edge && p.x <= c[0] + c[2] + edge;
+		boolean insideY = p.y >= c[1] - edge && p.y <= c[1] + c[3] + edge;
+		if (insideY && Math.abs(p.x - c[0]) <= edge) {
+			return HIT_L;
+		}
+		if (insideY && Math.abs(p.x - (c[0] + c[2])) <= edge) {
+			return HIT_R;
+		}
+		if (insideX && Math.abs(p.y - c[1]) <= edge) {
+			return HIT_T;
+		}
+		if (insideX && Math.abs(p.y - (c[1] + c[3])) <= edge) {
+			return HIT_B;
+		}
+		if (p.x > c[0] && p.x < c[0] + c[2] && p.y > c[1] && p.y < c[1] + c[3]) {
+			return HIT_MOVE;
+		}
+		return 0;
+	}
+
+	private Cursor cropCursor(int hit) {
+		switch (hit) {
+			case 0:
+				return Cursor.getDefaultCursor();
+			case HIT_MOVE:
+				return Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
+			case HIT_L:
+				return Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR);
+			case HIT_R:
+				return Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR);
+			case HIT_T:
+				return Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR);
+			case HIT_B:
+				return Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR);
+			case HIT_L | HIT_T:
+				return Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR);
+			case HIT_R | HIT_T:
+				return Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR);
+			case HIT_L | HIT_B:
+				return Cursor.getPredefinedCursor(Cursor.SW_RESIZE_CURSOR);
+			default:
+				return Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR);
+		}
+	}
+
+	/** New crop rectangle for the drag in progress, kept inside the image and inside the margin limits of the sliders */
+	private double[] dragCrop(Point p) {
+		double dx = (p.x - cropStartPoint.x) / (scale * shown.getWidth());
+		double dy = (p.y - cropStartPoint.y) / (scale * shown.getHeight());
+		double[] r = cropStartRect.clone();
+		if (cropHit == HIT_MOVE) {
+			double w = r[2] - r[0];
+			double h = r[3] - r[1];
+			double x0 = Math.max(Math.max(0, 1 - MAX_MARGIN - w), Math.min(Math.min(MAX_MARGIN, 1 - w), r[0] + dx));
+			double y0 = Math.max(Math.max(0, 1 - MAX_MARGIN - h), Math.min(Math.min(MAX_MARGIN, 1 - h), r[1] + dy));
+			return new double[] {x0, y0, x0 + w, y0 + h};
+		}
+		if ((cropHit & HIT_L) != 0) {
+			r[0] = Math.max(0, Math.min(Math.min(MAX_MARGIN, r[2] - MIN_SIZE), r[0] + dx));
+		}
+		if ((cropHit & HIT_R) != 0) {
+			r[2] = Math.min(1, Math.max(Math.max(1 - MAX_MARGIN, r[0] + MIN_SIZE), r[2] + dx));
+		}
+		if ((cropHit & HIT_T) != 0) {
+			r[1] = Math.max(0, Math.min(Math.min(MAX_MARGIN, r[3] - MIN_SIZE), r[1] + dy));
+		}
+		if ((cropHit & HIT_B) != 0) {
+			r[3] = Math.min(1, Math.max(Math.max(1 - MAX_MARGIN, r[1] + MIN_SIZE), r[3] + dy));
+		}
+		return r;
 	}
 
 	private void paintBackground(Graphics2D g) {
