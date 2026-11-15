@@ -98,6 +98,8 @@ public final class I18n {
 	private static volatile Map<String, String> table = Collections.emptyMap();
 	/** Texts that start with a fixed part followed by something dynamic (a file name, a number...): pack lines that start with ~ */
 	private static volatile List<String[]> prefixes = Collections.emptyList();
+	/** Pack keys with {0}, {1}... in them: "Replace every {0} spaces with a tab" matches any number. regex, translation, argument numbers */
+	private static volatile List<Object[]> patterns = Collections.emptyList();
 	private static boolean installed = false;
 	private static boolean applying = false;
 	private static final Map<Window, String[]> WINDOW_TITLES = new WeakHashMap<Window, String[]>();
@@ -158,6 +160,29 @@ public final class I18n {
 		}
 		loaded.putAll(lowerCase);
 		prefixes = prefixList;
+		List<Object[]> patternList = new ArrayList<Object[]>();
+		java.util.regex.Pattern placeholder = java.util.regex.Pattern.compile("\\{(\\d)\\}");
+		for (Map.Entry<String, String> entry : loaded.entrySet()) {
+			String key = entry.getKey();
+			java.util.regex.Matcher m = placeholder.matcher(key);
+			if (key.startsWith("~") || key.startsWith("#lc#") || !m.find()) {
+				continue;
+			}
+			m.reset();
+			StringBuilder regex = new StringBuilder("^");
+			List<Integer> numbers = new ArrayList<Integer>();
+			int last = 0;
+			while (m.find()) {
+				regex.append(java.util.regex.Pattern.quote(key.substring(last, m.start())));
+				regex.append("(.+?)");
+				numbers.add(Integer.parseInt(m.group(1)));
+				last = m.end();
+			}
+			regex.append(java.util.regex.Pattern.quote(key.substring(last))).append("$");
+			patternList.add(new Object[] {java.util.regex.Pattern.compile(regex.toString(), java.util.regex.Pattern.DOTALL), entry.getValue(), numbers, key});
+		}
+		patternList.sort((a, b) -> ((String) b[3]).length() - ((String) a[3]).length());
+		patterns = patternList;
 		table = loaded;
 		installButtonsTexts();
 		install();
@@ -171,6 +196,21 @@ public final class I18n {
 	/** Text translated in the current language, or the same text if it is not in the pack */
 	public static String tr(String english) {
 		return translateText(english);
+	}
+
+	/**
+	 * Text with variable parts: the English pattern is the key of the packs, {0}, {1}... are replaced by the arguments
+	 * (for example {@code fmt("File {0} exists, overwrite it?", name)}), so the whole sentence can be translated.
+	 */
+	public static String fmt(String englishPattern, Object... args) {
+		String text = translateText(englishPattern);
+		if (text == null || args == null) {
+			return text;
+		}
+		for (int i = 0; i < args.length; i++) {
+			text = text.replace("{" + i + "}", String.valueOf(args[i]));
+		}
+		return text;
 	}
 
 	// ------------------------------------------------------------------ packs
@@ -191,13 +231,31 @@ public final class I18n {
 					if (tab <= 0) {
 						continue;
 					}
-					map.put(line.substring(0, tab).replace("\\n", "\n"), line.substring(tab + 1).replace("\\n", "\n"));
+					map.put(unescape(line.substring(0, tab)), unescape(line.substring(tab + 1)));
 				}
 			}
 		} catch (Exception e) {
 			// no pack: English
 		}
 		return map;
+	}
+
+	/** In the packs "\n" is a new line and "\\" a backslash */
+	private static String unescape(String s) {
+		if (s.indexOf('\\') < 0) {
+			return s;
+		}
+		StringBuilder out = new StringBuilder(s.length());
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (c == '\\' && i + 1 < s.length() && (s.charAt(i + 1) == 'n' || s.charAt(i + 1) == '\\')) {
+				out.append(s.charAt(i + 1) == 'n' ? '\n' : '\\');
+				i++;
+			} else {
+				out.append(c);
+			}
+		}
+		return out.toString();
 	}
 
 	private static void installButtonsTexts() {
@@ -244,6 +302,9 @@ public final class I18n {
 				found = core.substring(0, 6) + innerFound + closing;
 			}
 		}
+		if (found == null) {
+			found = translatePattern(core);
+		}
 		if (found == null && (core.indexOf('<') >= 0 && core.indexOf('>') > core.indexOf('<'))) {
 			found = translateMarkup(map, core);
 		}
@@ -259,6 +320,24 @@ public final class I18n {
 			found = translatePieces(map, core);
 		}
 		return found == null ? text : text.substring(0, a) + found + text.substring(b);
+	}
+
+	/** A text that fits a pack key with {0}, {1}...: the variable parts are kept (and translated, if they are texts of the pack) */
+	@SuppressWarnings("unchecked")
+	private static String translatePattern(String core) {
+		for (Object[] entry : patterns) {
+			java.util.regex.Matcher m = ((java.util.regex.Pattern) entry[0]).matcher(core);
+			if (m.matches()) {
+				String result = (String) entry[1];
+				List<Integer> numbers = (List<Integer>) entry[2];
+				for (int i = 0; i < numbers.size(); i++) {
+					String argument = m.group(i + 1);
+					result = result.replace("{" + numbers.get(i) + "}", translateText(argument));
+				}
+				return result;
+			}
+		}
+		return null;
 	}
 
 	/** Messages made of several lines or sentences: every line / sentence found in the pack is translated, the rest stays */
@@ -315,6 +394,17 @@ public final class I18n {
 			return false;
 		}
 		String found = lookup(map, core);
+		String separator = "";
+		if (found == null) {
+			// " - Uppercase text" after a bold tag: the text is looked up without the separator
+			java.util.regex.Matcher lead = java.util.regex.Pattern.compile("^([\\s\\-\u2013:\u00b7]+)(.+)$", java.util.regex.Pattern.DOTALL).matcher(core);
+			if (lead.matches()) {
+				String rest = lookup(map, lead.group(2).trim());
+				if (rest != null) {
+					found = lead.group(1) + rest;
+				}
+			}
+		}
 		if (found == null) {
 			out.append(piece);
 			return false;

@@ -521,12 +521,12 @@ Color picker/converter	Farbwähler/-konverter
 View lineFeeds (From File)	Zeilenumbrüche anzeigen (aus Datei)
 View lineFeeds (From Loaded Text)	Zeilenumbrüche anzeigen (aus geladenem Text)
 Normalize End Of Line	Zeilenende normalisieren
-Normalize to LF (\n) - Linux's default	Auf LF (\n) normalisieren - Linux-Standard
+Normalize to LF (\\n) - Linux's default	Auf LF (\\n) normalisieren - Linux-Standard
 Normalize to Mac CR (\r) - Old MAC's default	Auf Mac-CR (\r) normalisieren - Standard des alten Mac
-Normalize to Windows CRLF (\r\n) - Windows' default	Auf Windows-CRLF (\r\n) normalisieren - Windows-Standard
-Normalize to LF and write to file (\n) - Linux's default	Auf LF normalisieren und in Datei schreiben (\n) - Linux-Standard
+Normalize to Windows CRLF (\r\\n) - Windows' default	Auf Windows-CRLF (\r\\n) normalisieren - Windows-Standard
+Normalize to LF and write to file (\\n) - Linux's default	Auf LF normalisieren und in Datei schreiben (\\n) - Linux-Standard
 Normalize to Mac CR and write to file (\r) - Old MAC's default	Auf Mac-CR normalisieren und in Datei schreiben (\r) - Standard des alten Mac
-Normalize to Windows CRLF and write to file (\r\n) - Windows' default	Auf Windows-CRLF normalisieren und in Datei schreiben (\r\n) - Windows-Standard
+Normalize to Windows CRLF and write to file (\r\\n) - Windows' default	Auf Windows-CRLF normalisieren und in Datei schreiben (\r\\n) - Windows-Standard
 File properties	Dateieigenschaften
 Uppercase/Lowercase text	Text in Groß-/Kleinbuchstaben
 Uppercase first letters	Anfangsbuchstaben groß
@@ -637,3 +637,92 @@ Your original file is not touched until you save.	Deine Originaldatei bleibt unv
 The text itself is not modified.	Der Text selbst wird nicht verändert.
 You can also define your own theme from the Text editor menu.	Du kannst auch ein eigenes Design über das Menü Texteditor erstellen.
 It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	Es ist unabhängig vom Oberflächenstil: ein dunkles Fenster mit hellem Editor oder umgekehrt ist möglich.
+Workspace:	Arbeitsbereich:
+[No file loaded]	[Keine Datei geladen]
+Lines concatenation mode:	Modus zum Verketten von Zeilen:
+Live cmd:	Aktiver Befehl:
+Autoscroll	Automatisch scrollen
+Concatenate Lines	Zeilen verketten
+Interactive	Interaktiv
+Path	Pfad
+Change the maximum memory of ScreepT	Maximalen Speicher von ScreepT ändern
+Choose between the minimum set in the launcher and what the PC can give now.	Wähle zwischen dem im Launcher gesetzten Minimum und dem, was der PC jetzt geben kann.
+Replace every tab with {0} spaces {1}	Jeden Tab durch {0} Leerzeichen ersetzen {1}
+Replace every {0} spaces with a tab {1}	Je {0} Leerzeichen durch einen Tab ersetzen {1}
+(See tabSize in textEditor subHead panel)	(Siehe Tab-Größe in der Leiste des Texteditors)
+Enable/disable output text area auto-scroll feature	Automatisches Scrollen des Ausgabebereichs ein-/ausschalten
+Enter a command and launch on active process. (to launch command, press enter or click play button)	Befehl eingeben und im aktiven Prozess ausführen. (Eingabetaste oder Play-Schaltfläche drücken)
+Launch selected text or current contiguous text block	Führt den ausgewählten Text oder den aktuellen zusammenhängenden Textblock aus
+Load file into text area	Datei in den Textbereich laden
+Save current file as...	Aktuelle Datei speichern unter...
+Stop execution	Ausführung stoppen
+When executing, all executed lines will be concatenated with chosen mode	Bei der Ausführung werden alle ausgeführten Zeilen mit dem gewählten Modus verkettet
+Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)	Im Terminalverlauf suchen (Strg+Umschalt+H, Cmd+Umschalt+H auf macOS)
+Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output	Interaktives Terminal: eine echte Shell mit Farben und Live-Programmen (Eingabeaufforderungen, Editoren, Fortschrittsbalken, Claude Code). Deaktiviert: Textmodus, führt die ausgewählten Befehle aus und zeigt deren Ausgabe
+Import/Export/Modify themes, or define your own	Designs importieren/exportieren/ändern oder eigenes definieren
+Cannot change tree depth when workspace view is selected!	Die Baumtiefe kann bei aktiver Arbeitsbereichsansicht nicht geändert werden!
+Password is empty...Fill password text-field!	Das Passwort ist leer... Passwortfeld ausfüllen!
+Tesseract not found on this installation: update your libraries plugin to use this function!	Tesseract wurde in dieser Installation nicht gefunden: Bibliotheken-Plugin aktualisieren, um diese Funktion zu nutzen!
+TextToSpeech not found on this installation: update your libraries plugin to use this function!	TextToSpeech wurde in dieser Installation nicht gefunden: Bibliotheken-Plugin aktualisieren, um diese Funktion zu nutzen!
+Cannot load syntax scheme, an error occurred	Das Syntaxschema kann nicht geladen werden, ein Fehler ist aufgetreten
+{0} saved!	{0} gespeichert!
+An error occurred: cannot save theme to file.<br>{0}	Fehler: Das Design kann nicht in die Datei gespeichert werden.<br>{0}
+Search completed with <b>{0}</b> results! </br><u>{1}</u>	Suche abgeschlossen mit <b>{0}</b> Ergebnissen! </br><u>{1}</u>
+{0} results found!	{0} Ergebnisse gefunden!
+Select source before to search!	Vor der Suche eine Quelle auswählen!
+This type of file is not fully supported [{0}] : Load anyway?	Dieser Dateityp wird nicht vollständig unterstützt [{0}] : trotzdem laden?
+IOException while trying to create new File!	E/A-Fehler beim Erstellen der neuen Datei!
+Current clipboard written: {0}	Aktuelle Zwischenablage geschrieben: {0}
+There was an error writing to {0}	Beim Schreiben nach {0} ist ein Fehler aufgetreten
+Error during file write	Fehler beim Schreiben der Datei
+Given file is NULL, cannot write.	Die Datei ist NULL, Schreiben nicht möglich.
+error Saving the selected file :(	Fehler beim Speichern der ausgewählten Datei :(
+File {0} exists, overwrite it?	Die Datei {0} existiert, überschreiben?
+Overwrite?	Überschreiben?
+{0} is not saved, do you want to save it before to crypt?	{0} ist nicht gespeichert: vor dem Verschlüsseln speichern?
+Error trying to set upper ancestor in file tree :(	Fehler beim Setzen des übergeordneten Ordners im Dateibaum :(
+Encode selected/all text to base 64 (press ctrl to decode base 64)	Ausgewählten/gesamten Text in Base64 kodieren (Strg gedrückt halten zum Dekodieren)
+Remove spaces from selected/all text)	Leerzeichen aus dem ausgewählten/gesamten Text entfernen)
+Draws a vertical guide line at every tab stop in the indentation of each line (only for indentation made of tab characters, not spaces). Color: 'Tab lines' in the theme editor.	Zeichnet an jedem Tab-Stopp im Einzug jeder Zeile eine senkrechte Führungslinie (nur bei Einzügen aus Tab-Zeichen, nicht aus Leerzeichen). Farbe: „Tab lines“ im Design-Editor.
+Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)	Markiert ungenutzte Ressourcen (RAM, CPU) zur Bereinigung. (Nicht zu oft verwenden, da es die gesamte Software verlangsamen kann)
+NB:	Hinweis:
+remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors.	beachte, dass dies keine Speicher- oder CPU-Bereinigung erzwingt: es entfernt nur ungenutzte interne Objektverweise und macht die Anwendung widerstandsfähiger gegen Speichermangel.
+If you want to modify the memory used by ScreepT	Wenn du den von ScreepT genutzten Speicher ändern willst
+you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well).	kannst du im Launcher über maximalen und minimalen Speicher sowie Stapelgröße einstellen (zu niedrige Werte können die Anwendung beeinträchtigen).
+Add new folder	Neuen Ordner hinzufügen
+Add new file	Neue Datei hinzufügen
+Rename selected (files only)	Auswahl umbenennen (nur Dateien)
+Use as workspace	Als Arbeitsbereich verwenden
+Select all nodes	Alle Knoten auswählen
+Collapse children nodes	Untergeordnete Knoten einklappen
+Expand children nodes	Untergeordnete Knoten ausklappen
+Copy selected file paths	Pfade der ausgewählten Dateien kopieren
+Copy current file here	Aktuelle Datei hierher kopieren
+Move current file here	Aktuelle Datei hierher verschieben
+Search for text in selected files content	Text im Inhalt der ausgewählten Dateien suchen
+Check File hash...	Datei-Hash prüfen...
+Change file Panel background	Hintergrund des Dateipanels ändern
+selected files	ausgewählte Dateien
+Are you sure to delete {0} from disk(cannot be undone)? All eventual selected folders will be deleted with all the file contained in them!	Wirklich {0} von der Festplatte löschen (nicht rückgängig zu machen)? Ausgewählte Ordner werden mit allen enthaltenen Dateien gelöscht!
+Delete?	Löschen?
+Specify folder name	Ordnernamen angeben
+Emptied and Deleted!	Geleert und gelöscht!
+Move current file?	Aktuelle Datei verschieben?
+File exists	Datei existiert
+File Moved	Datei verschoben
+Cannot Move!	Verschieben nicht möglich!
+Cannot Copy!	Kopieren nicht möglich!
+An error occurred moving file, so file is still to its original position	Fehler beim Verschieben: Die Datei liegt noch an ihrer ursprünglichen Position
+An error occurred copying file, so file is still to its original position	Fehler beim Kopieren: Die Datei liegt noch an ihrer ursprünglichen Position
+File does not exist	Die Datei existiert nicht
+Original deleted.	Original gelöscht.
+Specify new name	Neuen Namen angeben
+Cannot rename current file	Die aktuelle Datei kann nicht umbenannt werden
+File not created	Datei nicht erstellt
+Error creating new file	Fehler beim Erstellen der neuen Datei
+Cannot retrieve file	Die Datei kann nicht abgerufen werden
+~Specify new name for	Neuen Namen angeben für
+~Create New file in	Neue Datei erstellen in
+~Plese specify a name for the file to save in	Namen für die Datei angeben, die gespeichert wird in
+~Copy of	Kopie von
+~Are you sure to move current file into [	Datei wirklich verschieben nach [

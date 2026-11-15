@@ -521,12 +521,12 @@ Color picker/converter	Selector/conversor de colores
 View lineFeeds (From File)	Ver los saltos de línea (del archivo)
 View lineFeeds (From Loaded Text)	Ver los saltos de línea (del texto cargado)
 Normalize End Of Line	Normalizar el fin de línea
-Normalize to LF (\n) - Linux's default	Normalizar a LF (\n) - predeterminado de Linux
+Normalize to LF (\\n) - Linux's default	Normalizar a LF (\\n) - predeterminado de Linux
 Normalize to Mac CR (\r) - Old MAC's default	Normalizar a CR de Mac (\r) - predeterminado del Mac antiguo
-Normalize to Windows CRLF (\r\n) - Windows' default	Normalizar a CRLF de Windows (\r\n) - predeterminado de Windows
-Normalize to LF and write to file (\n) - Linux's default	Normalizar a LF y escribir en el archivo (\n) - predeterminado de Linux
+Normalize to Windows CRLF (\r\\n) - Windows' default	Normalizar a CRLF de Windows (\r\\n) - predeterminado de Windows
+Normalize to LF and write to file (\\n) - Linux's default	Normalizar a LF y escribir en el archivo (\\n) - predeterminado de Linux
 Normalize to Mac CR and write to file (\r) - Old MAC's default	Normalizar a CR de Mac y escribir en el archivo (\r) - predeterminado del Mac antiguo
-Normalize to Windows CRLF and write to file (\r\n) - Windows' default	Normalizar a CRLF de Windows y escribir en el archivo (\r\n) - predeterminado de Windows
+Normalize to Windows CRLF and write to file (\r\\n) - Windows' default	Normalizar a CRLF de Windows y escribir en el archivo (\r\\n) - predeterminado de Windows
 File properties	Propiedades del archivo
 Uppercase/Lowercase text	Texto en mayúsculas/minúsculas
 Uppercase first letters	Iniciales en mayúscula
@@ -637,3 +637,92 @@ Your original file is not touched until you save.	Tu archivo original no se modi
 The text itself is not modified.	El texto en sí no se modifica.
 You can also define your own theme from the Text editor menu.	También puedes definir tu propio tema desde el menú Editor de texto.
 It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	Es independiente del estilo de la interfaz: puedes tener una ventana oscura con un editor claro, o al revés.
+Workspace:	Espacio de trabajo:
+[No file loaded]	[Ningún archivo cargado]
+Lines concatenation mode:	Modo de concatenación de líneas:
+Live cmd:	Comando activo:
+Autoscroll	Desplazamiento automático
+Concatenate Lines	Concatenar líneas
+Interactive	Interactivo
+Path	Ruta
+Change the maximum memory of ScreepT	Cambia la memoria máxima de ScreepT
+Choose between the minimum set in the launcher and what the PC can give now.	Elige entre el mínimo fijado en el launcher y lo que el PC puede dar ahora.
+Replace every tab with {0} spaces {1}	Sustituir cada tabulación por {0} espacios {1}
+Replace every {0} spaces with a tab {1}	Sustituir cada {0} espacios por una tabulación {1}
+(See tabSize in textEditor subHead panel)	(Consulta el tamaño de tabulación en la barra del editor de texto)
+Enable/disable output text area auto-scroll feature	Activa/desactiva el desplazamiento automático del área de salida
+Enter a command and launch on active process. (to launch command, press enter or click play button)	Introduce un comando y lánzalo en el proceso activo. (pulsa Intro o el botón de reproducir para ejecutarlo)
+Launch selected text or current contiguous text block	Ejecuta el texto seleccionado o el bloque de texto contiguo actual
+Load file into text area	Cargar el archivo en el área de texto
+Save current file as...	Guardar el archivo actual como...
+Stop execution	Detener la ejecución
+When executing, all executed lines will be concatenated with chosen mode	Al ejecutar, todas las líneas ejecutadas se concatenan con el modo elegido
+Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)	Buscar en el historial del terminal (Ctrl+Shift+H, Cmd+Shift+H en macOS)
+Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output	Terminal interactivo: una shell real con colores y programas en vivo (prompts, editores, barras de progreso, Claude Code). Desmarcado: modo texto, ejecuta los comandos seleccionados y muestra su salida
+Import/Export/Modify themes, or define your own	Importa/exporta/modifica temas, o define el tuyo
+Cannot change tree depth when workspace view is selected!	¡No se puede cambiar la profundidad del árbol con la vista de espacio de trabajo activa!
+Password is empty...Fill password text-field!	La contraseña está vacía... ¡rellena el campo de contraseña!
+Tesseract not found on this installation: update your libraries plugin to use this function!	Tesseract no se encuentra en esta instalación: actualiza el complemento de bibliotecas para usar esta función.
+TextToSpeech not found on this installation: update your libraries plugin to use this function!	TextToSpeech no se encuentra en esta instalación: actualiza el complemento de bibliotecas para usar esta función.
+Cannot load syntax scheme, an error occurred	No se puede cargar el esquema de sintaxis, ocurrió un error
+{0} saved!	¡{0} guardado!
+An error occurred: cannot save theme to file.<br>{0}	Ocurrió un error: no se puede guardar el tema en el archivo.<br>{0}
+Search completed with <b>{0}</b> results! </br><u>{1}</u>	¡Búsqueda completada con <b>{0}</b> resultados! </br><u>{1}</u>
+{0} results found!	¡{0} resultados encontrados!
+Select source before to search!	¡Selecciona el origen antes de buscar!
+This type of file is not fully supported [{0}] : Load anyway?	Este tipo de archivo no es totalmente compatible [{0}] : ¿cargarlo de todos modos?
+IOException while trying to create new File!	¡Error de E/S al intentar crear el archivo nuevo!
+Current clipboard written: {0}	Portapapeles actual escrito: {0}
+There was an error writing to {0}	Hubo un error al escribir en {0}
+Error during file write	Error durante la escritura del archivo
+Given file is NULL, cannot write.	El archivo es NULL, no se puede escribir.
+error Saving the selected file :(	Error al guardar el archivo seleccionado :(
+File {0} exists, overwrite it?	El archivo {0} existe, ¿sobrescribirlo?
+Overwrite?	¿Sobrescribir?
+{0} is not saved, do you want to save it before to crypt?	{0} no está guardado: ¿quieres guardarlo antes de cifrarlo?
+Error trying to set upper ancestor in file tree :(	Error al establecer el directorio superior en el árbol de archivos :(
+Encode selected/all text to base 64 (press ctrl to decode base 64)	Codifica el texto seleccionado/todo en base 64 (pulsa Ctrl para decodificar)
+Remove spaces from selected/all text)	Quitar los espacios del texto seleccionado/todo)
+Draws a vertical guide line at every tab stop in the indentation of each line (only for indentation made of tab characters, not spaces). Color: 'Tab lines' in the theme editor.	Dibuja una línea guía vertical en cada tabulación de la sangría de cada línea (solo sangrías hechas con tabulaciones, no con espacios). Color: «Tab lines» en el editor de temas.
+Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)	Marca los recursos no usados (RAM, CPU) para limpiarlos. (Se recomienda no hacerlo con frecuencia, porque puede ralentizar todo el software)
+NB:	NB:
+remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors.	recuerda que esto no fuerza ninguna limpieza de memoria o CPU: solo limpia referencias a objetos internos no usados, haciendo la aplicación más robusta ante errores de memoria agotada.
+If you want to modify the memory used by ScreepT	Si quieres modificar la memoria que usa ScreepT
+you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well).	puedes configurarla en el launcher con memoria máxima, mínima y tamaño de pila (recuerda que valores bajos pueden hacer que la aplicación funcione mal).
+Add new folder	Añadir carpeta nueva
+Add new file	Añadir archivo nuevo
+Rename selected (files only)	Renombrar la selección (solo archivos)
+Use as workspace	Usar como espacio de trabajo
+Select all nodes	Seleccionar todos los nodos
+Collapse children nodes	Contraer los nodos hijos
+Expand children nodes	Expandir los nodos hijos
+Copy selected file paths	Copiar las rutas de los archivos seleccionados
+Copy current file here	Copiar aquí el archivo actual
+Move current file here	Mover aquí el archivo actual
+Search for text in selected files content	Buscar texto en el contenido de los archivos seleccionados
+Check File hash...	Comprobar el hash del archivo...
+Change file Panel background	Cambiar el fondo del panel de archivos
+selected files	archivos seleccionados
+Are you sure to delete {0} from disk(cannot be undone)? All eventual selected folders will be deleted with all the file contained in them!	¿Seguro que quieres eliminar {0} del disco (no se puede deshacer)? ¡Las carpetas seleccionadas se eliminarán con todos los archivos que contienen!
+Delete?	¿Eliminar?
+Specify folder name	Especifica el nombre de la carpeta
+Emptied and Deleted!	¡Vaciada y eliminada!
+Move current file?	¿Mover el archivo actual?
+File exists	El archivo existe
+File Moved	Archivo movido
+Cannot Move!	¡No se puede mover!
+Cannot Copy!	¡No se puede copiar!
+An error occurred moving file, so file is still to its original position	Error al mover el archivo: sigue en su posición original
+An error occurred copying file, so file is still to its original position	Error al copiar el archivo: sigue en su posición original
+File does not exist	El archivo no existe
+Original deleted.	Original eliminado.
+Specify new name	Especifica el nombre nuevo
+Cannot rename current file	No se puede renombrar el archivo actual
+File not created	Archivo no creado
+Error creating new file	Error al crear el archivo nuevo
+Cannot retrieve file	No se puede recuperar el archivo
+~Specify new name for	Especifica el nombre nuevo para
+~Create New file in	Crear un archivo nuevo en
+~Plese specify a name for the file to save in	Especifica un nombre para el archivo a guardar en
+~Copy of	Copia de
+~Are you sure to move current file into [	¿Seguro que quieres mover el archivo actual a [

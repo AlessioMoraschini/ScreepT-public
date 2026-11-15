@@ -521,12 +521,12 @@ Color picker/converter	Selettore/convertitore di colori
 View lineFeeds (From File)	Mostra le fine riga (dal file)
 View lineFeeds (From Loaded Text)	Mostra le fine riga (dal testo caricato)
 Normalize End Of Line	Normalizza la fine riga
-Normalize to LF (\n) - Linux's default	Normalizza a LF (\n) - predefinito di Linux
+Normalize to LF (\\n) - Linux's default	Normalizza a LF (\\n) - predefinito di Linux
 Normalize to Mac CR (\r) - Old MAC's default	Normalizza a CR Mac (\r) - predefinito del vecchio Mac
-Normalize to Windows CRLF (\r\n) - Windows' default	Normalizza a CRLF Windows (\r\n) - predefinito di Windows
-Normalize to LF and write to file (\n) - Linux's default	Normalizza a LF e scrivi su file (\n) - predefinito di Linux
+Normalize to Windows CRLF (\r\\n) - Windows' default	Normalizza a CRLF Windows (\r\\n) - predefinito di Windows
+Normalize to LF and write to file (\\n) - Linux's default	Normalizza a LF e scrivi su file (\\n) - predefinito di Linux
 Normalize to Mac CR and write to file (\r) - Old MAC's default	Normalizza a CR Mac e scrivi su file (\r) - predefinito del vecchio Mac
-Normalize to Windows CRLF and write to file (\r\n) - Windows' default	Normalizza a CRLF Windows e scrivi su file (\r\n) - predefinito di Windows
+Normalize to Windows CRLF and write to file (\r\\n) - Windows' default	Normalizza a CRLF Windows e scrivi su file (\r\\n) - predefinito di Windows
 File properties	Proprietà del file
 Uppercase/Lowercase text	Testo maiuscolo/minuscolo
 Uppercase first letters	Iniziali maiuscole
@@ -637,3 +637,92 @@ Your original file is not touched until you save.	Il file originale non viene to
 The text itself is not modified.	Il testo in sé non viene modificato.
 You can also define your own theme from the Text editor menu.	Puoi anche definire un tuo tema dal menu Editor di testo.
 It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	È indipendente dallo stile dell'interfaccia: puoi avere una finestra scura con un editor chiaro, o il contrario.
+Workspace:	Workspace:
+[No file loaded]	[Nessun file caricato]
+Lines concatenation mode:	Modalità di concatenazione delle righe:
+Live cmd:	Comando attivo:
+Autoscroll	Scorrimento automatico
+Concatenate Lines	Concatena le righe
+Interactive	Interattivo
+Path	Percorso
+Change the maximum memory of ScreepT	Cambia la memoria massima di ScreepT
+Choose between the minimum set in the launcher and what the PC can give now.	Scegli tra il minimo impostato nel launcher e quello che il PC può dare ora.
+Replace every tab with {0} spaces {1}	Sostituisci ogni tab con {0} spazi {1}
+Replace every {0} spaces with a tab {1}	Sostituisci ogni {0} spazi con un tab {1}
+(See tabSize in textEditor subHead panel)	(Vedi la dimensione tab nella barra dell'editor di testo)
+Enable/disable output text area auto-scroll feature	Attiva/disattiva lo scorrimento automatico dell'area di output
+Enter a command and launch on active process. (to launch command, press enter or click play button)	Inserisci un comando e lancialo sul processo attivo. (premi Invio o il pulsante play per eseguirlo)
+Launch selected text or current contiguous text block	Esegue il testo selezionato o il blocco di testo contiguo corrente
+Load file into text area	Carica il file nell'area di testo
+Save current file as...	Salva il file corrente come...
+Stop execution	Interrompi l'esecuzione
+When executing, all executed lines will be concatenated with chosen mode	Durante l'esecuzione tutte le righe eseguite vengono concatenate con la modalità scelta
+Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)	Cerca nella cronologia del terminale (Ctrl+Shift+H, Cmd+Shift+H su macOS)
+Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output	Terminale interattivo: una vera shell con colori e programmi in tempo reale (prompt, editor, barre di avanzamento, Claude Code). Disattivato: modalità testo, esegue i comandi selezionati e ne mostra l'output
+Import/Export/Modify themes, or define your own	Importa/esporta/modifica i temi, o definiscine uno tuo
+Cannot change tree depth when workspace view is selected!	Impossibile cambiare la profondità dell'albero con la vista workspace attiva!
+Password is empty...Fill password text-field!	La password è vuota... compila il campo password!
+Tesseract not found on this installation: update your libraries plugin to use this function!	Tesseract non trovato in questa installazione: aggiorna il plugin delle librerie per usare questa funzione!
+TextToSpeech not found on this installation: update your libraries plugin to use this function!	TextToSpeech non trovato in questa installazione: aggiorna il plugin delle librerie per usare questa funzione!
+Cannot load syntax scheme, an error occurred	Impossibile caricare lo schema di sintassi, si è verificato un errore
+{0} saved!	{0} salvato!
+An error occurred: cannot save theme to file.<br>{0}	Si è verificato un errore: impossibile salvare il tema su file.<br>{0}
+Search completed with <b>{0}</b> results! </br><u>{1}</u>	Ricerca completata con <b>{0}</b> risultati! </br><u>{1}</u>
+{0} results found!	{0} risultati trovati!
+Select source before to search!	Seleziona la sorgente prima di cercare!
+This type of file is not fully supported [{0}] : Load anyway?	Questo tipo di file non è completamente supportato [{0}] : caricarlo comunque?
+IOException while trying to create new File!	Errore di I/O durante la creazione del nuovo file!
+Current clipboard written: {0}	Appunti correnti scritti: {0}
+There was an error writing to {0}	Si è verificato un errore durante la scrittura in {0}
+Error during file write	Errore durante la scrittura del file
+Given file is NULL, cannot write.	Il file è NULL, impossibile scrivere.
+error Saving the selected file :(	Errore nel salvataggio del file selezionato :(
+File {0} exists, overwrite it?	Il file {0} esiste, sovrascriverlo?
+Overwrite?	Sovrascrivere?
+{0} is not saved, do you want to save it before to crypt?	{0} non è salvato: vuoi salvarlo prima di criptarlo?
+Error trying to set upper ancestor in file tree :(	Errore nell'impostare la cartella superiore nell'albero dei file :(
+Encode selected/all text to base 64 (press ctrl to decode base 64)	Codifica il testo selezionato/tutto in base 64 (premi Ctrl per decodificare)
+Remove spaces from selected/all text)	Rimuovi gli spazi dal testo selezionato/tutto)
+Draws a vertical guide line at every tab stop in the indentation of each line (only for indentation made of tab characters, not spaces). Color: 'Tab lines' in the theme editor.	Disegna una linea guida verticale a ogni tab nel rientro di ogni riga (solo per rientri fatti con caratteri tab, non spazi). Colore: «Tab lines» nell'editor dei temi.
+Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)	Segna le risorse inutilizzate (RAM, CPU) per la pulizia. (Si consiglia di non farlo spesso, perché può rallentare tutto il software)
+NB:	NB:
+remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors.	ricorda che questo non forza alcuna pulizia di memoria o CPU: ripulisce solo i riferimenti a oggetti interni inutilizzati, rendendo l'applicazione più robusta contro gli errori di memoria esaurita.
+If you want to modify the memory used by ScreepT	Se vuoi modificare la memoria usata da ScreepT
+you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well).	puoi impostarla nel launcher con memoria massima, minima e dimensione dello stack (ricordando che valori bassi possono far funzionare male l'applicazione).
+Add new folder	Aggiungi nuova cartella
+Add new file	Aggiungi nuovo file
+Rename selected (files only)	Rinomina la selezione (solo file)
+Use as workspace	Usa come workspace
+Select all nodes	Seleziona tutti i nodi
+Collapse children nodes	Comprimi i nodi figli
+Expand children nodes	Espandi i nodi figli
+Copy selected file paths	Copia i percorsi dei file selezionati
+Copy current file here	Copia qui il file corrente
+Move current file here	Sposta qui il file corrente
+Search for text in selected files content	Cerca testo nel contenuto dei file selezionati
+Check File hash...	Verifica l'hash del file...
+Change file Panel background	Cambia lo sfondo del pannello file
+selected files	file selezionati
+Are you sure to delete {0} from disk(cannot be undone)? All eventual selected folders will be deleted with all the file contained in them!	Sei sicuro di voler eliminare {0} dal disco (operazione irreversibile)? Le eventuali cartelle selezionate verranno eliminate con tutti i file contenuti!
+Delete?	Eliminare?
+Specify folder name	Specifica il nome della cartella
+Emptied and Deleted!	Svuotata ed eliminata!
+Move current file?	Spostare il file corrente?
+File exists	Il file esiste
+File Moved	File spostato
+Cannot Move!	Impossibile spostare!
+Cannot Copy!	Impossibile copiare!
+An error occurred moving file, so file is still to its original position	Errore durante lo spostamento: il file è ancora nella posizione originale
+An error occurred copying file, so file is still to its original position	Errore durante la copia: il file è ancora nella posizione originale
+File does not exist	Il file non esiste
+Original deleted.	Originale eliminato.
+Specify new name	Specifica il nuovo nome
+Cannot rename current file	Impossibile rinominare il file corrente
+File not created	File non creato
+Error creating new file	Errore nella creazione del nuovo file
+Cannot retrieve file	Impossibile recuperare il file
+~Specify new name for	Specifica il nuovo nome per
+~Create New file in	Crea un nuovo file in
+~Plese specify a name for the file to save in	Specifica un nome per il file da salvare in
+~Copy of	Copia di
+~Are you sure to move current file into [	Sei sicuro di voler spostare il file corrente in [

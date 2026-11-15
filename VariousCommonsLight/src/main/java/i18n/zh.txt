@@ -521,12 +521,12 @@ Color picker/converter	取色器/颜色转换器
 View lineFeeds (From File)	查看换行符（来自文件）
 View lineFeeds (From Loaded Text)	查看换行符（来自已加载文本）
 Normalize End Of Line	规范化换行符
-Normalize to LF (\n) - Linux's default	规范化为 LF (\n) - Linux 默认
+Normalize to LF (\\n) - Linux's default	规范化为 LF (\\n) - Linux 默认
 Normalize to Mac CR (\r) - Old MAC's default	规范化为 Mac CR (\r) - 旧版 Mac 默认
-Normalize to Windows CRLF (\r\n) - Windows' default	规范化为 Windows CRLF (\r\n) - Windows 默认
-Normalize to LF and write to file (\n) - Linux's default	规范化为 LF 并写入文件 (\n) - Linux 默认
+Normalize to Windows CRLF (\r\\n) - Windows' default	规范化为 Windows CRLF (\r\\n) - Windows 默认
+Normalize to LF and write to file (\\n) - Linux's default	规范化为 LF 并写入文件 (\\n) - Linux 默认
 Normalize to Mac CR and write to file (\r) - Old MAC's default	规范化为 Mac CR 并写入文件 (\r) - 旧版 Mac 默认
-Normalize to Windows CRLF and write to file (\r\n) - Windows' default	规范化为 Windows CRLF 并写入文件 (\r\n) - Windows 默认
+Normalize to Windows CRLF and write to file (\r\\n) - Windows' default	规范化为 Windows CRLF 并写入文件 (\r\\n) - Windows 默认
 File properties	文件属性
 Uppercase/Lowercase text	文本大/小写
 Uppercase first letters	首字母大写
@@ -637,3 +637,92 @@ Your original file is not touched until you save.	在您保存之前，原始文
 The text itself is not modified.	文本本身不会被修改。
 You can also define your own theme from the Text editor menu.	您也可以从“文本编辑器”菜单中定义自己的主题。
 It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	它独立于界面样式，因此可以是深色窗口配浅色编辑器，或相反。
+Workspace:	工作区：
+[No file loaded]	[未加载文件]
+Lines concatenation mode:	行连接模式：
+Live cmd:	当前命令：
+Autoscroll	自动滚动
+Concatenate Lines	连接行
+Interactive	交互式
+Path	路径
+Change the maximum memory of ScreepT	更改 ScreepT 的最大内存
+Choose between the minimum set in the launcher and what the PC can give now.	在启动器中设置的最小值与电脑当前可提供的内存之间选择。
+Replace every tab with {0} spaces {1}	将每个制表符替换为 {0} 个空格 {1}
+Replace every {0} spaces with a tab {1}	将每 {0} 个空格替换为一个制表符 {1}
+(See tabSize in textEditor subHead panel)	（参见文本编辑器工具栏中的制表符大小）
+Enable/disable output text area auto-scroll feature	启用/禁用输出文本区域的自动滚动
+Enter a command and launch on active process. (to launch command, press enter or click play button)	输入命令并在活动进程上运行。（按回车或点击播放按钮执行）
+Launch selected text or current contiguous text block	运行所选文本或当前连续文本块
+Load file into text area	将文件加载到文本区域
+Save current file as...	将当前文件另存为...
+Stop execution	停止执行
+When executing, all executed lines will be concatenated with chosen mode	执行时，所有已执行的行将按所选模式连接
+Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)	在终端历史中搜索（Ctrl+Shift+H，macOS 上为 Cmd+Shift+H）
+Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output	交互式终端：带颜色和实时程序（提示符、编辑器、进度条、Claude Code）的真实 shell。取消勾选：文本模式，运行所选命令并打印其输出
+Import/Export/Modify themes, or define your own	导入/导出/修改主题，或自定义主题
+Cannot change tree depth when workspace view is selected!	选择工作区视图时无法更改目录树深度！
+Password is empty...Fill password text-field!	密码为空……请填写密码框！
+Tesseract not found on this installation: update your libraries plugin to use this function!	此安装中未找到 Tesseract：请更新库插件以使用此功能！
+TextToSpeech not found on this installation: update your libraries plugin to use this function!	此安装中未找到 TextToSpeech：请更新库插件以使用此功能！
+Cannot load syntax scheme, an error occurred	无法加载语法方案，发生错误
+{0} saved!	{0} 已保存！
+An error occurred: cannot save theme to file.<br>{0}	发生错误：无法将主题保存到文件。<br>{0}
+Search completed with <b>{0}</b> results! </br><u>{1}</u>	搜索完成，共 <b>{0}</b> 个结果！ </br><u>{1}</u>
+{0} results found!	找到 {0} 个结果！
+Select source before to search!	搜索前请选择来源！
+This type of file is not fully supported [{0}] : Load anyway?	不完全支持此文件类型 [{0}]：仍要加载吗？
+IOException while trying to create new File!	创建新文件时发生 I/O 错误！
+Current clipboard written: {0}	当前剪贴板已写入：{0}
+There was an error writing to {0}	写入 {0} 时出错
+Error during file write	写入文件时出错
+Given file is NULL, cannot write.	文件为 NULL，无法写入。
+error Saving the selected file :(	保存所选文件时出错 :(
+File {0} exists, overwrite it?	文件 {0} 已存在，要覆盖吗？
+Overwrite?	覆盖吗？
+{0} is not saved, do you want to save it before to crypt?	{0} 尚未保存：加密前要保存吗？
+Error trying to set upper ancestor in file tree :(	在文件树中设置上级目录时出错 :(
+Encode selected/all text to base 64 (press ctrl to decode base 64)	将所选/全部文本编码为 base64（按 Ctrl 可解码）
+Remove spaces from selected/all text)	删除所选/全部文本中的空格）
+Draws a vertical guide line at every tab stop in the indentation of each line (only for indentation made of tab characters, not spaces). Color: 'Tab lines' in the theme editor.	在每行缩进的每个制表位绘制垂直参考线（仅适用于由制表符而非空格构成的缩进）。颜色：主题编辑器中的“Tab lines”。
+Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)	标记未使用的资源（内存、CPU）以便清理。（建议不要频繁执行，因为可能拖慢整个软件）
+NB:	注意：
+remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors.	请注意，这不会强制清理内存或 CPU，只会清理未使用的内部对象引用，从而提高应用程序应对内存不足错误的能力。
+If you want to modify the memory used by ScreepT	如果您想修改 ScreepT 使用的内存
+you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well).	可在启动器中设置最大内存、最小内存和栈大小（注意过低的值可能导致应用程序运行不佳）。
+Add new folder	添加新文件夹
+Add new file	添加新文件
+Rename selected (files only)	重命名所选项（仅文件）
+Use as workspace	用作工作区
+Select all nodes	选择所有节点
+Collapse children nodes	折叠子节点
+Expand children nodes	展开子节点
+Copy selected file paths	复制所选文件路径
+Copy current file here	将当前文件复制到此处
+Move current file here	将当前文件移动到此处
+Search for text in selected files content	在所选文件内容中搜索文本
+Check File hash...	校验文件哈希...
+Change file Panel background	更改文件面板背景
+selected files	所选文件
+Are you sure to delete {0} from disk(cannot be undone)? All eventual selected folders will be deleted with all the file contained in them!	确定要从磁盘删除 {0} 吗（无法撤销）？所选文件夹将连同其中所有文件一并删除！
+Delete?	删除吗？
+Specify folder name	指定文件夹名称
+Emptied and Deleted!	已清空并删除！
+Move current file?	移动当前文件吗？
+File exists	文件已存在
+File Moved	文件已移动
+Cannot Move!	无法移动！
+Cannot Copy!	无法复制！
+An error occurred moving file, so file is still to its original position	移动文件时出错，文件仍在原位置
+An error occurred copying file, so file is still to its original position	复制文件时出错，文件仍在原位置
+File does not exist	文件不存在
+Original deleted.	原文件已删除。
+Specify new name	指定新名称
+Cannot rename current file	无法重命名当前文件
+File not created	文件未创建
+Error creating new file	创建新文件出错
+Cannot retrieve file	无法获取文件
+~Specify new name for	指定新名称：
+~Create New file in	在此创建新文件：
+~Plese specify a name for the file to save in	请为要保存到以下位置的文件指定名称：
+~Copy of	复制自
+~Are you sure to move current file into [	确定要将当前文件移动到 [

@@ -521,12 +521,12 @@ Color picker/converter	Sélecteur/convertisseur de couleurs
 View lineFeeds (From File)	Afficher les fins de ligne (du fichier)
 View lineFeeds (From Loaded Text)	Afficher les fins de ligne (du texte chargé)
 Normalize End Of Line	Normaliser la fin de ligne
-Normalize to LF (\n) - Linux's default	Normaliser en LF (\n) - défaut de Linux
+Normalize to LF (\\n) - Linux's default	Normaliser en LF (\\n) - défaut de Linux
 Normalize to Mac CR (\r) - Old MAC's default	Normaliser en CR Mac (\r) - défaut de l'ancien Mac
-Normalize to Windows CRLF (\r\n) - Windows' default	Normaliser en CRLF Windows (\r\n) - défaut de Windows
-Normalize to LF and write to file (\n) - Linux's default	Normaliser en LF et écrire dans le fichier (\n) - défaut de Linux
+Normalize to Windows CRLF (\r\\n) - Windows' default	Normaliser en CRLF Windows (\r\\n) - défaut de Windows
+Normalize to LF and write to file (\\n) - Linux's default	Normaliser en LF et écrire dans le fichier (\\n) - défaut de Linux
 Normalize to Mac CR and write to file (\r) - Old MAC's default	Normaliser en CR Mac et écrire dans le fichier (\r) - défaut de l'ancien Mac
-Normalize to Windows CRLF and write to file (\r\n) - Windows' default	Normaliser en CRLF Windows et écrire dans le fichier (\r\n) - défaut de Windows
+Normalize to Windows CRLF and write to file (\r\\n) - Windows' default	Normaliser en CRLF Windows et écrire dans le fichier (\r\\n) - défaut de Windows
 File properties	Propriétés du fichier
 Uppercase/Lowercase text	Texte en majuscules/minuscules
 Uppercase first letters	Initiales en majuscule
@@ -637,3 +637,92 @@ Your original file is not touched until you save.	Votre fichier d'origine n'est 
 The text itself is not modified.	Le texte lui-même n'est pas modifié.
 You can also define your own theme from the Text editor menu.	Vous pouvez aussi définir votre propre thème depuis le menu Éditeur de texte.
 It is independent from the GUI style, so you can have a dark window with a light editor, or the opposite.	Il est indépendant du style de l'interface : vous pouvez avoir une fenêtre sombre avec un éditeur clair, ou l'inverse.
+Workspace:	Espace de travail :
+[No file loaded]	[Aucun fichier chargé]
+Lines concatenation mode:	Mode de concaténation des lignes :
+Live cmd:	Commande active :
+Autoscroll	Défilement automatique
+Concatenate Lines	Concaténer les lignes
+Interactive	Interactif
+Path	Chemin
+Change the maximum memory of ScreepT	Modifier la mémoire maximale de ScreepT
+Choose between the minimum set in the launcher and what the PC can give now.	Choisissez entre le minimum défini dans le launcher et ce que le PC peut donner maintenant.
+Replace every tab with {0} spaces {1}	Remplacer chaque tabulation par {0} espaces {1}
+Replace every {0} spaces with a tab {1}	Remplacer chaque groupe de {0} espaces par une tabulation {1}
+(See tabSize in textEditor subHead panel)	(Voir la taille des tabulations dans la barre de l'éditeur de texte)
+Enable/disable output text area auto-scroll feature	Active/désactive le défilement automatique de la zone de sortie
+Enter a command and launch on active process. (to launch command, press enter or click play button)	Saisissez une commande et lancez-la sur le processus actif. (appuyez sur Entrée ou sur le bouton lecture)
+Launch selected text or current contiguous text block	Exécute le texte sélectionné ou le bloc de texte contigu actuel
+Load file into text area	Charger le fichier dans la zone de texte
+Save current file as...	Enregistrer le fichier actuel sous...
+Stop execution	Arrêter l'exécution
+When executing, all executed lines will be concatenated with chosen mode	À l'exécution, toutes les lignes exécutées sont concaténées avec le mode choisi
+Search in the terminal history  (Ctrl+Shift+H, Cmd+Shift+H on macOS)	Rechercher dans l'historique du terminal (Ctrl+Shift+H, Cmd+Shift+H sur macOS)
+Interactive terminal: a real shell with colors and live programs (prompts, editors, progress bars, Claude Code). Unchecked: text mode, runs the selected commands and prints their output	Terminal interactif : un vrai shell avec couleurs et programmes en direct (invites, éditeurs, barres de progression, Claude Code). Décoché : mode texte, exécute les commandes sélectionnées et affiche leur sortie
+Import/Export/Modify themes, or define your own	Importez/exportez/modifiez des thèmes, ou définissez le vôtre
+Cannot change tree depth when workspace view is selected!	Impossible de changer la profondeur de l'arborescence avec la vue espace de travail active !
+Password is empty...Fill password text-field!	Le mot de passe est vide... remplissez le champ mot de passe !
+Tesseract not found on this installation: update your libraries plugin to use this function!	Tesseract introuvable dans cette installation : mettez à jour le plugin de bibliothèques pour utiliser cette fonction !
+TextToSpeech not found on this installation: update your libraries plugin to use this function!	TextToSpeech introuvable dans cette installation : mettez à jour le plugin de bibliothèques pour utiliser cette fonction !
+Cannot load syntax scheme, an error occurred	Impossible de charger le schéma de syntaxe, une erreur s'est produite
+{0} saved!	{0} enregistré !
+An error occurred: cannot save theme to file.<br>{0}	Une erreur s'est produite : impossible d'enregistrer le thème dans le fichier.<br>{0}
+Search completed with <b>{0}</b> results! </br><u>{1}</u>	Recherche terminée avec <b>{0}</b> résultats ! </br><u>{1}</u>
+{0} results found!	{0} résultats trouvés !
+Select source before to search!	Sélectionnez la source avant de rechercher !
+This type of file is not fully supported [{0}] : Load anyway?	Ce type de fichier n'est pas entièrement pris en charge [{0}] : le charger quand même ?
+IOException while trying to create new File!	Erreur d'E/S lors de la création du nouveau fichier !
+Current clipboard written: {0}	Presse-papiers actuel écrit : {0}
+There was an error writing to {0}	Une erreur s'est produite lors de l'écriture dans {0}
+Error during file write	Erreur lors de l'écriture du fichier
+Given file is NULL, cannot write.	Le fichier est NULL, écriture impossible.
+error Saving the selected file :(	Erreur lors de l'enregistrement du fichier sélectionné :(
+File {0} exists, overwrite it?	Le fichier {0} existe, l'écraser ?
+Overwrite?	Écraser ?
+{0} is not saved, do you want to save it before to crypt?	{0} n'est pas enregistré : voulez-vous l'enregistrer avant de le chiffrer ?
+Error trying to set upper ancestor in file tree :(	Erreur lors de la définition du dossier parent dans l'arborescence :(
+Encode selected/all text to base 64 (press ctrl to decode base 64)	Encode le texte sélectionné/tout en base 64 (appuyez sur Ctrl pour décoder)
+Remove spaces from selected/all text)	Supprimer les espaces du texte sélectionné/tout)
+Draws a vertical guide line at every tab stop in the indentation of each line (only for indentation made of tab characters, not spaces). Color: 'Tab lines' in the theme editor.	Dessine une ligne guide verticale à chaque tabulation dans l'indentation de chaque ligne (uniquement pour une indentation faite de tabulations, pas d'espaces). Couleur : « Tab lines » dans l'éditeur de thèmes.
+Mark unused resources (RAM, CPU) for a cleanup. (It's suggested to avoid to do this frequently, because it can slow down the whole software)	Marque les ressources inutilisées (RAM, CPU) pour un nettoyage. (Il est conseillé de ne pas le faire souvent, car cela peut ralentir tout le logiciel)
+NB:	NB :
+remember that this won't force any memory or CPU cleanup, it only cleans unused internal objects references, improving application strength against out ot memory errors.	rappelez-vous que cela ne force aucun nettoyage de la mémoire ou du CPU : cela ne nettoie que les références à des objets internes inutilisés, rendant l'application plus robuste face aux erreurs de mémoire insuffisante.
+If you want to modify the memory used by ScreepT	Si vous voulez modifier la mémoire utilisée par ScreepT
+you can setup it in the launcher under max memory, min memory, and stack size (remembering that low values can cause application to not work well).	vous pouvez la régler dans le launcher avec la mémoire maximale, minimale et la taille de pile (des valeurs faibles peuvent gêner le fonctionnement de l'application).
+Add new folder	Ajouter un nouveau dossier
+Add new file	Ajouter un nouveau fichier
+Rename selected (files only)	Renommer la sélection (fichiers uniquement)
+Use as workspace	Utiliser comme espace de travail
+Select all nodes	Sélectionner tous les nœuds
+Collapse children nodes	Replier les nœuds enfants
+Expand children nodes	Développer les nœuds enfants
+Copy selected file paths	Copier les chemins des fichiers sélectionnés
+Copy current file here	Copier ici le fichier actuel
+Move current file here	Déplacer ici le fichier actuel
+Search for text in selected files content	Rechercher du texte dans le contenu des fichiers sélectionnés
+Check File hash...	Vérifier le hash du fichier...
+Change file Panel background	Changer l'arrière-plan du panneau de fichiers
+selected files	fichiers sélectionnés
+Are you sure to delete {0} from disk(cannot be undone)? All eventual selected folders will be deleted with all the file contained in them!	Voulez-vous vraiment supprimer {0} du disque (irréversible) ? Les dossiers sélectionnés seront supprimés avec tous les fichiers qu'ils contiennent !
+Delete?	Supprimer ?
+Specify folder name	Indiquez le nom du dossier
+Emptied and Deleted!	Vidé et supprimé !
+Move current file?	Déplacer le fichier actuel ?
+File exists	Le fichier existe
+File Moved	Fichier déplacé
+Cannot Move!	Impossible de déplacer !
+Cannot Copy!	Impossible de copier !
+An error occurred moving file, so file is still to its original position	Erreur lors du déplacement : le fichier est toujours à sa position d'origine
+An error occurred copying file, so file is still to its original position	Erreur lors de la copie : le fichier est toujours à sa position d'origine
+File does not exist	Le fichier n'existe pas
+Original deleted.	Original supprimé.
+Specify new name	Indiquez le nouveau nom
+Cannot rename current file	Impossible de renommer le fichier actuel
+File not created	Fichier non créé
+Error creating new file	Erreur lors de la création du nouveau fichier
+Cannot retrieve file	Impossible de récupérer le fichier
+~Specify new name for	Indiquez le nouveau nom pour
+~Create New file in	Créer un nouveau fichier dans
+~Plese specify a name for the file to save in	Indiquez un nom pour le fichier à enregistrer dans
+~Copy of	Copie de
+~Are you sure to move current file into [	Voulez-vous vraiment déplacer le fichier actuel dans [
