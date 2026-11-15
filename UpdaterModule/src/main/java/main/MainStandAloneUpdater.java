@@ -612,7 +612,8 @@ public class MainStandAloneUpdater {
 			validLogin = dumper.ftps != null && dumper.isConnected();
 			UpdateProgressPanel.forceDisposeSafe(panel);
 			if(!validLogin) {
-				dialogHelper.error("Login failed");
+				String why = dumper.getLastError();
+				dialogHelper.error(why == null ? "Login failed" : "Login failed: " + why);
 				PSW = "";
 			}
 
@@ -634,6 +635,7 @@ public class MainStandAloneUpdater {
 			}
 		}
 
+		String uploadError = null;
 		try {
 			int i = 1;
 			for (File currentToUpload : toUploadList) {
@@ -645,20 +647,27 @@ public class MainStandAloneUpdater {
 				progPanel.update(generalProgress, currentToUpload + " (" + String.valueOf(i) + "/" + toUploadList.size() + ")", true);
 				progPanel.adaptWidthToCurrentText();
 
-				dumper.uploadFile(currentToUpload.getAbsolutePath(), currentToUpload.getName(), FOLDER_ON_SERVER);
+				if (!dumper.uploadFile(currentToUpload.getAbsolutePath(), currentToUpload.getName(), FOLDER_ON_SERVER)) {
+					throw new java.io.IOException("Upload failed for " + currentToUpload.getName() + ": " + dumper.getLastError());
+				}
 				logger.info(currentToUpload + " -> Uploaded");
 
 				i++;
 			}
 
 		} catch (Throwable e) {
-			e.printStackTrace();
+			logger.error("FTP upload aborted: ", e);
+			uploadError = e.getMessage();
 
 		} finally {
 			progPanel.forceClose();
 			dumper.disconnect();
 
-			new JOptionHelper(null).info("FTP upload completed!", "Upload completed");
+			if (uploadError == null) {
+				new JOptionHelper(null).info("FTP upload completed!", "Upload completed");
+			} else {
+				new JOptionHelper(null).error("FTP upload FAILED, remaining files NOT uploaded:\n" + uploadError, "Upload failed");
+			}
 		}
 	}
 

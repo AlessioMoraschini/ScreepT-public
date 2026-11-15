@@ -35,6 +35,10 @@ public class FtpDumper {
 	private static final String protocol = "TLS";
 	public static int CONNECTION_TIMEOUT = 30000;
 	public static int KEEP_ALIVE_DURATION_SECONDS = 25;
+	/** Max wait (ms) for any read on control/data channel: a stalled server fails instead of blocking forever. */
+	public static int READ_TIMEOUT = 60000;
+	public static int MAX_UPLOAD_ATTEMPTS = 3;
+	private static final long RETRY_PAUSE_MS = 2000;
 	
 	private UploadAction uploadAction = new UploadAction(){};
 	private DownloadAction downloadAction = new DownloadAction(){};
@@ -47,6 +51,9 @@ public class FtpDumper {
 	public FTPSClient ftps;
 	
 	private boolean connected = false;
+	private String lastError = null;
+	/** Folder the server puts the user in after the login: relative folders start from here */
+	private String homeDir = "/";
 		
 	//costruttori
 	 
@@ -117,15 +124,38 @@ public class FtpDumper {
 		boolean res = false;
 		try {
 			logger.info("Connecting to:  "+ hostFTP +" :: USER: " + usr + " :: PORT: " + port);
-			ftps.connect(hostFTP);
-			ftps.setDefaultPort(port);
+			// Timeouts must be set BEFORE connect(), otherwise an unreachable server blocks forever
 			ftps.setConnectTimeout(CONNECTION_TIMEOUT);
+			ftps.setDefaultTimeout(READ_TIMEOUT);
+			ftps.setDefaultPort(port);
+			ftps.connect(hostFTP);
+			ftps.setSoTimeout(READ_TIMEOUT);
+			ftps.setDataTimeout(READ_TIMEOUT);
             ftps.setKeepAlive(true);
 			ftps.setControlKeepAliveTimeout(KEEP_ALIVE_DURATION_SECONDS);
-            res = ftps.login(usr, psw);   
+            res = ftps.login(usr, psw);
         }catch(Exception e){
 			logger.error("Cannot connect to server: ", e);
-			throw new ConnectException();
+			lastError = "Cannot connect to " + hostFTP + ":" + port + " (" + describe(e) + ")";
+			try { ftps.disconnect(); } catch (Exception ignored) { }
+			ConnectException ce = new ConnectException(lastError);
+			ce.initCause(e);
+			throw ce;
+		}
+
+		if (!res) {
+			lastError = "Login refused by " + hostFTP + " (wrong user or password?)";
+			try { ftps.disconnect(); } catch (Exception ignored) { }
+			this.ftps = ftps;
+			connected = false;
+			return false;
+		}
+		lastError = null;
+		try {
+			String pwd = ftps.printWorkingDirectory();
+			homeDir = pwd == null || pwd.isEmpty() ? "/" : pwd;
+		} catch (IOException e) {
+			homeDir = "/";
 		}
 		
 		logger.info("Connection completed: " + res);
@@ -136,9 +166,19 @@ public class FtpDumper {
 		return res;
 	}
 	
+	/** Human readable reason of the last failed connect/upload, or null if none. */
+	public String getLastError() {
+		return lastError;
+	}
+
+	private static String describe(Throwable e) {
+		String msg = e.getMessage();
+		return e.getClass().getSimpleName() + (msg == null ? "" : ": " + msg);
+	}
+
 	public boolean disconnect() {
 		try {
-			if (ftps.isConnected()) {
+			if (ftps != null && ftps.isConnected()) {
 				ftps.logout();
 				ftps.disconnect();
 			}
@@ -165,52 +205,163 @@ public class FtpDumper {
      */  
 	public synchronized boolean uploadFile(String localFilePath, String remoteFileName, String ftpDirFromServerRoot) {
 
+		for (int attempt = 1; attempt <= MAX_UPLOAD_ATTEMPTS; attempt++) {
+			if (uploadFileOnce(localFilePath, remoteFileName, ftpDirFromServerRoot)) {
+				lastError = null;
+				return true;
+			}
+			if (attempt < MAX_UPLOAD_ATTEMPTS) {
+				logger.warn("Upload failed (attempt " + attempt + "/" + MAX_UPLOAD_ATTEMPTS + "): " + lastError + " -> reconnecting and retrying...");
+				try {
+					if (ftps != null && ftps.isConnected()) {
+						ftps.disconnect(); // channel may be in an unknown state: drop it, connect() builds a new one
+					}
+				} catch (Exception ignored) { }
+				connected = false;
+				try {
+					Thread.sleep(RETRY_PAUSE_MS);
+				} catch (InterruptedException ie) {
+					Thread.currentThread().interrupt();
+					break;
+				}
+			}
+		}
+		logger.error("Upload definitively failed: " + lastError);
+		return false;
+	}
+
+	private boolean uploadFileOnce(String localFilePath, String remoteFileName, String ftpDirFromServerRoot) {
+
 		ftpDirFromServerRoot = ftpDirFromServerRoot == null ? "" : ftpDirFromServerRoot;
-		
+
 		InputStream inputStream = null;
         try {
-            if(!ftps.isConnected()) {
+            if(ftps == null || !ftps.isConnected()) {
             	logger.warn("FTPS not connected: trying to reconnect...");
-            	connect();
+            	if (!connect()) {
+            		return false; // lastError already set by connect()
+            	}
             }
-            
+
             ftps.setFileType(FTP.BINARY_FILE_TYPE);
             ftps.enterLocalPassiveMode();
-           
-            if (!checkDirectoryExists(ftpDirFromServerRoot)) {//if specified directory does not exist
-            	logger.warn("Directory not existing:  "+ ftpDirFromServerRoot +" -> creating it...\n");
-                ftps.makeDirectory(ftpDirFromServerRoot);
-                logger.warn("Directory created:  "+ ftpDirFromServerRoot + " \n");
+
+            if (!enterRemoteDirectory(ftpDirFromServerRoot)) {
+            	lastError = "Cannot enter or create the folder " + ftpDirFromServerRoot + " on the server: " + ftps.getReplyString();
+            	logger.error(lastError);
+            	return false;
             }
-            ftps.changeWorkingDirectory(ftpDirFromServerRoot);
             
             //carico il file usando inputstream         
             inputStream = new FileInputStream(localFilePath); 
             logger.info("\n### Starting file upload: " + ftpDirFromServerRoot + "/" + remoteFileName + " ###");
-            ftps.setCopyStreamListener(getUploadListener(new File(localFilePath).length(), localFilePath));
+            final java.util.concurrent.atomic.AtomicLong lastActivity = new java.util.concurrent.atomic.AtomicLong(System.currentTimeMillis());
+            final CopyStreamAdapter progress = getUploadListener(new File(localFilePath).length(), localFilePath);
+            ftps.setCopyStreamListener(new CopyStreamAdapter() {
+            	@Override
+            	public void bytesTransferred(long totalBytesTransferred, int bytesTransferred, long streamSize) {
+            		lastActivity.set(System.currentTimeMillis());
+            		progress.bytesTransferred(totalBytesTransferred, bytesTransferred, streamSize);
+            	}
+            });
            
-            boolean done = ftps.storeFile(remoteFileName, inputStream);
+            boolean done = storeWithWatchdog(remoteFileName, inputStream, lastActivity);
             
             if (done) {
             	 logger.info(" -> File uploaded correctly!\n");
             } else {
-            	logger.error("Error uploading remote file!");
+            	lastError = "Server rejected upload of " + remoteFileName + ": " + ftps.getReplyString();
+            	logger.error("Error uploading remote file! " + lastError);
             }
+            return done;
+        } catch (ConnectException ex) {
+            return false; // connect() already stored the reason in lastError
         } catch (IOException ex) {
             logger.error("Error saving remote file: ", ex);
+            lastError = "Upload of " + remoteFileName + " interrupted (" + describe(ex) + ")";
             return false;
-        
+
         } finally {
         	 try {
-				inputStream.close();
+				if (inputStream != null) {
+					inputStream.close();
+				}
 			} catch (Exception e) {
 				logger.error("Cannot close input stream", e);
 			}
         }
-        
-		return true;		
 	}	
 	
+	/**
+	 * storeFile with a stall detector. The data timeout only covers reads: when the server stops reading, the write of the
+	 * upload blocks for ever. The transfer runs on its own thread; if no byte moves for READ_TIMEOUT ms the connection is
+	 * dropped and the call fails, so the caller can retry on a new connection (the stuck thread ends with its socket).
+	 */
+	private boolean storeWithWatchdog(final String remoteFileName, final InputStream in, final java.util.concurrent.atomic.AtomicLong lastActivity) throws IOException {
+		final FTPSClient client = ftps;
+		java.util.concurrent.FutureTask<Boolean> task = new java.util.concurrent.FutureTask<Boolean>(new java.util.concurrent.Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				return client.storeFile(remoteFileName, in);
+			}
+		});
+		Thread worker = new Thread(task, "FtpDumper-upload");
+		worker.setDaemon(true);
+		worker.start();
+		try {
+			while (true) {
+				try {
+					return task.get(1, java.util.concurrent.TimeUnit.SECONDS);
+				} catch (java.util.concurrent.TimeoutException e) {
+					if (System.currentTimeMillis() - lastActivity.get() > READ_TIMEOUT) {
+						try {
+							client.disconnect();
+						} catch (Exception ignored) { }
+						worker.interrupt();
+						throw new java.net.SocketTimeoutException("no data moved for " + (READ_TIMEOUT / 1000) + " s");
+					}
+				}
+			}
+		} catch (java.util.concurrent.ExecutionException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof IOException) {
+				throw (IOException) cause;
+			}
+			throw new IOException(cause);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new IOException("upload interrupted");
+		}
+	}
+
+	/**
+	 * Makes the folder the working directory of the connection, creating the missing levels one at a time (a plain MKD of
+	 * "a/b" fails when "a" does not exist, and the file would silently end up in the wrong place).
+	 * @return false when the folder cannot be entered or created
+	 */
+	private boolean enterRemoteDirectory(String path) throws IOException {
+		String clean = path == null ? "" : path.trim().replace('\\', '/');
+		if (clean.isEmpty()) {
+			return true;
+		}
+		if (!ftps.changeWorkingDirectory(clean.startsWith("/") ? "/" : homeDir)) {
+			return false;
+		}
+		for (String level : clean.split("/")) {
+			if (level.isEmpty() || level.equals(".")) {
+				continue;
+			}
+			if (ftps.changeWorkingDirectory(level)) {
+				continue;
+			}
+			logger.warn("Directory not existing:  " + level + " -> creating it...");
+			if (!ftps.makeDirectory(level) || !ftps.changeWorkingDirectory(level)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
      * Determines whether a directory exists or not
      * @param dirPath
@@ -388,7 +539,7 @@ public class FtpDumper {
 		    public void bytesTransferred(long totalBytesTransferred, int bytesTransferred, long streamSize) {
 		       //this method will be called everytime some bytes are transferred
 
-		       int percent = (int)(totalBytesTransferred*100/totalLength);
+		       int percent = totalLength <= 0 ? 100 : (int)(totalBytesTransferred*100/totalLength);
 		       getUploadAction().doAfterUploadProgress(percent, fileName);
 		    }
 
