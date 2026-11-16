@@ -24,6 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 
 /**
@@ -86,16 +87,33 @@ public final class DialogFit {
 		return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 	}
 
-	/** Brings a window in front of the others and gives it the focus, also when it is minimized or behind other programs */
-	public static void bringToFront(Window window) {
+	/**
+	 * Brings a window in front of everything (also of other programs), gives it the focus and shows it again if it is minimized. It stays
+	 * always on top for 2 seconds, so that the operating system does not leave it behind, then it is a normal window again (it stays
+	 * on top only if the window is pinned by the user or another window of the application is pinned on top).
+	 */
+	public static void bringToFront(final Window window) {
 		if (window instanceof Frame && ((Frame) window).getState() == Frame.ICONIFIED) {
 			((Frame) window).setState(Frame.NORMAL);
 		}
+		final boolean wasOnTop = window.isAlwaysOnTop();
 		window.setVisible(true);
-		boolean wasOnTop = window.isAlwaysOnTop();
 		window.setAlwaysOnTop(true);
 		window.toFront();
 		window.requestFocus();
-		window.setAlwaysOnTop(wasOnTop);
+		Timer release = new Timer(2000, e -> {
+			boolean otherPinned = false;
+			for (Window other : Window.getWindows()) {
+				if (other != window && other.isVisible() && other.isAlwaysOnTop()) {
+					otherPinned = true;
+					break;
+				}
+			}
+			if (window.isDisplayable()) {
+				window.setAlwaysOnTop(wasOnTop || otherPinned);
+			}
+		});
+		release.setRepeats(false);
+		release.start();
 	}
 }

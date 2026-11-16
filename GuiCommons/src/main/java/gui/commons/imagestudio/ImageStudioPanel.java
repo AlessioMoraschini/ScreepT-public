@@ -196,6 +196,7 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 		bar.add(tool("100%", null, "Actual size, one image pixel per screen pixel (1)", () -> canvas.actualSize()));
 		bar.add(tool("-", null, "Zoom out (Ctrl+-)", () -> canvas.zoomBy(1 / 1.25, null)));
 		bar.add(tool("+", null, "Zoom in (Ctrl++)", () -> canvas.zoomBy(1.25, null)));
+		bar.add(tool(I18n.t("gui.full_screen"), null, I18n.t("gui.full_screen_tip"), this::openFullScreen));
 		bar.add(new javax.swing.JSeparator(javax.swing.SwingConstants.VERTICAL), "growy, gapx 6 6, hmin 16");
 		bar.add(tool("Copy", ToolIcons.Kind.COPY, "Copy the image shown to the clipboard (Ctrl+C)", this::copyToClipboard));
 		if (!readOnly) {
@@ -258,14 +259,7 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 			edit.setEnabled(file != null);
 			edit.addActionListener(e -> {
 				ImageViewerFrame.loadIntoLastExistingInstance(file);
-				if (closeHandler != null) {
-					Object[] options = {"Keep tab", "Close tab"};
-					int choice = JOptionPane.showOptionDialog(this, "The image is open in the Image Studio window.\nClose this tab?", I18n.t("gui.edit_in_image_studio"),
-							JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-					if (choice == 1) {
-						closeHandler.run();
-					}
-				}
+				// the tab stays open: the studio window opens in front of it, no question asked
 			});
 			side.add(edit, "growx, h 32!");
 		} else {
@@ -359,8 +353,17 @@ public class ImageStudioPanel extends JPanel implements TabContent {
 		revalidate();
 	}
 
+	/** Full screen preview of the image shown (window or tab): zoom, rotation and pin in a menu that hides by itself */
+	private void openFullScreen() {
+		BufferedImage shown = canvas.getImage();
+		if (shown != null) {
+			ImageFullScreenView.show(SwingUtilities.getWindowAncestor(this), shown);
+		}
+	}
+
 	private void bindKeys() {
 		key(java.awt.event.KeyEvent.VK_F, 0, "fit", () -> canvas.fit());
+		key(java.awt.event.KeyEvent.VK_F11, 0, "fullscreen", this::openFullScreen);
 		key(java.awt.event.KeyEvent.VK_1, 0, "actual", () -> canvas.actualSize());
 		key(java.awt.event.KeyEvent.VK_EQUALS, ShortcutKeys.MENU_DOWN_MASK, "zin", () -> canvas.zoomBy(1.25, null));
 		key(java.awt.event.KeyEvent.VK_ADD, ShortcutKeys.MENU_DOWN_MASK, "zin2", () -> canvas.zoomBy(1.25, null));

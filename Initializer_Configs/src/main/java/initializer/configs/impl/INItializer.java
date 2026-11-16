@@ -324,6 +324,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		}
 
 		genOpt.setAutomaticUpdateOn(getBooleanFromString(iniReadFile.get(GEN_OPT, "automaticUpdateOn"), GenericOption.DEF_automaticUpdateOn));
+		genOpt.setAutomaticPluginUpdateOn(getBooleanFromString(iniReadFile.get(GEN_OPT, "automaticPluginUpdateOn"), GenericOption.DEF_automaticPluginUpdateOn));
 		genOpt.setExceptionAdvicesEnabled(getBooleanFromString(iniReadFile.get(GEN_OPT, "exceptionAdvicesEnabled"), GenericOption.DEF_exceptionAdvicesEnabled));
 		genOpt.setTxtEditorFileMonitorActive(getBooleanFromString(iniReadFile.get(GEN_OPT, "txtEditorFileMonitorActive"), GenericOption.DEF_TxtEditorFileMonitorActive));
 		genOpt.setFirstAccess(getBooleanFromString(iniReadFile.get(GEN_OPT, "firstAccess"), GenericOption.DEF_firstAccess));
@@ -603,6 +604,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(GEN_OPT, "firstAccess", genOpt.isFirstAccess());
 		iniFile.put(GEN_OPT, "exceptionAdvicesEnabled", genOpt.isExceptionAdvicesEnabled());
 		iniFile.put(GEN_OPT, "automaticUpdateOn", genOpt.isAutomaticUpdateOn());
+		iniFile.put(GEN_OPT, "automaticPluginUpdateOn", genOpt.isAutomaticPluginUpdateOn());
 		iniFile.put(GEN_OPT, "locale", genOpt.getLocale());
 		iniFile.put(GEN_OPT, "language", genOpt.getLanguage());
 	}
@@ -723,6 +725,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 			   .append("\nTxt Editor: Listen for changes in current file -> ").append(genOpt.isTxtEditorFileMonitorActive())
 			   .append("\nIs current first access? ").append(genOpt.isFirstAccess())
 			   .append("\nAutomatic check for updates at start -> ").append(genOpt.isAutomaticUpdateOn())
+			   .append("\nAutomatic check for plugin updates at start -> ").append(genOpt.isAutomaticPluginUpdateOn())
 			   .append("\nPreferred Locale: ").append(genOpt.getLocale())
 			   .append("\nCHARSET: ").append(genOpt.getCharset())
 			   .append("\nLAST POS X: ").append(genOpt.getLastKnownPositionX())	
@@ -754,7 +757,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		       .append("\nIMG_RECENT_PATH: ").append(steganOpt.getImgRecentPath());
 
 		// concat TEXT EDITOR OPTIONS
-		builder.append("\n\n ---- TEXT EDITOR -----\n\n")
+		builder.append("\n\n ---- FILE EDITOR -----\n\n")
 			   .append("End Of Line: ").append(textEditorOpt.eol.name())
 			   .append("FIRST TIME OPENING? ").append(textEditorOpt.firstTimeOpened)
 			   .append("INLINE TABS MODE: ").append(textEditorOpt.inlinedTabs)

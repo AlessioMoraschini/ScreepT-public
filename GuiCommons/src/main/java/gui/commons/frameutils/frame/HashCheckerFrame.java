@@ -11,11 +11,14 @@
  */
 package gui.commons.frameutils.frame;
 
+import various.common.light.i18n.I18n;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -51,6 +54,7 @@ import java.util.zip.Checksum;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -58,6 +62,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -175,7 +181,7 @@ public class HashCheckerFrame extends ParentFrame {
 		pathField.setFont(ToolStyle.font(1f, Font.PLAIN));
 		pathField.putClientProperty("JTextField.placeholderText", "Path of the file or folder to hash (Enter to load)");
 		pathField.setToolTipText("Type or paste a path and press Enter, or drop a file on the window");
-		browseButton = ToolStyle.button("Browse...", ToolIcons.Kind.FOLDER, "Choose a file or a folder (Ctrl+O)");
+		browseButton = ToolStyle.button(I18n.t("gui.browse"), ToolIcons.Kind.FOLDER, "Choose a file or a folder (Ctrl+O)");
 		recalcButton = ToolStyle.button("Recalculate", ToolIcons.Kind.REFRESH, "Calculate again the selected hashes (F5)");
 		fileInfoLabel = ToolStyle.mutedLabel(" ");
 		progressBar = new JProgressBar(0, 1000);
@@ -222,11 +228,13 @@ public class HashCheckerFrame extends ParentFrame {
 			Row row = new Row(algo);
 			rows.add(row);
 			results.add(row.check);
-			results.add(row.value, "growx, wmin 120");
+			results.add(row.value, "growx, wmin 120, wmax 100%");
 			results.add(row.copy);
 			results.add(row.mark);
 		}
-		JScrollPane scroll = new JScrollPane(results);
+		// the rows follow the window width: long hashes (SHA-512) never push the copy buttons out of sight
+		JScrollPane scroll = new JScrollPane(new WidthTrackingPanel(results));
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setBorder(BorderFactory.createEmptyBorder());
 		scroll.setOpaque(false);
 		scroll.getViewport().setOpaque(false);
@@ -243,7 +251,7 @@ public class HashCheckerFrame extends ParentFrame {
 		prefixCheck.setSelected(txtOptions.prefix_hash);
 		prefixCheck.setToolTipText("Show and copy the hashes as ALGORITHM=hash (e.g. SHA-256=...)");
 		statusLabel = ToolStyle.mutedLabel(" ");
-		JButton copyAll = ToolStyle.button("Copy all", ToolIcons.Kind.COPY, "Copy file name and all the calculated hashes (Ctrl+Shift+C)");
+		JButton copyAll = ToolStyle.button(I18n.t("common.copy_all"), ToolIcons.Kind.COPY, "Copy file name and all the calculated hashes (Ctrl+Shift+C)");
 		copyAll.addActionListener(e -> copyAll());
 		footer.add(uppercaseCheck);
 		footer.add(prefixCheck);
@@ -707,8 +715,11 @@ public class HashCheckerFrame extends ParentFrame {
 	private void refreshValues() {
 		for (Row row : rows) {
 			boolean selected = row.check.isSelected();
-			row.value.setText(formatted(row));
+			String text = formatted(row);
+			row.value.setText(text);
 			row.value.setCaretPosition(0);
+			// the full hash in the tooltip, split in groups of 32 digits, when the field is too narrow to show it
+			row.value.setToolTipText(text.length() > 40 ? "<html><tt>" + splitEvery(text, 32) + "</tt><br>Click to select, double click to copy</html>" : "Click to select, double click to copy");
 			row.value.setEnabled(selected);
 			row.copy.setEnabled(row.raw != null && !NOT_FOR_FOLDERS.equals(row.raw));
 			String placeholder;
@@ -886,6 +897,8 @@ public class HashCheckerFrame extends ParentFrame {
 			value = new JTextField();
 			value.setEditable(false);
 			value.setFont(ToolStyle.mono(0f));
+			// small preferred width: the field grows with the window instead of sizing itself on a 128 digit hash
+			value.setColumns(24);
 			value.setToolTipText("Click to select, double click to copy");
 			copy = ToolStyle.iconButton(ToolIcons.Kind.COPY, "Copy the " + algo.name + " hash");
 
@@ -993,6 +1006,50 @@ public class HashCheckerFrame extends ParentFrame {
 				}
 			}
 			return names.toString();
+		}
+	}
+
+	private static String splitEvery(String text, int size) {
+		StringBuilder out = new StringBuilder();
+		for (int i = 0; i < text.length(); i += size) {
+			out.append(i > 0 ? "<br>" : "").append(text, i, Math.min(text.length(), i + size));
+		}
+		return out.toString();
+	}
+
+	/** Scroll view as wide as the viewport: only vertical scrolling, the content shrinks with the window */
+	private static final class WidthTrackingPanel extends JPanel implements Scrollable {
+		private static final long serialVersionUID = 1L;
+
+		WidthTrackingPanel(JComponent content) {
+			super(new BorderLayout());
+			setOpaque(false);
+			add(content, BorderLayout.CENTER);
+		}
+
+		@Override
+		public Dimension getPreferredScrollableViewportSize() {
+			return getPreferredSize();
+		}
+
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+			return 16;
+		}
+
+		@Override
+		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+			return orientation == SwingConstants.VERTICAL ? visibleRect.height : visibleRect.width;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportWidth() {
+			return true;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportHeight() {
+			return false;
 		}
 	}
 

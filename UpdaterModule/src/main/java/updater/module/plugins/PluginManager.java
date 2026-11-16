@@ -349,17 +349,27 @@ public class PluginManager {
 	 * @throws Throwable
 	 */
 	public ArrayList<PluginDTO> discoverLatestPlugins() throws Throwable, TimeoutException{
+		return discoverLatestPlugins(true);
+	}
+
+	/**
+	 * Downloads the manifest of the server and reads the available plugins.
+	 * @param showProgress false: no progress window (check done in background at start)
+	 */
+	public ArrayList<PluginDTO> discoverLatestPlugins(boolean showProgress) throws Throwable, TimeoutException{
 
 		ArrayList<PluginDTO> plugins = new ArrayList<>();
 		UpdateProgressPanel pluginManagerProgbar = null;
 
 		try {
 			if(!HttpHelper.is404(new URL(WEB_PLUGINS_MANIFEST_URL), HttpRequestMetod.GET)) {
-				pluginManagerProgbar = new UpdateProgressPanel(true);
-				pluginManagerProgbar.getPb().setIndeterminate(true);
+				if (showProgress) {
+					pluginManagerProgbar = new UpdateProgressPanel(true);
+					pluginManagerProgbar.getPb().setIndeterminate(true);
+				}
 
 				logger.info(FileVarious.getHeaderString("#", 40, "DOWNLOAD AND PARSE MANIFEST .properties"));
-				File downloadedManifest = DownloadUtils.downloadFile(false, new URL(WEB_PLUGINS_MANIFEST_URL), LOCAL_PLUGINS_MANIFEST, pluginManagerProgbar);
+				File downloadedManifest = DownloadUtils.downloadFile(!showProgress, new URL(WEB_PLUGINS_MANIFEST_URL), LOCAL_PLUGINS_MANIFEST, pluginManagerProgbar);
 				logger.info("Manifest Downloaded!! Size of " + WEB_PLUGINS_MANIFEST_URL + " is: " + ConversionUtils.coolFileSize(downloadedManifest.length()));
 
 				PropertiesManager propsManager = new PropertiesManager(downloadedManifest);
@@ -391,6 +401,39 @@ public class PluginManager {
 		updateAlreadyInstalledIntoList(plugins);
 
 		return plugins;
+	}
+
+	/**
+	 * Installed plugins that have a newer version on the server.
+	 * @param showProgress false: no progress window
+	 */
+	public ArrayList<PluginDTO> findUpdatablePlugins(boolean showProgress) throws Throwable {
+		ArrayList<PluginDTO> updatable = new ArrayList<>();
+		for (PluginDTO plugin : discoverLatestPlugins(showProgress)) {
+			if (plugin.installationCompleted && !plugin.isUpToDate()) {
+				updatable.add(plugin);
+			}
+		}
+		return updatable;
+	}
+
+	/**
+	 * Prepares the update of every given plugin, like the Update choice of the Plugin Manager does for one:
+	 * the old files are removed and the new version is installed at the next start of the application.
+	 * @return how many plugins were prepared
+	 */
+	public int updateAll(List<PluginDTO> plugins) {
+		int prepared = 0;
+		for (PluginDTO plugin : plugins) {
+			try {
+				PluginDTO cached = retrieveFromCache(plugin.getName());
+				removePlugin(cached != null ? cached : plugin, true);
+				prepared++;
+			} catch (Throwable e) {
+				logger.error("Cannot prepare the update of plugin " + plugin.getName(), e);
+			}
+		}
+		return prepared;
 	}
 
 	public void updateAlreadyInstalledIntoList(ArrayList<PluginDTO> plugins) {

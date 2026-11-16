@@ -28,7 +28,7 @@ public final class TabImplementors {
 
 	/** Id of the standard text editor: it is not an implementor, it is what opens everything else */
 	public static final String TEXT_ID = "text";
-	public static final String TEXT_NAME = "Text editor";
+	public static final String TEXT_NAME = "File editor";
 
 	private static final List<TabImplementor> implementors = new ArrayList<TabImplementor>();
 	private static final Map<String, String> overrides = new LinkedHashMap<String, String>();

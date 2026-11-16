@@ -26,6 +26,7 @@ public class GenericOption {
 	public final static boolean DEF_TxtEditorFileMonitorActive = true;
 	public final static boolean DEF_exceptionAdvicesEnabled = false;
 	public final static boolean DEF_automaticUpdateOn = true;
+	public final static boolean DEF_automaticPluginUpdateOn = true;
 	public final static Class<?> DEFAULT_PANEL_CLASS_AT_START = JPanel.class;
 	public final static Locale DEF_locale = Locale.getDefault();
 	public final static boolean DEF_firstAccess = true;
@@ -42,6 +43,7 @@ public class GenericOption {
 	private boolean exceptionAdvicesEnabled;
 	private Class<?> lastPanelOpened;
 	private boolean automaticUpdateOn;
+	private boolean automaticPluginUpdateOn;
 	private boolean firstAccess; 
 	private Locale locale;
 	private String language = DEF_language;
@@ -56,6 +58,7 @@ public class GenericOption {
 		lastPanelOpened = DEFAULT_PANEL_CLASS_AT_START;
 		exceptionAdvicesEnabled = DEF_exceptionAdvicesEnabled;
 		automaticUpdateOn = DEF_automaticUpdateOn;
+		automaticPluginUpdateOn = DEF_automaticPluginUpdateOn;
 		locale = DEF_locale;
 		firstAccess = DEF_firstAccess;
 	}
@@ -97,6 +100,15 @@ public class GenericOption {
 
 	public void setAutomaticUpdateOn(boolean automaticUpdateOn) {
 		this.automaticUpdateOn = automaticUpdateOn;
+	}
+
+	/** At start ScreepT looks for updates of the installed plugins (like automaticUpdateOn does for the software) */
+	public boolean isAutomaticPluginUpdateOn() {
+		return automaticPluginUpdateOn;
+	}
+
+	public void setAutomaticPluginUpdateOn(boolean automaticPluginUpdateOn) {
+		this.automaticPluginUpdateOn = automaticPluginUpdateOn;
 	}
 
 	public boolean isExceptionAdvicesEnabled() {

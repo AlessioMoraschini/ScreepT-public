@@ -153,7 +153,7 @@ public class ImageSelector2TextFrame extends JFrame{
 		getContentPane().add(btnParseImage, "cell 1 2,grow");
 		
 		btnInjectSelected = new JButton("Inject Selected");
-		btnInjectSelected.setToolTipText("Insert the selected text (or all the extracted text if nothing is selected) into the open text editor");
+		btnInjectSelected.setToolTipText("Insert the selected text (or all the extracted text if nothing is selected) into the open file editor");
 		btnInjectSelected.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		btnInjectSelected.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnInjectSelected.setIcon(new ImageIcon(IconsPathConfigurator.ICON_CHECKMARK));

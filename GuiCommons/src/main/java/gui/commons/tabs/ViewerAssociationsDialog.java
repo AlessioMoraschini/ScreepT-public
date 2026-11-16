@@ -74,7 +74,7 @@ public class ViewerAssociationsDialog extends JDialog {
 		}
 
 		setLayout(new MigLayout("fill, insets 14, gapy 8", "[grow,fill]", "[][][][grow,fill][][]"));
-		add(ToolStyle.header("Viewer associations", "Choose how each type of file opens: in the text editor or in an integrated viewer tab"), "wrap");
+		add(ToolStyle.header("Viewer associations", "Choose how each type of file opens: in the file editor or in an integrated viewer tab"), "wrap");
 
 		filter.putClientProperty("JTextField.placeholderText", "Filter by extension or viewer (type to narrow the list)");
 		filter.getDocument().addDocumentListener(new DocumentListener() {
