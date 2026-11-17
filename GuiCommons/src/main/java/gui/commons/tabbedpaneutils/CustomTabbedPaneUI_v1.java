@@ -110,7 +110,12 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 	    	// close button: same custom icons as ever, white on the selected tab and gray on the others
 	    	currentButton = getCloseButton(tabIndex, buttonOrdinalPos);
 	    	if (buttonOrdinalPos != Integer.MAX_VALUE && currentButton != null) {
-	    		currentButton.setIcon(selected ? IconsPathConfigurator.X_WHITE_IMG_RED : IconsPathConfigurator.X_GRAY_IMG_RED);
+	    		if (currentButton.getParent() instanceof TabHeadPanel_Full && ((TabHeadPanel_Full) currentButton.getParent()).isPinned()) {
+	    			// pinned tab: a pin instead of the close button
+	    			((TabHeadPanel_Full) currentButton.getParent()).showPinIcon(selected);
+	    		} else {
+	    			currentButton.setIcon(selected ? IconsPathConfigurator.X_WHITE_IMG_RED : IconsPathConfigurator.X_GRAY_IMG_RED);
+	    		}
 	    		currentButton.setContentAreaFilled(false);
 	    		currentButton.setBorderPainted(false);
 	    		currentButton.setFocusPainted(false);

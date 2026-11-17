@@ -239,7 +239,12 @@ public class HwInfoFrame extends ParentFrame{
 		sysINFO = new SystemInfo();
 		hardware = sysINFO.getHardware();
 		os = sysINFO.getOperatingSystem();
-		cpu = hardware.getProcessor();
+		try {
+			cpu = hardware.getProcessor();
+		} catch (Throwable e) {
+			// e.g. broken Windows performance counters (PDH error): the window must open anyway, CPU data shows as not available
+			logger.warn("Cannot read the processor (performance counters unavailable?)", e);
+		}
 		try {
 			mobo = hardware.getComputerSystem().getBaseboard();
 		} catch (Throwable e) {

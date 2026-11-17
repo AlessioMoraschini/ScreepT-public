@@ -50,8 +50,12 @@ public class PDFReaderPlugin extends PluginAbstractParent implements IPluginText
 	public boolean launchMain(String[] args) {
 		PdfSelector2TextFrame pdfParserBox = new PdfSelector2TextFrame(null, null, GeneralConfig.APPLICATION_NAME + " - Pdf2Text");
 		pdfParserBox.setVisible(true);
-		if (args != null && args.length > 0)
-			pdfParserBox.loadFile(new File(args[0]));
+		// the menu passes {null} when no file is selected (e.g. a new, unsaved tab): just open the empty reader
+		if (args != null && args.length > 0 && args[0] != null && !args[0].trim().isEmpty()) {
+			File toLoad = new File(args[0]);
+			if (toLoad.isFile())
+				pdfParserBox.loadFile(toLoad);
+		}
 
 		return true;
 	}

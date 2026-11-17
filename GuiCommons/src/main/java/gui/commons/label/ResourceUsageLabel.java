@@ -11,6 +11,7 @@
  */
 package gui.commons.label;
 
+import gui.commons.panel.options.OptionHelp;
 import various.common.light.i18n.I18n;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -32,7 +33,7 @@ import javax.swing.UIManager;
 
 /**
  * Discreet live indicator of this application CPU and RAM usage (JDK only, refreshed every second):
- * ScreepT: CPU = process load on all cores, RAM = JVM heap used / max available;
+ * ScreepT: CPU = process load on all cores, RAM = total memory of the process (heap and details in the tooltip);
  * PC: CPU = whole system load, RAM = physical memory used / total. Details in the tooltip.
  * <p>
  * Three parts side by side: the ScreepT values, a small pencil right next to the maximum memory of ScreepT (to change it,
@@ -48,7 +49,7 @@ public class ResourceUsageLabel extends JPanel {
 	private static final long GB = MB * 1024L;
 	/** Widest expected texts (titles bold, rest plain): fixed width, so the menu bar does not move at every refresh */
 	private static final String APP_TITLE = "ScreepT";
-	private static final String APP_VALUES = "  CPU 100% · RAM 99999 / 99999 MB";
+	private static final String APP_VALUES = "  CPU 100% · RAM 99999 MB";
 	private static final String PC_TITLE = "PC";
 	private static final String PC_VALUES = "  CPU 100% · RAM 999.9 / 999.9 GB";
 	private static final String PC_SEPARATOR = "      |      ";
@@ -121,6 +122,9 @@ public class ResourceUsageLabel extends JPanel {
 		add(editButton);
 		add(pcLabel);
 
+		// details of ScreepT in a card that stays open while the mouse is on it (scrolls, takes the focus); nothing over the PC values
+		OptionHelp.attachLive(I18n.t("memory.screept_resources_usage").replaceAll("<[^>]+>", "").trim(), this::plainDetails, appLabel);
+
 		// loading the management classes is slow: do it in background so the main window opens sooner
 		Thread loader = new Thread(() -> {
 			os = ManagementFactory.getOperatingSystemMXBean();
@@ -152,6 +156,7 @@ public class ResourceUsageLabel extends JPanel {
 		long usedMb = (runtime.totalMemory() - runtime.freeMemory()) / MB;
 		long maxMb = runtime.maxMemory() / MB;
 		double processCpu = processCpuLoad();
+		long processBytes = processMemoryBytes();
 
 		// colors follow the current look and feel: titles readable, values muted, separator barely visible
 		Color valuesColor = UIManager.getColor("Label.disabledForeground");
@@ -161,10 +166,8 @@ public class ResourceUsageLabel extends JPanel {
 		String title = hex(titleColor);
 		String separator = hex(blend(background, valuesColor, SEPARATOR_VISIBILITY));
 
-		appLabel.setText("<html><nobr>" + titled(title, "ScreepT", values, percent(processCpu) + String.format(" · RAM %d / %d MB", usedMb, maxMb)) + "</nobr></html>");
+		appLabel.setText("<html><nobr>" + titled(title, "ScreepT", values, percent(processCpu) + " · RAM " + memoryText(processBytes)) + "</nobr></html>");
 
-		String tooltip = details(usedMb, maxMb, processCpu);
-		appLabel.setToolTipText(tooltip);
 		if (os instanceof com.sun.management.OperatingSystemMXBean) {
 			com.sun.management.OperatingSystemMXBean sunOs = (com.sun.management.OperatingSystemMXBean) os;
 			long totalPhysical = sunOs.getTotalPhysicalMemorySize();
@@ -173,7 +176,6 @@ public class ResourceUsageLabel extends JPanel {
 					+ titled(title, "PC", values, percent(sunOs.getSystemCpuLoad())
 							+ String.format(" · RAM %.1f / %.1f GB", usedPhysical / (double) GB, totalPhysical / (double) GB))
 					+ "</nobr></html>");
-			pcLabel.setToolTipText(tooltip);
 		}
 	}
 
@@ -199,6 +201,137 @@ public class ResourceUsageLabel extends JPanel {
 		return load < 0 ? I18n.t("memory.cpu_n_a") : String.format("CPU %d%%", Math.round(load * 100));
 	}
 
+	/** Separate class: JNA is touched only on Windows (and failures fall back to the JVM view) */
+	private static final class WindowsMemory {
+
+		/** PROCESS_MEMORY_COUNTERS of psapi (jna-platform does not map GetProcessMemoryInfo) */
+		public static class Counters extends com.sun.jna.Structure {
+			public int cb;
+			public int pageFaultCount;
+			public com.sun.jna.platform.win32.BaseTSD.SIZE_T peakWorkingSetSize;
+			public com.sun.jna.platform.win32.BaseTSD.SIZE_T workingSetSize;
+			public com.sun.jna.platform.win32.BaseTSD.SIZE_T quotaPeakPagedPoolUsage;
+			public com.sun.jna.platform.win32.BaseTSD.SIZE_T quotaPagedPoolUsage;
+			public com.sun.jna.platform.win32.BaseTSD.SIZE_T quotaPeakNonPagedPoolUsage;
+			public com.sun.jna.platform.win32.BaseTSD.SIZE_T quotaNonPagedPoolUsage;
+			public com.sun.jna.platform.win32.BaseTSD.SIZE_T pagefileUsage;
+			public com.sun.jna.platform.win32.BaseTSD.SIZE_T peakPagefileUsage;
+
+			@Override
+			protected java.util.List<String> getFieldOrder() {
+				return java.util.Arrays.asList("cb", "pageFaultCount", "peakWorkingSetSize", "workingSetSize", "quotaPeakPagedPoolUsage",
+						"quotaPagedPoolUsage", "quotaPeakNonPagedPoolUsage", "quotaNonPagedPoolUsage", "pagefileUsage", "peakPagefileUsage");
+			}
+		}
+
+		public interface Psapi extends com.sun.jna.win32.StdCallLibrary {
+			boolean GetProcessMemoryInfo(com.sun.jna.platform.win32.WinNT.HANDLE process, Counters counters, int size);
+		}
+
+		private static Psapi psapi;
+
+		static long workingSet() {
+			if (psapi == null) {
+				psapi = com.sun.jna.Native.load("psapi", Psapi.class);
+			}
+			Counters counters = new Counters();
+			counters.cb = counters.size();
+			if (psapi.GetProcessMemoryInfo(com.sun.jna.platform.win32.Kernel32.INSTANCE.GetCurrentProcess(), counters, counters.cb)) {
+				return counters.workingSetSize.longValue();
+			}
+			return -1;
+		}
+	}
+
+	/** Heap, non-heap (classes, code, JVM), thread stacks and direct buffers: where the memory of the process goes */
+	private void appendMemoryDetails(StringBuilder html, long usedMb, long maxMb) {
+		html.append(I18n.fmt("memory.heap_detail", usedMb, runtime.totalMemory() / MB, maxMb)).append("<br>");
+		try {
+			java.lang.management.MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
+			html.append(I18n.fmt("memory.non_heap_detail", memory.getNonHeapMemoryUsage().getUsed() / MB, memory.getNonHeapMemoryUsage().getCommitted() / MB)).append("<br>");
+			StringBuilder pools = new StringBuilder();
+			for (java.lang.management.MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
+				if (pool.getType() == java.lang.management.MemoryType.NON_HEAP && pool.getUsage() != null) {
+					pools.append(pools.length() == 0 ? "" : " &middot; ").append(pool.getName()).append(": ").append(pool.getUsage().getUsed() / MB).append(" MB");
+				}
+			}
+			if (pools.length() > 0) {
+				html.append("&nbsp;&nbsp;<font size=\"-1\">").append(pools).append("</font><br>");
+			}
+			int threads = ManagementFactory.getThreadMXBean().getThreadCount();
+			long stackKb = stackSizeKb();
+			html.append(I18n.fmt("memory.thread_stacks", threads, threads * stackKb / 1024, stackKb)).append("<br>");
+			for (java.lang.management.BufferPoolMXBean buffers : ManagementFactory.getPlatformMXBeans(java.lang.management.BufferPoolMXBean.class)) {
+				if ("direct".equals(buffers.getName())) {
+					html.append(I18n.fmt("memory.direct_buffers", buffers.getMemoryUsed() / MB)).append("<br>");
+				}
+			}
+		} catch (Throwable e) {
+			// the details are optional: the tooltip still shows the rest
+		}
+	}
+
+	/** Stack size of a thread in KB: -Xss when given, else the usual default of 64 bit JVMs (1 MB) */
+	private static long stackSizeKb() {
+		try {
+			for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+				java.util.regex.Matcher m = java.util.regex.Pattern.compile("^-Xss(\\d+)([kKmMgG]?)$").matcher(arg);
+				if (m.matches()) {
+					long value = Long.parseLong(m.group(1));
+					String unit = m.group(2).toLowerCase();
+					return unit.equals("m") ? value * 1024 : unit.equals("g") ? value * 1024 * 1024 : unit.equals("k") ? value : Math.max(1, value / 1024);
+				}
+			}
+		} catch (Throwable e) {
+			// default below
+		}
+		return 1024;
+	}
+
+	/** Text of the details card: the usual details without the HTML */
+	private String plainDetails() {
+		if (os == null) {
+			return "";
+		}
+		long usedMb = (runtime.totalMemory() - runtime.freeMemory()) / MB;
+		String html = details(usedMb, runtime.maxMemory() / MB, processCpuLoad(), processMemoryBytes());
+		// the first line is the title of the card
+		String text = html.replaceAll("(?i)<br\\s*/?>", "\n").replaceAll("<[^>]+>", "").replace("&nbsp;", " ").replace("&middot;", "\u00B7").trim();
+		int firstLine = text.indexOf('\n');
+		return firstLine >= 0 ? text.substring(firstLine + 1).trim() : text;
+	}
+
+	private static String memoryText(long bytes) {
+		return bytes >= GB ? String.format("%.2f GB", bytes / (double) GB) : (bytes / MB) + " MB";
+	}
+
+	/**
+	 * Total memory of this process (not only the Java heap), JDK only:
+	 * Windows = working set (the RAM really used, as in the Task Manager details; JNA, already shipped); Linux = resident set
+	 * from /proc; otherwise (and as fallback) heap + non-heap memory reserved by the JVM, which is a lower bound.
+	 */
+	private long processMemoryBytes() {
+		try {
+			String osName = System.getProperty("os.name", "").toLowerCase();
+			if (osName.contains("win")) {
+				long workingSet = WindowsMemory.workingSet();
+				if (workingSet > 0) {
+					return workingSet;
+				}
+			} else if (osName.contains("linux")) {
+				for (String line : java.nio.file.Files.readAllLines(java.nio.file.Paths.get("/proc/self/status"), java.nio.charset.StandardCharsets.UTF_8)) {
+					if (line.startsWith("VmRSS:")) {
+						return Long.parseLong(line.replaceAll("[^0-9]", "")) * 1024L;
+					}
+				}
+			}
+		} catch (Throwable e) {
+			// falls back to the JVM view below
+		}
+		java.lang.management.MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
+		return memory.getHeapMemoryUsage().getCommitted() + memory.getNonHeapMemoryUsage().getCommitted();
+	}
+
 	private double processCpuLoad() {
 		if (os instanceof com.sun.management.OperatingSystemMXBean) {
 			return ((com.sun.management.OperatingSystemMXBean) os).getProcessCpuLoad();
@@ -206,11 +339,11 @@ public class ResourceUsageLabel extends JPanel {
 		return -1;
 	}
 
-	private String details(long usedMb, long maxMb, double processCpu) {
+	private String details(long usedMb, long maxMb, double processCpu, long processBytes) {
 		StringBuilder html = new StringBuilder(I18n.t("memory.screept_resources_usage"));
 		html.append(I18n.t("memory.cpu_this_application_all_cores")).append(processCpu < 0 ? "n/a" : Math.round(processCpu * 100) + "%").append("<br>");
-		html.append(I18n.t("memory.memory_java_heap")).append(usedMb).append(I18n.t("memory.mb_used_of")).append(maxMb).append(I18n.t("memory.mb_available"))
-			.append(" (").append(runtime.totalMemory() / MB).append(I18n.t("memory.mb_reserved"));
+		html.append(I18n.t("memory.process_memory_total")).append(memoryText(processBytes)).append("<br>");
+		appendMemoryDetails(html, usedMb, maxMb);
 		html.append(I18n.t("memory.processors")).append(os.getAvailableProcessors());
 		if (os instanceof com.sun.management.OperatingSystemMXBean) {
 			com.sun.management.OperatingSystemMXBean sunOs = (com.sun.management.OperatingSystemMXBean) os;

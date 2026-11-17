@@ -66,10 +66,29 @@ public final class OptionHelp {
 	private static final class Entry {
 		final String title;
 		final String text;
+		/** Live entries: the text comes from here and is read again every second while the card is shown */
+		final java.util.function.Supplier<String> live;
 
 		Entry(String title, String text) {
+			this(title, text, null);
+		}
+
+		Entry(String title, String text, java.util.function.Supplier<String> live) {
 			this.title = title;
 			this.text = text;
+			this.live = live;
+		}
+
+		String currentText() {
+			if (live != null) {
+				try {
+					String value = live.get();
+					return value == null ? "" : value;
+				} catch (RuntimeException e) {
+					return text;
+				}
+			}
+			return text;
 		}
 	}
 
@@ -96,6 +115,24 @@ public final class OptionHelp {
 			return;
 		}
 		Entry entry = new Entry(title, text);
+		for (JComponent component : components) {
+			if (component != null) {
+				component.setToolTipText(null);
+				ENTRIES.put(component, entry);
+			}
+		}
+		install();
+	}
+
+	/**
+	 * Like {@link #attach}, for a text that changes (resource usage): the card is a bit taller and its text is refreshed every
+	 * second while it is shown, without moving the scroll position.
+	 */
+	public static void attachLive(String title, java.util.function.Supplier<String> text, JComponent... components) {
+		if (text == null) {
+			return;
+		}
+		Entry entry = new Entry(title, "", text);
 		for (JComponent component : components) {
 			if (component != null) {
 				component.setToolTipText(null);
@@ -261,7 +298,7 @@ public final class OptionHelp {
 		}
 
 		int width = Math.max(MIN_SIZE.width, screen.width / 4) + 2 * SHADOW;
-		int height = Math.max(MIN_SIZE.height, screen.height / 4) + 2 * SHADOW;
+		int height = Math.max(MIN_SIZE.height, entry.live != null ? screen.height / 3 : screen.height / 4) + 2 * SHADOW;
 		width = Math.min(width, screen.width);
 		height = Math.min(height, screen.height);
 
@@ -305,6 +342,7 @@ public final class OptionHelp {
 
 		private final JWindow popup;
 		private final JTextArea body = new JTextArea();
+		private Timer refresher;
 		private int dragZone;
 		private Point dragStart;
 		private Rectangle dragBounds;
@@ -321,7 +359,7 @@ public final class OptionHelp {
 			title.setFont(base.deriveFont(Font.BOLD, base.getSize2D() + 3f));
 			title.setForeground(foreground);
 
-			body.setText(entry.text);
+			body.setText(entry.currentText());
 			body.setEditable(false);
 			body.setLineWrap(true);
 			body.setWrapStyleWord(true);
@@ -406,6 +444,26 @@ public final class OptionHelp {
 					mouse.mouseEntered(e);
 				}
 			});
+
+			if (entry.live != null) {
+				refresher = new Timer(1000, e -> {
+					String text = entry.currentText();
+					if (!text.equals(body.getText())) {
+						java.awt.Point position = scroll.getViewport().getViewPosition();
+						body.setText(text);
+						SwingUtilities.invokeLater(() -> scroll.getViewport().setViewPosition(position));
+					}
+				});
+				refresher.start();
+			}
+		}
+
+		@Override
+		public void removeNotify() {
+			if (refresher != null) {
+				refresher.stop();
+			}
+			super.removeNotify();
 		}
 
 		private int zoneAt(Point p) {

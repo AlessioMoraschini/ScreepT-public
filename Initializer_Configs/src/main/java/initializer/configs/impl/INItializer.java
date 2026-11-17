@@ -463,6 +463,9 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		String pathsOpenFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedFilesAtStart");
 		textEditorOpt.setOpenedFileList(getStringListFromString(pathsOpenFilesString, ",", new ArrayList<String>()));
 
+		String pathsPinnedFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "pinnedFilesAtStart");
+		textEditorOpt.setPinnedFileList(getStringListFromString(pathsPinnedFilesString, ",", new ArrayList<String>()));
+
 		String pathsOpenTempFilesString = iniReadFile.get(TEXT_EDITOR_OPT, "loadedTempFilesAtStart");
 		textEditorOpt.setOpenedTempFileList(getStringListFromString(pathsOpenTempFilesString, ",", new ArrayList<String>()));
 

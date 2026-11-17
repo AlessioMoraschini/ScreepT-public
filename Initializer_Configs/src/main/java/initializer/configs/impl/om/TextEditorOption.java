@@ -119,6 +119,8 @@ public class TextEditorOption {
 	public Color foreCol;
 	public ArrayList<String> openedTempFileList;
 	public ArrayList<String> openedFileList;
+	/** Files whose tab is pinned (restored pinned at start, see CustomTabbedEditor.pinTab) */
+	public ArrayList<String> pinnedFileList;
 	public Map<String, String> openedFileListCaretPosition;
 	public String selectedAtStart;
 	public String lastEscapeLanguage;
@@ -205,6 +207,7 @@ public class TextEditorOption {
 		footerVisible = DEF_footerVisible;
 
 		openedFileList = new ArrayList<String>();
+		pinnedFileList = new ArrayList<String>();
 		openedTempFileList = new ArrayList<String>();
 		openedFileListCaretPosition = new HashMap<>();
 		lastOpenedFiles = DEF_lastOpenedFiles;
@@ -539,6 +542,14 @@ public class TextEditorOption {
 
 	public void setTabLineVisible(boolean tabLineVisible) {
 		this.tabLineVisible = tabLineVisible;
+	}
+
+	public ArrayList<String> getPinnedFileList() {
+		return pinnedFileList;
+	}
+
+	public void setPinnedFileList(ArrayList<String> pinnedList) {
+		this.pinnedFileList = pinnedList;
 	}
 
 	public ArrayList<String> getOpenedFileList() {
