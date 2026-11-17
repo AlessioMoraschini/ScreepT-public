@@ -34,6 +34,7 @@ import javax.swing.SwingWorker;
 import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
+import gui.commons.imagestudio.DialogFit;
 import org.icepdf.ri.common.ComponentKeyBinding;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
@@ -110,7 +111,15 @@ public class PdfSelector2TextFrame extends JFrame {
 		GuiUtilsExtended.showOnSameScreen(this, mainFrameParent);
 		getContentPane().setLayout(new MigLayout(GeneralConfig.DEBUG_GRAPHICS+"", "[130px][130px][grow][grow][350px]", "[grow][300px][35px]"));
 
-		imageContainerPanel = new JPanel(new java.awt.BorderLayout());
+		// the preferred size of the viewer area must not depend on the loaded PDF (the viewer asks for the size of the page),
+		// otherwise the window sized at opening would no longer fit after loading a document
+		imageContainerPanel = new JPanel(new java.awt.BorderLayout()) {
+			@Override
+			public java.awt.Dimension getPreferredSize() {
+				java.awt.Dimension viewerMin = getComponentCount() > 0 ? getComponent(0).getMinimumSize() : new java.awt.Dimension(800, 400);
+				return new java.awt.Dimension(viewerMin.width + 8, Math.max(viewerMin.height + 8, HEIGHT - 340));
+			}
+		};
 		imageContainerPanel.setBackground(Color.BLACK);
 		imageContainerPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 
@@ -119,6 +128,7 @@ public class PdfSelector2TextFrame extends JFrame {
 		textPreviewScrollPane = new JScrollPane();
 		textPreviewScrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 4));
 		textPreviewScrollPane.setBackground(Color.WHITE);
+		textPreviewScrollPane.setPreferredSize(new java.awt.Dimension(300, 160));
 
 		splitMainPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		splitMainPane.setBackground(Color.BLACK);
@@ -170,7 +180,53 @@ public class PdfSelector2TextFrame extends JFrame {
 
 		addHandlers();
 
+		// the window opens fitting its content (viewer toolbar included) and has scroll bars only when the screen is too small
+		splitMainPane.setResizeWeight(1.0);
+		DialogFit.apply(this, mainFrameParent, WIDTH, 0);
+		splitMainPane.setDividerLocation(imageContainerPanel.getPreferredSize().height);
+		// the viewer toolbars change size once the window is realized: when opened, grow the window if the content does not fit yet
+		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowOpened(java.awt.event.WindowEvent e) {
+				growToContent(3);
+			}
+		});
+
 		logger.debug(this.getClass().getName() + "### started");
+	}
+
+	/** Grows the window (up to 96% of the usable area of its monitor) until the content fits; beyond that the scroll bars are used */
+	private void growToContent(final int attemptsLeft) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (!(getContentPane() instanceof JScrollPane)) {
+					return;
+				}
+				JScrollPane scroll = (JScrollPane) getContentPane();
+				java.awt.Dimension pref = scroll.getViewport().getView().getPreferredSize();
+				java.awt.Dimension extent = scroll.getViewport().getExtentSize();
+				int dw = pref.width - extent.width;
+				int dh = pref.height - extent.height;
+				if (dw <= 0 && dh <= 0) {
+					return;
+				}
+				java.awt.Rectangle screen = getGraphicsConfiguration().getBounds();
+				java.awt.Insets insets = java.awt.Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+				int maxW = (int) ((screen.width - insets.left - insets.right) * 0.96);
+				int maxH = (int) ((screen.height - insets.top - insets.bottom) * 0.96);
+				int w = Math.min(maxW, getWidth() + Math.max(0, dw));
+				int h = Math.min(maxH, getHeight() + Math.max(0, dh));
+				if (w != getWidth() || h != getHeight()) {
+					int x = Math.max(screen.x, getX() - (w - getWidth()) / 2);
+					int y = Math.max(screen.y, getY() - (h - getHeight()) / 2);
+					setBounds(x, y, w, h);
+					if (attemptsLeft > 1) {
+						growToContent(attemptsLeft - 1);
+					}
+				}
+			}
+		});
 	}
 
 	public void loadFile(File selected) {
