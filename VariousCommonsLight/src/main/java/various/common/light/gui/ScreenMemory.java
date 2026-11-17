@@ -11,11 +11,17 @@
  */
 package various.common.light.gui;
 
+import java.awt.AWTEvent;
+import java.awt.Dialog;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.WindowEvent;
+import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
@@ -93,6 +99,53 @@ public final class ScreenMemory {
 		}
 		frame.setLocation(screen.x, screen.y);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	}
+
+	private static boolean guardInstalled = false;
+
+	/**
+	 * Every window (plugins included) opens on the monitor of the main window of the application: when a window is shown on another
+	 * monitor, it is centered on the one of the main window. Windows that already are on that monitor, maximized or undecorated
+	 * ones (splash, loaders, animations) are not touched, and neither are windows opened while the main window is not visible.
+	 */
+	public static synchronized void keepWindowsOnMainScreen(final Supplier<? extends Window> mainWindow) {
+		if (guardInstalled) {
+			return;
+		}
+		guardInstalled = true;
+		Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
+			if (event.getID() == WindowEvent.WINDOW_OPENED && event instanceof WindowEvent) {
+				try {
+					moveToScreenOf(mainWindow.get(), ((WindowEvent) event).getWindow());
+				} catch (Exception e) {
+					// cosmetic only
+				}
+			}
+		}, AWTEvent.WINDOW_EVENT_MASK);
+	}
+
+	private static void moveToScreenOf(Window main, Window window) {
+		if (main == null || window == null || window == main || !main.isShowing() || main.getGraphicsConfiguration() == null) {
+			return;
+		}
+		if (!(window instanceof Frame || window instanceof Dialog)) {
+			return;
+		}
+		if (window instanceof Frame && ((Frame) window).getExtendedState() != Frame.NORMAL) {
+			return;
+		}
+		boolean undecorated = window instanceof Frame ? ((Frame) window).isUndecorated() : ((Dialog) window).isUndecorated();
+		if (undecorated || window.getGraphicsConfiguration() == null) {
+			return;
+		}
+		Rectangle screen = main.getGraphicsConfiguration().getBounds();
+		Rectangle at = window.getBounds();
+		if (screen.contains(new Point((int) at.getCenterX(), (int) at.getCenterY()))) {
+			return;
+		}
+		int w = Math.min(at.width, screen.width);
+		int h = Math.min(at.height, screen.height);
+		window.setBounds(screen.x + (screen.width - w) / 2, screen.y + (screen.height - h) / 2, w, h);
 	}
 
 	private static Rectangle readSavedBounds() {

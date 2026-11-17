@@ -21,10 +21,10 @@ public class HDinfo {
 		this.disk = disk;
 	}
 	
+	/** Model and capacity, as shown in the disk selector */
 	public String toString() {
-		int lengthMax = 18;
-		String outName = (disk.getModel().length()>lengthMax)? disk.getModel().substring(0,lengthMax-1)+"...": disk.getModel() ;
-		return outName;
+		String model = disk.getModel() == null || disk.getModel().trim().isEmpty() ? disk.getName() : disk.getModel().trim();
+		return model + "  (" + gui.commons.frameutils.frame.arch.ToolStyle.size(disk.getSize()) + ")";
 	}
 
 	public HWDiskStore getDisk() {

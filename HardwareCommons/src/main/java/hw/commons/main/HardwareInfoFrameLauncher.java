@@ -15,7 +15,6 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.PropertyConfigurator;
 
-import gui.commons.frameutils.utils.GuiUtilsExtended;
 import resources.GeneralConfig;
 
 public class HardwareInfoFrameLauncher {
@@ -28,13 +27,10 @@ public class HardwareInfoFrameLauncher {
 					
 		HwInfoFrame frame = new HwInfoFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(250, 200, 1000, 750);
-		GuiUtilsExtended.centerComponent(frame);
-		frame.setResizable(false);
-		frame.setVisible(true);
-		frame.setAlwaysOnTop(true);
 		frame.setTitle("Hardware info - "+GeneralConfig.APPLICATION_NAME);
-		
+		// fits its content (scroll bars if the screen is not enough), on the last monitor used by the application
+		frame.showOnAppScreen(null);
+
 		// START CHECKING FOR EXTERNAL SIGNAL to close
 		frame.startExternalSignalCloseFlagCheck();
 	}

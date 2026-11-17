@@ -14,6 +14,7 @@ package gui.commons.imagestudio;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -22,10 +23,14 @@ import java.awt.Window;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.RootPaneContainer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Timer;
 import javax.swing.UIManager;
+
+import various.common.light.gui.ScreenMemory;
 
 /**
  * Rule for every window: it opens fitting its content, and when the content does not fit the screen it has scroll bars,
@@ -46,15 +51,27 @@ public final class DialogFit {
 	 * @param wantedHeight same for the height
 	 */
 	public static void apply(JDialog dialog, Window owner, int wantedWidth, int wantedHeight) {
-		JComponent content = (JComponent) dialog.getContentPane();
+		fit(dialog, dialog, owner, wantedWidth, wantedHeight);
+	}
+
+	/**
+	 * Same rule for a frame: the content goes in a scroll pane, the frame is sized to the content (at most 92% x 90% of the screen)
+	 * and opens centered over the owner, so on the monitor of the application (without owner: the monitor last used by the application).
+	 */
+	public static void apply(JFrame frame, Window owner, int wantedWidth, int wantedHeight) {
+		fit(frame, frame, owner, wantedWidth, wantedHeight);
+	}
+
+	private static void fit(Window window, RootPaneContainer container, Window owner, int wantedWidth, int wantedHeight) {
+		JComponent content = (JComponent) container.getContentPane();
 		JScrollPane scroll = new JScrollPane(content, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBorder(null);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		scroll.getHorizontalScrollBar().setUnitIncrement(16);
-		dialog.setContentPane(scroll);
+		container.setContentPane(scroll);
 
 		Rectangle screen = screenOf(owner);
-		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(dialog.getGraphicsConfiguration() != null ? dialog.getGraphicsConfiguration() : GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(configOf(screen));
 		int maxW = (int) ((screen.width - insets.left - insets.right) * 0.92);
 		int maxH = (int) ((screen.height - insets.top - insets.bottom) * 0.90);
 		Dimension pref = content.getPreferredSize();
@@ -74,9 +91,24 @@ public final class DialogFit {
 		// pack(): the size of the scroll pane is the one of the content, and the window adds its own title bar and borders on top,
 		// so the content fits and the scroll bars show only when the screen limit was reached
 		scroll.setPreferredSize(new Dimension(w, h));
-		dialog.pack();
-		dialog.setMinimumSize(new Dimension(Math.min(520, dialog.getWidth()), Math.min(360, dialog.getHeight())));
-		dialog.setLocationRelativeTo(owner);
+		window.pack();
+		window.setMinimumSize(new Dimension(Math.min(520, window.getWidth()), Math.min(360, window.getHeight())));
+		if (owner != null && owner.isShowing()) {
+			window.setLocationRelativeTo(owner);
+		} else {
+			window.setLocation(screen.x + Math.max(0, (screen.width - window.getWidth()) / 2), screen.y + Math.max(0, (screen.height - window.getHeight()) / 2));
+		}
+	}
+
+	/** Configuration of the monitor with the given bounds (to read its taskbar insets), the default one if not found */
+	private static GraphicsConfiguration configOf(Rectangle screen) {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		for (GraphicsDevice device : ge.getScreenDevices()) {
+			if (device.getDefaultConfiguration().getBounds().equals(screen)) {
+				return device.getDefaultConfiguration();
+			}
+		}
+		return ge.getDefaultScreenDevice().getDefaultConfiguration();
 	}
 
 	private static Rectangle screenOf(Window owner) {
@@ -84,7 +116,7 @@ public final class DialogFit {
 		if (gc != null) {
 			return gc.getBounds();
 		}
-		return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+		return ScreenMemory.getLastScreenBounds();
 	}
 
 	/**
