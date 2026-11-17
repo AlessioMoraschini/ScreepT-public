@@ -48,16 +48,16 @@ public class TabHeadPanel_Full extends JPanel{
 		// image label
 		JLabel imageLbl = new JLabel();
 		imageLbl.setIcon(new ImageIcon(iconPath));
-		imageLbl.setPreferredSize(new Dimension(15, 20));
+		imageLbl.setPreferredSize(new Dimension(16, 20));
 		imageLbl.setMaximumSize(new Dimension(25, 20));
 		
 		
 		// tab title
 		JLabel lblTitle = new JLabel();
-		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT.deriveFont(14f));
+		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTitle.setFont(GeneralConfig.BUTTON_TAB_HEAD_FONT.deriveFont(13f));
 		lblTitle.setText(StringWorker.fitToMaxLentgh(title, TabUtils.MAX_TAB_LABELENGHT));
-		setLayout(new MigLayout("fill, insets 0", "[20px][69px,grow][35px]", "[22px:24px:34px]"));
+		setLayout(new MigLayout("fill, insets 0 6 0 3, gap 4", "[16px][40px,grow][18px]", "[20px:22px:30px]"));
 		// button close
 		final JButton btnClose = new JButton("");
 		btnClose.setAlignmentX(Component.CENTER_ALIGNMENT);

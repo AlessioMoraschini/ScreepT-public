@@ -76,6 +76,10 @@ public class HtmlViewerPanel extends JPanel {
 	private final GuideHeroPanel hero = new GuideHeroPanel("ScreepT", "portable workbench");
 	private final JTextField searchField = new JTextField(22);
 	private final JLabel countLabel = new JLabel(" ");
+	/** Language of the page, for guides that exist in several languages (hidden when there is only one) */
+	private final javax.swing.JComboBox<String> languageBox = new javax.swing.JComboBox<String>();
+	private final java.util.List<String> languageCodes = new java.util.ArrayList<String>();
+	private boolean languageUpdating;
 	private final DefaultListModel<Heading> tocModel = new DefaultListModel<>();
 	private final JList<Heading> tocList = new JList<>(tocModel);
 	private final JSplitPane split;
@@ -174,6 +178,43 @@ public class HtmlViewerPanel extends JPanel {
 				SwingUtilities.invokeLater(() -> showError(pathOrUri, e));
 			}
 		}, "html-viewer-loader").start();
+	}
+
+	/**
+	 * Shows a language selector in the toolbar: options are {code, name} pairs, the code of the page shown is selected, and
+	 * onPick receives the code the user chooses. With fewer than two options the selector stays hidden.
+	 */
+	public void setLanguages(final String[][] options, String selectedCode, final java.util.function.Consumer<String> onPick) {
+		languageUpdating = true;
+		for (java.awt.event.ActionListener l : languageBox.getActionListeners()) {
+			languageBox.removeActionListener(l);
+		}
+		languageBox.removeAllItems();
+		languageCodes.clear();
+		for (String[] option : options) {
+			languageCodes.add(option[0]);
+			languageBox.addItem(option[1]);
+		}
+		selectLanguage(selectedCode);
+		languageBox.setVisible(options.length > 1);
+		languageBox.addActionListener(e -> {
+			int i = languageBox.getSelectedIndex();
+			if (!languageUpdating && i >= 0 && i < languageCodes.size()) {
+				onPick.accept(languageCodes.get(i));
+			}
+		});
+		languageUpdating = false;
+	}
+
+	/** Selects a language in the selector without triggering a load */
+	public void selectLanguage(String code) {
+		boolean was = languageUpdating;
+		languageUpdating = true;
+		int i = languageCodes.indexOf(code);
+		if (i >= 0) {
+			languageBox.setSelectedIndex(i);
+		}
+		languageUpdating = was;
 	}
 
 	public void focusSearch() {
@@ -502,6 +543,10 @@ public class HtmlViewerPanel extends JPanel {
 		bar.add(zoomOut);
 		bar.add(zoomReset);
 		bar.add(zoomIn);
+		languageBox.setFocusable(false);
+		languageBox.setToolTipText("Language of the guide");
+		languageBox.setVisible(false);
+		bar.add(languageBox);
 		return bar;
 	}
 

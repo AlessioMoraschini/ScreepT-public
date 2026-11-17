@@ -14,7 +14,6 @@ package gui.commons.treeutils.om;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 
@@ -32,9 +31,6 @@ import various.common.light.files.om.FileNamed;
 
 public class FileNameCellRenderer implements TreeCellRenderer {
 
-	private static final int FOLDER_TEXT_HEIGHT = 10;
-	private static final int FILE_TEXT_HEIGHT = 8;
-
 	public static Font fileFont = new Font("Segoe UI", Font.PLAIN, 14);
 
 	static Logger logger = Logger.getLogger(FileNameCellRenderer.class);
@@ -45,6 +41,8 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 	public JTree treeRef;
 
 	public int hoveringRow = -1;
+
+	private final MyFileView fileView = new MyFileView();
 
 	public FileNameCellRenderer() {
 		container = new JPanel(new BorderLayout());
@@ -66,33 +64,16 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 
 			if (value instanceof FileNamed) {
 
-				// custom icon setter
+				// custom icon setter: no access to the disk here, a row is painted many times
 				FileNamed nodeFileObj = (FileNamed) value;
 				File selectedFile = nodeFileObj.mFile;
-				FileNamed nodeFileObjRoot = (FileNamed) tree.getModel().getRoot();
-				File root = nodeFileObjRoot.getFile();
+				boolean directory = nodeFileObj.isDirectory();
 
-				MyFileView fileView = new MyFileView();
-				iconContainer.setIcon(fileView.getIcon(nodeFileObj.mFile));
-				try {
-					File absoluteFile = selectedFile.getAbsoluteFile();
-					if (root.getAbsolutePath().equals(selectedFile.getAbsolutePath())) {
-						iconContainer.setText(selectedFile.getName());
-					} else {
-						iconContainer.setText(absoluteFile.getName());
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-
+				iconContainer.setIcon(fileView.getIcon(selectedFile, directory));
+				String name = selectedFile.getName();
+				iconContainer.setText(name.isEmpty() ? selectedFile.getPath() : name);
 				iconContainer.setFont(fileFont);
-				if (selectedFile.isFile()) {
-					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth() + 100, FILE_TEXT_HEIGHT));
-				} else {
-					iconContainer.setMinimumSize(new Dimension(iconContainer.getWidth() + 100, FOLDER_TEXT_HEIGHT));
-				}
-
-				container.setToolTipText(selectedFile != null ? selectedFile.getAbsolutePath() : "file is null!");
+				container.setToolTipText(selectedFile.getAbsolutePath());
 
 			}
 
@@ -102,7 +83,7 @@ public class FileNameCellRenderer implements TreeCellRenderer {
 			iconContainer.setOpaque(false);
 			Color background = tree.getBackground();
 			Color strong = TreeUtils.textOn(background);
-			boolean folder = value instanceof FileNamed && !((FileNamed) value).mFile.isFile();
+			boolean folder = value instanceof FileNamed && ((FileNamed) value).isDirectory();
 			Color text = selected || hoveringRow == row ? strong : TreeUtils.blend(strong, background, folder ? 0.08f : 0.2f);
 			iconContainer.setBorder(new EmptyBorder(0, 3, 0, 8));
 			iconContainer.setForeground(text);

@@ -28,9 +28,34 @@ public class FileNamed{
 		mFile = file;
 	}
 	
+	/** Read from disk once: a tree asks it on every paint, and the node is recreated when the folder is read again */
+	private Boolean directory;
+
 	public boolean isDirectory() {
-        return mFile != null && mFile.isDirectory();
+		Boolean cached = directory;
+		if (cached == null) {
+			cached = mFile != null && mFile.isDirectory();
+			directory = cached;
+		}
+		return cached;
     }
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof FileNamed)) {
+			return false;
+		}
+		File o = ((FileNamed) other).mFile;
+		return mFile == null ? o == null : mFile.equals(o);
+	}
+
+	@Override
+	public int hashCode() {
+		return mFile == null ? 0 : mFile.hashCode();
+	}
 	
 	public FileNamed[] listFiles() {
         if (mFile != null) {
