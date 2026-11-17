@@ -345,6 +345,21 @@ public final class ToolStyle {
 		}
 	}
 
+	/** Underlined link inside a window: the action runs on click (switches to another tool window) */
+	public static JLabel link(final String text, final Runnable action) {
+		JLabel label = new JLabel("<html><u>" + text + "</u></html>");
+		label.setForeground(BLUE);
+		label.setFont(font(0f, Font.PLAIN));
+		hand(label);
+		label.addMouseListener(new java.awt.event.MouseAdapter() {
+			
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				action.run();
+			}
+		});
+		return label;
+	}
+
 	/** Makes the component show the hand cursor */
 	public static <C extends Component> C hand(C component) {
 		component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
