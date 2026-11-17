@@ -27,6 +27,12 @@ public class FileNamed{
 	public FileNamed(final File file) {
 		mFile = file;
 	}
+
+	/** For callers that already know whether it is a folder (an index of the disk): no read from disk is needed to tell */
+	public FileNamed(final File file, final boolean directory) {
+		mFile = file;
+		this.directory = directory;
+	}
 	
 	/** Read from disk once: a tree asks it on every paint, and the node is recreated when the folder is read again */
 	private Boolean directory;

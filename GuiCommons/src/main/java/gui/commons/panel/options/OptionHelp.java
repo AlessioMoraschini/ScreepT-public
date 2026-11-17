@@ -43,6 +43,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -68,15 +73,18 @@ public final class OptionHelp {
 		final String text;
 		/** Live entries: the text comes from here and is read again every second while the card is shown */
 		final java.util.function.Supplier<String> live;
+		/** The text has **bold** parts and lines indented with two spaces per level (see {@link #attachLiveRich}) */
+		final boolean rich;
 
 		Entry(String title, String text) {
-			this(title, text, null);
+			this(title, text, null, false);
 		}
 
-		Entry(String title, String text, java.util.function.Supplier<String> live) {
+		Entry(String title, String text, java.util.function.Supplier<String> live, boolean rich) {
 			this.title = title;
 			this.text = text;
 			this.live = live;
+			this.rich = rich;
 		}
 
 		String currentText() {
@@ -129,10 +137,22 @@ public final class OptionHelp {
 	 * second while it is shown, without moving the scroll position.
 	 */
 	public static void attachLive(String title, java.util.function.Supplier<String> text, JComponent... components) {
+		attachLive(title, text, false, components);
+	}
+
+	/**
+	 * Like {@link #attachLive}, with a little formatting: text between ** ** is bold (the labels), the rest plain (the values); a
+	 * line that starts with two spaces per level is indented, also when it wraps.
+	 */
+	public static void attachLiveRich(String title, java.util.function.Supplier<String> text, JComponent... components) {
+		attachLive(title, text, true, components);
+	}
+
+	private static void attachLive(String title, java.util.function.Supplier<String> text, boolean rich, JComponent... components) {
 		if (text == null) {
 			return;
 		}
-		Entry entry = new Entry(title, "", text);
+		Entry entry = new Entry(title, "", text, rich);
 		for (JComponent component : components) {
 			if (component != null) {
 				component.setToolTipText(null);
@@ -341,7 +361,9 @@ public final class OptionHelp {
 		private static final int S = 8;
 
 		private final JWindow popup;
-		private final JTextArea body = new JTextArea();
+		private final JTextComponent body;
+		private final boolean rich;
+		private String shownText = "";
 		private Timer refresher;
 		private int dragZone;
 		private Point dragStart;
@@ -353,19 +375,23 @@ public final class OptionHelp {
 			setOpaque(false);
 			setBorder(BorderFactory.createEmptyBorder(SHADOW + 12, SHADOW + 18, SHADOW + 12, SHADOW + 14));
 
+			this.rich = entry.rich;
+			body = entry.rich ? new JTextPane() : new JTextArea();
 			Color foreground = color("Label.foreground", Color.BLACK);
 			JLabel title = new JLabel(entry.title);
 			Font base = title.getFont();
 			title.setFont(base.deriveFont(Font.BOLD, base.getSize2D() + 3f));
 			title.setForeground(foreground);
 
-			body.setText(entry.currentText());
+			if (body instanceof JTextArea) {
+				((JTextArea) body).setLineWrap(true);
+				((JTextArea) body).setWrapStyleWord(true);
+			}
 			body.setEditable(false);
-			body.setLineWrap(true);
-			body.setWrapStyleWord(true);
 			body.setOpaque(false);
 			body.setForeground(blend(foreground, background(), 0.12));
 			body.setFont(base.deriveFont(Font.PLAIN, base.getSize2D() + 1f));
+			showText(entry.currentText());
 			body.setCaretPosition(0);
 			body.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 6));
 			body.setHighlighter(null);
@@ -448,13 +474,60 @@ public final class OptionHelp {
 			if (entry.live != null) {
 				refresher = new Timer(1000, e -> {
 					String text = entry.currentText();
-					if (!text.equals(body.getText())) {
+					if (!text.equals(shownText)) {
 						java.awt.Point position = scroll.getViewport().getViewPosition();
-						body.setText(text);
+						showText(text);
 						SwingUtilities.invokeLater(() -> scroll.getViewport().setViewPosition(position));
 					}
 				});
 				refresher.start();
+			}
+		}
+
+		/** Puts the text in the body: as it is, or (rich) with the bold labels and the indented lines */
+		private void showText(String text) {
+			shownText = text;
+			if (!rich) {
+				body.setText(text);
+				return;
+			}
+			JTextPane pane = (JTextPane) body;
+			StyledDocument doc = pane.getStyledDocument();
+			Font font = body.getFont();
+			SimpleAttributeSet plain = new SimpleAttributeSet();
+			StyleConstants.setFontFamily(plain, font.getFamily());
+			StyleConstants.setFontSize(plain, font.getSize());
+			StyleConstants.setForeground(plain, body.getForeground());
+			SimpleAttributeSet bold = new SimpleAttributeSet(plain);
+			StyleConstants.setBold(bold, true);
+			StyleConstants.setForeground(bold, color("Label.foreground", body.getForeground()));
+			try {
+				doc.remove(0, doc.getLength());
+				String[] lines = text.split("\n", -1);
+				for (int i = 0; i < lines.length; i++) {
+					String line = lines[i];
+					int level = 0;
+					while (line.startsWith("  ")) {
+						line = line.substring(2);
+						level++;
+					}
+					int paragraphStart = doc.getLength();
+					String[] parts = line.split("\\*\\*", -1);
+					for (int k = 0; k < parts.length; k++) {
+						if (!parts[k].isEmpty()) {
+							doc.insertString(doc.getLength(), parts[k], k % 2 == 1 ? bold : plain);
+						}
+					}
+					if (i < lines.length - 1) {
+						doc.insertString(doc.getLength(), "\n", plain);
+					}
+					SimpleAttributeSet paragraph = new SimpleAttributeSet();
+					StyleConstants.setLeftIndent(paragraph, level * 16f);
+					StyleConstants.setSpaceBelow(paragraph, 2f);
+					doc.setParagraphAttributes(paragraphStart, Math.max(1, doc.getLength() - paragraphStart), paragraph, false);
+				}
+			} catch (javax.swing.text.BadLocationException e) {
+				body.setText(text.replace("**", ""));
 			}
 		}
 

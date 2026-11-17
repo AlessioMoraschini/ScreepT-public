@@ -494,6 +494,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 
 		// extension -> viewer associations changed by the user (empty: every default)
 		textEditorOpt.viewerAssociations = StringWorker.trimToEmpty(iniReadFile.get(TEXT_EDITOR_OPT, "viewerAssociations"));
+		textEditorOpt.treeFilterRules = StringWorker.trimToEmpty(iniReadFile.get(TEXT_EDITOR_OPT, "treeFilterRules"));
 	}
 
 	/**
@@ -641,6 +642,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		iniFile.put(TEXT_EDITOR_OPT, "voiceRate", textEditorOpt.voiceRate);
 		iniFile.put(TEXT_EDITOR_OPT, "preferredTheme", textEditorOpt.selectedTheme);
 		iniFile.put(TEXT_EDITOR_OPT, "viewerAssociations", textEditorOpt.viewerAssociations == null ? "" : textEditorOpt.viewerAssociations);
+		iniFile.put(TEXT_EDITOR_OPT, "treeFilterRules", textEditorOpt.treeFilterRules == null ? "" : textEditorOpt.treeFilterRules);
 		iniFile.put(TEXT_EDITOR_OPT, "fileTreeActive", textEditorOpt.fileTreeActive);
 		iniFile.put(TEXT_EDITOR_OPT, "clipboardViewActive", textEditorOpt.clipboardViewActive);
 		iniFile.put(TEXT_EDITOR_OPT, "mapViewActive", textEditorOpt.mapViewActive);

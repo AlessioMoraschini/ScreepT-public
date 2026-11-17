@@ -138,6 +138,8 @@ public class TextEditorOption {
 
 	/** Viewer chosen by the user for an extension, only where different from the default: "ext=viewerId;ext=viewerId" */
 	public String viewerAssociations = "";
+	/** Exclusion rules of the file tree filter, serialized by TreeFilterRules (empty = defaults) */
+	public String treeFilterRules = "";
 	public Double dividerBottomPosRatio;
 	public int dividerFileTreePosX;
 	public int dividerRightPanePosX;

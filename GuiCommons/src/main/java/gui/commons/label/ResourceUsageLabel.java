@@ -123,7 +123,7 @@ public class ResourceUsageLabel extends JPanel {
 		add(pcLabel);
 
 		// details of ScreepT in a card that stays open while the mouse is on it (scrolls, takes the focus); nothing over the PC values
-		OptionHelp.attachLive(I18n.t("memory.screept_resources_usage").replaceAll("<[^>]+>", "").trim(), this::plainDetails, appLabel);
+		OptionHelp.attachLiveRich(I18n.t("memory.screept_resources_usage").replaceAll("<[^>]+>", "").trim(), this::richDetails, appLabel);
 
 		// loading the management classes is slow: do it in background so the main window opens sooner
 		Thread loader = new Thread(() -> {
@@ -243,34 +243,6 @@ public class ResourceUsageLabel extends JPanel {
 		}
 	}
 
-	/** Heap, non-heap (classes, code, JVM), thread stacks and direct buffers: where the memory of the process goes */
-	private void appendMemoryDetails(StringBuilder html, long usedMb, long maxMb) {
-		html.append(I18n.fmt("memory.heap_detail", usedMb, runtime.totalMemory() / MB, maxMb)).append("<br>");
-		try {
-			java.lang.management.MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
-			html.append(I18n.fmt("memory.non_heap_detail", memory.getNonHeapMemoryUsage().getUsed() / MB, memory.getNonHeapMemoryUsage().getCommitted() / MB)).append("<br>");
-			StringBuilder pools = new StringBuilder();
-			for (java.lang.management.MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
-				if (pool.getType() == java.lang.management.MemoryType.NON_HEAP && pool.getUsage() != null) {
-					pools.append(pools.length() == 0 ? "" : " &middot; ").append(pool.getName()).append(": ").append(pool.getUsage().getUsed() / MB).append(" MB");
-				}
-			}
-			if (pools.length() > 0) {
-				html.append("&nbsp;&nbsp;<font size=\"-1\">").append(pools).append("</font><br>");
-			}
-			int threads = ManagementFactory.getThreadMXBean().getThreadCount();
-			long stackKb = stackSizeKb();
-			html.append(I18n.fmt("memory.thread_stacks", threads, threads * stackKb / 1024, stackKb)).append("<br>");
-			for (java.lang.management.BufferPoolMXBean buffers : ManagementFactory.getPlatformMXBeans(java.lang.management.BufferPoolMXBean.class)) {
-				if ("direct".equals(buffers.getName())) {
-					html.append(I18n.fmt("memory.direct_buffers", buffers.getMemoryUsed() / MB)).append("<br>");
-				}
-			}
-		} catch (Throwable e) {
-			// the details are optional: the tooltip still shows the rest
-		}
-	}
-
 	/** Stack size of a thread in KB: -Xss when given, else the usual default of 64 bit JVMs (1 MB) */
 	private static long stackSizeKb() {
 		try {
@@ -288,17 +260,68 @@ public class ResourceUsageLabel extends JPanel {
 		return 1024;
 	}
 
-	/** Text of the details card: the usual details without the HTML */
-	private String plainDetails() {
+	/**
+	 * Text of the details card, with **bold** labels: the memory of the process as the Task Manager shows it, split into the parts that
+	 * add up to it (heap, JVM internals, thread stacks, direct buffers) and the rest, which is calculated by difference (native
+	 * libraries of AWT/Swing, fonts, GC structures: the JVM cannot measure it directly).
+	 */
+	private String richDetails() {
 		if (os == null) {
 			return "";
 		}
-		long usedMb = (runtime.totalMemory() - runtime.freeMemory()) / MB;
-		String html = details(usedMb, runtime.maxMemory() / MB, processCpuLoad(), processMemoryBytes());
-		// the first line is the title of the card
-		String text = html.replaceAll("(?i)<br\\s*/?>", "\n").replaceAll("<[^>]+>", "").replace("&nbsp;", " ").replace("&middot;", "\u00B7").trim();
-		int firstLine = text.indexOf('\n');
-		return firstLine >= 0 ? text.substring(firstLine + 1).trim() : text;
+		StringBuilder t = new StringBuilder();
+		long total = processMemoryBytes();
+		long heapReserved = runtime.totalMemory();
+		long heapUsed = heapReserved - runtime.freeMemory();
+		long heapMax = runtime.maxMemory();
+		long nonHeap = 0;
+		long stacks = 0;
+		long direct = 0;
+		int threads = 0;
+		StringBuilder pools = new StringBuilder();
+		try {
+			java.lang.management.MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
+			nonHeap = memory.getNonHeapMemoryUsage().getCommitted();
+			for (java.lang.management.MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
+				if (pool.getType() == java.lang.management.MemoryType.NON_HEAP && pool.getUsage() != null) {
+					pools.append(pools.length() == 0 ? "" : " \u00B7 ").append(pool.getName()).append(" ").append(pool.getUsage().getCommitted() / MB).append(" MB");
+				}
+			}
+			threads = ManagementFactory.getThreadMXBean().getThreadCount();
+			stacks = threads * stackSizeKb() * 1024L;
+			for (java.lang.management.BufferPoolMXBean buffers : ManagementFactory.getPlatformMXBeans(java.lang.management.BufferPoolMXBean.class)) {
+				if ("direct".equals(buffers.getName())) {
+					direct = buffers.getMemoryUsed();
+				}
+			}
+		} catch (Throwable e) {
+			// the details are optional: what could be read is shown
+		}
+		long other = Math.max(0, total - heapReserved - nonHeap - stacks - direct);
+
+		t.append("**").append(I18n.t("memory.card_total")).append(":** ").append(memoryText(total)).append("\n\n");
+		t.append("**").append(I18n.t("memory.card_breakdown")).append("**\n");
+		t.append("  **").append(I18n.t("memory.card_heap")).append(":** ").append(I18n.fmt("memory.card_heap_value", String.valueOf(heapReserved / MB), String.valueOf(heapUsed / MB), String.valueOf(heapMax / MB))).append("\n");
+		t.append("  **").append(I18n.t("memory.card_nonheap")).append(":** ").append(nonHeap / MB).append(" MB\n");
+		if (pools.length() > 0) {
+			t.append("    ").append(pools).append("\n");
+		}
+		t.append("  **").append(I18n.t("memory.card_threads")).append(":** ").append(I18n.fmt("memory.card_threads_value", String.valueOf(threads), String.valueOf(stacks / MB))).append("\n");
+		t.append("  **").append(I18n.t("memory.card_direct")).append(":** ").append(direct / MB).append(" MB\n");
+		t.append("  **").append(I18n.t("memory.card_other")).append(":** ").append(other / MB).append(" MB\n\n");
+
+		double processCpu = processCpuLoad();
+		t.append("**").append(I18n.t("memory.card_cpu")).append(":** ").append(processCpu < 0 ? "n/a" : Math.round(processCpu * 100) + "%").append("\n");
+		t.append("**").append(I18n.t("memory.card_processors")).append(":** ").append(os.getAvailableProcessors());
+		if (os instanceof com.sun.management.OperatingSystemMXBean) {
+			com.sun.management.OperatingSystemMXBean sunOs = (com.sun.management.OperatingSystemMXBean) os;
+			double systemCpu = sunOs.getSystemCpuLoad();
+			long totalPhysical = sunOs.getTotalPhysicalMemorySize();
+			t.append("\n\n**").append(I18n.t("memory.card_system_cpu")).append(":** ").append(systemCpu < 0 ? "n/a" : Math.round(systemCpu * 100) + "%").append("\n");
+			t.append("**").append(I18n.t("memory.card_system_memory")).append(":** ")
+				.append(I18n.fmt("memory.card_system_memory_value", String.valueOf((totalPhysical - sunOs.getFreePhysicalMemorySize()) / MB), String.valueOf(totalPhysical / MB)));
+		}
+		return t.toString();
 	}
 
 	private static String memoryText(long bytes) {
@@ -337,22 +360,6 @@ public class ResourceUsageLabel extends JPanel {
 			return ((com.sun.management.OperatingSystemMXBean) os).getProcessCpuLoad();
 		}
 		return -1;
-	}
-
-	private String details(long usedMb, long maxMb, double processCpu, long processBytes) {
-		StringBuilder html = new StringBuilder(I18n.t("memory.screept_resources_usage"));
-		html.append(I18n.t("memory.cpu_this_application_all_cores")).append(processCpu < 0 ? "n/a" : Math.round(processCpu * 100) + "%").append("<br>");
-		html.append(I18n.t("memory.process_memory_total")).append(memoryText(processBytes)).append("<br>");
-		appendMemoryDetails(html, usedMb, maxMb);
-		html.append(I18n.t("memory.processors")).append(os.getAvailableProcessors());
-		if (os instanceof com.sun.management.OperatingSystemMXBean) {
-			com.sun.management.OperatingSystemMXBean sunOs = (com.sun.management.OperatingSystemMXBean) os;
-			double systemCpu = sunOs.getSystemCpuLoad();
-			html.append(I18n.t("memory.system_cpu")).append(systemCpu < 0 ? "n/a" : Math.round(systemCpu * 100) + "%");
-			html.append(I18n.t("memory.system_memory")).append((sunOs.getTotalPhysicalMemorySize() - sunOs.getFreePhysicalMemorySize()) / MB)
-				.append(I18n.t("memory.mb_used_of")).append(sunOs.getTotalPhysicalMemorySize() / MB).append(" MB");
-		}
-		return html.append("</html>").toString();
 	}
 
 	@Override

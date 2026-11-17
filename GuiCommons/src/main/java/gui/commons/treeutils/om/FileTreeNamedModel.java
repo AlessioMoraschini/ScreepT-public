@@ -12,15 +12,14 @@
 package gui.commons.treeutils.om;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import gui.commons.treeutils.FileNameIndex;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -32,7 +31,8 @@ import various.common.light.files.om.FileNamed;
  * File tree model. The content of every folder is read from disk once and kept (folders first, then files, both by name):
  * the tree asks for children, count and leaf status on every paint, and reading the folder each time made big folders very
  * slow. The cache is renewed by creating a new model, or by {@link #hasChangedOnDisk()} followed by a new model.
- * It can also show only the entries of a filter ({@link #setVisiblePaths(Set)}): the matching ones and their folders.
+ * It can also show only the result of a filter ({@link #setFilterView}): the matching entries and their folders, taken from memory
+ * (the result is prepared off the interface thread, showing it never touches the disk).
  */
 public class FileTreeNamedModel implements TreeModel {
 
@@ -52,16 +52,13 @@ public class FileTreeNamedModel implements TreeModel {
 
 	private static final class Entry {
 		FileNamed[] all;
-		FileNamed[] shown;
-		int shownVersion = -1;
 		long modified;
 	}
 
 	private final FileNamed mFile;
 	private final Map<File, Entry> cache = new HashMap<File, Entry>();
 	private final List<TreeModelListener> listeners = new CopyOnWriteArrayList<TreeModelListener>();
-	private Set<String> visiblePaths;
-	private int filterVersion;
+	private FileNameIndex.View filterView;
 
 	public FileTreeNamedModel(final FileNamed root) {
 		mFile = root;
@@ -82,20 +79,6 @@ public class FileTreeNamedModel implements TreeModel {
 			}
 			cache.put(dir, e);
 		}
-		if (e.shownVersion != filterVersion) {
-			if (visiblePaths == null) {
-				e.shown = e.all;
-			} else {
-				List<FileNamed> kept = new ArrayList<FileNamed>();
-				for (FileNamed f : e.all) {
-					if (visiblePaths.contains(f.getFileAbsPath())) {
-						kept.add(f);
-					}
-				}
-				e.shown = kept.toArray(new FileNamed[0]);
-			}
-			e.shownVersion = filterVersion;
-		}
 		return e;
 	}
 
@@ -107,7 +90,15 @@ public class FileTreeNamedModel implements TreeModel {
 		if (!f.isDirectory()) {
 			return NONE;
 		}
-		return entry(f).shown;
+		FileNameIndex.View view;
+		synchronized (this) {
+			view = filterView;
+		}
+		if (view != null) {
+			FileNamed[] sons = view.children.get(f.getFileAbsPath());
+			return sons == null ? NONE : sons;
+		}
+		return entry(f).all;
 	}
 
 	/** True when a folder that was read changed on disk (an entry added, removed or renamed) after it was read */
@@ -120,17 +111,16 @@ public class FileTreeNamedModel implements TreeModel {
 		return false;
 	}
 
-	/** Shows only the entries whose absolute path is in the set (null shows everything) and tells the tree to rebuild */
-	public void setVisiblePaths(Set<String> paths) {
+	/** Shows only the entries of the view (null shows everything) and tells the tree to rebuild */
+	public void setFilterView(FileNameIndex.View view) {
 		synchronized (this) {
-			visiblePaths = paths;
-			filterVersion++;
+			filterView = view;
 		}
 		fireStructureChanged();
 	}
 
 	public synchronized boolean isFiltered() {
-		return visiblePaths != null;
+		return filterView != null;
 	}
 
 	private void fireStructureChanged() {
@@ -181,7 +171,18 @@ public class FileTreeNamedModel implements TreeModel {
 	@Override
 	public boolean isLeaf(Object node) {
 		FileNamed f = (FileNamed) node;
-		return node != null && !f.isDirectory();
+		if (node == null) {
+			return false;
+		}
+		FileNameIndex.View view;
+		synchronized (this) {
+			view = filterView;
+		}
+		if (view != null) {
+			// filtered: a folder is open-able only when something of the result is inside it
+			return !f.isDirectory() || !view.children.containsKey(f.getFileAbsPath());
+		}
+		return !f.isDirectory();
 	}
 
 	@Override

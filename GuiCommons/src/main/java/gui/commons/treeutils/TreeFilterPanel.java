@@ -13,27 +13,45 @@ package gui.commons.treeutils;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Path2D;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
 import gui.commons.treeutils.om.FileTreeNamedModel;
 import various.common.light.files.om.FileNamed;
@@ -42,50 +60,121 @@ import various.common.light.i18n.I18n;
 /**
  * Filter bar of a file tree: what is typed hides every entry whose name does not contain the text (case insensitive), keeping the
  * folders that lead to the ones that match. Clear (the button or Esc) shows everything again, with the folders open as they were.
- * The folders are read in the background, never on the interface thread; over {@link #WARN_LIMIT} elements the user is asked
- * before going on (it can take long and slow things down), and over {@link #HARD_LIMIT} the filter is refused. It follows the
- * colors of the tree, so it fits any look and feel.
+ * <p>
+ * Fast by design: the names under the root are read once, in the background, into a {@link FileNameIndex}; typing then searches
+ * memory only (a longer text refines the previous result). The index is kept for the last roots used (switching tab between two
+ * folders does not read them again), is refreshed in the background when it gets old or the tree was reloaded, and is released
+ * after a few minutes without filtering. Folders and files that are not interesting (.git, node_modules...) are skipped by the
+ * rules of the funnel button ({@link TreeFilterRules}, edited with {@link TreeFilterRulesDialog}). Every background result carries
+ * the generation it was started for and the root it belongs to: an answer for a previous text, tab or folder is dropped, never
+ * applied to the tree that is showing now. It follows the colors of the tree, so it fits any look and feel.
  */
 public class TreeFilterPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	/** Elements read before the user is asked to confirm */
-	public static final int WARN_LIMIT = 5000;
-	/** Elements over which the filter is refused */
-	public static final int HARD_LIMIT = 200000;
-	/** Rows opened at most to show the matches */
-	private static final int MAX_EXPANDED_ROWS = 4000;
+	/** Matches over which the result is not shown (the text must be narrowed) */
+	public static final int MATCH_CAP = 20000;
+	/** An index older than this is refreshed in the background the next time it is used */
+	private static final long STALE_MS = 60000L;
+	/** Without filtering for this long the indexes are released (memory) */
+	private static final int IDLE_RELEASE_MS = 5 * 60 * 1000;
+	/** Indexes kept (the roots used last) */
+	private static final int CACHE_SIZE = 2;
+	/** Folders opened at most to show the matches */
+	private static final int MAX_EXPANDED = 2500;
 
 	private static final Color WARN_COLOR = new Color(214, 140, 30);
 
 	private final JTree tree;
-	private final Predicate<String> confirmHeavy;
+	private final Supplier<String> rulesLoader;
+	private final Consumer<String> rulesSaver;
 	private final JTextField field = new JTextField();
 	private final JButton clear = new JButton("✕");
+	private final JButton rulesButton = new JButton(new FunnelIcon());
 	private final JLabel status = new JLabel(" ");
 	private final Timer debounce;
-	private SwingWorker<ScanResult, Void> running;
+	private final Timer idle;
+
+	private TreeFilterRules rules;
+	private int rulesVersion;
+	/** Indexes by root path, the most recently used last */
+	private final Map<String, FileNameIndex> cache = new LinkedHashMap<String, FileNameIndex>(4, 0.75f, true) {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected boolean removeEldestEntry(Map.Entry<String, FileNameIndex> eldest) {
+			return size() > CACHE_SIZE;
+		}
+	};
+	/** Roots whose index is known to be old (the tree was reloaded): refreshed at the next use */
+	private final Set<String> staleRoots = new HashSet<String>();
+
+	private SwingWorker<FileNameIndex, Integer> building;
+	private String buildingRoot;
+	private SwingWorker<SearchResult, Void> searching;
+	/** Bumped at every new search, clear and reload: older answers are dropped */
+	private int generation;
+
+	/** Last search, to refine it when the text grows */
+	private FileNameIndex lastIndex;
+	private String lastQuery = "";
+	private int[] lastMatches;
+	private boolean lastOver;
+
 	private String[] expansionBefore;
 	private boolean filtering;
 
-	/** The outcome of reading the folders */
-	private static final class ScanResult {
-		Set<String> visible = new HashSet<String>();
-		int matches;
-		boolean tooMany;
-		boolean overHardLimit;
-		boolean cancelled;
+	private static final class SearchResult {
+		final FileNameIndex.Matches matches;
+		final FileNameIndex.View view;
+
+		SearchResult(FileNameIndex.Matches matches, FileNameIndex.View view) {
+			this.matches = matches;
+			this.view = view;
+		}
+	}
+
+	/** Funnel drawn with the color of the button text, so it fits every theme */
+	private static final class FunnelIcon implements Icon {
+		@Override
+		public void paintIcon(Component c, Graphics g, int x, int y) {
+			Graphics2D g2 = (Graphics2D) g.create();
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.setColor(c.getForeground());
+			Path2D funnel = new Path2D.Float();
+			funnel.moveTo(x, y + 1);
+			funnel.lineTo(x + 12, y + 1);
+			funnel.lineTo(x + 7.6f, y + 6.2f);
+			funnel.lineTo(x + 7.6f, y + 12);
+			funnel.lineTo(x + 4.4f, y + 10.2f);
+			funnel.lineTo(x + 4.4f, y + 6.2f);
+			funnel.closePath();
+			g2.fill(funnel);
+			g2.dispose();
+		}
+
+		@Override
+		public int getIconWidth() {
+			return 12;
+		}
+
+		@Override
+		public int getIconHeight() {
+			return 14;
+		}
 	}
 
 	/**
 	 * @param tree the tree to filter (its model must be a {@link FileTreeNamedModel})
-	 * @param confirmHeavy asked with the message when the folder is big: true to go on
+	 * @param rulesLoader gives the saved rules (see {@link TreeFilterRules#parse}); null or empty = defaults
+	 * @param rulesSaver receives the rules (as {@link TreeFilterRules#serialize()}) when the user changes them
 	 */
-	public TreeFilterPanel(JTree tree, Predicate<String> confirmHeavy) {
+	public TreeFilterPanel(JTree tree, Supplier<String> rulesLoader, Consumer<String> rulesSaver) {
 		super(new BorderLayout(2, 0));
 		this.tree = tree;
-		this.confirmHeavy = confirmHeavy;
+		this.rulesLoader = rulesLoader;
+		this.rulesSaver = rulesSaver;
 		setOpaque(false);
 		setBorder(BorderFactory.createEmptyBorder(3, 3, 1, 3));
 
@@ -102,12 +191,22 @@ public class TreeFilterPanel extends JPanel {
 		clear.setVisible(false);
 		clear.addActionListener(e -> clearFilter());
 
+		rulesButton.setToolTipText(I18n.t("tree.filter_rules_tip"));
+		rulesButton.setFocusable(false);
+		rulesButton.setMargin(new java.awt.Insets(0, 4, 0, 4));
+		rulesButton.setPreferredSize(new Dimension(26, 24));
+		rulesButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		rulesButton.putClientProperty("JButton.buttonType", "toolBarButton");
+		rulesButton.addActionListener(e -> editRules());
+
 		status.setFont(status.getFont().deriveFont(Font.PLAIN, 11f));
 		status.setBorder(BorderFactory.createEmptyBorder(1, 4, 0, 0));
 		status.setVisible(false);
 
-		debounce = new Timer(350, e -> apply());
+		debounce = new Timer(180, e -> apply());
 		debounce.setRepeats(false);
+		idle = new Timer(IDLE_RELEASE_MS, e -> releaseIndexes());
+		idle.setRepeats(false);
 		field.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
@@ -137,10 +236,14 @@ public class TreeFilterPanel extends JPanel {
 			}
 		});
 
+		JPanel buttons = new JPanel(new BorderLayout(0, 0));
+		buttons.setOpaque(false);
+		buttons.add(clear, BorderLayout.WEST);
+		buttons.add(rulesButton, BorderLayout.EAST);
 		JPanel row = new JPanel(new BorderLayout(2, 0));
 		row.setOpaque(false);
 		row.add(field, BorderLayout.CENTER);
-		row.add(clear, BorderLayout.EAST);
+		row.add(buttons, BorderLayout.EAST);
 		add(row, BorderLayout.NORTH);
 		add(status, BorderLayout.SOUTH);
 	}
@@ -159,15 +262,33 @@ public class TreeFilterPanel extends JPanel {
 		status.setForeground(TreeUtils.blend(TreeUtils.textOn(treeBackground), treeBackground, 0.35f));
 	}
 
+	private TreeFilterRules rules() {
+		if (rules == null) {
+			rules = TreeFilterRules.parse(rulesLoader == null ? "" : rulesLoader.get());
+		}
+		return rules;
+	}
+
 	private void changed() {
 		clear.setVisible(!field.getText().isEmpty());
 		debounce.restart();
 	}
 
+	/** Root of the tree that is showing now (null when the tree has no file model) */
+	private File currentRoot() {
+		TreeModel model = tree.getModel();
+		if (model instanceof FileTreeNamedModel && model.getRoot() instanceof FileNamed) {
+			return ((FileNamed) model.getRoot()).getFile();
+		}
+		return null;
+	}
+
 	/** Empties the filter and shows the whole tree again */
 	public void clearFilter() {
 		debounce.stop();
-		cancelRunning();
+		generation++;
+		cancelSearch();
+		cancelBuild();
 		field.setText("");
 		clear.setVisible(false);
 		status.setVisible(false);
@@ -177,40 +298,115 @@ public class TreeFilterPanel extends JPanel {
 	private void removeFilterFromModel() {
 		TreeModel model = tree.getModel();
 		if (filtering && model instanceof FileTreeNamedModel) {
-			((FileTreeNamedModel) model).setVisiblePaths(null);
+			((FileTreeNamedModel) model).setFilterView(null);
 			if (expansionBefore != null) {
 				TreeUtils.restoreExpansionStates(tree, expansionBefore);
 			}
 		}
 		filtering = false;
 		expansionBefore = null;
+		lastMatches = null;
+		lastIndex = null;
+		lastQuery = "";
 	}
 
-	/** Applies the filter again to the current model (to call after the tree got a new model: the filter would be lost) */
+	/**
+	 * To call after the tree got a new model (another root, or the same one read again): the view of the old model is gone, so the
+	 * filter is applied again to the new one. Answers still on their way for the old model are dropped.
+	 */
 	public void reapply() {
+		generation++;
+		cancelSearch();
 		filtering = false;
 		expansionBefore = null;
+		lastMatches = null;
+		lastIndex = null;
+		File root = currentRoot();
+		if (root != null) {
+			staleRoots.add(root.getAbsolutePath());
+		}
 		if (!getQuery().isEmpty()) {
 			apply();
 		}
 	}
 
-	private void cancelRunning() {
-		if (running != null) {
-			running.cancel(true);
-			running = null;
+	/** The indexes are not worth their memory when nobody filters */
+	private void releaseIndexes() {
+		if (building == null) {
+			cache.clear();
+			staleRoots.clear();
+			lastIndex = null;
+			lastMatches = null;
+		}
+	}
+
+	private void cancelSearch() {
+		if (searching != null) {
+			searching.cancel(true);
+			searching = null;
+		}
+	}
+
+	private void cancelBuild() {
+		if (building != null) {
+			building.cancel(true);
+			building = null;
+			buildingRoot = null;
+		}
+	}
+
+	private void editRules() {
+		Window owner = SwingUtilities.getWindowAncestor(this);
+		TreeFilterRules edited = TreeFilterRulesDialog.edit(owner, rules().copy());
+		if (edited == null || edited.sameAs(rules())) {
+			return; // cancelled by user, or nothing changed
+		}
+		rules = edited;
+		rulesVersion++;
+		if (rulesSaver != null) {
+			rulesSaver.accept(edited.serialize());
+		}
+		// the indexes were made with the old rules
+		generation++;
+		cancelSearch();
+		cancelBuild();
+		cache.clear();
+		staleRoots.clear();
+		lastIndex = null;
+		lastMatches = null;
+		if (!getQuery().isEmpty()) {
+			apply();
 		}
 	}
 
 	private void apply() {
 		String query = getQuery();
-		cancelRunning();
+		idle.restart();
+		cancelSearch();
 		if (query.isEmpty()) {
+			generation++;
 			status.setVisible(false);
 			removeFilterFromModel();
 			return;
 		}
-		scan(query, WARN_LIMIT);
+		File root = currentRoot();
+		if (root == null) {
+			return;
+		}
+		String key = root.getAbsolutePath();
+		FileNameIndex index = cache.get(key);
+		if (index == null) {
+			if (building == null || !key.equals(buildingRoot)) {
+				startBuild(root, false);
+			} else {
+				showStatus(I18n.fmt("tree.filter_indexing", 0), false);
+			}
+			return;
+		}
+		if (building == null && (staleRoots.remove(key) || System.currentTimeMillis() - index.getBuiltAt() > STALE_MS)) {
+			startBuild(root, true); // refreshed in the background, the current one answers meanwhile
+		}
+		search(index, query);
 	}
 
 	private void showStatus(String text, boolean warning) {
@@ -220,54 +416,101 @@ public class TreeFilterPanel extends JPanel {
 		revalidate();
 	}
 
-	private void scan(final String query, final int limit) {
-		final Object rootObject = tree.getModel().getRoot();
-		if (!(rootObject instanceof FileNamed) || !(tree.getModel() instanceof FileTreeNamedModel)) {
-			return;
+	private void startBuild(final File root, final boolean silent) {
+		cancelBuild();
+		final String key = root.getAbsolutePath();
+		final TreeFilterRules snapshot = rules().copy();
+		final int version = rulesVersion;
+		if (!silent) {
+			showStatus(I18n.fmt("tree.filter_indexing", 0), false);
 		}
-		final File root = ((FileNamed) rootObject).getFile();
-		showStatus(I18n.t("tree.filter_scanning"), false);
-
-		final SwingWorker<ScanResult, Void> worker = new SwingWorker<ScanResult, Void>() {
+		SwingWorker<FileNameIndex, Integer> worker = new SwingWorker<FileNameIndex, Integer>() {
 			@Override
-			protected ScanResult doInBackground() {
-				return scanDisk(root, query.toLowerCase(), limit, this);
+			protected FileNameIndex doInBackground() {
+				return FileNameIndex.build(root, snapshot, this::isCancelled, n -> publish(n));
+			}
+
+			@Override
+			protected void process(List<Integer> counts) {
+				if (!silent && building == this && !counts.isEmpty()) {
+					showStatus(I18n.fmt("tree.filter_indexing", counts.get(counts.size() - 1)), false);
+				}
 			}
 
 			@Override
 			protected void done() {
-				if (isCancelled() || running != this) {
+				if (isCancelled() || building != this) {
 					return;
 				}
-				running = null;
-				ScanResult result;
+				building = null;
+				buildingRoot = null;
+				FileNameIndex built;
+				try {
+					built = get();
+				} catch (Exception e) {
+					return;
+				}
+				if (built == null || version != rulesVersion) {
+					return;
+				}
+				cache.put(key, built);
+				staleRoots.remove(key);
+				File now = currentRoot();
+				String query = getQuery();
+				if (now != null && key.equals(now.getAbsolutePath()) && !query.isEmpty()) {
+					search(built, query);
+				}
+			}
+		};
+		building = worker;
+		buildingRoot = key;
+		worker.execute();
+	}
+
+	private void search(final FileNameIndex index, final String query) {
+		cancelSearch();
+		final int gen = ++generation;
+		String lower = query.toLowerCase(Locale.ROOT);
+		boolean refine = index == lastIndex && lastMatches != null && !lastOver && !lastQuery.isEmpty() && lower.contains(lastQuery);
+		final int[] within = refine ? lastMatches : null;
+		SwingWorker<SearchResult, Void> worker = new SwingWorker<SearchResult, Void>() {
+			@Override
+			protected SearchResult doInBackground() {
+				FileNameIndex.Matches matches = index.search(query, within, MATCH_CAP);
+				FileNameIndex.View view = matches.overLimit ? null : index.view(matches.entries, this::isCancelled);
+				return new SearchResult(matches, view);
+			}
+
+			@Override
+			protected void done() {
+				if (isCancelled() || gen != generation) {
+					return; // an answer for a previous text, tab or folder
+				}
+				searching = null;
+				SearchResult result;
 				try {
 					result = get();
 				} catch (Exception e) {
 					return;
 				}
-				finish(query, limit, result);
+				finish(index, query, result);
 			}
 		};
-		running = worker;
+		searching = worker;
 		worker.execute();
 	}
 
-	private void finish(String query, int limit, ScanResult result) {
-		if (!query.equals(getQuery())) {
-			return; // the text changed meanwhile: a newer scan is coming
+	private void finish(FileNameIndex index, String query, SearchResult result) {
+		File root = currentRoot();
+		if (!query.equals(getQuery()) || root == null || !root.equals(index.getRoot())) {
+			return; // text or folder changed meanwhile
 		}
-		if (result.overHardLimit) {
-			showStatus(I18n.fmt("tree.filter_limit", HARD_LIMIT), true);
-			return;
-		}
-		if (result.tooMany) {
-			String msg = I18n.fmt("tree.filter_too_many_ask", WARN_LIMIT);
-			if (confirmHeavy != null && confirmHeavy.test(msg)) {
-				scan(query, 0);
-			} else {
-				showStatus(I18n.t("tree.filter_skipped"), true);
-			}
+		lastIndex = index;
+		lastQuery = query.toLowerCase(Locale.ROOT);
+		lastMatches = result.matches.entries;
+		lastOver = result.matches.overLimit;
+		if (result.matches.overLimit || result.view == null) {
+			showStatus(I18n.fmt("tree.filter_too_many_matches", MATCH_CAP), true);
 			return;
 		}
 		TreeModel model = tree.getModel();
@@ -278,59 +521,54 @@ public class TreeFilterPanel extends JPanel {
 			expansionBefore = TreeUtils.getExpansionStates(tree);
 			filtering = true;
 		}
-		((FileTreeNamedModel) model).setVisiblePaths(result.visible);
-		for (int i = 0; i < tree.getRowCount() && i < MAX_EXPANDED_ROWS; i++) {
-			tree.expandRow(i);
-		}
+		((FileTreeNamedModel) model).setFilterView(result.view);
+		expandBranches(result.view, (FileNamed) model.getRoot());
 		tree.scrollRowToVisible(0);
-		showStatus(result.matches == 0 ? I18n.t("tree.filter_none") : I18n.fmt("tree.filter_matches", result.matches), result.matches == 0);
+		int count = result.matches.entries.length;
+		String text;
+		if (count == 0) {
+			text = I18n.t("tree.filter_none");
+		} else if (index.isTruncated()) {
+			text = I18n.fmt("tree.filter_matches_truncated", count, FileNameIndex.MAX_ENTRIES);
+		} else {
+			text = I18n.fmt("tree.filter_matches", count);
+		}
+		showStatus(text, count == 0 || index.isTruncated());
 	}
 
-	/**
-	 * Reads the folders under the root looking for names that contain the query. limit is the number of elements after which it
-	 * stops asking for confirmation (0 = no question, only the hard limit applies).
-	 */
-	private static ScanResult scanDisk(File root, String queryLower, int limit, SwingWorker<?, ?> worker) {
-		ScanResult result = new ScanResult();
-		String rootPath = root.getAbsolutePath();
-		java.util.ArrayDeque<File> stack = new java.util.ArrayDeque<File>();
-		stack.push(root);
-		int count = 0;
-		while (!stack.isEmpty()) {
-			if (worker.isCancelled()) {
-				result.cancelled = true;
-				return result;
+	/** Opens the folders that lead to the matches, from the top down (only those: nothing else is read or laid out) */
+	private void expandBranches(FileNameIndex.View view, FileNamed rootNode) {
+		List<File> branches = new ArrayList<File>(view.branches);
+		final Map<File, Integer> depth = new HashMap<File, Integer>();
+		for (File f : branches) {
+			int d = 0;
+			for (File p = f; p != null; p = p.getParentFile()) {
+				d++;
 			}
-			File dir = stack.pop();
-			File[] sons = dir.listFiles();
-			if (sons == null) {
+			depth.put(f, d);
+		}
+		Collections.sort(branches, new Comparator<File>() {
+			@Override
+			public int compare(File a, File b) {
+				return Integer.compare(depth.get(a), depth.get(b));
+			}
+		});
+		Map<String, TreePath> paths = new HashMap<String, TreePath>();
+		paths.put(rootNode.getFileAbsPath(), new TreePath(rootNode));
+		int opened = 0;
+		for (File dir : branches) {
+			if (opened >= MAX_EXPANDED) {
+				break;
+			}
+			File parent = dir.getParentFile();
+			TreePath parentPath = parent == null ? null : paths.get(parent.getAbsolutePath());
+			if (parentPath == null) {
 				continue;
 			}
-			for (File son : sons) {
-				count++;
-				if (limit > 0 && count > limit) {
-					result.tooMany = true;
-					return result;
-				}
-				if (count > HARD_LIMIT) {
-					result.overHardLimit = true;
-					return result;
-				}
-				boolean isDir = son.isDirectory();
-				if (son.getName().toLowerCase().contains(queryLower)) {
-					result.matches++;
-					// the entry and every folder that leads to it from the root
-					for (File f = son; f != null && !f.getAbsolutePath().equals(rootPath); f = f.getParentFile()) {
-						if (!result.visible.add(f.getAbsolutePath()) && f != son) {
-							break; // from here up it is already there
-						}
-					}
-				}
-				if (isDir && !java.nio.file.Files.isSymbolicLink(son.toPath())) {
-					stack.push(son);
-				}
-			}
+			TreePath path = parentPath.pathByAddingChild(new FileNamed(dir, true));
+			paths.put(dir.getAbsolutePath(), path);
+			tree.expandPath(path);
+			opened++;
 		}
-		return result;
 	}
 }
