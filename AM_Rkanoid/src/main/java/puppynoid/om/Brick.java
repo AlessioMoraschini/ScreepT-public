@@ -39,6 +39,12 @@ public class Brick extends Rectangle {
 	}
 	
 	public Color durabilityToColor() {
+		if(healthRemaining >= 5)
+			return new Color(150, 90, 200);
+		
+		if(healthRemaining >= 4)
+			return new Color(70, 120, 200);
+		
 		if(healthRemaining >= 3)
 			return Color.GRAY;
 		

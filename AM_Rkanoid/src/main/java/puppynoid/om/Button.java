@@ -33,6 +33,14 @@ public class Button extends Rectangle {
 		this.onClickAction = onclickAction != null ? onclickAction : () -> {};
 	}
 	
+	/** Icon made by code (no image file): the same picture for every state, the hover one is brighter */
+	public void setIcon(java.awt.image.BufferedImage icon, java.awt.image.BufferedImage hoverIcon) {
+		buttonImageDeselected = icon;
+		buttonImageSelected = icon;
+		hoverButtonImageDeselected = hoverIcon;
+		hoverButtonImageSelected = hoverIcon;
+	}
+
 	public void setSelectedImage(String path) throws IOException {
 		hoverButtonImageSelected = GuiUtils.getResizedImage(path, (int)sizeX, (int)sizeY);
 		buttonImageSelected = GuiUtils.getResizedImageOpacity(path, 0.7f, (int)sizeX, (int)sizeY);

@@ -67,6 +67,11 @@ public class ScoreBoard {
 		}
 	}
 	
+	/** Adds a line to the message shown at the end of the level or of the game */
+	public void addNote(String note) {
+		text += "\n" + note;
+	}
+
 	public int calculateBonus(Difficulty difficulty) {
 		return (int)((score - initialScore) * difficulty.multiplierD * 0.25d);
 	}
@@ -83,7 +88,7 @@ public class ScoreBoard {
 	}
 
 	public void updateScoreboard() {
-		text = "Level: " + levelLoader.getCurrentLevelN() + "  Score: " + score + "  Lives: " + lives;
+		text = "Level: " + levelLoader.getCurrentLevelN() + "/" + levelLoader.getLevelsCount() + "  Score: " + score + "  Lives: " + lives;
 	}
 
 	public void draw(Graphics g) {

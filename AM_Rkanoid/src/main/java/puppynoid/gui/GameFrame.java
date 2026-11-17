@@ -47,6 +47,8 @@ import puppynoid.om.Shot;
 import puppynoid.utils.LevelLoader;
 import puppynoid.utils.config.GameConfigs;
 import puppynoid.utils.config.GeneralConfig;
+import various.common.light.easteregg.scores.EggLeaderboard;
+import various.common.light.easteregg.scores.EggScores;
 import various.common.light.gui.ScreenMemory;
 import various.common.light.sounds.SoundsManager;
 
@@ -78,6 +80,8 @@ public class GameFrame extends JFrame implements KeyListener {
 	private long controlsHintStart = 0;
 	private static final long CONTROLS_HINT_TIMEOUT_MS = 20000;
 	private boolean running = false;
+	/** The score of this run is already in the leaderboard (saved once, when the run ends) */
+	private boolean scoreRecorded = false;
 
 	private double lastFt;
 	private double currentSlice;
@@ -96,6 +100,7 @@ public class GameFrame extends JFrame implements KeyListener {
 	private Button muteButton;
 	private Button pauseButton;
 	private Button optionsButton;
+	private Button leaderboardButton;
 	
 	public GameFrame(GeneralConfig generalConfig, Difficulty difficulty, Runnable returnAction, LevelLoader levelLoader) throws IOException {
 
@@ -123,6 +128,10 @@ public class GameFrame extends JFrame implements KeyListener {
 						return;
 					}
 					
+					if (running) {
+						recordRun();
+					}
+
 					System.out.println("returnAction.run called from windowListener");
 					returnAction.run();
 				}
@@ -250,9 +259,38 @@ public class GameFrame extends JFrame implements KeyListener {
 		}
 		buttonList.add(optionsButton);
 
+		leaderboardButton = new Button(gameConfig.SCREEN_WIDTH - 160, 60, 30, 30, this.getContentPane());
+		leaderboardButton.setIcon(trophyIcon(false), trophyIcon(true));
+		leaderboardButton.setOnClickAction(() -> {
+			// the game waits while the leaderboard is open
+			boolean wasPaused = this.paused;
+			this.paused = true;
+			EggLeaderboard.show(this, EggScores.PUPPYNOID);
+			this.paused = wasPaused;
+		});
+		buttonList.add(leaderboardButton);
+
 		startButtonsMouseListener();
 	}
-	
+
+	/** Trophy of the leaderboard button, drawn here so that no image file is needed */
+	static java.awt.image.BufferedImage trophyIcon(boolean hover) {
+		java.awt.image.BufferedImage image = new java.awt.image.BufferedImage(30, 30, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+		Color gold = hover ? new Color(255, 215, 90) : new Color(230, 180, 60, 190);
+		g.setColor(gold);
+		g.setStroke(new java.awt.BasicStroke(2f));
+		g.drawArc(2, 5, 9, 9, 90, 180);
+		g.drawArc(19, 5, 9, 9, -90, 180);
+		g.fillRoundRect(8, 3, 14, 12, 4, 4);
+		g.fillArc(8, 6, 14, 14, 180, 180);
+		g.fillRect(13, 18, 4, 5);
+		g.fillRoundRect(9, 23, 12, 4, 2, 2);
+		g.dispose();
+		return image;
+	}
+
 	public void startButtonsMouseListener() {
 		if(buttonMouseAdapter != null) {
 			this.removeMouseListener(buttonMouseAdapter);
@@ -574,6 +612,10 @@ public class GameFrame extends JFrame implements KeyListener {
 
 			checkPausedBonuses();
 
+			if (scoreboard.gameOver || scoreboard.finished) {
+				recordRun();
+			}
+
 			if (!scoreboard.gameOver && !scoreboard.win) {
 				tryAgain = false;
 				update();
@@ -725,6 +767,10 @@ public class GameFrame extends JFrame implements KeyListener {
 					returnAction, 
 					levelLoader);
 			gamePanel.setLocationRelativeTo(this);
+			// checkpoint: a level does not start with the last life (the harder the difficulty, the fewer lives)
+			if (gamePanel.gameConfig.MIN_START_LIVES > 0) {
+				lives = Math.max(lives, Math.max(1, gamePanel.gameConfig.MIN_START_LIVES - (gamePanel.difficulty.multiplierI - 1)));
+			}
 			gamePanel.scoreboard.lives = new AtomicInteger(lives);
 			gamePanel.scoreboard.score = score;
 			scoreboard.initialScore = score;
@@ -754,6 +800,19 @@ public class GameFrame extends JFrame implements KeyListener {
 				}
 			}
 		}).start();
+	}
+
+	/** Saves the score of this run in the leaderboard, once: game over, game completed or game left */
+	private void recordRun() {
+		if (scoreRecorded) {
+			return;
+		}
+		scoreRecorded = true;
+		int place = EggScores.record(EggScores.PUPPYNOID, scoreboard.score,
+				"Level " + levelLoader.getCurrentLevelN() + "/" + levelLoader.getLevelsCount() + ", " + difficulty);
+		if (place > 0 && (scoreboard.gameOver || scoreboard.finished)) {
+			scoreboard.addNote(place == 1 ? "NEW RECORD!" : "#" + place + " in the leaderboard");
+		}
 	}
 
 	private void resetModifiersCount() {
@@ -787,6 +846,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		case KeyEvent.VK_ESCAPE:
 			if (askExitGame()) {
+				recordRun();
 				forceExitLevel = true;
 				running = false;
 			}

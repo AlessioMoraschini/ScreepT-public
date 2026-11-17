@@ -30,6 +30,8 @@ public class GameConfigs extends AbstractConfig {
 	public int COUNT_BLOCKS_Y = 4;
 
 	public int PLAYER_LIVES = 5;
+	/** Lives the player has at least when the level starts (checkpoint, 0 = no minimum): a level never starts with the last life */
+	public int MIN_START_LIVES = 0;
 
 	public double BONUS_VELOCITY = 0.5;
 
@@ -86,6 +88,9 @@ public class GameConfigs extends AbstractConfig {
 		COUNT_BLOCKS_X = loadInt("COUNT_BLOCKS_X");
 		COUNT_BLOCKS_Y = loadInt("COUNT_BLOCKS_Y");
 		PLAYER_LIVES = loadInt("PLAYER_LIVES");
+		if (properties.getProperty("MIN_START_LIVES") != null) {
+			MIN_START_LIVES = loadInt("MIN_START_LIVES");
+		}
 		
 		BONUS_VELOCITY = loadDouble("BONUS_VELOCITY");
 		PROJECTILE_VELOCITY = loadDouble("PROJECTILE_VELOCITY");

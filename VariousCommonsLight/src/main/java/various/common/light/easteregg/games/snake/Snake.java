@@ -10,6 +10,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import various.common.light.easteregg.games.snake.Board.Level;
+import various.common.light.easteregg.scores.EggLeaderboard;
+import various.common.light.easteregg.scores.EggScores;
 import various.common.light.gui.ScreenMemory;
 
 public class Snake extends JFrame {
@@ -73,6 +75,9 @@ public class Snake extends JFrame {
 
 			levelMenu.add(levelChooser);
 		}
+
+		// the leaderboard of the easter egg games, always on the top right
+		EggLeaderboard.addTo(menuBar, this, EggScores.SNAKE);
 	}
 
 	public void updateTitle(String toAdd) {

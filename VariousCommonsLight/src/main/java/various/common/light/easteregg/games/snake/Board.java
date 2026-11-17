@@ -16,6 +16,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import various.common.light.easteregg.scores.EggScores;
+
 public class Board extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 3669580814590491106L;
 
@@ -47,6 +49,8 @@ public class Board extends JPanel implements ActionListener {
     
     private boolean waitingForStart;
     private boolean gameOver;
+    /** Place reached in the leaderboard by the run that just ended (0 = not in the top ten) */
+    private int leaderboardPlace;
     public Snake parent;
 
     public Board(Snake parent) {
@@ -81,6 +85,7 @@ public class Board extends JPanel implements ActionListener {
     	waitingForStart = true;
     	
     	score = 0;
+    	leaderboardPlace = 0;
     	
     	leftDirection = false;
     	rightDirection = true;
@@ -139,7 +144,8 @@ public class Board extends JPanel implements ActionListener {
 
     private void gameOver(Graphics g) {
         
-        String msg = "SCORE: " + score + " (Level " + level.name() + ")";
+        String msg = "SCORE: " + score + " (Level " + level.name() + ")"
+                + (leaderboardPlace == 1 ? "  - NEW RECORD!" : leaderboardPlace > 0 ? "  - #" + leaderboardPlace + " in the leaderboard" : "");
         String msg2 = "Game Over  - (Press Ctrl+R to restart game, Esc to exit)";
         
         printString(msg, g, B_HEIGHT / 2);
@@ -220,6 +226,7 @@ public class Board extends JPanel implements ActionListener {
         
         if(!inGame) {
             timer.stop();
+            leaderboardPlace = EggScores.record(EggScores.SNAKE, score, "Level " + level.name() + ", " + dots + " dots");
         }
     }
 

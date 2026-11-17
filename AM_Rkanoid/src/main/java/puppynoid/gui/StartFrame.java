@@ -159,6 +159,9 @@ public class StartFrame extends JFrame {
 
 		menuBar.add(new JMenuItem("Instructions"));
 		// TODO
+
+		// the leaderboard of the easter egg games, always on the top right
+		various.common.light.easteregg.scores.EggLeaderboard.addTo(menuBar, this, various.common.light.easteregg.scores.EggScores.PUPPYNOID);
 	}
 
 	private void styleComponent(JComponent component, int x, int width, int y) {
