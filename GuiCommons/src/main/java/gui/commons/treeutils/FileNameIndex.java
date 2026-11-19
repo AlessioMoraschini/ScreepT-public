@@ -30,6 +30,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
 
 import various.common.light.files.om.FileNamed;
+import various.common.light.utility.string.WildcardPattern;
 
 /**
  * In-memory index of the names under a folder, read once from disk and searched many times: typing in the filter of the file tree
@@ -228,7 +229,8 @@ public final class FileNameIndex {
 	}
 
 	/**
-	 * Entries whose name contains the text (case insensitive).
+	 * Entries whose name contains the text (case insensitive). With '*' or '?' the whole name has to match the pattern instead
+	 * (see {@link WildcardPattern}).
 	 *
 	 * @param within a previous result of a query this one refines (the new text contains the old one): only those are checked;
 	 *               null searches everything
@@ -241,6 +243,9 @@ public final class FileNameIndex {
 		}
 		if (q.length == 0 || size == 0) {
 			return new Matches(new int[0], false);
+		}
+		if (WildcardPattern.hasWildcard(query)) {
+			return searchPattern(q, within, limit);
 		}
 		int[] found = new int[256];
 		int count = 0;
@@ -280,6 +285,28 @@ public final class FileNameIndex {
 				i = start[entry + 1]; // next entry: one match is enough
 			} else {
 				i++;
+			}
+		}
+		return new Matches(Arrays.copyOf(found, count), over);
+	}
+
+	/** Wildcard search: the pattern has to match the whole name, as a file name does */
+	private Matches searchPattern(char[] pattern, int[] within, int limit) {
+		int[] found = new int[256];
+		int count = 0;
+		boolean over = false;
+		int n = within != null ? within.length : size;
+		for (int k = 0; k < n; k++) {
+			int e = within != null ? within[k] : k;
+			if (WildcardPattern.matches(pool, start[e], start[e + 1] - 1, pattern, true)) {
+				if (count == limit) {
+					over = true;
+					break;
+				}
+				if (count == found.length) {
+					found = Arrays.copyOf(found, count * 2);
+				}
+				found[count++] = e;
 			}
 		}
 		return new Matches(Arrays.copyOf(found, count), over);

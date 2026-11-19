@@ -1,16 +1,12 @@
 package gui.commons.frameutils.frame.panels;
 
 import various.common.light.i18n.I18n;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -23,8 +19,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -32,16 +26,14 @@ import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -110,16 +102,22 @@ public class ShellReadWritePanel extends ParentPanel {
 
 	/** Interactive mode: a real terminal (colors, live programs) replaces the text output */
 	private TerminalPanel terminal;
+	/** Holds the terminal inside the bottom pane (fills it, no scrollbars) */
+	private JPanel terminalView;
+	/** Interactive mode: the command area is hidden and the terminal fills the split pane; outside moves of the slider are ignored */
+	private boolean terminalLayout;
+	private int savedDividerLocation;
+	private int savedDividerSize;
 	private boolean interactiveStartupValue;
 	private Consumer<Boolean> onInteractiveChanged;
-	/** Interactive mode: the terminal inside a host, with the overlay bar over its bottom right corner */
-	private JLayeredPane terminalHost;
-	private JPanel terminalOverlay;
-	/** Toolbar parts hidden while the terminal is shown (search, interactive switch and pin go to the overlay instead) */
+	/** Toolbar parts hidden while the terminal is shown (search, interactive switch and pin stay in the header) */
 	private final List<Component> textModeParts = new ArrayList<Component>();
-	private final Map<Component, String> headerConstraints = new LinkedHashMap<Component, String>();
+	private static final String CELL_SPLIT = "cell 0 2 11 1,grow";
 	private static final String ROWS_TEXT_MODE = "[25px:25px][:0px:30px][50px,grow]";
-	private static final String ROWS_INTERACTIVE = "[0:0:0][0:0:0][50px,grow]";
+	private static final String LC_TEXT_MODE = "fill, insets 1, hidemode 2";
+	/** Interactive: hidden parts still take their room in the grid (hidemode 0), so the header buttons do not move */
+	private static final String LC_INTERACTIVE = "fill, insets 1, hidemode 0";
+	private static final String ROWS_INTERACTIVE = "[25px:25px][0:0:0][50px,grow]";
 
 	private JFrame parentFrame;
 
@@ -188,7 +186,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	@Override
 	public void initGui() {
 		setLayout(new MigLayout(
-				"fill, insets 1, hidemode 2",
+				LC_TEXT_MODE,
 				"[60px][60px][25px][140px][150px:150px:150px][70px][70px:70px][125px][25px][60px, grow][20px]",
 				"[25px:25px][:0px:30px][50px,grow]"));
 
@@ -238,7 +236,7 @@ public class ShellReadWritePanel extends ParentPanel {
 			}
 		});
 		searchTerminalButton.setVisible(false);
-		add(searchTerminalButton, "cell 8 0 1 1,grow");
+		add(searchTerminalButton, "cell 9 0 1 1, alignx right, aligny center");
 
 		add(lblCurrentFile, "cell 9 0 1 1, alignx right");
 
@@ -250,21 +248,30 @@ public class ShellReadWritePanel extends ParentPanel {
 		// TOGGLE JTEXT FIELD for interactive input after start
 		lblInteractiveInputDescription = ScreepTGuiFactory.getLabel("Live cmd: ",	null, Color.DARK_GRAY, IconsPathConfigurator.ICON_GEN_INFO, false);
 		lblInteractiveInputDescription.setToolTipText(I18n.t("gui.enter_a_command_and_launch_on"));
-		add(lblInteractiveInputDescription, "cell 0 1 1 1,grow");
+		add(lblInteractiveInputDescription, "cell 0 1 1 1,grow,hidemode 2");
 
 		interactiveInputField = ScreepTGuiFactory.getTextField(
 				Color.WHITE,
 				Color.BLACK,
 				Color.RED,
 				ScreepTGuiFactory.DEFAULT_TEXT_AREA_FONT.deriveFont(15f), true);
-		add(interactiveInputField, "cell 1 1 10 1,grow");
+		add(interactiveInputField, "cell 1 1 10 1,grow,hidemode 2");
 
 
 		// SPLIT PANE
-		splitPane = new JSplitPane();
+		splitPane = new JSplitPane() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void setDividerLocation(int location) {
+				if (!terminalLayout) {
+					super.setDividerLocation(location);
+				}
+			}
+		};
 		splitPane.setContinuousLayout(true);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		add(splitPane, "cell 0 2 11 1,grow");
+		add(splitPane, CELL_SPLIT);
 
 
 		// TOP SCROLL PANEL
@@ -291,11 +298,6 @@ public class ShellReadWritePanel extends ParentPanel {
 
 		textModeParts.addAll(Arrays.asList(playStopPausePanel, loadNewSavePanel, clcButton, checkBoxAutoscroll, checkBoxConcatenation,
 				labelConcatenationMode, comboConcatenationMode, lblCurrentFile));
-		headerConstraints.put(searchTerminalButton, "cell 8 0 1 1,grow");
-		headerConstraints.put(checkBoxInteractive, "cell 7 0 1 1,alignx center, aligny center");
-		if (pinToTopButton != null && parentFrame != null) {
-			headerConstraints.put(pinToTopButton, "cell 10 0 1 1, alignx right, grow");
-		}
 
 		setInteractiveInputMode(false);
 		SwingUtilities.invokeLater(() -> {
@@ -330,84 +332,19 @@ public class ShellReadWritePanel extends ParentPanel {
 	}
 
 	private boolean isTerminalShown() {
-		return terminal != null && splitPane.getBottomComponent() == terminalHost;
+		return terminal != null && terminal.getParent() == terminalView;
 	}
 
-	/** Creates the terminal with its host: the terminal fills it, the overlay bar floats over its bottom right corner */
-	private void createTerminalHost() {
+	private void createTerminal() {
 		terminal = new TerminalPanel();
 		terminal.setTerminalFontSize(GeneralConfig.SHELL_PANEL_FONT_SIZE);
 		terminal.setRestartAction(this::startTerminal);
-
-		terminalOverlay = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0)) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void paintComponent(Graphics g) {
-				Color base = UIManager.getColor("Panel.background");
-				if (base == null) {
-					base = Color.DARK_GRAY;
-				}
-				Color line = UIManager.getColor("Component.borderColor");
-				if (line == null) {
-					line = Color.GRAY;
-				}
-				Graphics2D g2 = (Graphics2D) g.create();
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g2.setColor(new Color(base.getRed(), base.getGreen(), base.getBlue(), 225));
-				g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 12, 12);
-				g2.setColor(line);
-				g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 12, 12);
-				g2.dispose();
-				super.paintComponent(g);
-			}
-		};
-		terminalOverlay.setOpaque(false);
-		terminalOverlay.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
-
-		terminalHost = new JLayeredPane();
-		terminalHost.setLayout(null);
-		terminalHost.add(terminal, JLayeredPane.DEFAULT_LAYER);
-		terminalHost.add(terminalOverlay, JLayeredPane.POPUP_LAYER);
-		terminalHost.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				layoutTerminalHost();
-			}
-		});
+		terminalView = new FillingPanel();
+		terminalView.add(terminal, BorderLayout.CENTER);
 	}
 
-	private void layoutTerminalHost() {
-		int w = terminalHost.getWidth();
-		int h = terminalHost.getHeight();
-		terminal.setBounds(0, 0, w, h);
-		Dimension size = terminalOverlay.getPreferredSize();
-		terminalOverlay.setBounds(Math.max(0, w - size.width - 16), Math.max(0, h - size.height - 16), size.width, size.height);
-	}
-
-	/** Moves search, interactive switch and pin between the toolbar and the overlay bar (same constraints back in text mode) */
-	private void moveOverlayParts(boolean toOverlay) {
-		for (Map.Entry<Component, String> part : headerConstraints.entrySet()) {
-			if (toOverlay) {
-				remove(part.getKey());
-				part.getKey().setFocusable(false);
-				terminalOverlay.add(part.getKey());
-			} else {
-				terminalOverlay.remove(part.getKey());
-				part.getKey().setFocusable(true);
-				add(part.getKey(), part.getValue());
-			}
-		}
-	}
-
-	/**
-	 * Interactive mode: the toolbar and the Live cmd row go away (the rows collapse), the terminal gets the space and the overlay bar
-	 * keeps search, the interactive switch and the pin. Text mode gives everything back.
-	 */
+	/** Interactive mode: the toolbar and the Live cmd row go away, search, the interactive switch and the pin stay in the header */
 	private void showTerminalChrome(boolean interactive) {
-		if (terminalOverlay != null) {
-			moveOverlayParts(interactive);
-		}
 		for (Component part : textModeParts) {
 			part.setVisible(!interactive);
 		}
@@ -416,11 +353,16 @@ public class ShellReadWritePanel extends ParentPanel {
 			interactiveInputField.setVisible(false);
 		}
 		searchTerminalButton.setVisible(interactive);
+		((MigLayout) getLayout()).setLayoutConstraints(interactive ? LC_INTERACTIVE : LC_TEXT_MODE);
 		((MigLayout) getLayout()).setRowConstraints(interactive ? ROWS_INTERACTIVE : ROWS_TEXT_MODE);
 		revalidate();
 		repaint();
 	}
 
+	/**
+	 * Interactive mode: the terminal fills the split pane (command area hidden, slider without size).
+	 * The split pane is never removed or hidden, so the header keeps its layout and the buttons stay in place.
+	 */
 	private void setTerminalMode(boolean interactive) {
 		if (interactive == isTerminalShown()) {
 			checkBoxInteractive.setSelected(interactive);
@@ -433,22 +375,29 @@ public class ShellReadWritePanel extends ParentPanel {
 				return;
 			}
 			if (terminal == null) {
-				createTerminalHost();
+				createTerminal();
 			}
-			int divider = splitPane.getDividerLocation();
-			splitPane.setBottomComponent(terminalHost);
-			splitPane.setDividerLocation(divider);
+			savedDividerLocation = splitPane.getDividerLocation();
+			savedDividerSize = splitPane.getDividerSize();
+			scrollPaneTop.setVisible(false);
+			splitPane.setDividerSize(0);
+			splitPane.setDividerLocation(0);
+			terminalLayout = true;
+			scrollPaneBottom.setViewportView(terminalView);
 			checkBoxInteractive.setSelected(true);
 			showTerminalChrome(true);
 			startTerminal();
 		} else {
-			int divider = splitPane.getDividerLocation();
 			if (terminal != null) {
 				terminal.stop();
 				terminal.hideSearch();
 			}
-			splitPane.setBottomComponent(scrollPaneBottom);
-			splitPane.setDividerLocation(divider);
+			terminalLayout = false;
+			terminalView.remove(terminal);
+			scrollPaneBottom.setViewportView(outputTextArea);
+			scrollPaneTop.setVisible(true);
+			splitPane.setDividerSize(savedDividerSize);
+			splitPane.setDividerLocation(savedDividerLocation);
 			checkBoxInteractive.setSelected(false);
 			showTerminalChrome(false);
 			commandTextArea.requestFocusInWindow();
@@ -946,4 +895,37 @@ public class ShellReadWritePanel extends ParentPanel {
 		currentCommandIndex.set(lastInteractiveCommands.getSize() - 1);
 	}
 
+	/** Bottom pane view: tracks the viewport size, so the terminal fills it without scrollbars */
+	private static class FillingPanel extends JPanel implements Scrollable {
+		private static final long serialVersionUID = 1L;
+
+		FillingPanel() {
+			super(new BorderLayout());
+		}
+
+		@Override
+		public Dimension getPreferredScrollableViewportSize() {
+			return getPreferredSize();
+		}
+
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+			return 1;
+		}
+
+		@Override
+		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+			return 1;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportWidth() {
+			return true;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportHeight() {
+			return true;
+		}
+	}
 }

@@ -49,6 +49,8 @@ public class LevelsTree extends JTree {
 	}
 
 	private void adjustIndent() {
+		// the root (the workspace folder) gets its own expand arrow, like every folder of the tree
+		setShowsRootHandles(true);
 		if (getUI() instanceof BasicTreeUI) {
 			BasicTreeUI ui = (BasicTreeUI) getUI();
 			ui.setLeftChildIndent(9);

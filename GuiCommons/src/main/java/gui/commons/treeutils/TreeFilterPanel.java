@@ -56,10 +56,12 @@ import javax.swing.tree.TreePath;
 import gui.commons.treeutils.om.FileTreeNamedModel;
 import various.common.light.files.om.FileNamed;
 import various.common.light.i18n.I18n;
+import various.common.light.utility.string.WildcardPattern;
 
 /**
- * Filter bar of a file tree: what is typed hides every entry whose name does not contain the text (case insensitive), keeping the
- * folders that lead to the ones that match. Clear (the button or Esc) shows everything again, with the folders open as they were.
+ * Pop-up filter bar of a file tree (open and close: see {@link #open()}, {@link #close()}). What is typed hides every entry whose name
+ * does not contain the text (case insensitive), keeping the folders that lead to the ones that match; with '*' or '?' the whole
+ * name has to match the pattern ({@link WildcardPattern}). Clear (the button) shows everything again, with the folders open as they were.
  * <p>
  * Fast by design: the names under the root are read once, in the background, into a {@link FileNameIndex}; typing then searches
  * memory only (a longer text refines the previous result). The index is kept for the last roots used (switching tab between two
@@ -182,6 +184,7 @@ public class TreeFilterPanel extends JPanel {
 		this.rulesSaver = rulesSaver;
 		setOpaque(false);
 		setBorder(BorderFactory.createEmptyBorder(3, 3, 1, 3));
+		setVisible(false); // a pop-up bar: it appears when opened (open), and it is gone with its filter (close)
 
 		field.putClientProperty("JTextField.placeholderText", I18n.t("tree.filter_placeholder"));
 		field.setToolTipText(I18n.t("tree.filter_placeholder"));
@@ -234,6 +237,9 @@ public class TreeFilterPanel extends JPanel {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !field.getText().isEmpty()) {
 					clearFilter();
 					e.consume();
+				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					close();
+					e.consume();
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					debounce.stop();
 					apply();
@@ -251,6 +257,31 @@ public class TreeFilterPanel extends JPanel {
 		row.add(buttons, BorderLayout.EAST);
 		add(row, BorderLayout.NORTH);
 		add(status, BorderLayout.SOUTH);
+	}
+
+	/** Shows the filter bar and gives it the focus */
+	public void open() {
+		setVisible(true);
+		relayout();
+		field.requestFocusInWindow();
+	}
+
+	/** Hides the bar and drops its filter: nothing stays filtered out of sight */
+	public void close() {
+		clearFilter();
+		setVisible(false);
+		relayout();
+	}
+
+	public boolean isOpen() {
+		return isVisible();
+	}
+
+	private void relayout() {
+		if (getParent() != null) {
+			getParent().revalidate();
+			getParent().repaint();
+		}
 	}
 
 	/** The text field, for the owner that wants to focus it */
@@ -486,7 +517,9 @@ public class TreeFilterPanel extends JPanel {
 		cancelSearch();
 		final int gen = ++generation;
 		String lower = query.toLowerCase(Locale.ROOT);
-		boolean refine = index == lastIndex && lastMatches != null && !lastOver && !lastQuery.isEmpty() && lower.contains(lastQuery);
+		// a wildcard does not keep the old matches as a subset: only plain texts are refined
+		boolean refine = index == lastIndex && lastMatches != null && !lastOver && !lastQuery.isEmpty() && lower.contains(lastQuery)
+				&& !WildcardPattern.hasWildcard(lower) && !WildcardPattern.hasWildcard(lastQuery);
 		final int[] within = refine ? lastMatches : null;
 		SwingWorker<SearchResult, Void> worker = new SwingWorker<SearchResult, Void>() {
 			@Override
