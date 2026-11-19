@@ -2,6 +2,13 @@ package gui.commons.frameutils.frame.panels;
 
 import various.common.light.i18n.I18n;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.SystemColor;
@@ -15,6 +22,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -22,7 +32,11 @@ import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -98,6 +112,14 @@ public class ShellReadWritePanel extends ParentPanel {
 	private TerminalPanel terminal;
 	private boolean interactiveStartupValue;
 	private Consumer<Boolean> onInteractiveChanged;
+	/** Interactive mode: the terminal inside a host, with the overlay bar over its bottom right corner */
+	private JLayeredPane terminalHost;
+	private JPanel terminalOverlay;
+	/** Toolbar parts hidden while the terminal is shown (search, interactive switch and pin go to the overlay instead) */
+	private final List<Component> textModeParts = new ArrayList<Component>();
+	private final Map<Component, String> headerConstraints = new LinkedHashMap<Component, String>();
+	private static final String ROWS_TEXT_MODE = "[25px:25px][:0px:30px][50px,grow]";
+	private static final String ROWS_INTERACTIVE = "[0:0:0][0:0:0][50px,grow]";
 
 	private JFrame parentFrame;
 
@@ -267,6 +289,14 @@ public class ShellReadWritePanel extends ParentPanel {
 
 		commandTextArea.requestFocusInWindow();
 
+		textModeParts.addAll(Arrays.asList(playStopPausePanel, loadNewSavePanel, clcButton, checkBoxAutoscroll, checkBoxConcatenation,
+				labelConcatenationMode, comboConcatenationMode, lblCurrentFile));
+		headerConstraints.put(searchTerminalButton, "cell 8 0 1 1,grow");
+		headerConstraints.put(checkBoxInteractive, "cell 7 0 1 1,alignx center, aligny center");
+		if (pinToTopButton != null && parentFrame != null) {
+			headerConstraints.put(pinToTopButton, "cell 10 0 1 1, alignx right, grow");
+		}
+
 		setInteractiveInputMode(false);
 		SwingUtilities.invokeLater(() -> {
 			if (interactiveStartupValue) {
@@ -299,8 +329,100 @@ public class ShellReadWritePanel extends ParentPanel {
 		}
 	}
 
+	private boolean isTerminalShown() {
+		return terminal != null && splitPane.getBottomComponent() == terminalHost;
+	}
+
+	/** Creates the terminal with its host: the terminal fills it, the overlay bar floats over its bottom right corner */
+	private void createTerminalHost() {
+		terminal = new TerminalPanel();
+		terminal.setTerminalFontSize(GeneralConfig.SHELL_PANEL_FONT_SIZE);
+		terminal.setRestartAction(this::startTerminal);
+
+		terminalOverlay = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0)) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				Color base = UIManager.getColor("Panel.background");
+				if (base == null) {
+					base = Color.DARK_GRAY;
+				}
+				Color line = UIManager.getColor("Component.borderColor");
+				if (line == null) {
+					line = Color.GRAY;
+				}
+				Graphics2D g2 = (Graphics2D) g.create();
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2.setColor(new Color(base.getRed(), base.getGreen(), base.getBlue(), 225));
+				g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 12, 12);
+				g2.setColor(line);
+				g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 12, 12);
+				g2.dispose();
+				super.paintComponent(g);
+			}
+		};
+		terminalOverlay.setOpaque(false);
+		terminalOverlay.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+
+		terminalHost = new JLayeredPane();
+		terminalHost.setLayout(null);
+		terminalHost.add(terminal, JLayeredPane.DEFAULT_LAYER);
+		terminalHost.add(terminalOverlay, JLayeredPane.POPUP_LAYER);
+		terminalHost.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				layoutTerminalHost();
+			}
+		});
+	}
+
+	private void layoutTerminalHost() {
+		int w = terminalHost.getWidth();
+		int h = terminalHost.getHeight();
+		terminal.setBounds(0, 0, w, h);
+		Dimension size = terminalOverlay.getPreferredSize();
+		terminalOverlay.setBounds(Math.max(0, w - size.width - 16), Math.max(0, h - size.height - 16), size.width, size.height);
+	}
+
+	/** Moves search, interactive switch and pin between the toolbar and the overlay bar (same constraints back in text mode) */
+	private void moveOverlayParts(boolean toOverlay) {
+		for (Map.Entry<Component, String> part : headerConstraints.entrySet()) {
+			if (toOverlay) {
+				remove(part.getKey());
+				part.getKey().setFocusable(false);
+				terminalOverlay.add(part.getKey());
+			} else {
+				terminalOverlay.remove(part.getKey());
+				part.getKey().setFocusable(true);
+				add(part.getKey(), part.getValue());
+			}
+		}
+	}
+
+	/**
+	 * Interactive mode: the toolbar and the Live cmd row go away (the rows collapse), the terminal gets the space and the overlay bar
+	 * keeps search, the interactive switch and the pin. Text mode gives everything back.
+	 */
+	private void showTerminalChrome(boolean interactive) {
+		if (terminalOverlay != null) {
+			moveOverlayParts(interactive);
+		}
+		for (Component part : textModeParts) {
+			part.setVisible(!interactive);
+		}
+		if (interactive) {
+			lblInteractiveInputDescription.setVisible(false);
+			interactiveInputField.setVisible(false);
+		}
+		searchTerminalButton.setVisible(interactive);
+		((MigLayout) getLayout()).setRowConstraints(interactive ? ROWS_INTERACTIVE : ROWS_TEXT_MODE);
+		revalidate();
+		repaint();
+	}
+
 	private void setTerminalMode(boolean interactive) {
-		if (interactive == (terminal != null && splitPane.getBottomComponent() == terminal)) {
+		if (interactive == isTerminalShown()) {
 			checkBoxInteractive.setSelected(interactive);
 			return;
 		}
@@ -311,15 +433,13 @@ public class ShellReadWritePanel extends ParentPanel {
 				return;
 			}
 			if (terminal == null) {
-				terminal = new TerminalPanel();
-				terminal.setTerminalFontSize(GeneralConfig.SHELL_PANEL_FONT_SIZE);
-				terminal.setRestartAction(this::startTerminal);
+				createTerminalHost();
 			}
 			int divider = splitPane.getDividerLocation();
-			splitPane.setBottomComponent(terminal);
+			splitPane.setBottomComponent(terminalHost);
 			splitPane.setDividerLocation(divider);
 			checkBoxInteractive.setSelected(true);
-			searchTerminalButton.setVisible(true);
+			showTerminalChrome(true);
 			startTerminal();
 		} else {
 			int divider = splitPane.getDividerLocation();
@@ -327,10 +447,11 @@ public class ShellReadWritePanel extends ParentPanel {
 				terminal.stop();
 				terminal.hideSearch();
 			}
-			searchTerminalButton.setVisible(false);
 			splitPane.setBottomComponent(scrollPaneBottom);
 			splitPane.setDividerLocation(divider);
 			checkBoxInteractive.setSelected(false);
+			showTerminalChrome(false);
+			commandTextArea.requestFocusInWindow();
 		}
 		if (onInteractiveChanged != null) {
 			onInteractiveChanged.accept(interactive);
@@ -458,7 +579,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	private Runnable stopAction() {
 		return () -> {
 
-			if (terminal != null && splitPane.getBottomComponent() == terminal) {
+			if (isTerminalShown()) {
 				terminal.stop();
 				playStopPausePanel.initButtons();
 				terminal.focusTerminal();
@@ -479,8 +600,9 @@ public class ShellReadWritePanel extends ParentPanel {
 	}
 
 	private void setInteractiveInputMode(boolean interactiveMode) {
-		interactiveInputField.setVisible(interactiveMode);
-		lblInteractiveInputDescription.setVisible(interactiveMode);
+		boolean showInput = interactiveMode && !isTerminalShown();
+		interactiveInputField.setVisible(showInput);
+		lblInteractiveInputDescription.setVisible(showInput);
 		if(interactiveMode) {
 			commandTextArea.setEnabled(false);
 			interactiveInputField.requestFocusInWindow();
@@ -500,7 +622,7 @@ public class ShellReadWritePanel extends ParentPanel {
 
 	private Runnable playAction() {
 		return () -> {
-			if (terminal != null && splitPane.getBottomComponent() == terminal) {
+			if (isTerminalShown()) {
 				runInTerminal();
 				playStopPausePanel.initButtons();
 				return;

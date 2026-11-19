@@ -12,6 +12,9 @@
 package gui.commons.tabs;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -57,6 +60,31 @@ public final class TabImplementors {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * True when the file holds text: no binary bytes in its first 8 KB (UTF-16 with byte order mark counts as text).
+	 * Empty files are text. Used to offer the text editor and the text viewers only for files they can show.
+	 */
+	public static boolean isTextFile(File file) {
+		if (file == null || !file.isFile()) {
+			return false;
+		}
+		try (InputStream in = new FileInputStream(file)) {
+			byte[] buffer = new byte[8192];
+			int read = in.read(buffer);
+			if (read >= 2 && ((buffer[0] == (byte) 0xFF && buffer[1] == (byte) 0xFE) || (buffer[0] == (byte) 0xFE && buffer[1] == (byte) 0xFF))) {
+				return true;
+			}
+			for (int i = 0; i < read; i++) {
+				if (buffer[i] == 0) {
+					return false;
+				}
+			}
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 
 	public static String extensionOf(File file) {

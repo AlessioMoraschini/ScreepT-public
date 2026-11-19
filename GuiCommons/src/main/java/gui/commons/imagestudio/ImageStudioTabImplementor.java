@@ -53,7 +53,7 @@ public class ImageStudioTabImplementor implements TabImplementor {
 
 	@Override
 	public boolean canOpen(File file) {
-		return file != null && file.isFile();
+		return file != null && file.isFile() && getDefaultExtensions().contains(gui.commons.tabs.TabImplementors.extensionOf(file));
 	}
 
 	@Override

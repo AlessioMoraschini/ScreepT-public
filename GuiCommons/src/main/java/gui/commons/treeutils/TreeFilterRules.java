@@ -73,6 +73,8 @@ public final class TreeFilterRules {
 	}
 
 	private final List<Rule> rules = new ArrayList<Rule>();
+	/** Global switch: off = nothing is excluded, but every rule keeps its own on/off state */
+	private boolean masterOn = true;
 	/** Copy of the active rules, rebuilt when needed: the indexing thread reads it while the dialog may change the list */
 	private volatile Rule[] active;
 
@@ -90,14 +92,20 @@ public final class TreeFilterRules {
 
 	/** Rules from the saved string; empty or null gives the defaults */
 	public static TreeFilterRules parse(String saved) {
-		if (saved == null || saved.trim().isEmpty()) {
+		String text = saved == null ? "" : saved.trim();
+		boolean marked = text.length() >= 3 && (text.startsWith("M0:") || text.startsWith("M1:"));
+		if (!marked && text.isEmpty()) {
 			return defaults();
 		}
 		TreeFilterRules r = new TreeFilterRules();
-		if (saved.trim().equals("-")) {
+		if (marked) {
+			r.masterOn = text.charAt(1) == '1';
+			text = text.substring(3).trim();
+		}
+		if (text.isEmpty() || text.equals("-")) {
 			return r; // the user removed every rule
 		}
-		for (String item : saved.split(";")) {
+		for (String item : text.split(";")) {
 			String[] parts = item.split("\\|", -1);
 			if (parts.length != 3 || parts[2].isEmpty()) {
 				continue;
@@ -107,15 +115,18 @@ public final class TreeFilterRules {
 		return r;
 	}
 
+	/** Saved form: the global switch (M1 on, M0 off), then the rules separated by ';', or "-" when there are none */
 	public String serialize() {
+		StringBuilder sb = new StringBuilder(masterOn ? "M1:" : "M0:");
 		if (rules.isEmpty()) {
-			return "-";
+			return sb.append('-').toString();
 		}
-		StringBuilder sb = new StringBuilder();
+		boolean first = true;
 		for (Rule rule : rules) {
-			if (sb.length() > 0) {
+			if (!first) {
 				sb.append(';');
 			}
+			first = false;
 			sb.append(rule.enabled ? '1' : '0').append('|').append(rule.kind.code).append('|').append(encode(rule.pattern));
 		}
 		return sb.toString();
@@ -125,8 +136,17 @@ public final class TreeFilterRules {
 		return rules;
 	}
 
+	public boolean isMasterOn() {
+		return masterOn;
+	}
+
+	public void setMasterOn(boolean masterOn) {
+		this.masterOn = masterOn;
+	}
+
 	public TreeFilterRules copy() {
 		TreeFilterRules c = new TreeFilterRules();
+		c.masterOn = masterOn;
 		for (Rule r : rules) {
 			c.rules.add(r.copy());
 		}
@@ -135,6 +155,9 @@ public final class TreeFilterRules {
 
 	/** True when the entry has to be left out of the index */
 	public boolean excludes(String name, Kind entryKind) {
+		if (!masterOn) {
+			return false; // switched off globally: nothing is excluded
+		}
 		Rule[] current = active;
 		if (current == null) {
 			List<Rule> on = new ArrayList<Rule>();

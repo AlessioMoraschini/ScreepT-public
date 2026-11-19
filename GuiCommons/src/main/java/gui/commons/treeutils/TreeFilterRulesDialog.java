@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -151,6 +152,24 @@ public final class TreeFilterRulesDialog extends JDialog {
 			kinds.addItem(kindLabel(k));
 		}
 		table.getColumnModel().getColumn(2).setCellEditor(new javax.swing.DefaultCellEditor(kinds));
+		JCheckBox masterBox = new JCheckBox(I18n.t("tree.rules_master"));
+		masterBox.setSelected(working.isMasterOn());
+		masterBox.addActionListener(e -> working.setMasterOn(masterBox.isSelected()));
+		JCheckBox selectAll = new JCheckBox(I18n.t("tree.rules_select_all"));
+		selectAll.setSelected(allOn());
+		selectAll.addActionListener(e -> {
+			stopEditing();
+			boolean on = !allOn();
+			for (Rule r : working.getRules()) {
+				r.enabled = on;
+			}
+			model.changedAll();
+		});
+		model.addTableModelListener(e -> selectAll.setSelected(allOn()));
+		JPanel options = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+		options.setBorder(BorderFactory.createEmptyBorder(0, 6, 6, 6));
+		options.add(masterBox);
+		options.add(selectAll);
 		JScrollPane scroll = new JScrollPane(table);
 		scroll.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 12));
 		scroll.setPreferredSize(new java.awt.Dimension(520, 260));
@@ -185,6 +204,8 @@ public final class TreeFilterRulesDialog extends JDialog {
 			stopEditing();
 			working.getRules().clear();
 			working.getRules().addAll(TreeFilterRules.defaults().getRules());
+			working.setMasterOn(true);
+			masterBox.setSelected(true);
 			model.changedAll();
 		});
 		JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 8));
@@ -211,7 +232,10 @@ public final class TreeFilterRulesDialog extends JDialog {
 		bottom.add(right, BorderLayout.EAST);
 
 		JPanel content = new JPanel(new BorderLayout());
-		content.add(intro, BorderLayout.NORTH);
+		JPanel head = new JPanel(new BorderLayout());
+		head.add(intro, BorderLayout.NORTH);
+		head.add(options, BorderLayout.SOUTH);
+		content.add(head, BorderLayout.NORTH);
 		content.add(scroll, BorderLayout.CENTER);
 		content.add(bottom, BorderLayout.SOUTH);
 		setContentPane(content);
@@ -219,6 +243,19 @@ public final class TreeFilterRulesDialog extends JDialog {
 		getRootPane().registerKeyboardAction(e -> dispose(), javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0),
 				javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
 		DialogFit.apply(this, owner, 560, 400);
+	}
+
+	private boolean allOn() {
+		List<Rule> all = working.getRules();
+		if (all.isEmpty()) {
+			return false;
+		}
+		for (Rule r : all) {
+			if (!r.enabled) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void stopEditing() {

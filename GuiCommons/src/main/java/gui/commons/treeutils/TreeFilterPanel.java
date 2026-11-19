@@ -91,7 +91,8 @@ public class TreeFilterPanel extends JPanel {
 	private final Consumer<String> rulesSaver;
 	private final JTextField field = new JTextField();
 	private final JButton clear = new JButton("✕");
-	private final JButton rulesButton = new JButton(new FunnelIcon());
+	private final FunnelIcon funnel = new FunnelIcon();
+	private final JButton rulesButton = new JButton(funnel);
 	private final JLabel status = new JLabel(" ");
 	private final Timer debounce;
 	private final Timer idle;
@@ -137,11 +138,15 @@ public class TreeFilterPanel extends JPanel {
 
 	/** Funnel drawn with the color of the button text, so it fits every theme */
 	private static final class FunnelIcon implements Icon {
+		/** Faded when the filters are switched off globally */
+		boolean dimmed;
+
 		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g.create();
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g2.setColor(c.getForeground());
+			Color fg = c.getForeground();
+			g2.setColor(dimmed ? new Color(fg.getRed(), fg.getGreen(), fg.getBlue(), 90) : fg);
 			Path2D funnel = new Path2D.Float();
 			funnel.moveTo(x, y + 1);
 			funnel.lineTo(x + 12, y + 1);
@@ -262,9 +267,18 @@ public class TreeFilterPanel extends JPanel {
 		status.setForeground(TreeUtils.blend(TreeUtils.textOn(treeBackground), treeBackground, 0.35f));
 	}
 
+	/** The funnel is faded and says so when the filters are switched off globally */
+	private void syncRulesButton() {
+		boolean off = !rules.isMasterOn();
+		funnel.dimmed = off;
+		rulesButton.setToolTipText(I18n.t(off ? "tree.filter_rules_off_tip" : "tree.filter_rules_tip"));
+		rulesButton.repaint();
+	}
+
 	private TreeFilterRules rules() {
 		if (rules == null) {
 			rules = TreeFilterRules.parse(rulesLoader == null ? "" : rulesLoader.get());
+			syncRulesButton();
 		}
 		return rules;
 	}
@@ -362,6 +376,7 @@ public class TreeFilterPanel extends JPanel {
 			return; // cancelled by user, or nothing changed
 		}
 		rules = edited;
+		syncRulesButton();
 		rulesVersion++;
 		if (rulesSaver != null) {
 			rulesSaver.accept(edited.serialize());

@@ -61,7 +61,7 @@ public class HtmlViewerTab extends JPanel implements TabContent {
 
 		@Override
 		public boolean canOpen(File file) {
-			return file != null && file.isFile();
+			return TabImplementors.isTextFile(file);
 		}
 
 		@Override
