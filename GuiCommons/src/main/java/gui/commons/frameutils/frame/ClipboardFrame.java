@@ -11,7 +11,6 @@
  */
 package gui.commons.frameutils.frame;
 
-import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -60,7 +59,7 @@ public class ClipboardFrame extends ParentFrame{
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		getContentPane().setBackground(Color.DARK_GRAY);
+
 		getContentPane().setLayout(new MigLayout("fill, insets 2", "[100%, grow]", "[100%, grow]"));
 		
 		payloadPanel = new ClipboardPanelLight(options);
@@ -76,6 +75,7 @@ public class ClipboardFrame extends ParentFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		            
+	        	payloadPanel.flush();
 	        	isActive.set(false);
 	        	singletonInstance = null;
 				logger.debug("Closing "+getClass().getName());

@@ -31,7 +31,8 @@ import javax.swing.Icon;
 public final class ToolIcons implements Icon {
 
 	public enum Kind {
-		COPY, FOLDER, REFRESH, CHECK, CROSS, EYEDROPPER, STAR, STAR_FILLED, PASTE, CLEAR, STOP, DICE, EYE, BROWSER, SEARCH, PALETTE
+		COPY, FOLDER, REFRESH, CHECK, CROSS, EYEDROPPER, STAR, STAR_FILLED, PASTE, CLEAR, STOP, DICE, EYE, BROWSER, SEARCH, PALETTE,
+		SAVE, ADD, TRASH, PENCIL, GAUGE
 	}
 
 	private final Kind kind;
@@ -188,6 +189,44 @@ public final class ToolIcons implements Icon {
 			g.fillOval(5, 5, 3, 3);
 			g.fillOval(10, 4, 3, 3);
 			g.fillOval(4, 10, 3, 3);
+			break;
+		case SAVE:
+			Path2D disk = new Path2D.Float();
+			disk.moveTo(3, 2.5); disk.lineTo(13, 2.5); disk.lineTo(15.5, 5); disk.lineTo(15.5, 15.5); disk.lineTo(3, 15.5); disk.closePath();
+			g.draw(disk);
+			g.draw(new RoundRectangle2D.Float(5.5f, 2.5f, 6, 4, 1, 1));
+			g.draw(new RoundRectangle2D.Float(5.5f, 10, 7, 5.5f, 1, 1));
+			break;
+		case ADD:
+			g.setStroke(new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			g.drawLine(9, 3, 9, 15);
+			g.drawLine(3, 9, 15, 9);
+			break;
+		case TRASH:
+			g.drawLine(3, 5, 15, 5);
+			Path2D lid = new Path2D.Float();
+			lid.moveTo(7, 5); lid.lineTo(7, 3); lid.lineTo(11, 3); lid.lineTo(11, 5);
+			g.draw(lid);
+			Path2D bin = new Path2D.Float();
+			bin.moveTo(4.5, 5.5); bin.lineTo(5.5, 16); bin.lineTo(12.5, 16); bin.lineTo(13.5, 5.5);
+			g.draw(bin);
+			g.drawLine(7, 8, 7, 13);
+			g.drawLine(11, 8, 11, 13);
+			break;
+		case PENCIL:
+			Path2D pencil = new Path2D.Float();
+			pencil.moveTo(2.5, 15.5); pencil.lineTo(3.3, 11.6); pencil.lineTo(12, 3); pencil.lineTo(15, 6);
+			pencil.lineTo(6.4, 14.7); pencil.closePath();
+			g.draw(pencil);
+			g.drawLine(10, 5, 13, 8);
+			break;
+		case GAUGE:
+			g.draw(new Arc2D.Float(2, 3.5f, 14, 14, 0, 180, Arc2D.OPEN));
+			g.drawLine(2, 10, 4, 10);
+			g.drawLine(14, 10, 16, 10);
+			g.setStroke(new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			g.drawLine(9, 11, 13, 6);
+			g.fillOval(7, 9, 4, 4);
 			break;
 		default:
 			break;
