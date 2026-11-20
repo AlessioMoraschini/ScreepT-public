@@ -46,6 +46,14 @@ public interface TabContent {
 	/** Notifies the host when title or modified state change (the host refreshes the tab header) */
 	void setChangeListener(Runnable listener);
 
+	/**
+	 * True if the tab works like the text editor: search, replace, base64, undo, font and the other text functions of the
+	 * toolbar apply to it. A viewer that does not use them leaves false: the toolbar disables them while its tab is selected.
+	 */
+	default boolean supportsTextTools() {
+		return false;
+	}
+
 	/** Gives the content a way to ask the host to close its tab (for contents that hand the work over to a window) */
 	default void setCloseHandler(Runnable closeTab) {
 	}

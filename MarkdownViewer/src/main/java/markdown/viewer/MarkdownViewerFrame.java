@@ -186,6 +186,9 @@ public class MarkdownViewerFrame extends ParentFrame {
 	private AWTEventListener wheelListener;
 	private KeyEventDispatcher escapeDispatcher;
 	private Set<String> fontFamilies;
+	/** When the content lives in a tab of the file editor (see MarkdownPanel): the component that holds it, and who to tell when title / modified state change */
+	private Component host;
+	private Runnable hostChangeListener;
 
 	public MarkdownViewerFrame(File html, File markdown) {
 		super();
@@ -283,9 +286,55 @@ public class MarkdownViewerFrame extends ParentFrame {
 		}
 	}
 
+	/** Releases the global listeners and timers (window closed, or tab closed when the content lives in the file editor) */
+	public void releaseResources() {
+		Toolkit.getDefaultToolkit().removeAWTEventListener(wheelListener);
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(escapeDispatcher);
+		if(renderTimer != null)
+			renderTimer.stop();
+	}
+
+	/** The content is shown inside a tab: global events (zoom wheel, Esc) are owned by the components of that panel, not by this window */
+	public void attachToHost(Component hostComponent, Runnable changeListener) {
+		host = hostComponent;
+		hostChangeListener = changeListener;
+	}
+
+	private boolean ownsEventSource(Component src, Window window) {
+		if(host != null)
+			return SwingUtilities.isDescendingFrom(src, host);
+		return window == this;
+	}
+
+	public boolean isModified() {
+		return isDirty();
+	}
+
+	/** Title of the tab: the name of the markdown file, with an asterisk when it has unsaved changes */
+	public String getHostTitle() {
+		return (markdownFile != null ? markdownFile.getName() : "untitled") + (dirty ? " *" : "");
+	}
+
+	public File getMarkdownFile() {
+		return markdownFile;
+	}
+
+	/** Save / Don't save / Cancel when there are unsaved changes, asked over the given component; false keeps the tab open */
+	public boolean confirmCloseOver(Component parent) {
+		Component previous = host;
+		host = parent != null ? parent : host;
+		try {
+			return confirmClose();
+		} finally {
+			host = previous;
+		}
+	}
+
 	public void updateTitle() {
 		String name = markdownFile != null ? markdownFile.getName() : "untitled";
 		setTitle("Markdown Viewer - " + name + (dirty ? " *" : ""));
+		if(hostChangeListener != null)
+			hostChangeListener.run();
 		if(textAreaMarkDown != null) {
 			textAreaMarkDown.setToolTipText(markdownFile != null ? FileVarious.getCanonicalPathSafe(markdownFile) : "Markdown source (not saved yet)");
 		}
@@ -771,7 +820,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 					return;
 				Component src = wheel.getComponent();
 				Window window = src instanceof Window ? (Window) src : SwingUtilities.getWindowAncestor(src);
-				if(window != MarkdownViewerFrame.this)
+				if(!ownsEventSource(src, window))
 					return;
 
 				setZoom(zoomPercent - (int) Math.signum(wheel.getPreciseWheelRotation()) * ZOOM_STEP);
@@ -796,12 +845,14 @@ public class MarkdownViewerFrame extends ParentFrame {
 				if(src == null)
 					return false;
 				Window window = src instanceof Window ? (Window) src : SwingUtilities.getWindowAncestor(src);
-				if(window != MarkdownViewerFrame.this)
+				if(!ownsEventSource(src, window))
 					return false;
 				if(smartEditor != null && smartEditor.handleEscape()) {
 					e.consume();
 					return true; // closes the link suggestions only
 				}
+				if(host != null)
+					return false; // in a tab Esc does not close anything (the tab is closed by the editor)
 				if((src instanceof JTextComponent && !(src instanceof JTextArea) && !(src instanceof JEditorPane)) || src instanceof JComboBox)
 					return false;
 				e.consume();
@@ -814,10 +865,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				Toolkit.getDefaultToolkit().removeAWTEventListener(wheelListener);
-				KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(escapeDispatcher);
-				if(renderTimer != null)
-					renderTimer.stop();
+				releaseResources();
 			}
 		});
 
@@ -1267,7 +1315,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 			return true;
 
 		Object[] options = new Object[] {"Save", "Don't save", "Cancel"};
-		int choice = JOptionPane.showOptionDialog(this, "The markdown has unsaved changes.", "Close Markdown Viewer?",
+		int choice = JOptionPane.showOptionDialog(host != null ? host : this, "The markdown has unsaved changes.", "Close Markdown Viewer?",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 		if(choice == 1) {
 			return true;

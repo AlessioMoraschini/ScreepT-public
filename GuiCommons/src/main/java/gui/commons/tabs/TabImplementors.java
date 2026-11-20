@@ -39,6 +39,34 @@ public final class TabImplementors {
 	private TabImplementors() {
 	}
 
+	/** Id prefix of the viewers that come from plugins: they appear at runtime, so an unknown id with this prefix asks the provider */
+	public static final String PLUGIN_ID_PREFIX = "plugin:";
+	/** Registers the viewers that appear at runtime (plugins). The argument says if the search must be redone (a plugin was installed) or the cached one can be used */
+	private static java.util.function.Consumer<Boolean> dynamicProvider;
+	private static long lastDynamicRefresh;
+	private static boolean refreshingDynamic;
+
+	public static synchronized void setDynamicProvider(java.util.function.Consumer<Boolean> provider) {
+		dynamicProvider = provider;
+		lastDynamicRefresh = 0;
+	}
+
+	/** Asks the provider for the viewers available now (at most every 5 seconds, unless forced) */
+	public static synchronized void refreshDynamic(boolean force) {
+		if (dynamicProvider == null || refreshingDynamic || (!force && System.currentTimeMillis() - lastDynamicRefresh < 5000)) {
+			return;
+		}
+		refreshingDynamic = true;
+		try {
+			dynamicProvider.accept(force);
+		} catch (RuntimeException e) {
+			// a failing plugin search must not break the editor: the viewers already registered stay
+		} finally {
+			refreshingDynamic = false;
+			lastDynamicRefresh = System.currentTimeMillis();
+		}
+	}
+
 	public static synchronized void register(TabImplementor implementor) {
 		for (int i = 0; i < implementors.size(); i++) {
 			if (implementors.get(i).getId().equals(implementor.getId())) {
@@ -50,14 +78,21 @@ public final class TabImplementors {
 	}
 
 	public static synchronized List<TabImplementor> all() {
+		refreshDynamic(false);
 		return Collections.unmodifiableList(new ArrayList<TabImplementor>(implementors));
 	}
 
 	public static synchronized TabImplementor byId(String id) {
-		for (TabImplementor implementor : implementors) {
-			if (implementor.getId().equals(id)) {
-				return implementor;
+		for (int attempt = 0; attempt < 2; attempt++) {
+			for (TabImplementor implementor : implementors) {
+				if (implementor.getId().equals(id)) {
+					return implementor;
+				}
 			}
+			if (id == null || !id.startsWith(PLUGIN_ID_PREFIX)) {
+				break;
+			}
+			refreshDynamic(false); // a plugin viewer chosen by the user, asked before the plugins were searched
 		}
 		return null;
 	}
@@ -174,9 +209,10 @@ public final class TabImplementors {
 
 	/** Every extension worth listing in the preferences: those of the viewers, common text ones and the user's own */
 	public static synchronized List<String> knownExtensions() {
+		refreshDynamic(false);
 		TreeSet<String> set = new TreeSet<String>();
 		for (TabImplementor implementor : implementors) {
-			set.addAll(implementor.getDefaultExtensions());
+			set.addAll(implementor.getSupportedExtensions());
 		}
 		for (String ext : new String[] {"txt", "log", "md", "json", "xml", "html", "htm", "css", "js", "java", "properties", "ini", "csv", "sql", "yml", "yaml", "sh", "bat"}) {
 			set.add(ext);

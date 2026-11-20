@@ -62,6 +62,7 @@ public class ViewerAssociationsDialog extends JDialog {
 	public ViewerAssociationsDialog(Component parent, final Consumer<String> onSave) {
 		super(parent == null ? null : javax.swing.SwingUtilities.getWindowAncestor(parent), "Viewer associations", ModalityType.APPLICATION_MODAL);
 
+		TabImplementors.refreshDynamic(true); // plugins installed while ScreepT is running show up here
 		viewerIds.add(TabImplementors.TEXT_ID);
 		viewerNames.add(TabImplementors.TEXT_NAME);
 		for (TabImplementor implementor : TabImplementors.all()) {

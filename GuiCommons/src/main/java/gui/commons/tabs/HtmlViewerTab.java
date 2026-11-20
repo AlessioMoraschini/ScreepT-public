@@ -13,6 +13,8 @@ package gui.commons.tabs;
 
 import various.common.light.i18n.I18n;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Font;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.io.File;
@@ -28,6 +30,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.event.HyperlinkEvent;
 
 import gui.commons.frameutils.frame.arch.ToolStyle;
@@ -73,6 +76,12 @@ public class HtmlViewerTab extends JPanel implements TabContent {
 	private final File file;
 	private final JEditorPane pane = new JEditorPane();
 	private final JLabel status = ToolStyle.mutedLabel(" ");
+	/** Source of the page, shown instead of the rendered page on request */
+	private final JTextArea source = new JTextArea();
+	private final CardLayout cards = new CardLayout();
+	private final JPanel cardPanel = new JPanel(cards);
+	private JButton toggleSource;
+	private boolean showingSource;
 
 	public HtmlViewerTab(File file) {
 		super(new BorderLayout(0, 6));
@@ -88,21 +97,44 @@ public class HtmlViewerTab extends JPanel implements TabContent {
 			}
 		});
 
-		JPanel bar = new JPanel(new MigLayout("insets 6 8 0 8, gapx 6", "[][][grow,fill]", "[]"));
+		source.setEditable(false);
+		source.setFont(new Font(Font.MONOSPACED, Font.PLAIN, source.getFont().getSize()));
+		cardPanel.add(new JScrollPane(pane), "page");
+		cardPanel.add(new JScrollPane(source), "source");
+
+		JPanel bar = new JPanel(new MigLayout("insets 6 8 0 8, gapx 6", "[][][][grow,fill]", "[]"));
 		bar.setOpaque(false);
 		JButton reload = ToolStyle.button(I18n.t("common.reload"), null, "Read the file again");
 		reload.addActionListener(e -> load());
 		JButton browser = ToolStyle.button("Open in browser", null, "Show the page with the default browser");
 		browser.addActionListener(e -> browse(file.toURI().toString()));
+		toggleSource = ToolStyle.button("View source", null, "Switch between the rendered page and its HTML source");
+		toggleSource.addActionListener(e -> showSource(!showingSource));
+		bar.add(toggleSource);
 		bar.add(reload);
 		bar.add(browser);
 		bar.add(status);
 		add(bar, BorderLayout.NORTH);
-		add(new JScrollPane(pane), BorderLayout.CENTER);
+		add(cardPanel, BorderLayout.CENTER);
 		load();
 	}
 
+	private void showSource(boolean show) {
+		showingSource = show;
+		cards.show(cardPanel, show ? "source" : "page");
+		toggleSource.setText(show ? "View page" : "View source");
+		if (show) {
+			source.setCaretPosition(0);
+		}
+	}
+
 	private void load() {
+		try {
+			source.setText(new String(java.nio.file.Files.readAllBytes(file.toPath()), java.nio.charset.StandardCharsets.UTF_8));
+			source.setCaretPosition(0);
+		} catch (IOException e) {
+			source.setText("Cannot read " + file + ": " + e.getMessage());
+		}
 		try {
 			pane.setPage(file.toURI().toURL());
 		} catch (IOException e) {
@@ -157,6 +189,7 @@ public class HtmlViewerTab extends JPanel implements TabContent {
 	@Override
 	public void dispose() {
 		pane.setText("");
+		source.setText("");
 	}
 
 	@Override

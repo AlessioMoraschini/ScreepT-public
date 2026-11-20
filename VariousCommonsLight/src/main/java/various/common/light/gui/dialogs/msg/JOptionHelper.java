@@ -746,6 +746,28 @@ public class JOptionHelper {
 
 		dialog.setAlwaysOnTop(true);
 		dialog.toFront();
+		// while the application is still starting, other windows may take the focus away from the question: for the
+		// first seconds the dialog takes it back (afterwards the user is free to switch to other windows)
+		final long shownAt = System.currentTimeMillis();
+		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowOpened(java.awt.event.WindowEvent e) {
+				dialog.toFront();
+				dialog.requestFocus();
+			}
+
+			@Override
+			public void windowDeactivated(java.awt.event.WindowEvent e) {
+				if (dialog.isShowing() && System.currentTimeMillis() - shownAt < 4000) {
+					javax.swing.SwingUtilities.invokeLater(() -> {
+						if (dialog.isShowing()) {
+							dialog.toFront();
+							dialog.requestFocus();
+						}
+					});
+				}
+			}
+		});
 		dialog.setVisible(true);
 		dialog.dispose();
 

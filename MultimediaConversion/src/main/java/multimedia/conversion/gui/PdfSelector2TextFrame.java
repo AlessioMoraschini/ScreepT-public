@@ -229,6 +229,19 @@ public class PdfSelector2TextFrame extends JFrame {
 		});
 	}
 
+	/** Closes the open document (also when the content lives in a tab of the file editor, where the window is never closed) */
+	public void releaseResources() {
+		active = false;
+		try {
+			if (controllerPdf != null) {
+				controllerPdf.closeDocument();
+				controllerPdf.dispose();
+			}
+		} catch (Throwable e) {
+			logger.warn("Cannot release the PDF viewer: " + e.getMessage());
+		}
+	}
+
 	public void loadFile(File selected) {
 		if(selected != null && selected.exists()) {
 			final Cursor backup = imageContainerPanel.getCursor();

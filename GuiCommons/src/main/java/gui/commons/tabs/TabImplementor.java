@@ -30,6 +30,14 @@ public interface TabImplementor {
 	/** Extensions (lowercase, no dot) this viewer handles by default */
 	Set<String> getDefaultExtensions();
 
+	/**
+	 * Extensions worth listing in the preferences for this viewer (it can open them, without being their default).
+	 * By default the same as {@link #getDefaultExtensions()}.
+	 */
+	default Set<String> getSupportedExtensions() {
+		return getDefaultExtensions();
+	}
+
 	/** True if this viewer can really open the file (exists, readable, supported...) */
 	boolean canOpen(File file);
 

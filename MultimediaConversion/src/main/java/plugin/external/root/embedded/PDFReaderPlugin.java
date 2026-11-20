@@ -13,7 +13,7 @@ import various.common.light.files.FileVarious;
 
 /////////////////// PLUGIN INTERFACE ////////////////////////
 
-public class PDFReaderPlugin extends PluginAbstractParent implements IPluginTextEditor {
+public class PDFReaderPlugin extends PluginAbstractParent implements IPluginTextEditor, plugin.external.arch.IPluginPanelMode {
 
 	public static final String[] availableFunctionsStandAlone = { "Launch PDF Reader" };
 	public static final String[] availableFunctionsRightFileTreeClick = { "Open last file of selection" };
@@ -35,6 +35,26 @@ public class PDFReaderPlugin extends PluginAbstractParent implements IPluginText
 	@Override
 	public String getPluginZipName() {
 		return "Tesseract.zip";
+	}
+
+	@Override
+	public String[] getPanelExtensions() {
+		return new String[] {"pdf"};
+	}
+
+	@Override
+	public String getPanelName() {
+		return "PDF viewer";
+	}
+
+	@Override
+	public boolean canOpenInPanel(File file) {
+		return file != null && file.isFile() && file.getName().toLowerCase().endsWith(".pdf");
+	}
+
+	@Override
+	public plugin.external.arch.PluginPanel createPanel(File file) throws Exception {
+		return new multimedia.conversion.gui.PdfPanel(file);
 	}
 
 	@Override

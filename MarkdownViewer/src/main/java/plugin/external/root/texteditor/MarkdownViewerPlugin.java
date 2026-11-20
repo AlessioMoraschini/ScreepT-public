@@ -15,7 +15,7 @@ import plugin.external.arch.IPluginTextEditor;
 import plugin.external.arch.PluginAbstractParent;
 import various.common.light.om.SelectionDtoFull;
 
-public class MarkdownViewerPlugin extends PluginAbstractParent implements IPluginTextEditor {
+public class MarkdownViewerPlugin extends PluginAbstractParent implements IPluginTextEditor, plugin.external.arch.IPluginPanelMode {
 
 	public static String TEMP_F_NAME = "MarkdownViewer.txt";
 
@@ -31,7 +31,7 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 
 	@Override
 	public String getVersion() {
-		return "1.2.0";
+		return "1.3.0";
 	}
 
 	@Override
@@ -57,12 +57,27 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 	@Override
 	public List<String> getWarnings() {
 		List<String> warnings = new ArrayList<>();
-		warnings.add("This plugin is only compatible from ScreepT version 0.9.51");
+		warnings.add("This plugin is only compatible from ScreepT version 0.9.87 (it can also open as a tab of the file editor)");
 		return warnings;
 	}
 
 	@Override
 	public void initialize() {
+	}
+
+	@Override
+	public String[] getPanelExtensions() {
+		return new String[] {"md", "markdown", "mdown"};
+	}
+
+	@Override
+	public String getPanelName() {
+		return "Markdown Viewer";
+	}
+
+	@Override
+	public plugin.external.arch.PluginPanel createPanel(File file) throws Exception {
+		return new markdown.viewer.MarkdownPanel(file);
 	}
 
 	@Override

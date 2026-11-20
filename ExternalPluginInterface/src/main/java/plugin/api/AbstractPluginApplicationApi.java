@@ -113,13 +113,17 @@ public abstract class AbstractPluginApplicationApi {
 
 		if(plugins != null) {
 			for(Class<IPlugin> clazz : plugins) {
+				if (clazz.isInterface() || java.lang.reflect.Modifier.isAbstract(clazz.getModifiers())) {
+					continue; // the sub types found include the interfaces of the plugin kinds: they are not plugins
+				}
 				try {
 					IPlugin plugin = clazz.newInstance();
 					if(initialize)
 						plugin.initialize();
 					pluginSet.add(plugin);
 					LOGGER.debug("Plugin loaded: " + clazz);
-				} catch (InstantiationException | IllegalAccessException e) {
+				} catch (InstantiationException | IllegalAccessException | LinkageError e) {
+					// LinkageError: a plugin built for a newer ScreepT (needs an interface this one does not have) must not break the others
 					LOGGER.error("Cannot load plugin of type: " + clazz);
 				}
 			}
