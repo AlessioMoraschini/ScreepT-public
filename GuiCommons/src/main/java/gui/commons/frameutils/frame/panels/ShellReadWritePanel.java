@@ -115,8 +115,8 @@ public class ShellReadWritePanel extends ParentPanel {
 	private static final String CELL_SPLIT = "cell 0 2 11 1,grow";
 	private static final String ROWS_TEXT_MODE = "[25px:25px][:0px:30px][50px,grow]";
 	private static final String LC_TEXT_MODE = "fill, insets 1, hidemode 2";
-	/** Interactive: hidden parts still take their room in the grid (hidemode 0), so the header buttons do not move */
-	private static final String LC_INTERACTIVE = "fill, insets 1, hidemode 0";
+	/** Interactive: hidden parts take no room in the grid (hidemode 3) */
+	private static final String LC_INTERACTIVE = "fill, insets 1, hidemode 3";
 	private static final String ROWS_INTERACTIVE = "[25px:25px][0:0:0][50px,grow]";
 
 	private JFrame parentFrame;
@@ -332,7 +332,7 @@ public class ShellReadWritePanel extends ParentPanel {
 	}
 
 	private boolean isTerminalShown() {
-		return terminal != null && terminal.getParent() == terminalView;
+		return terminalLayout;
 	}
 
 	private void createTerminal() {
@@ -353,8 +353,12 @@ public class ShellReadWritePanel extends ParentPanel {
 			interactiveInputField.setVisible(false);
 		}
 		searchTerminalButton.setVisible(interactive);
-		((MigLayout) getLayout()).setLayoutConstraints(interactive ? LC_INTERACTIVE : LC_TEXT_MODE);
-		((MigLayout) getLayout()).setRowConstraints(interactive ? ROWS_INTERACTIVE : ROWS_TEXT_MODE);
+		MigLayout mig = (MigLayout) getLayout();
+		// interactive: switch and search sit side by side on the left of the header, where the toolbar was
+		mig.setComponentConstraints(checkBoxInteractive, interactive ? "cell 0 0 2 1, alignx left, aligny center" : "cell 7 0 1 1,alignx center, aligny center");
+		mig.setComponentConstraints(searchTerminalButton, interactive ? "cell 2 0 1 1, alignx left, aligny center" : "cell 9 0 1 1, alignx right, aligny center");
+		mig.setLayoutConstraints(interactive ? LC_INTERACTIVE : LC_TEXT_MODE);
+		mig.setRowConstraints(interactive ? ROWS_INTERACTIVE : ROWS_TEXT_MODE);
 		revalidate();
 		repaint();
 	}
@@ -393,11 +397,11 @@ public class ShellReadWritePanel extends ParentPanel {
 				terminal.hideSearch();
 			}
 			terminalLayout = false;
-			terminalView.remove(terminal);
 			scrollPaneBottom.setViewportView(outputTextArea);
 			scrollPaneTop.setVisible(true);
 			splitPane.setDividerSize(savedDividerSize);
-			splitPane.setDividerLocation(savedDividerLocation);
+			final int restore = savedDividerLocation;
+			SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(restore));
 			checkBoxInteractive.setSelected(false);
 			showTerminalChrome(false);
 			commandTextArea.requestFocusInWindow();

@@ -41,6 +41,7 @@ public class FileOptions {
 	public final static boolean DEF_fSearchWholeWord = false;
 	public final static boolean DEF_fSearchRegex = false;
 	public final static boolean DEF_fSearchBinaries = false;
+	public final static String DEF_fSearchPerformance = "BALANCED";
 	public final static boolean DEF_fNameSearchUseManual = false;
 	public final static File DEF_fNameSearchManualDir = GeneralConfig.MAIN_APP_PARENT_DIR;
 	
@@ -56,6 +57,7 @@ public class FileOptions {
 	private boolean fSearchWholeWord;
 	private boolean fSearchRegex;
 	private boolean fSearchBinaries;
+	private String fSearchPerformance;
 	private LimitedConcurrentList<String[]> fSearchLastFileFilters;
 	private LimitedConcurrentList<FileNamed> fSearchLastLoadedFiles;
 	private LimitedConcurrentList<String> fSearchLastSearchStrings;
@@ -74,6 +76,7 @@ public class FileOptions {
 		fSearchWholeWord = DEF_fSearchWholeWord;
 		fSearchRegex = DEF_fSearchRegex;
 		fSearchBinaries = DEF_fSearchBinaries;
+		fSearchPerformance = DEF_fSearchPerformance;
 		fSearchLastFileFilters = new LimitedConcurrentList<>(15);
 		fSearchLastLoadedFiles = new LimitedConcurrentList<>(20);
 		fSearchLastSearchStrings = new LimitedConcurrentList<>(15);
@@ -178,6 +181,14 @@ public class FileOptions {
 
 	public void setfSearchRegex(boolean fSearchRegex) {
 		this.fSearchRegex = fSearchRegex;
+	}
+
+	public String getfSearchPerformance() {
+		return fSearchPerformance;
+	}
+
+	public void setfSearchPerformance(String fSearchPerformance) {
+		this.fSearchPerformance = fSearchPerformance != null && !fSearchPerformance.trim().isEmpty() ? fSearchPerformance.trim() : DEF_fSearchPerformance;
 	}
 
 	public boolean isfSearchBinaries() {

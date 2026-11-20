@@ -87,7 +87,7 @@ public class UpdateProgressPanel {
                 try {
 					doInBackground(pb);
 				} catch (Exception e) {
-		            dialog.dispose();
+		            disposeDialog();
 				}
 
         	}
@@ -145,7 +145,7 @@ public class UpdateProgressPanel {
 		                	}
 
 						} catch (Exception e) {
-				            dialog.dispose();
+				            disposeDialog();
 						}
 
 		        	}
@@ -255,7 +255,7 @@ public class UpdateProgressPanel {
 					public void run() {
 						if (skipAskOnClose || new JOptionHelper(dialog).yesOrNo("Stop process?", "Stop process?")) {
 							stopProcess.set(true);
-							dialog.dispose();
+							disposeDialog();
 						} else {
 							stopProcess.set(false);
 							return;
@@ -264,7 +264,7 @@ public class UpdateProgressPanel {
 						GuiUtils.setDialogModalType(dialog,  ModalityType.MODELESS);
 
 						if (forceDispose.get()) {
-							dialog.dispose();
+							disposeDialog();
 						}
 					}
 				}).start();
@@ -372,7 +372,7 @@ public class UpdateProgressPanel {
      * @param value
      * @param msg
      */
-    public synchronized void update(int value, String msg) {
+    public void update(int value, String msg) {
     	update( value, msg, true);
     	update( value, msg, false);
     }
@@ -382,7 +382,7 @@ public class UpdateProgressPanel {
      * @param value
      * @param msg
      */
-    public synchronized void update(int generalValue, int specValue, String msg) {
+    public void update(int generalValue, int specValue, String msg) {
     	update( generalValue, msg, true);
     	this.pb.setValue(specValue);
     }
@@ -393,35 +393,51 @@ public class UpdateProgressPanel {
 	 * @param msg can be null, will be displayed on dialog
 	 * @throws ProgressBarInterruptedException
 	 */
-	public synchronized void update( int value, String msg, boolean useGeneralBar) {
+	public void update( int value, String msg, boolean useGeneralBar) {
 
-		if (!useGeneralBar) {
-			this.pb.setValue(value);
-			this.pb.setStringPainted(true);
-			this.pb.setString(value + "%");
-			if (msg != null) {
-				this.label.setText(msg);
-			}
-		}else if(GeneralBar != null){
-			this.GeneralBar.setValue(value);
-			this.GeneralBar.setStringPainted(true);
-			this.GeneralBar.setString(value + "%");
-			if (msg != null) {
-				this.label.setText(msg);
+		synchronized (this) {
+			if (!useGeneralBar) {
+				this.pb.setValue(value);
+				this.pb.setStringPainted(true);
+				this.pb.setString(value + "%");
+				if (msg != null) {
+					this.label.setText(msg);
+				}
+			}else if(GeneralBar != null){
+				this.GeneralBar.setValue(value);
+				this.GeneralBar.setStringPainted(true);
+				this.GeneralBar.setString(value + "%");
+				if (msg != null) {
+					this.label.setText(msg);
+				}
 			}
 		}
 
+		// outside the lock: dispose() called from a worker thread waits for the screen thread, which can be waiting for this lock
+		// (the check of the bar runs forceClose() there): with the lock held the window froze when a search was stopped
 		checkValNcloseAt100(value, useGeneralBar);
+	}
+
+	/**
+	 * Closes the window without waiting for the screen thread: dispose() from another thread waits for it, and when the user closes the
+	 * window while the work thread closes it too (stop of a search) the two waits froze the application.
+	 */
+	private void disposeDialog() {
+		if (SwingUtilities.isEventDispatchThread()) {
+			dialog.dispose();
+		} else {
+			SwingUtilities.invokeLater(() -> dialog.dispose());
+		}
 	}
 
 	private void checkValNcloseAt100(int value, boolean useGeneralBar) {
 		try {
 			if (useGeneralBar && GeneralBar != null && value >= 100) {
-				dialog.dispose();
+				disposeDialog();
 			}
 
 			if (!useGeneralBar && GeneralBar == null && value >= 100) {
-				dialog.dispose();
+				disposeDialog();
 			}
 		} catch (Exception e) {}
 	}

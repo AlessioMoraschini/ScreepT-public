@@ -159,6 +159,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 
 		// FSEARCH OPTIONS
 		fileOpt.setfSearchBinaries(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchBinaries")));
+		fileOpt.setfSearchPerformance(iniReadFile.get(FILE_OPT, "fSearchPerformance"));
 		fileOpt.setfSearchMatchCase(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchMatchCase")));
 		fileOpt.setfSearchRegex(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchRegex")));
 		fileOpt.setfSearchWholeWord(Boolean.parseBoolean(iniReadFile.get(FILE_OPT, "fSearchWholeWord")));
@@ -526,6 +527,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 
 		// FSEARCH OPTIONS
 		iniFile.put(FILE_OPT, "fSearchBinaries", fileOpt.isfSearchBinaries());
+		iniFile.put(FILE_OPT, "fSearchPerformance", fileOpt.getfSearchPerformance());
 		iniFile.put(FILE_OPT, "fSearchMatchCase", fileOpt.isfSearchMatchCase());
 		iniFile.put(FILE_OPT, "fSearchRegex", fileOpt.isfSearchRegex());
 		iniFile.put(FILE_OPT, "fSearchWholeWord", fileOpt.isfSearchWholeWord());
