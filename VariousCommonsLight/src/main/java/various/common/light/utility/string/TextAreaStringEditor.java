@@ -143,6 +143,29 @@ public class TextAreaStringEditor {
 		return new SelectionDTO(strtN, endN, selected, selected);
 	}
 
+	/** Applies the function to the selection (kept selected) or, with no selection, to the whole text: one undoable edit */
+	public static void transformSelectionOrAll(JTextArea textArea, java.util.function.UnaryOperator<String> operation) {
+		int start = textArea.getSelectionStart();
+		int end = textArea.getSelectionEnd();
+		boolean all = start == end;
+		if (all) {
+			start = 0;
+			end = textArea.getDocument().getLength();
+		}
+		try {
+			String old = textArea.getText(start, end - start);
+			String result = operation.apply(old);
+			if (result != null && !result.equals(old)) {
+				textArea.replaceRange(result, start, end);
+				if (!all) {
+					textArea.select(start, start + result.length());
+				}
+			}
+		} catch (javax.swing.text.BadLocationException e) {
+			logger.error("Error with textarea transformation", e);
+		}
+	}
+
 	public static int getCurrentCaretLine(JTextArea textArea) {
 		try {
 			int offset = textArea.getCaretPosition();
