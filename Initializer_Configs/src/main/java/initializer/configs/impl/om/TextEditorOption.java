@@ -121,6 +121,8 @@ public class TextEditorOption {
 	public ArrayList<String> openedFileList;
 	/** Files whose tab is pinned (restored pinned at start, see CustomTabbedEditor.pinTab) */
 	public ArrayList<String> pinnedFileList;
+	/** Files of the second panel of the file editor (empty = one panel only) */
+	public ArrayList<String> secondPanelFileList;
 	/** "viewerId|path" of the tabs hosting an integrated viewer (restored as viewer tabs at start) */
 	public ArrayList<String> viewerTabList;
 	public Map<String, String> openedFileListCaretPosition;
@@ -212,6 +214,7 @@ public class TextEditorOption {
 
 		openedFileList = new ArrayList<String>();
 		pinnedFileList = new ArrayList<String>();
+		secondPanelFileList = new ArrayList<String>();
 		viewerTabList = new ArrayList<String>();
 		openedTempFileList = new ArrayList<String>();
 		openedFileListCaretPosition = new HashMap<>();
@@ -555,6 +558,14 @@ public class TextEditorOption {
 
 	public void setViewerTabList(ArrayList<String> viewerTabList) {
 		this.viewerTabList = viewerTabList;
+	}
+
+	public ArrayList<String> getSecondPanelFileList() {
+		return secondPanelFileList;
+	}
+
+	public void setSecondPanelFileList(ArrayList<String> list) {
+		this.secondPanelFileList = list;
 	}
 
 	public ArrayList<String> getPinnedFileList() {

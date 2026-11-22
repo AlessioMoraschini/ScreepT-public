@@ -729,6 +729,8 @@ public class JOptionHelper {
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setContentPane(optionPane);
 		dialog.pack();
+		// Esc = close the window (no choice made: cancel), like the X
+		dialog.getRootPane().registerKeyboardAction(e -> dialog.dispose(), javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 		// Chiudi quando cambia il valore
 		optionPane.addPropertyChangeListener(evt -> {
@@ -772,7 +774,8 @@ public class JOptionHelper {
 		dialog.dispose();
 
 		final Object value = optionPane.getValue();
-		if (value != null) {
+		// window closed without a choice (X or Esc): the value is UNINITIALIZED or CLOSED_OPTION, it is not an answer
+		if (value != null && value != JOptionPane.UNINITIALIZED_VALUE && !Integer.valueOf(JOptionPane.CLOSED_OPTION).equals(value)) {
 			return (cancEnabled && value.equals(defaultOptionsExtended[2])) ? null
 					: (value.equals(optionsAvailable[0]));
 		} else {

@@ -87,6 +87,10 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
 
     /** Accent of the current look and feel, made sure it stands out from the tab strip */
     private Color accent(Color base) {
+    	return accentColor();
+    }
+
+    public static Color accentColor() {
     	Color accent = UIManager.getColor("Component.accentColor");
     	if (accent == null) {
     		accent = UIManager.getColor("Component.focusColor");
@@ -97,11 +101,25 @@ public class CustomTabbedPaneUI_v1 extends javax.swing.plaf.basic.BasicTabbedPan
     	return accent;
     }
 
+    /** A pinned tab has no width here: it lives in the strip of the pinned tabs above (see PinnedTabStrip) */
+    private boolean isPinnedHidden(int tabIndex) {
+    	java.awt.Component header = mainTabPane.getTabComponentAt(tabIndex);
+    	return header instanceof TabHeadPanel_Full && ((TabHeadPanel_Full) header).isPinned();
+    }
+
+    @Override
+    protected int calculateTabWidth(int tabPlacement, int tabIndex, java.awt.FontMetrics metrics) {
+    	return isPinnedHidden(tabIndex) ? 0 : super.calculateTabWidth(tabPlacement, tabIndex, metrics);
+    }
+
     @Override
     protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects,
                int tabIndex, Rectangle iconRect, Rectangle textRect) {
     	try {
 	    	Rectangle r = rects[tabIndex];
+	    	if (r.width <= 0 && isPinnedHidden(tabIndex)) {
+	    		return;
+	    	}
 	    	boolean selected = mainTabPane.getSelectedIndex() == tabIndex;
 	    	Color base = mainTabPane.getBackground();
 	    	boolean dark = TreeUtils.isDark(base);

@@ -150,6 +150,8 @@ public class TabHeadPanel_Full extends JPanel{
 	public void setPinned(boolean pinned, Runnable unpinAction) {
 		this.pinned = pinned;
 		this.unpinAction = unpinAction;
+		// the pinned tabs are shown in their own row above the tabs, not in the tab strip
+		setVisible(!pinned);
 		if (pinned) {
 			closeButton.setIcon(PIN_DIM);
 			closeButton.setToolTipText(I18n.t("tabs.pinned_tip"));
@@ -162,6 +164,11 @@ public class TabHeadPanel_Full extends JPanel{
 
 	public boolean isPinned() {
 		return pinned;
+	}
+
+	/** The pin shown on pinned tabs (also by the strip of the pinned tabs) */
+	public static Icon pinIcon(boolean bright) {
+		return bright ? PIN_BRIGHT : PIN_DIM;
 	}
 
 	/** For a pinned header: bright pin on the selected tab, dimmed on the others (called by the tab UI when painting) */

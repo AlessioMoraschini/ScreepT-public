@@ -87,7 +87,8 @@ public class JOptionHelperExtended extends JOptionHelper {
 		dialog.dispose();
 
 		final Object value = optionPane.getValue();
-		if (value != null) {
+		// window closed without a choice (X or Esc): the value is UNINITIALIZED or CLOSED_OPTION, it is not an answer
+		if (value != null && value != JOptionPane.UNINITIALIZED_VALUE && !Integer.valueOf(JOptionPane.CLOSED_OPTION).equals(value)) {
 			return (cancEnabled && value.equals(defaultOptionsExtended[2])) ? null
 					: (value.equals(optionsAvailable[0]));
 		} else {
