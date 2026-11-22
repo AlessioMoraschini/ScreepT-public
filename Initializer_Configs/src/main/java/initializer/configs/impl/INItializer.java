@@ -484,7 +484,7 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		textEditorOpt.lastTagsUsed.setList(getStringListFromString(lastTagsUsed, ";", new Vector<String>()));
 
 		String lastSearchTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastSearchTerms");
-		textEditorOpt.getLastSearchTerms().setList(getStringListFromString(lastSearchTerms, lastSearchTerms, new Vector<String>()));
+		textEditorOpt.getLastSearchTerms().setList(getStringListFromString(lastSearchTerms, ",", new Vector<String>()));
 
 		String lastReplaceTerms = iniReadFile.get(TEXT_EDITOR_OPT, "lastReplaceTerms");
 		textEditorOpt.getLastReplaceTerms().setList(getStringListFromString(lastReplaceTerms, ",", new Vector<String>()));

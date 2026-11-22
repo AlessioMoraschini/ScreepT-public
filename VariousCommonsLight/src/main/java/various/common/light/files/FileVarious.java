@@ -118,8 +118,9 @@ public class FileVarious {
 				return null;
 		}
 
-		raw = raw.replaceAll("/", "\\\\");
-		raw = raw.replaceAll("\\\\", separatorNormalized);
+		// literal replace: with replaceAll a "\" separator is an invalid regex replacement
+		raw = raw.replace("/", "\\");
+		raw = raw.replace("\\", separatorNormalized);
 
 		return raw;
 	}
@@ -319,11 +320,10 @@ public class FileVarious {
 		}
 
 		// if already with parentesis number
-		if(name.substring(name.length()-1, name.length()).equals(")")) {
-			idxOfDot = fileName.lastIndexOf('(');
-			name = fileName.substring(0, idxOfDot);
+		if(name.endsWith(")") && name.lastIndexOf('(') > 0) {
+			name = name.substring(0, name.lastIndexOf('('));
 		}
-	    fileName = name+"("+n+")."+extension;
+	    fileName = name+"("+n+")"+(extension.isEmpty() ? "" : "."+extension);
 
 		return fileName;
 	}
@@ -447,7 +447,7 @@ public class FileVarious {
 				if(countDirectories) {
 					count++;
 				}
-				count += countFilesInDirectory(file, countDirectories);
+				count += countFilesInDirectory(file, countDirectories, extensionsToCount);
 			}
 		}
 		return count;
@@ -637,7 +637,7 @@ public class FileVarious {
 		} else {
 
 			if (extensionFallback != null) {
-				extensionFallback.replaceAll("[.]", "");
+				extensionFallback = extensionFallback.replaceAll("[.]", "");
 				if("".equals(extensionFallback.trim())) {
 					extensionFallback = "txt";
 				}
@@ -695,7 +695,7 @@ public class FileVarious {
 					return new File(newDir + endTemp);
 				}
 
-				endTemp = parent.getName() + File.separator + endTemp;
+				endTemp = File.separator + parent.getName() + endTemp;
 			}
 		}
 

@@ -152,12 +152,18 @@ public final class PsdReader {
 
 			// color mode data (the palette of indexed files)
 			int modeLength = in.readInt();
-			byte[] modeData = new byte[Math.max(0, modeLength)];
+			if (modeLength < 0 || modeLength > file.length()) {
+				throw new IOException("Damaged Photoshop header"); // a length bigger than the file: never allocate it
+			}
+			byte[] modeData = new byte[modeLength];
 			in.readFully(modeData);
 
 			// image resources: resolution, profile, XMP, preview
 			int resLength = in.readInt();
-			byte[] resources = new byte[Math.max(0, resLength)];
+			if (resLength < 0 || resLength > file.length()) {
+				throw new IOException("Damaged Photoshop header");
+			}
+			byte[] resources = new byte[resLength];
 			in.readFully(resources);
 			byte[] previewJpeg = parseResources(resources, psd);
 
@@ -180,7 +186,7 @@ public final class PsdReader {
 			String refusal = refusalReason(psd);
 			if (refusal == null) {
 				try {
-					psd.image = readComposite(in, psd, modeData);
+					psd.image = readComposite(in, psd, modeData, file.length());
 				} catch (EOFException e) {
 					psd.image = null;
 				}
@@ -217,7 +223,7 @@ public final class PsdReader {
 			return "Photoshop color mode " + psd.colorMode + " is not supported.";
 		}
 		long pixels = (long) psd.width * psd.height;
-		if (pixels * 4L * 12 / 10 > Runtime.getRuntime().maxMemory() * 7 / 10) {
+		if (pixels * (8L + Math.min(psd.channels, 5)) * 12 / 10 > Runtime.getRuntime().maxMemory() * 7 / 10) { // picture + int array + the planes
 			return "The picture (" + psd.width + " x " + psd.height + " px) is too big for the memory given to ScreepT.";
 		}
 		return null;
@@ -287,7 +293,7 @@ public final class PsdReader {
 
 	// ------------------------------------------------------------------ composite
 
-	private static BufferedImage readComposite(DataInputStream in, Psd psd, byte[] modeData) throws IOException {
+	private static BufferedImage readComposite(DataInputStream in, Psd psd, byte[] modeData, long fileSize) throws IOException {
 		int compression = in.readUnsignedShort();
 		int w = psd.width;
 		int h = psd.height;
@@ -298,6 +304,9 @@ public final class PsdReader {
 		int[] rowLengths = null;
 		InputStream data = in;
 		if (compression == 1) {
+			if ((long) h * channels > fileSize / 2) {
+				throw new IOException("Damaged Photoshop file: the table of the compressed rows is bigger than the file");
+			}
 			rowLengths = new int[h * channels];
 			for (int i = 0; i < rowLengths.length; i++) {
 				rowLengths[i] = psd.big ? in.readInt() : in.readUnsignedShort();

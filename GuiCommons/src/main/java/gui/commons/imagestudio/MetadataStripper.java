@@ -267,6 +267,10 @@ public final class MetadataStripper {
 				keep = false;
 				what = "Application data APP" + (m - 0xE0) + " (" + size(len) + ")";
 			}
+			if (replacement != null && Arrays.equals(replacement, Arrays.copyOfRange(d, i, end))) {
+				keep = true; // already in the cleaned form (the minimal EXIF with the orientation): nothing to change
+				what = null;
+			}
 			if (keep) {
 				out.write(d, i, end - i);
 			} else {
@@ -428,6 +432,10 @@ public final class MetadataStripper {
 					what = "Extra chunk " + type + " (" + size(len) + ")";
 				}
 			}
+			if (replacement != null && Arrays.equals(replacement, Arrays.copyOfRange(d, pos, end))) {
+				keep = true; // already in the cleaned form (the minimal EXIF with the orientation): nothing to change
+				what = null;
+			}
 			if (keep) {
 				out.write(d, pos, end - pos);
 			} else {
@@ -532,6 +540,10 @@ public final class MetadataStripper {
 			}
 			if (id.equals("VP8X") && size >= 10) {
 				flagsPos = body.size() + 8;
+			}
+			if (replacement != null && Arrays.equals(replacement, Arrays.copyOfRange(d, pos, end))) {
+				keep = true; // already in the cleaned form (the minimal EXIF with the orientation): nothing to change
+				what = null;
 			}
 			if (keep) {
 				body.write(d, pos, end - pos);

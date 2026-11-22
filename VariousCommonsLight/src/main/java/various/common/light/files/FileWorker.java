@@ -285,7 +285,7 @@ public class FileWorker {
 
 			int i = 0;
 			while ( line != null) {
-				if(i > limit)
+				if(i >= limit)
 					return true;
 
 				line = reader.readLine();
@@ -505,7 +505,7 @@ public class FileWorker {
 	 * @return deleted: false if at least one deletion have incurred in some errors
 	 */
 	public static boolean deleteDirContent(File folder) {
-		boolean deleted = false;
+		boolean deleted = true;
 		long startTime = System.currentTimeMillis();
 		logger.info("deleteDirContent -> Start...");
 
@@ -513,7 +513,7 @@ public class FileWorker {
 	    if(files!=null) { //some JVMs return null for empty dirs
 	        for(File f: files) {
 	            if(f.isFile()) {
-	            	deleted = f.delete();
+	            	deleted = f.delete() && deleted;
 	            }
 	        }
 	    }

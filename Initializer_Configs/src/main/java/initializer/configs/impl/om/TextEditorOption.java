@@ -272,7 +272,7 @@ public class TextEditorOption {
 		clearWhitespaceLinesEnabled = DEF_clearWhitespaceLinesEnabled;
 		highlightSecondaryLanguages = DEF_highlightSecondaryLanguages;
 		fractionalFontMetricsEnabled = DEF_fractionalFontMetricsEnabled;
-		hyperLinksEnabled = DEF_fractionalFontMetricsEnabled;
+		hyperLinksEnabled = DEF_hyperLinksEnabled;
 		interline = DEF_interline;
 		maxFileSizeMb = DEF_maxFileSizeMb;
 		shellInteractive = DEF_shellInteractive;

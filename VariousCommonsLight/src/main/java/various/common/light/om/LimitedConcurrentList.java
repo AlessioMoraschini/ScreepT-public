@@ -46,7 +46,7 @@ public class LimitedConcurrentList <T>{
 	}
 
 	public boolean isFull() {
-		return list.size() == maxSize;
+		return list.size() >= maxSize;
 	}
 
 	public boolean isEmpty() {
@@ -102,6 +102,7 @@ public class LimitedConcurrentList <T>{
 						list.remove(0);
 					}
 					list.add(element);
+					added = true;
 				}
 			}
 		}
@@ -128,7 +129,8 @@ public class LimitedConcurrentList <T>{
 		synchronized (list) {
 			for (T element : elements) {
 
-				if (isFull() && !list.isEmpty()) {
+				// an element already present is only moved to the end: nothing has to be evicted
+				if (!list.contains(element) && isFull() && !list.isEmpty()) {
 					list.remove(0);
 				}
 
@@ -155,7 +157,8 @@ public class LimitedConcurrentList <T>{
 			return;
 
 		synchronized (list) {
-			if (isFull() && !list.isEmpty()) {
+			// an element already present is only moved to the end: nothing has to be evicted
+			if (!list.contains(element) && isFull() && !list.isEmpty()) {
 				list.remove(0);
 			}
 
@@ -173,14 +176,12 @@ public class LimitedConcurrentList <T>{
 			return;
 
 		synchronized (list) {
-			if (isFull() && !list.isEmpty()) {
-				list.remove(0);
-			}
+			// removeIf: removing inside a for-each would throw ConcurrentModificationException
+			list.removeIf(el -> element.equals(el));
 
-			for(T el : list) {
-				if(element.equals(el)) {
-					list.remove(el);
-				}
+			// the top is index 0, so when full the oldest element is the last one
+			if (isFull() && !list.isEmpty()) {
+				list.remove(list.size() - 1);
 			}
 			list.add(0, element);
 		}
@@ -284,18 +285,17 @@ public class LimitedConcurrentList <T>{
 	public String toCharSeparatedString(String separator) {
 		if(list == null) {return "";}
 		StringBuilder builder = new StringBuilder();
+		int index = 0;
 		for(T curr : list) {
+			// Avoid last separator after file (by position: the last value may also appear earlier in the list)
+			String currentSeparator = (++index == list.size()) ? "" : separator;
 			try {
-				if (getLast().equals(curr)) {
-					separator = "";
-					// Avoid last separator after file
-				}
 				if (curr instanceof File) {
-					builder.append(((File) curr).getAbsolutePath()).append(separator);
+					builder.append(((File) curr).getAbsolutePath()).append(currentSeparator);
 				} else if (curr instanceof FileNamed) {
-					builder.append(((FileNamed) curr).mFile.getAbsolutePath()).append(separator);
+					builder.append(((FileNamed) curr).mFile.getAbsolutePath()).append(currentSeparator);
 				} else {
-					builder.append(curr).append(separator);
+					builder.append(curr).append(currentSeparator);
 				}
 			} catch (Exception e) {
 			}
@@ -315,8 +315,8 @@ public class LimitedConcurrentList <T>{
 		if(list == null) {return "";}
 
 		StringBuilder builder = new StringBuilder();
+		int j = 0;
 		for(T curr : list) {
-			int j = 0;
 
 			try {
 				if (curr instanceof String[]) {

@@ -44,9 +44,9 @@ public class StringWorker {
 		CRLF("\r\n", "\\r\\n");
 
 		public static final String CR_EXCLUSIVE_REGEX = "\\r(?!\\n)";
-		public static final String LF_EXCLUSIVE_REGEX = "\\n(?!\\r)";
-		public static final char UNICODE_CR = 0x00A;
-		public static final char UNICODE_LF = 0x00D;
+		public static final String LF_EXCLUSIVE_REGEX = "(?<!\\r)\\n";
+		public static final char UNICODE_CR = 0x00D;
+		public static final char UNICODE_LF = 0x00A;
 
 		public String eol;
 		public String eolRegex;
@@ -200,7 +200,7 @@ public class StringWorker {
 
 		if (length > lim) {
 			int half = lim/2;
-			res = source.substring(0, half-3)+".."+source.substring(length-half-2, length);
+			res = source.substring(0, half-3)+".."+source.substring(length-(lim-half+1), length);
 		}
 
 		return res;
@@ -283,8 +283,9 @@ public class StringWorker {
 			String result = "";
 			int i= 0;
 			while(tokenizer.hasMoreTokens()) {
+				String token = tokenizer.nextToken();
 				if(i>=start) {
-					result += tokenizer.nextToken();
+					result += token;
 				}
 				i++;
 			}
@@ -327,8 +328,9 @@ public class StringWorker {
 			String result = "";
 			int i= 0;
 			while(tokenizer.hasMoreTokens()) {
+				String token = tokenizer.nextToken();
 				if(i>=start && i<=end) {
-					result += tokenizer.nextToken();
+					result += token;
 				}
 				i++;
 			}
@@ -405,7 +407,7 @@ public class StringWorker {
 		for(int i=0; i<source.length(); i++) {
 			char character_i = source.charAt(i);
 			// finally update flag according to char value il blacklist
-			if (!(character_i==' ' || String.valueOf(character_i).equals(EOL.defaultEol.eol))){
+			if (!(character_i==' ' || character_i=='\r' || character_i=='\n')){
 				result+=String.valueOf(character_i);
 			}
 		}
@@ -421,7 +423,7 @@ public class StringWorker {
 		for(int i=0; i<source.length(); i++) {
 			char character_i = source.charAt(i);
 			// finally update flag according to char value il blacklist
-			if (!(String.valueOf(character_i).equals(EOL.defaultEol.eol))){
+			if (character_i!='\r' && character_i!='\n'){
 				result+=String.valueOf(character_i);
 			}
 		}
@@ -518,25 +520,11 @@ public class StringWorker {
 	 * @param int end : 0<start<end<src.lenght
 	 */
 	public static String injectStringInSelection(String src, String insert, int start, int end) {
-		// check start to valid invalid case values
-		if(start<0) {
-			start=0;
-		}
+		// clamp both bounds into [0, length], then make sure start <= end
+		start=Math.max(0, Math.min(start, src.length()));
+		end=Math.max(0, Math.min(end, src.length()));
 		if(start>end) {
 			start=end;
-		}
-		if(start>src.length()) {
-			start=src.length();
-		}
-		// check end to valid invalid case values
-		if(end<0) {
-			end=0;
-		}
-		if(end<start) {
-			start=end;
-		}
-		if(end>src.length()) {
-			end=src.length();
 		}
 		// initialize result with first segment that has to remain the same
 		String result=src.substring(0, start);
@@ -866,25 +854,25 @@ public class StringWorker {
 			boolean CR = false;
 			while (( charInt = reader.read()) != -1) {
 				charEl = (char) charInt;
+				if (CR) {
+					CR = false;
+					if (charEl == '\n') {
+						builder.append("[\\n]\r\n");
+						continue;
+					}
+					builder.append("\r");
+				}
 				if(charEl == '\r') {
 					builder.append("[\\r]");
 					CR = true;
+				} else if(charEl == '\n') {
+					builder.append("[\\n]\n");
 				} else {
-					if (CR) {
-						CR = false;
-						if (charEl == '\n'){
-							builder.append("[\\n]\r\n");
-						} else {
-							builder.append("\r");
-						}
-					} else {
-						if(charEl == '\n') {
-							builder.append("[\\n]\n");
-						} else {
-							builder.append(charEl);
-						}
-					}
+					builder.append(charEl);
 				}
+			}
+			if (CR) {
+				builder.append("\r");
 			}
 		} catch (IOException e) {
 			throw e;

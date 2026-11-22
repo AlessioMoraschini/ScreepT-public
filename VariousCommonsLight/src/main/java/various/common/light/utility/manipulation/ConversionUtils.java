@@ -96,7 +96,7 @@ public class ConversionUtils {
 	public static String coolFileSize(File file){
 		long size = file.length();
 		if(size <= 0) return "0";
-	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "ExaB" };
+	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "PB", "EB" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.##").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
@@ -108,7 +108,7 @@ public class ConversionUtils {
 	 */
 	public static String coolFileSize(Long size){
 		if(size <= 0) return "0";
-	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "ExaB" };
+	    final String[] units = new String[] { "B", "kB", "MB", "GB", "TB", "PB", "EB" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.##").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
@@ -121,7 +121,7 @@ public class ConversionUtils {
 	public static String coolFileSizeBits(File file){
 		long size = file.length();
 		if(size <= 0) return "0";
-	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Exab" };
+	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Pb", "Eb" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
@@ -133,7 +133,7 @@ public class ConversionUtils {
 	 */
 	public static String coolFileSizeBits(Long size){
 		if(size <= 0) return "0";
-	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Exab" };
+	    final String[] units = new String[] { "b", "kb", "Mb", "Gb", "Tb", "Pb", "Eb" };
 	    int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
 	    return new DecimalFormat("#,##0.##").format(size*8/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
 	}
@@ -154,7 +154,7 @@ public class ConversionUtils {
 	    duration = duration.minusSeconds(seconds);
 	    long mseconds = duration.toMillis() ;
 	    duration = duration.minusMillis(mseconds);
-	    long nanos = duration.toMillis() ;
+	    long nanos = duration.getNano() ;
 	    String resultRaw =
 	            (days ==  0 ? "" : days + " d, ") +
 	            (hours == 0 ? "" : hours + " h, ") +
@@ -431,9 +431,9 @@ public class ConversionUtils {
 			}
 
 			if(containsComma)
-				newVal.replaceAll("[.]", ",");
+				newVal = newVal.replaceAll("[.]", ",");
 			else
-				newVal.replaceAll(",", ".");
+				newVal = newVal.replaceAll(",", ".");
 
 
 		} catch (NumberFormatException e) {
@@ -451,7 +451,7 @@ public class ConversionUtils {
 			int parsed = Integer.parseInt(temp, 16);
 			parsed += increment;
 			parsed = parsed > max ? max : parsed < min ? min : parsed;
-			newVal = "#" + Integer.toHexString(parsed);
+			newVal = String.format("#%06x", parsed);
 		} catch (NumberFormatException e) {
 			newVal = source;
 		}
