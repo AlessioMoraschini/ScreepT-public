@@ -362,7 +362,15 @@ public final class UiSweep {
 
 	/** Uses what the person would use: tabs, lists, fields, buttons, menus (modal dialogs are answered by AutoDialogCloser) */
 	private static void interact(Component root) {
-		long deadline = System.currentTimeMillis() + INTERACT_MS;
+		interactFor(root, INTERACT_MS);
+	}
+
+	/**
+	 * Clicks and fills what a component shows (buttons, tabs, combos, trees, text fields, menus), for at most the given time.
+	 * For code that drives a real application: call it on the interface thread, with the guard installed.
+	 */
+	public static void interactFor(Component root, long millis) {
+		long deadline = System.currentTimeMillis() + millis;
 		strict = true;
 		try {
 			java.util.Set<Component> done = new java.util.HashSet<Component>();
