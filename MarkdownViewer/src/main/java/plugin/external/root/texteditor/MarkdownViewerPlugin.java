@@ -31,7 +31,7 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 
 	@Override
 	public String getVersion() {
-		return "1.3.0";
+		return "1.4.0";
 	}
 
 	@Override

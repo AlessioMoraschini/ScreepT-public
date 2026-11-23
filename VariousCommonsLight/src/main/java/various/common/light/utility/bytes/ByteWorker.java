@@ -248,9 +248,8 @@ public class ByteWorker {
 	public static byte[] xorBytes(byte[] first, byte[] second) {
 		byte[] xorResult = new byte[first.length];
 	
-		int i = 0;
-		for (byte firstiByte : first) {
-			xorResult[i] = (i < second.length) ? (byte) (firstiByte ^ second[i++]) : firstiByte;
+		for (int i = 0; i < first.length; i++) {
+			xorResult[i] = (i < second.length) ? (byte) (first[i] ^ second[i]) : first[i];
 		}
 		
 		return xorResult;

@@ -84,6 +84,13 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.30</version>
 		</dependency>
+
+		<dependency>
+			<groupId>testUtils</groupId>
+			<artifactId>testUtils</artifactId>
+			<version>${test.utils.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<properties>

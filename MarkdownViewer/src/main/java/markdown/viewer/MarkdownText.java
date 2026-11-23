@@ -355,8 +355,10 @@ public final class MarkdownText {
 
 	/** True when the line can be a row of a pipe table. */
 	public static boolean isTableLine(String line) {
-		String t = stripCr(line).trim();
-		return t.length() > 1 && t.indexOf('|') >= 0 && !t.startsWith("    ");
+		String raw = stripCr(line);
+		String t = raw.trim();
+		// four columns of indentation make an indented code block, whatever it contains (the check must see the indentation, so before the trim)
+		return t.length() > 1 && t.indexOf('|') >= 0 && leadingWidth(raw) < 4;
 	}
 
 	/** True when the line is the "|---|:---:|" delimiter row. */

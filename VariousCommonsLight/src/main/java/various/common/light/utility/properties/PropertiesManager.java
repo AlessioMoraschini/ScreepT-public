@@ -236,7 +236,12 @@ public class PropertiesManager {
 		try {
 			dynamicFileBindingsDef.put(propertyName, value);
         	logger.info("Saving property in " + dynamicFileBindingsDefSource + "\n\n[" + propertyName + " : " + value);
-        	commentedProperties.put(propertyName, value);
+        	// a key that is not a line of the file yet must be appended, or it would never reach the file
+        	if (commentedProperties.keyData.contains(propertyName)) {
+        		commentedProperties.put(propertyName, value);
+        	} else {
+        		commentedProperties.add(propertyName, value);
+        	}
         	if (saveToFile) {
 				out = new FileOutputStream(dynamicFileBindingsDefSource);
 				commentedProperties.store(out, "# Updated on " + GENERIC_FORMATTER.format(new Date()));

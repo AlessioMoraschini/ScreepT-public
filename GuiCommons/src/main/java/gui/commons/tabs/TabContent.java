@@ -54,6 +54,11 @@ public interface TabContent {
 		return false;
 	}
 
+	/** True if the tab can be shown full screen (PDF, Markdown...): the toolbar button and F11 work only for these */
+	default boolean supportsFullscreen() {
+		return false;
+	}
+
 	/** Gives the content a way to ask the host to close its tab (for contents that hand the work over to a window) */
 	default void setCloseHandler(Runnable closeTab) {
 	}

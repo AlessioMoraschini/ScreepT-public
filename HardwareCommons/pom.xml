@@ -176,6 +176,13 @@
 			<scope>test</scope>
 		</dependency>
 
+
+		<dependency>
+			<groupId>testUtils</groupId>
+			<artifactId>testUtils</artifactId>
+			<version>${test.utils.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>

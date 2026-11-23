@@ -140,6 +140,30 @@
 		</repository>
 	</repositories>
 
+	<build>
+		<plugins>
+			<!-- no test ever waits for a person: modal dialogs are answered by test.util.gui.AutoDialogCloser (module testUtils) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<!-- safety net: a test JVM stuck for any reason is killed, the build never waits for a person -->
+					<forkedProcessTimeoutInSeconds>1200</forkedProcessTimeoutInSeconds>
+					<!-- four test JVMs per module: the interface sweep (it changes static state on purpose) never shares a JVM with the other tests, and both run at once -->
+					<forkCount>4</forkCount>
+					<reuseForks>true</reuseForks>
+					<properties>
+						<property>
+							<name>listener</name>
+							<value>test.util.gui.DialogRunListener</value>
+						</property>
+					</properties>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<profiles>
 		<!-- Test coverage: mvn -o test -Pcoverage (writes target/jacoco.exec in each module; not part of the normal build) -->
 		<profile>

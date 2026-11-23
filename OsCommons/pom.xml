@@ -65,5 +65,12 @@
 			<artifactId>VariousCommonsLight</artifactId>
 			<version>${various.common.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>testUtils</groupId>
+			<artifactId>testUtils</artifactId>
+			<version>${test.utils.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

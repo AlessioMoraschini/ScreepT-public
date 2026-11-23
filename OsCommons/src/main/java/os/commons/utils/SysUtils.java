@@ -789,6 +789,9 @@ public class SysUtils {
 		}
 
 		File[] files = parentDirectory.listFiles();
+		if(files == null) {
+			return null;
+		}
         for (File file : files) {
             if (file.isFile()) {
                 continue;
@@ -800,7 +803,11 @@ public class SysUtils {
             }
 
             if(file.isDirectory()) {
-            	return findDirectoryInsideRoot(file, directoryToFind, caseSensitive);
+            	// a sub-folder without the target must not end the search: the next siblings are still to be visited
+            	File inside = findDirectoryInsideRoot(file, directoryToFind, caseSensitive);
+            	if(inside != null) {
+            		return inside;
+            	}
             }
         }
 
@@ -814,6 +821,9 @@ public class SysUtils {
 		}
 
 		File[] files = parentDirectory.listFiles();
+		if(files == null) {
+			return null;
+		}
 		for (File file : files) {
 			if (caseSensitive && file.isFile() && file.getName().equals(fileToFind.trim())) {
 				return file;
@@ -822,7 +832,11 @@ public class SysUtils {
 				return file;
 
 			} else if(file.isDirectory()) {
-				return findFileInsideRoot(file, fileToFind, caseSensitive);
+				// a sub-folder without the file must not end the search: the next siblings are still to be visited
+				File inside = findFileInsideRoot(file, fileToFind, caseSensitive);
+				if(inside != null) {
+					return inside;
+				}
 			}
 		}
 

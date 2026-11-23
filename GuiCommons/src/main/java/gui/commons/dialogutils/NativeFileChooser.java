@@ -31,6 +31,9 @@ public class NativeFileChooser extends JFileChooser {
 
 	static Logger logger = Logger.getLogger(NativeFileChooser.class);
 
+	/** System property: set to "false" to always use the Swing chooser (automatic tests) */
+	public static final String NATIVE_DIALOG_PROPERTY = "screept.nativeFileDialog";
+
 	private static final boolean WINDOWS = System.getProperty("os.name", "").toLowerCase().startsWith("windows");
 
 	@Override
@@ -41,7 +44,8 @@ public class NativeFileChooser extends JFileChooser {
 			setDialogType(CUSTOM_DIALOG);
 		}
 
-		if (WINDOWS) {
+		// tests set this to false: a native dialog cannot be answered by a test and would wait for a person
+		if (WINDOWS && !"false".equals(System.getProperty(NATIVE_DIALOG_PROPERTY))) {
 			try {
 				return WindowsNativeFileDialog.show(this, parent);
 			} catch (WindowsNativeFileDialog.UnavailableException | LinkageError e) {

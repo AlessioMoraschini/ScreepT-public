@@ -48,6 +48,7 @@ public class UpdateProgressPanel {
     private volatile JProgressBar pb;
     private volatile JProgressBar GeneralBar;
     public AtomicBoolean progBarEnabled = new AtomicBoolean(true);
+    private volatile boolean modalTypeChosen;
 
     public AtomicBoolean closable = new AtomicBoolean(false);
     public AtomicBoolean stopProcess = new AtomicBoolean(false);
@@ -103,6 +104,7 @@ public class UpdateProgressPanel {
     }
 
     public void setModalType(ModalityType type) {
+    	modalTypeChosen = true;
     	SwingUtilities.invokeLater(() -> {
         	GuiUtils.setDialogModalType(dialog,  type);
     	});
@@ -150,7 +152,10 @@ public class UpdateProgressPanel {
 
 		        	}
 		        }).start();
-				GuiUtils.setDialogModalType(dialog,  ModalityType.APPLICATION_MODAL, true);
+				// the default is modal, unless the caller already chose (otherwise this would run after its choice and undo it)
+				if (!modalTypeChosen) {
+					GuiUtils.setDialogModalType(dialog,  ModalityType.APPLICATION_MODAL, true);
+				}
 			}
 		});
     }
@@ -537,7 +542,7 @@ public class UpdateProgressPanel {
 
 	public void adaptWidthToString(String source) {
 		if(progBarEnabled.get() && dialog != null && label != null && source != null && !source.isEmpty()) {
-			int newWidth = label.getGraphics().getFontMetrics().stringWidth(source) + 80;
+			int newWidth = label.getFontMetrics(label.getFont()).stringWidth(source) + 80;
 			int maxWidth = (int)GuiUtils.getScreenSize().getWidth()-50;
 			newWidth = newWidth > maxWidth ? maxWidth : newWidth;
 
@@ -555,7 +560,7 @@ public class UpdateProgressPanel {
 
 	public void adaptWidthToString(String source, boolean onlyIfMore) {
 		if(progBarEnabled.get() && dialog != null && label != null && source != null && !source.isEmpty()) {
-			int newWidth = label.getGraphics().getFontMetrics().stringWidth(source) + 80;
+			int newWidth = label.getFontMetrics(label.getFont()).stringWidth(source) + 80;
 			int maxWidth = (int)GuiUtils.getScreenSize().getWidth()-50;
 			newWidth = newWidth > maxWidth ? maxWidth : newWidth;
 
