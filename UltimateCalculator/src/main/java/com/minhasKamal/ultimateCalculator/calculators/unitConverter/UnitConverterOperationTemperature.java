@@ -39,14 +39,14 @@ public class UnitConverterOperationTemperature {
 			}else if(to==2){		//Fahrenheit
 				output = input;
 			}else if(to==3){		//Kelvin
-				output = (((input-32)/9)*5)-273.16;
+				output = (((input-32)/9)*5)+273.15;
 			}
 		}
 		else if(from==3){									//Kelvin
 			if(to==1){				//Celsius
-				output = input-273.16;
+				output = input-273.15;
 			}else if(to==2){		//Fahrenheit
-				output = (((input-273.16)/5)*9)+32;
+				output = (((input-273.15)/5)*9)+32;
 			}else if(to==3){		//Kelvin
 				output = input;
 			}

@@ -148,7 +148,7 @@ public class UnitConverterOperationArea {
 			}else if(to==7){		//Square Yard
 				output = input/1296;
 			}else if(to==8){		//Square Mile
-				output = input/(40144896*100);
+				output = input/(40144896*100.0);
 			}else if(to==9){		//Katha
 				output = input/103680;
 			}else if(to==10){		//Bigha

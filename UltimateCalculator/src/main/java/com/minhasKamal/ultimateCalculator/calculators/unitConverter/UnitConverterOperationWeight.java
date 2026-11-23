@@ -32,7 +32,7 @@ public class UnitConverterOperationWeight {
 			}else if(to==3){		//Kilogram
 				output = input*0.000001;
 			}else if(to==4){		//Tonne
-				output = input*0.00000001;
+				output = input*0.000000001;
 			}else if(to==5){		//Ounce
 				output = input*0.001*0.0352739619495804;
 			}else if(to==6){		//Pound

@@ -59,7 +59,7 @@ public class UnitConverterOperationLength {
 			}else if(to==2){		//Nanometer
 				output = input;
 			}else if(to==3){		//Micron
-				output = input*0.0001;
+				output = input*0.001;
 			}else if(to==4){		//Millimeter
 				output = input*0.000001;
 			}else if(to==5){		//Centimeter

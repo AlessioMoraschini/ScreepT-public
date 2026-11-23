@@ -138,9 +138,18 @@ public final class UiSweep {
 	 * A call that throws is part of the exercise; one that does not return in time is left behind.
 	 */
 	public static int runMethods(Class<?> anchor, String nameRegex) throws Exception {
+		return runMethods(anchor, nameRegex, null, Long.getLong("uisweep.methodsMs", 10_000L));
+	}
+
+	/**
+	 * Same as {@link #runMethods(Class, String)} for the classes that come alphabetically after <i>afterName</i> (null: all), with an own
+	 * time budget: lets a module that is not on the critical path of the build sweep the classes that the time budget leaves out in
+	 * the module that owns them.
+	 */
+	public static int runMethods(Class<?> anchor, String nameRegex, String afterName, long budgetMs) throws Exception {
 		int calls = 0;
 		boolean edtDead = false;
-		long moduleDeadline = System.currentTimeMillis() + 10_000;
+		long moduleDeadline = System.currentTimeMillis() + budgetMs;
 		if (GraphicsEnvironment.isHeadless()) {
 			return calls;
 		}
@@ -156,7 +165,7 @@ public final class UiSweep {
 		strict = true;
 		try {
 			for (String name : names) {
-				if (SKIP.matcher(name).matches() || SKIP_METHOD_CLASS.matcher(name).matches() || (nameRegex != null && !name.matches(nameRegex))) {
+				if ((afterName != null && name.compareTo(afterName) <= 0) || SKIP.matcher(name).matches() || SKIP_METHOD_CLASS.matcher(name).matches() || (nameRegex != null && !name.matches(nameRegex))) {
 					continue;
 				}
 				if (System.currentTimeMillis() > moduleDeadline) {
