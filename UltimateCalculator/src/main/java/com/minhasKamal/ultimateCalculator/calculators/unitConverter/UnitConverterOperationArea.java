@@ -69,9 +69,9 @@ public class UnitConverterOperationArea {
 			}else if(to==8){		//Square Mile
 				output = (input*10.76391041671)/27878400;
 			}else if(to==9){		//Katha
-				output = input/66.9;
+				output = input/(40.468564224*1.65);
 			}else if(to==10){		//Bigha
-				output = input/1338;
+				output = input/(40.468564224*33);
 			}else if(to==11){		//Satak
 				output = (input*10.76391041671)/435.60;
 			}else if(to==12){		//Acre
@@ -150,9 +150,9 @@ public class UnitConverterOperationArea {
 			}else if(to==8){		//Square Mile
 				output = input/(40144896*100.0);
 			}else if(to==9){		//Katha
-				output = input/103680;
+				output = input/(62726.40*1.65);
 			}else if(to==10){		//Bigha
-				output = input/2073600;
+				output = input/(62726.40*33);
 			}else if(to==11){		//Satak
 				output = input/62726.40;
 			}else if(to==12){		//Acre

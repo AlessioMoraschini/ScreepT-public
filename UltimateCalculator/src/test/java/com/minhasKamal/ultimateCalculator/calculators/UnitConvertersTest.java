@@ -80,12 +80,13 @@ public class UnitConvertersTest {
 	@Test
 	public void area() {
 		UnitConverterOperationArea a = new UnitConverterOperationArea();
-		// known imprecision (to confirm): Katha/Bigha use 1.65 decimals in some rows and 720 sq ft in others (0.2% apart)
-		String[] bad = { "2-9", "2-10", "5-9", "5-10" };
-		checkAllPairs("area", 12, a::Area, 1e-6, bad);
-		checkTransitive("area", 12, a::Area, 1e-6, bad);
+		// Katha = 1.65 decimals, Bigha = 33 decimals (decimal = 40.468564224 m2)
+		checkAllPairs("area", 12, a::Area, 1e-6);
+		checkTransitive("area", 12, a::Area, 1e-6);
 		assertEquals(10000.0, a.Area(3, 2, 1), 1e-6);
 		assertEquals(1000000.0, a.Area(4, 2, 1), 1e-3);
+		assertEquals(40.468564224 * 1.65, a.Area(9, 2, 1), 1e-9);
+		assertEquals(40.468564224 * 33, a.Area(10, 2, 1), 1e-9);
 	}
 
 	@Test
