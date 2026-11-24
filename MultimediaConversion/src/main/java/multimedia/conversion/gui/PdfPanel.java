@@ -29,6 +29,7 @@ public class PdfPanel implements PluginPanel {
 	public PdfPanel(File file) {
 		this.file = file;
 		frame = new PdfSelector2TextFrame(null, null, "Pdf viewer");
+		frame.setPanelMode();
 		component = FramePanelAdapter.wrap(frame);
 		if (file != null) {
 			frame.loadFile(file);

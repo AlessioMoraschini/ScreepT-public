@@ -70,6 +70,12 @@ public class PdfSelector2TextFrame extends JFrame {
 	private JButton btnLoadImage;
 	private JButton btnParseImage;
 	private JButton btnInjectSelected;
+	private JButton btnFullScreen;
+	private JPanel viewerComponentPanel;
+	/** The content of the window (the window itself later wraps it in a scroll pane): what goes full screen, and what a panel (tab) reuses */
+	private javax.swing.JComponent viewerRoot;
+	/** Panel (tab) look: only the viewer, see {@link #setPanelMode()} */
+	private boolean panelMode;
 
 	public JSplitPane splitMainPane;
 
@@ -116,6 +122,9 @@ public class PdfSelector2TextFrame extends JFrame {
 		imageContainerPanel = new JPanel(new java.awt.BorderLayout()) {
 			@Override
 			public java.awt.Dimension getPreferredSize() {
+				if (panelMode) {
+					return new java.awt.Dimension(400, 300); // the tab gives the size: nothing here may force scroll bars
+				}
 				java.awt.Dimension viewerMin = getComponentCount() > 0 ? getComponent(0).getMinimumSize() : new java.awt.Dimension(800, 400);
 				return new java.awt.Dimension(viewerMin.width + 8, Math.max(viewerMin.height + 8, HEIGHT - 340));
 			}
@@ -168,14 +177,16 @@ public class PdfSelector2TextFrame extends JFrame {
 		btnInjectSelected.setBackground(new Color(176, 196, 222));
 		getContentPane().add(btnInjectSelected, "cell 4 2,alignx right,growy");
 
-		JButton btnFullScreen = new JButton("Full screen");
+		btnFullScreen = new JButton("Full screen");
 		btnFullScreen.setToolTipText("Show the PDF full screen (F11 or Esc to leave)");
 		btnFullScreen.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
 		btnFullScreen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnFullScreen.setBackground(new Color(230, 230, 250));
-		btnFullScreen.addActionListener(e -> gui.commons.tabs.ViewerFullScreen.toggle((javax.swing.JComponent) getContentPane()));
+		// the content itself, not getContentPane() at click time: when the window is reused as a panel (tab) its content pane is an empty stand-in
+		viewerRoot = (javax.swing.JComponent) getContentPane();
+		btnFullScreen.addActionListener(e -> gui.commons.tabs.ViewerFullScreen.toggle(viewerRoot));
 		getContentPane().add(btnFullScreen, "cell 3 2,alignx right,growy");
-		gui.commons.tabs.ViewerFullScreen.installKey((javax.swing.JComponent) getContentPane());
+		gui.commons.tabs.ViewerFullScreen.installKey(viewerRoot);
 
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
@@ -351,13 +362,47 @@ public class PdfSelector2TextFrame extends JFrame {
 		});
 	}
 
+	/**
+	 * Look of the viewer inside a tab: just the PDF (its own scroll bar is the only one), without the text extraction area and
+	 * its buttons; the full screen button sits in the status bar of the viewer, next to the page counter.
+	 */
+	public void setPanelMode() {
+		panelMode = true;
+		// the window wrapped its content in a scroll pane to fit small screens: a tab has its own size, so the content goes in directly
+		setContentPane(viewerRoot);
+		java.awt.Container content = viewerRoot;
+		content.removeAll();
+		content.setLayout(new java.awt.BorderLayout());
+		imageContainerPanel.setBorder(null);
+		content.add(imageContainerPanel, java.awt.BorderLayout.CENTER);
+
+		btnFullScreen.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 12));
+		btnFullScreen.setMargin(new Insets(1, 8, 1, 8));
+		java.awt.LayoutManager layout = viewerComponentPanel.getLayout();
+		java.awt.Component status = layout instanceof java.awt.BorderLayout ? ((java.awt.BorderLayout) layout).getLayoutComponent(java.awt.BorderLayout.SOUTH) : null;
+		JPanel bottom = new JPanel(new java.awt.BorderLayout());
+		if (status != null) {
+			viewerComponentPanel.remove(status);
+			bottom.add(status, java.awt.BorderLayout.CENTER);
+			bottom.setBackground(status.getBackground());
+		}
+		JPanel buttonHolder = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 6, 2));
+		buttonHolder.setOpaque(status == null || status.isOpaque());
+		buttonHolder.setBackground(bottom.getBackground());
+		buttonHolder.add(btnFullScreen);
+		bottom.add(buttonHolder, java.awt.BorderLayout.EAST);
+		viewerComponentPanel.add(bottom, java.awt.BorderLayout.SOUTH);
+		content.revalidate();
+		content.repaint();
+	}
+
 	private void initDisplayPanel(JPanel father) {
 		controllerPdf = new SwingController();
 		// We created the SwingViewFactory configured with the controller
 		SwingViewBuilder factory = new SwingViewBuilder(controllerPdf);
 		// We use the factory to build a preconfigured JPanel
 		// with a full and active viewer user interface.
-		JPanel viewerComponentPanel = factory.buildViewerPanel();
+		viewerComponentPanel = factory.buildViewerPanel();
 		// We add keyboard command
 		ComponentKeyBinding.install(controllerPdf, viewerComponentPanel);
 		// add interactive mouse link annotation support via callback

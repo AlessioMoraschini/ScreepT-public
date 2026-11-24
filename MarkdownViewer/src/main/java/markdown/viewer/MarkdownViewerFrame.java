@@ -465,7 +465,8 @@ public class MarkdownViewerFrame extends ParentFrame {
 
 		installBehaviors();
 		try {
-			gui.commons.tabs.ViewerFullScreen.installKey((JComponent) getContentPane()); // F11
+			fullScreenContent = (JComponent) getContentPane();
+			gui.commons.tabs.ViewerFullScreen.installKey(fullScreenContent); // F11
 		} catch (LinkageError e) {
 			logger.warn("Full screen key not installed (older ScreepT): " + e);
 		}
@@ -624,10 +625,13 @@ public class MarkdownViewerFrame extends ParentFrame {
 		return bars;
 	}
 
+	/** The content of the viewer: when the window is reused as a panel (tab) its content pane is an empty stand-in, so it is kept here */
+	private JComponent fullScreenContent;
+
 	/** Full screen on/off for the whole viewer (window or tab); needs ScreepT 0.9.92+, older versions just ignore it */
 	private void toggleFullScreen() {
 		try {
-			gui.commons.tabs.ViewerFullScreen.toggle((JComponent) getContentPane());
+			gui.commons.tabs.ViewerFullScreen.toggle(fullScreenContent != null ? fullScreenContent : (JComponent) getContentPane());
 		} catch (LinkageError e) {
 			logger.warn("Full screen needs a newer ScreepT: " + e);
 		}
