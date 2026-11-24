@@ -35,7 +35,7 @@ public class TextAreaStringEditor {
 		SelectionDTO result = new SelectionDTO(selectionDtoFull.first, selectionDtoFull.last, "");
 
 		if (selectionDtoFull.selected) {
-			result.text = selectionDtoFull.text
+			result.text = selectionDtoFull.prefix
 					.concat(StringWorker.upperAfterDots(selectionDtoFull.selection, '.').concat(selectionDtoFull.end));
 		} else {
 			result.text = StringWorker.upperAfterDots(selectionDtoFull.getCompleteString(), '.');
@@ -56,7 +56,7 @@ public class TextAreaStringEditor {
 		SelectionDTO result = new SelectionDTO(selectionDtoFull.first, selectionDtoFull.last, "");
 		
 		if (selectionDtoFull.selected) {
-		result.text = result.text
+		result.text = selectionDtoFull.prefix
 				.concat(StringWorker.lowerAfterDots(selectionDtoFull.selection, '.').concat(selectionDtoFull.end));
 		} else {
 			result.text = StringWorker.lowerAfterDots(selectionDtoFull.getCompleteString(), '.');

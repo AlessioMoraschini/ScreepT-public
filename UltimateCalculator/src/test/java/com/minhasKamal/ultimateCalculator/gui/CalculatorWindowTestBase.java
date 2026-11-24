@@ -51,7 +51,15 @@ abstract class CalculatorWindowTestBase {
 	private KeyboardFocusManager previousFocusManager;
 
 	static final class ActivatingFocusManager extends DefaultKeyboardFocusManager {
+		private Window wanted;
+
+		/** The window system may deactivate a shown frame at any moment (another application takes the focus): the test decides, not the desktop. */
+		void reassert() {
+			activate(wanted);
+		}
+
 		void activate(Window w) {
+			wanted = w;
 			// no focused field of an earlier test may swallow the keys
 			setGlobalFocusOwner(null);
 			setGlobalActiveWindow(w);
@@ -202,6 +210,7 @@ abstract class CalculatorWindowTestBase {
 	static boolean pressKey(final JFrame frame, final int id, final int code, final char ch) throws Exception {
 		return onEdt(new Callable<Boolean>() {
 			public Boolean call() {
+				focusManager().reassert();
 				KeyEvent e = new KeyEvent(frame, id, System.currentTimeMillis(), 0, code, ch);
 				for (java.awt.KeyEventDispatcher d : dispatchers()) {
 					if (d.dispatchKeyEvent(e)) {
@@ -211,6 +220,10 @@ abstract class CalculatorWindowTestBase {
 				return false;
 			}
 		});
+	}
+
+	static ActivatingFocusManager focusManager() {
+		return (ActivatingFocusManager) KeyboardFocusManager.getCurrentKeyboardFocusManager();
 	}
 
 	@SuppressWarnings("unchecked")

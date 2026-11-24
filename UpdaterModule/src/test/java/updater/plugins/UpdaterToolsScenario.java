@@ -158,5 +158,15 @@ public class UpdaterToolsScenario {
 		runTool("-generateHashes-mainRelease", "false", "release_manifest2.properties");
 		r = load("release_manifest2.properties");
 		check(sha512("ReleaseFolder.zip").equalsIgnoreCase(r.getProperty("ReleaseFolder.zip")), "hash of a ready zip: " + r);
+
+		// 5) only the folders named in FOLDERS_TO_KEEP are zipped, without the parent folder inside the zip
+		write("manifest3.properties", "FOLDERS_TO_KEEP=Alpha\n");
+		new File("Alpha.zip").delete();
+		new File("Beta.zip").delete();
+		runTool("-zipFolders-excludeParent-generateHashes", "false", "manifest3.properties");
+		check(new File("Alpha.zip").isFile() && !new File("Beta.zip").exists(), "only the kept folder is zipped");
+		try (java.util.zip.ZipFile z = new java.util.zip.ZipFile("Alpha.zip")) {
+			check(z.getEntry("a.txt") != null && z.getEntry("Alpha/a.txt") == null, "no parent folder inside the zip");
+		}
 	}
 }

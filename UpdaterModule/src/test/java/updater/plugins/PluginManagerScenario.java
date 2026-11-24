@@ -243,6 +243,28 @@ public class PluginManagerScenario {
 		check(pm.retrieveAllFromCache().isEmpty(), "cache cleared");
 		check(pm.clearPluginsLocalDir() && new File("PLUGINS").list().length == 0, "plugins folder emptied");
 
+		// --- download from the server, then install what was downloaded
+		publish("2.0.0", alphaHash, betaHash);
+		ArrayList<PluginDTO> fresh = pm.discoverLatestPlugins(false);
+		PluginDTO a2 = fresh.get(0), b2 = fresh.get(1);
+		check(pm.downloadPlugin(null) == null && pm.downloadPlugins(new ArrayList<PluginDTO>()).isEmpty(), "nothing to download");
+		check(pm.downloadPlugin(a2) == a2 && a2.getLocalFile().isFile(), "alpha downloaded to " + a2.getLocalFile());
+		check(a2.getLocalFile().length() == alphaZip.length && pm.checkPluginHash(a2), "downloaded bytes match the manifest hash");
+		check(pm.retrieveFromCache("Alpha.zip") == a2 && pm.getValidFromCache("Alpha.zip") == a2, "downloaded plugin is cached and valid");
+		check(pm.downloadPlugins(new ArrayList<PluginDTO>(Arrays.asList(a2, b2))).size() == 2, "download of a list");
+		pm.installPlugin(a2, false);
+		check(pm.isInstalled(a2) && new File("EXTERNAL_PLUGINS/alpha.txt").isFile(), "downloaded plugin installs");
+		check(pm.removePlugin(a2, true) && pm.getPendingPluginUpdates().contains("Alpha.zip"), "removal for an update is marked pending");
+		pm.removeAllFromPendingPluginUpdate();
+		web.remove("/Plugins/Beta.zip");
+		boolean failed = false;
+		try {
+			pm.downloadPlugin(b2);
+		} catch (Throwable t) {
+			failed = true;
+		}
+		check(failed && pm.retrieveFromCache("Beta.zip") == null, "a missing file fails the download and leaves the cache");
+
 		// --- the server stops publishing the manifest
 		web.remove("/Plugins/manifest.properties");
 		check(pm.discoverLatestPlugins(false).isEmpty(), "no manifest, no plugins");
