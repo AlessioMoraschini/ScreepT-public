@@ -21,7 +21,7 @@ final class ToolIcons implements Icon {
 	enum Kind {
 		OPEN, SAVE, SAVE_AS, EXPORT, EDITOR, SPLIT, PREVIEW, REFRESH, COPY, BROWSER,
 		CODE_BLOCK, LINK, IMAGE, LIST, NUMBERED, TASK, QUOTE, TABLE, RULE,
-		OUTLINE, WRAP, SYNC, INVERT, ZOOM_IN, ZOOM_OUT
+		OUTLINE, WRAP, SYNC, INVERT, ZOOM_IN, ZOOM_OUT, FULLSCREEN
 	}
 
 	private static final int SIZE = 18;
@@ -286,6 +286,19 @@ final class ToolIcons implements Icon {
 			g.drawLine(5, 7, 9, 7);
 			if(kind == Kind.ZOOM_IN) {
 				g.drawLine(7, 5, 7, 9);
+			}
+			break;
+		}
+		case FULLSCREEN: {
+			for(int sx = -1; sx <= 1; sx += 2) {
+				for(int sy = -1; sy <= 1; sy += 2) {
+					Path2D corner = new Path2D.Float();
+					corner.moveTo(9 + sx * 6.5, 9 + sy * 2.5);
+					corner.lineTo(9 + sx * 6.5, 9 + sy * 6.5);
+					corner.lineTo(9 + sx * 2.5, 9 + sy * 6.5);
+					g.setColor(sy < 0 ? fg : accent);
+					g.draw(corner);
+				}
 			}
 			break;
 		}

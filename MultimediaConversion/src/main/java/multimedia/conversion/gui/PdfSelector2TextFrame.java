@@ -168,6 +168,15 @@ public class PdfSelector2TextFrame extends JFrame {
 		btnInjectSelected.setBackground(new Color(176, 196, 222));
 		getContentPane().add(btnInjectSelected, "cell 4 2,alignx right,growy");
 
+		JButton btnFullScreen = new JButton("Full screen");
+		btnFullScreen.setToolTipText("Show the PDF full screen (F11 or Esc to leave)");
+		btnFullScreen.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
+		btnFullScreen.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnFullScreen.setBackground(new Color(230, 230, 250));
+		btnFullScreen.addActionListener(e -> gui.commons.tabs.ViewerFullScreen.toggle((javax.swing.JComponent) getContentPane()));
+		getContentPane().add(btnFullScreen, "cell 3 2,alignx right,growy");
+		gui.commons.tabs.ViewerFullScreen.installKey((javax.swing.JComponent) getContentPane());
+
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {

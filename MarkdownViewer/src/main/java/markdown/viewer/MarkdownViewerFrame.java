@@ -464,6 +464,11 @@ public class MarkdownViewerFrame extends ParentFrame {
 		GuiUtils.centerComponent(this, getDefaultDimension());
 
 		installBehaviors();
+		try {
+			gui.commons.tabs.ViewerFullScreen.installKey((JComponent) getContentPane()); // F11
+		} catch (LinkageError e) {
+			logger.warn("Full screen key not installed (older ScreepT): " + e);
+		}
 		btnWrap.setSelected(true);
 		btnSync.setSelected(syncScroll);
 		btnPreviewTheme.setSelected(previewThemeOverride);
@@ -609,6 +614,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 		tools.add(lblZoom);
 		tools.add(iconButton(ToolIcons.Kind.ZOOM_IN, "Larger text (" + KEY + " + plus, or " + KEY + " + mouse wheel)", () -> setZoom(zoomPercent + ZOOM_STEP)));
 		addGap(tools);
+		tools.add(iconButton(ToolIcons.Kind.FULLSCREEN, "Full screen (F11, Esc or the X at the top right to leave)", () -> toggleFullScreen()));
 		JButton btnHelp = button("?", "Shortcuts and smart editing (F1)", () -> showShortcuts());
 		btnHelp.setFont(btnHelp.getFont().deriveFont(Font.BOLD));
 		tools.add(btnHelp);
@@ -616,6 +622,15 @@ public class MarkdownViewerFrame extends ParentFrame {
 		bars.add(main);
 		bars.add(tools);
 		return bars;
+	}
+
+	/** Full screen on/off for the whole viewer (window or tab); needs ScreepT 0.9.92+, older versions just ignore it */
+	private void toggleFullScreen() {
+		try {
+			gui.commons.tabs.ViewerFullScreen.toggle((JComponent) getContentPane());
+		} catch (LinkageError e) {
+			logger.warn("Full screen needs a newer ScreepT: " + e);
+		}
 	}
 
 	/** Visible space between groups of buttons (a thin separator in the middle of it). */
