@@ -21,6 +21,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.AWTEventListener;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
@@ -119,7 +120,8 @@ public class MarkdownViewerFrame extends ParentFrame {
 	private static final String KEY = MAC ? "Cmd" : "Ctrl";
 	private static final int MENU = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-	private static final String PREF_NODE = "am-design-development/screept/markdownviewer";
+	/** Preferences node (tests use their own, so that they never change the settings of the user) */
+	static String prefNode = "am-design-development/screept/markdownviewer";
 	private static final int ZOOM_MIN = 60, ZOOM_MAX = 300, ZOOM_STEP = 10;
 	private static final int EDITOR_BASE_SIZE = 14, PREVIEW_BASE_SIZE = 15;
 
@@ -169,6 +171,10 @@ public class MarkdownViewerFrame extends ParentFrame {
 	private JLabel lblZoom;
 	private JToggleButton btnModeEditor, btnModeSplit, btnModePreview;
 	private JToggleButton btnOutline, btnWrap, btnSync, btnPreviewTheme;
+	private FindBar findBar;
+	private JComboBox<String> comboHeading;
+	private boolean updatingHeadingCombo;
+	private EmojiPicker emojiPicker;
 
 	// state
 	private File htmlFile, markdownFile;
@@ -436,16 +442,19 @@ public class MarkdownViewerFrame extends ParentFrame {
 	 * @param documentOut when given, receives the parsed document of the original text (its offsets are the editor ones)
 	 */
 	private static String renderBody(String markdown, Node[] documentOut) {
-		MarkdownText.MathExtraction math = MarkdownText.extractMath(markdown);
+		// the front matter is shown as a small table: here it is blanked (same length, so the offsets of the outline stay right)
+		String body = MarkdownExtras.blankFrontMatter(markdown);
+		MarkdownText.MathExtraction math = MarkdownText.extractMath(body);
 		Node document = getParser().parse(math.markdown);
 		String html = getRenderer().render(document);
 		if(documentOut != null)
-			documentOut[0] = math.isEmpty() ? document : getParser().parse(markdown);
-		return MarkdownText.restoreMath(html, math, (tex, display) -> {
+			documentOut[0] = math.isEmpty() ? document : getParser().parse(body);
+		html = MarkdownText.restoreMath(html, math, (tex, display) -> {
 			String attribute = MarkdownText.htmlEscape(tex);
 			return display ? "<div class=\"math display\" data-tex=\"" + attribute + "\">" + TexLite.toHtml(tex) + "</div>"
 					: "<span class=\"math\" data-tex=\"" + attribute + "\">" + TexLite.toHtml(tex) + "</span>";
 		});
+		return MarkdownExtras.frontMatterHtml(markdown) + MarkdownExtras.emojify(MarkdownExtras.highlightCode(MarkdownExtras.applyAlerts(html)));
 	}
 
 	// ------------------------------------------------------------------ init
@@ -456,7 +465,13 @@ public class MarkdownViewerFrame extends ParentFrame {
 
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(buildToolbars(), BorderLayout.NORTH);
-		getContentPane().add(buildCenter(), BorderLayout.CENTER);
+		JComponent center = buildCenter();
+		findBar = new FindBar(textAreaMarkDown, textAreaPreview, () -> viewMode == ViewMode.PREVIEW,
+				() -> (viewMode == ViewMode.PREVIEW ? (JComponent) textAreaPreview : textAreaMarkDown).requestFocusInWindow());
+		JPanel centerWrap = new JPanel(new BorderLayout());
+		centerWrap.add(findBar, BorderLayout.NORTH);
+		centerWrap.add(center, BorderLayout.CENTER);
+		getContentPane().add(centerWrap, BorderLayout.CENTER);
 		getContentPane().add(buildStatusBar(), BorderLayout.SOUTH);
 
 		setIconImages(AppIcon.images());
@@ -553,6 +568,15 @@ public class MarkdownViewerFrame extends ParentFrame {
 		JButton btnHeading = button("H", "Heading: cycles # / ## / ### / none on the current line (" + KEY + "+H). Level up / down: " + KEY + "+Shift+] / [ (or " + KEY + "+Shift+Up / Down)", () -> cycleHeading());
 		btnHeading.setFont(btnHeading.getFont().deriveFont(Font.BOLD));
 		tools.add(btnHeading);
+		comboHeading = new JComboBox<String>(new String[] {"Paragraph", "Heading 1", "Heading 2", "Heading 3", "Heading 4", "Heading 5", "Heading 6"});
+		comboHeading.setToolTipText("Heading level of the current line (or of the selected lines); it shows the level of the line of the caret");
+		comboHeading.setFocusable(false);
+		comboHeading.setMaximumSize(comboHeading.getPreferredSize());
+		comboHeading.addActionListener(e -> {
+			if(!updatingHeadingCombo && smartEditor != null)
+				smartEditor.setHeading(comboHeading.getSelectedIndex());
+		});
+		tools.add(comboHeading);
 		tools.add(btnBold);
 		tools.add(btnItalic);
 		tools.add(btnStrike);
@@ -620,8 +644,24 @@ public class MarkdownViewerFrame extends ParentFrame {
 		btnHelp.setFont(btnHelp.getFont().deriveFont(Font.BOLD));
 		tools.add(btnHelp);
 
+		JToolBar extras = newToolBar();
+		extras.add(button("Find", "Find in the document, with case / whole word / regular expression (" + KEY + "+F, F3 for the next match)", () -> openFind(false)));
+		extras.add(button("Replace", "Find and replace (" + KEY + "+Alt+F)", () -> openFind(true)));
+		addGap(extras);
+		extras.add(button("Check", "Check the document: broken links, images and #anchors, undefined references, heading levels, unclosed code fences, uneven tables (" + KEY + "+Shift+K)", () -> showCheck()));
+		addGap(extras);
+		extras.add(button("Sort \u25b2", "Sort the table at the caret by the column of the caret, ascending (Alt+Shift+Up)", () -> smartEditor.sortTable(true)));
+		extras.add(button("Sort \u25bc", "Sort the table at the caret by the column of the caret, descending (Alt+Shift+Down)", () -> smartEditor.sortTable(false)));
+		addGap(extras);
+		final JButton btnEmoji = button("Emoji", "Choose an emoji to insert: the last used ones on top, search by name or keyword (" + KEY + "+Shift+E). :name: shortcodes work too", null);
+		btnEmoji.addActionListener(e -> openEmojiPicker(btnEmoji));
+		extras.add(btnEmoji);
+		extras.add(button("Paste image", "Saves the image of the clipboard in the images folder next to the file and inserts its link (" + KEY + "+Shift+V; " + KEY + "+V does it when only an image is copied)", () -> smartEditor.pasteImage()));
+		extras.add(button("Copy rich text", "Copies the rendered document with its formatting: paste it in Word, Outlook or Gmail (" + KEY + "+Shift+C; images stay links)", () -> copyRich()));
+
 		bars.add(main);
 		bars.add(tools);
+		bars.add(extras);
 		return bars;
 	}
 
@@ -677,7 +717,8 @@ public class MarkdownViewerFrame extends ParentFrame {
 		b.setFocusable(false);
 		b.setCursor(GuiUtils.CURSOR_HAND);
 		b.putClientProperty("JButton.buttonType", "toolBarButton");
-		b.addActionListener(e -> action.run());
+		if(action != null)
+			b.addActionListener(e -> action.run());
 		return b;
 	}
 
@@ -908,6 +949,39 @@ public class MarkdownViewerFrame extends ParentFrame {
 		bind(KeyEvent.VK_ADD, 0, "mdv-zoomin3", () -> setZoom(zoomPercent + ZOOM_STEP));
 		bind(KeyEvent.VK_MINUS, 0, "mdv-zoomout", () -> setZoom(zoomPercent - ZOOM_STEP));
 		bind(KeyEvent.VK_SUBTRACT, 0, "mdv-zoomout2", () -> setZoom(zoomPercent - ZOOM_STEP));
+		bind(KeyEvent.VK_F, 0, "mdv-find", () -> openFind(false));
+		bind(KeyEvent.VK_F, InputEvent.ALT_MASK, "mdv-replace", () -> openFind(true));
+		bind(KeyEvent.VK_K, InputEvent.SHIFT_MASK, "mdv-check", () -> showCheck());
+		bind(KeyEvent.VK_C, InputEvent.SHIFT_MASK, "mdv-copyrich", () -> copyRich());
+		bind(KeyEvent.VK_E, InputEvent.SHIFT_MASK, "mdv-emoji", () -> openEmojiPicker(textAreaMarkDown));
+		bind(KeyEvent.VK_V, InputEvent.SHIFT_MASK, "mdv-pasteimage", () -> smartEditor.pasteImage());
+		for(JComponent c : new JComponent[] {getRootPane(), textAreaMarkDown, textAreaHtml, textAreaPreview}) {
+			int condition = c == getRootPane() ? JComponent.WHEN_IN_FOCUSED_WINDOW : JComponent.WHEN_FOCUSED;
+			c.getInputMap(condition).put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "mdv-findnext");
+			c.getActionMap().put("mdv-findnext", new AbstractAction() {
+				private static final long serialVersionUID = 1L;
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					findAgain(true);
+				}
+			});
+			c.getInputMap(condition).put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, InputEvent.SHIFT_MASK), "mdv-findprev");
+			c.getActionMap().put("mdv-findprev", new AbstractAction() {
+				private static final long serialVersionUID = 1L;
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					findAgain(false);
+				}
+			});
+		}
+		textAreaPreview.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, MENU), "mdv-find");
+		textAreaPreview.getActionMap().put("mdv-find", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openFind(false);
+			}
+		});
 		bind(KeyEvent.VK_0, 0, "mdv-zoomreset", () -> setZoom(100));
 		bind(KeyEvent.VK_NUMPAD0, 0, "mdv-zoomreset2", () -> setZoom(100));
 		getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), "mdv-help");
@@ -997,7 +1071,20 @@ public class MarkdownViewerFrame extends ParentFrame {
 
 	/** Swing renders html 3.2: tables need their border and spacing as attributes. */
 	private String decorate(String html) {
-		return html == null ? "" : html.replace("<table>", "<table border=\"1\" cellpadding=\"6\" cellspacing=\"0\">");
+		if(html == null)
+			return "";
+		String page = html.replace("<table>", "<table border=\"1\" cellpadding=\"6\" cellspacing=\"0\">");
+		// the boxes become clickable only when the html and the markdown agree on how many tasks there are (an indented code block could shift the numbers)
+		if(source == Source.MARKDOWN && countOf(page, "task-list-item-checkbox") == MarkdownExtras.taskLines(textAreaMarkDown.getText()).size())
+			page = MarkdownExtras.taskLinks(page);
+		return MarkdownExtras.swingTokens(page, previewDark);
+	}
+
+	private static int countOf(String text, String part) {
+		int n = 0;
+		for(int i = text.indexOf(part); i >= 0; i = text.indexOf(part, i + part.length()))
+			n++;
+		return n;
 	}
 
 	private void setHtmlSourceText(String html) {
@@ -1060,6 +1147,12 @@ public class MarkdownViewerFrame extends ParentFrame {
 		String serif = pickFont("Cambria Math", "Cambria", "STIX Two Math", "Times New Roman", "Serif");
 		sheet.addRule(".math {font-family:" + serif + "; color:" + head + "; font-size:" + Math.round(px * 1.08f) + "px;}");
 		sheet.addRule("div.math {text-align:center; margin-top:8px; margin-bottom:8px;}");
+		for(String rule : MarkdownExtras.swingAlertRules(dark))
+			sheet.addRule(rule);
+		sheet.addRule("li.task-list-item {list-style-type:none;}");
+		sheet.addRule("a.task {color:" + link + "; text-decoration:none; font-size:" + Math.round(px * 1.15f) + "px;}");
+		sheet.addRule("table.frontmatter {margin-bottom:10px;}");
+		sheet.addRule("table.frontmatter th {color:" + muted + "; background-color:" + bg + ";}");
 
 		textAreaPreview.setEditorKit(kit);
 		textAreaPreview.setBackground(Color.decode(bg));
@@ -1108,7 +1201,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 		for(Node node : document.getDescendants()) {
 			if(node instanceof Heading) {
 				Heading heading = (Heading) node;
-				items.add(new OutlineItem(heading.getLevel(), heading.getText().toString().trim(), heading.getStartOffset()));
+				items.add(new OutlineItem(heading.getLevel(), MarkdownExtras.emojify(heading.getText().toString().trim()), heading.getStartOffset()));
 			}
 		}
 
@@ -1175,11 +1268,44 @@ public class MarkdownViewerFrame extends ParentFrame {
 		int words = trimmed.isEmpty() ? 0 : trimmed.split("\\s+").length;
 		int lines = textAreaMarkDown.getLineCount();
 		int minutes = Math.max(1, Math.round(words / 200f));
-		lblStats.setText(words + " words   " + markdown.length() + " chars   " + lines + " lines   ~" + minutes + " min read   " + millis + " ms   "
+		int[] tasks = MarkdownExtras.taskProgress(markdown);
+		lblStats.setText(words + " words   " + markdown.length() + " chars   " + lines + " lines   ~" + minutes + " min read   "
+				+ (tasks[1] > 0 ? "tasks " + tasks[0] + "/" + tasks[1] + "   " : "") + millis + " ms   "
 				+ (source == Source.MARKDOWN ? "source: markdown" : "source: html (edited)"));
 	}
 
+	/** The caret keeps the height of the old font until it is moved: put it again where it is (the selection is kept). */
+	private static void refreshCaret(final JTextComponent c) {
+		SwingUtilities.invokeLater(() -> {
+			javax.swing.text.Caret caret = c.getCaret();
+			if(caret == null)
+				return;
+			int dot = caret.getDot(), mark = caret.getMark();
+			if(dot == mark) {
+				caret.setDot(dot);
+			} else {
+				caret.setDot(mark);
+				caret.moveDot(dot);
+			}
+		});
+	}
+
+	private void syncHeadingCombo() {
+		if(comboHeading == null || smartEditor == null)
+			return;
+		int level = smartEditor.headingLevelAtCaret();
+		if(comboHeading.getSelectedIndex() != level) {
+			updatingHeadingCombo = true;
+			try {
+				comboHeading.setSelectedIndex(level);
+			} finally {
+				updatingHeadingCombo = false;
+			}
+		}
+	}
+
 	private void updateCaretStatus() {
+		syncHeadingCombo();
 		if(lblStatus != null && lblStatus.getText() != null && (lblStatus.getText().startsWith("Ln ") || lblStatus.getText().trim().isEmpty() || lblStatus.getText().equals("Ready"))) {
 			lblStatus.setText("Ln " + (textAreaMarkDown.getCaretLineNumber() + 1) + ", Col " + (textAreaMarkDown.getCaretOffsetFromLineStart() + 1));
 		}
@@ -1242,9 +1368,149 @@ public class MarkdownViewerFrame extends ParentFrame {
 		}
 		if(lblZoom != null)
 			lblZoom.setText(zoomPercent + "%");
+		if(textAreaMarkDown != null) {
+			refreshCaret(textAreaMarkDown);
+			refreshCaret(textAreaHtml);
+		}
 		if(render) {
 			applyPreviewStyle();
 			renderNow();
+		}
+	}
+
+	// ------------------------------------------------------------------ find, check, rich copy, tasks
+
+	/** The emoji window, under the button (or the editor when it comes from the shortcut). */
+	private void openEmojiPicker(final Component anchor) {
+		if(emojiPicker != null)
+			emojiPicker.dispose();
+		final Preferences prefs = Preferences.userRoot().node(prefNode);
+		String stored = "";
+		try {
+			stored = prefs.get("emojiRecent", "");
+		} catch (Throwable t) {
+			// preferences not available: no recent list
+		}
+		Component owner = dialogOwner();
+		emojiPicker = new EmojiPicker(owner instanceof java.awt.Window ? (java.awt.Window) owner : null, stored, text -> {
+			textAreaMarkDown.replaceSelection(text);
+			textAreaMarkDown.requestFocusInWindow();
+		}, saved -> {
+			try {
+				prefs.put("emojiRecent", saved);
+			} catch (Throwable t) {
+				// not persisted
+			}
+		});
+		emojiPicker.showUnder(anchor == textAreaMarkDown ? findAnchor() : anchor);
+	}
+
+	private Component findAnchor() {
+		return scrollPaneMarkDown.isShowing() ? scrollPaneMarkDown : this;
+	}
+
+	private void openFind(boolean withReplace) {
+		String seed = viewMode == ViewMode.PREVIEW ? textAreaPreview.getSelectedText() : textAreaMarkDown.getSelectedText();
+		findBar.open(withReplace, seed);
+	}
+
+	private void findAgain(boolean forward) {
+		if(findBar.findField().getText().isEmpty())
+			openFind(false);
+		else if(!findBar.findNext(forward))
+			setStatus("Not found");
+	}
+
+	/** The window to put dialogs on: in a tab of the file editor this frame is only a stand-in. */
+	private Component dialogOwner() {
+		return host != null && SwingUtilities.getWindowAncestor(host) != null ? SwingUtilities.getWindowAncestor(host) : this;
+	}
+
+	/** Lists the problems of the document; double click goes to the line. */
+	private void showCheck() {
+		File base = markdownFile != null ? markdownFile.getAbsoluteFile().getParentFile() : null;
+		final List<MarkdownLint.Issue> issues = MarkdownLint.check(textAreaMarkDown.getText(), base);
+		int errors = 0, warnings = 0;
+		for(MarkdownLint.Issue i : issues) {
+			if(i.level == MarkdownLint.Level.ERROR)
+				errors++;
+			else if(i.level == MarkdownLint.Level.WARNING)
+				warnings++;
+		}
+		if(issues.isEmpty()) {
+			setStatus("Document check: no problems found" + (base == null ? " (save the file to check its relative links too)" : ""));
+			JOptionPane.showMessageDialog(dialogOwner(), "No problems found.\nWeb links are not visited.", "Check document", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		DefaultListModel<MarkdownLint.Issue> model = new DefaultListModel<MarkdownLint.Issue>();
+		for(MarkdownLint.Issue i : issues)
+			model.addElement(i);
+		final JList<MarkdownLint.Issue> list = new JList<MarkdownLint.Issue>(model);
+		list.setCellRenderer(new javax.swing.DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Component getListCellRendererComponent(JList<?> l, Object value, int index, boolean selected, boolean focus) {
+				MarkdownLint.Issue i = (MarkdownLint.Issue) value;
+				JLabel label = (JLabel) super.getListCellRendererComponent(l, "line " + i.line + "   " + i.message, index, selected, focus);
+				label.setIcon(null);
+				if(!selected)
+					label.setForeground(i.level == MarkdownLint.Level.ERROR ? new Color(230, 90, 90) : i.level == MarkdownLint.Level.WARNING ? new Color(210, 160, 40) : UIManager.getColor("Label.disabledForeground"));
+				label.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 8));
+				return label;
+			}
+		});
+		list.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				if(e.getClickCount() == 2 && list.getSelectedValue() != null)
+					goToLine(list.getSelectedValue().line);
+			}
+		});
+		list.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER && list.getSelectedValue() != null)
+					goToLine(list.getSelectedValue().line);
+			}
+		});
+		JScrollPane scroll = new JScrollPane(list);
+		scroll.setPreferredSize(new Dimension(680, 320));
+		JPanel panel = new JPanel(new BorderLayout(0, 6));
+		panel.add(new JLabel(issues.size() + " findings: " + errors + " errors, " + warnings + " warnings, " + (issues.size() - errors - warnings) + " notes   (double click: go to the line; web links are not visited)"), BorderLayout.NORTH);
+		panel.add(scroll, BorderLayout.CENTER);
+		JOptionPane.showMessageDialog(dialogOwner(), panel, "Check document", JOptionPane.PLAIN_MESSAGE);
+	}
+
+	private void goToLine(int line) {
+		try {
+			jumpTo(textAreaMarkDown.getLineStartOffset(Math.max(0, Math.min(line - 1, textAreaMarkDown.getLineCount() - 1))));
+		} catch (BadLocationException e) {
+			logger.debug("Cannot go to line " + line);
+		}
+	}
+
+	/** Rendered document on the clipboard as html + text, for rich text editors. */
+	private void copyRich() {
+		String text = textAreaMarkDown.getSelectedText();
+		boolean selection = text != null && !text.trim().isEmpty();
+		String markdown = selection ? text : textAreaMarkDown.getText();
+		String body = source == Source.MARKDOWN || selection ? markdownToHtml(markdown) : textAreaHtml.getText();
+		ImagePaste.clipboard().setContents(new ImagePaste.RichSelection("<html><body>" + MarkdownExtras.richHtml(body) + "</body></html>", markdown), null);
+		setStatus(selection ? "Selection copied with its formatting" : "Document copied with its formatting: paste it in Word, Outlook or Gmail");
+	}
+
+	/** A click on a box of the preview: the same box in the markdown. */
+	private void toggleTaskInSource(String number) {
+		if(source != Source.MARKDOWN)
+			return;
+		try {
+			String text = textAreaMarkDown.getText();
+			int at = MarkdownExtras.taskMarkOffset(text, Integer.parseInt(number));
+			if(at < 0)
+				return;
+			textAreaMarkDown.replaceRange(text.charAt(at) == ' ' ? "x" : " ", at, at + 1);
+		} catch (NumberFormatException e) {
+			logger.debug("Invalid task link " + number);
 		}
 	}
 
@@ -1368,6 +1634,10 @@ public class MarkdownViewerFrame extends ParentFrame {
 	private void followLink(HyperlinkEvent e) {
 		try {
 			String description = e.getDescription();
+			if(description != null && description.startsWith(MarkdownExtras.TASK_SCHEME)) {
+				toggleTaskInSource(description.substring(MarkdownExtras.TASK_SCHEME.length()));
+				return;
+			}
 			if(description != null && description.startsWith("#")) {
 				textAreaPreview.scrollToReference(description.substring(1));
 				return;
@@ -1405,6 +1675,8 @@ public class MarkdownViewerFrame extends ParentFrame {
 				+ "img{max-width:100%}hr{border:0;border-top:1px solid var(--border)}\n"
 				+ "li.task-list-item{list-style:none}li.task-list-item input{margin:0 .4em 0 -1.3em}\n"
 				+ ".math{font-family:'Cambria Math','STIX Two Math','Times New Roman',serif}div.math{text-align:center;margin:1em 0;overflow-x:auto}\n"
+				+ "table.frontmatter{border:0;margin-bottom:1em}table.frontmatter th,table.frontmatter td{border:0;background:none;padding:.15em .8em .15em 0;text-align:left;vertical-align:top}table.frontmatter th{color:var(--muted)}\n"
+				+ MarkdownExtras.exportAlertCss() + MarkdownExtras.exportTokenCss()
 				+ "</style>\n" + (hasMath ? KATEX : "") + "</head>\n<body>\n" + body + "\n</body>\n</html>\n";
 	}
 
@@ -1498,6 +1770,13 @@ public class MarkdownViewerFrame extends ParentFrame {
 			{"](#   and   ](", "Suggests the headings of the document, then files and folders next to it (file.md# for its headings)"},
 			{k + "+V on a selection", "Pasting a url makes the link [selection](url)"},
 			{k + "+E", "Exports a standalone html page: images embedded, links fixed, formulas with KaTeX"},
+			{k + "+F / " + k + "+Alt+F / F3", "Find (case, whole word, regular expression; works in the preview too) / find and replace / next match"},
+			{k + "+Shift+K", "Checks the document: broken links, images and #anchors, undefined references, heading levels, code fences, tables"},
+			{"Alt+Shift+Up / Down", "Sorts the table at the caret by the column of the caret (numbers by value)"},
+			{k + "+V", "Pasting cells copied from a spreadsheet makes a table; pasting only an image saves it in images/ and inserts its link (" + k + "+Shift+V forces it)"},
+			{k + "+Shift+C", "Copies the rendered document with its formatting (to paste in Word, Outlook, Gmail)"},
+			{"> [!NOTE]  > [!TIP]  ...", "GitHub alerts (note, tip, important, warning, caution), fenced code in many languages is colored, :tada: emoji shortcodes, the front matter is a small table"},
+			{"Click a box in the preview", "Checks / unchecks that task in the markdown (the status bar counts them)"},
 			{k + "+1 / 2 / 3,  " + k + "+Shift+O", "Editor, split, preview; outline of the headings"},
 		};
 		StringBuilder html = new StringBuilder("<html><table cellpadding=3>");
@@ -1662,7 +1941,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 
 	private void loadPreferences() {
 		try {
-			Preferences prefs = Preferences.userRoot().node(PREF_NODE);
+			Preferences prefs = Preferences.userRoot().node(prefNode);
 			zoomPercent = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, prefs.getInt("zoom", 100)));
 			previewThemeOverride = prefs.getBoolean("invertPreview", false);
 			syncScroll = prefs.getBoolean("syncScroll", true);
@@ -1678,7 +1957,7 @@ public class MarkdownViewerFrame extends ParentFrame {
 
 	private void savePreferences() {
 		try {
-			Preferences prefs = Preferences.userRoot().node(PREF_NODE);
+			Preferences prefs = Preferences.userRoot().node(prefNode);
 			prefs.putInt("zoom", zoomPercent);
 			prefs.putBoolean("invertPreview", previewThemeOverride);
 			prefs.putBoolean("syncScroll", syncScroll);

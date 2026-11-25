@@ -122,6 +122,8 @@ public class SmartMarkdownEditor {
 		bind(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.SHIFT_MASK | InputEvent.ALT_MASK), "mdx-table", () -> formatTables());
 		bind(KeyStroke.getKeyStroke(KeyEvent.VK_T, MENU | InputEvent.SHIFT_MASK), "mdx-toc", () -> insertOrUpdateToc());
 		bind(KeyStroke.getKeyStroke(KeyEvent.VK_V, MENU), "mdx-paste", () -> smartPaste());
+		bind(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.SHIFT_MASK | InputEvent.ALT_MASK), "mdx-sortasc", () -> sortTable(true));
+		bind(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.SHIFT_MASK | InputEvent.ALT_MASK), "mdx-sortdesc", () -> sortTable(false));
 
 		installCompletion();
 	}
@@ -298,6 +300,40 @@ public class SmartMarkdownEditor {
 			logger.warn("Cannot change the heading", e);
 		}
 		area.requestFocusInWindow();
+	}
+
+	/** Sets the heading level (0 = plain paragraph) of the selected lines, or of the line of the caret. */
+	public void setHeading(int level) {
+		try {
+			int[] lines = selectedLines();
+			String[] all = allLines();
+			area.beginAtomicEdit();
+			try {
+				for(int i = lines[0]; i <= lines[1]; i++) {
+					if(MarkdownText.isInsideFence(all, i))
+						continue;
+					String text = line(i);
+					if(lines[0] != lines[1] && text.trim().isEmpty())
+						continue; // blank lines between selected paragraphs stay blank
+					replaceLine(i, MarkdownText.changeHeadingLevel(text, level - MarkdownText.headingLevel(text)));
+				}
+			} finally {
+				area.endAtomicEdit();
+			}
+		} catch (Exception e) {
+			logger.warn("Cannot set the heading level", e);
+		}
+		area.requestFocusInWindow();
+	}
+
+	/** Heading level of the line of the caret (0: not a heading, or inside a code fence). */
+	public int headingLevelAtCaret() {
+		try {
+			int index = caretLine();
+			return MarkdownText.isInsideFence(allLines(), index) ? 0 : MarkdownText.headingLevel(line(index));
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	// ------------------------------------------------------------------ lists
@@ -584,6 +620,51 @@ public class SmartMarkdownEditor {
 		return true;
 	}
 
+	/** Sorts the table at the caret by the column of the caret (header and |---| row stay on top). */
+	public void sortTable(boolean ascending) {
+		try {
+			String[] all = allLines();
+			int caretLine = caretLine();
+			if(!MarkdownText.isTableLine(all[caretLine]) || MarkdownText.isInsideFence(all, caretLine)) {
+				host.status("Put the caret in a table cell to sort that table by its column");
+				return;
+			}
+			int first = caretLine, last = caretLine;
+			while(first > 0 && MarkdownText.isTableLine(all[first - 1]))
+				first--;
+			while(last < all.length - 1 && MarkdownText.isTableLine(all[last + 1]))
+				last++;
+			int delimiter = -1;
+			for(int i = first + 1; i <= last; i++) {
+				if(MarkdownText.isDelimiterRow(all[i])) {
+					delimiter = i;
+					break;
+				}
+			}
+			if(delimiter < 0 || caretLine < delimiter) {
+				host.status(caretLine < delimiter ? "Put the caret in a row of the table body to choose the column" : "No markdown table here (a table needs its |---| row)");
+				return;
+			}
+			int column = MarkdownExtras.columnAt(all[caretLine], area.getCaretPosition() - area.getLineStartOffset(caretLine));
+			String[] rows = Arrays.copyOfRange(all, delimiter - 1, last + 1);
+			for(int i = 0; i < rows.length; i++)
+				rows[i] = MarkdownText.stripCr(rows[i]);
+			String[] sorted = MarkdownExtras.sortTable(rows, column, ascending);
+			if(sorted == null)
+				return;
+			area.beginAtomicEdit();
+			try {
+				for(int i = 0; i < sorted.length; i++)
+					replaceLine(delimiter - 1 + i, sorted[i]);
+			} finally {
+				area.endAtomicEdit();
+			}
+			host.status("Table sorted by column " + (column + 1) + (ascending ? " (ascending)" : " (descending)"));
+		} catch (Exception e) {
+			logger.warn("Cannot sort the table", e);
+		}
+	}
+
 	// ------------------------------------------------------------------ table of contents
 
 	/** Updates the table of contents between the markers, or inserts it (with the markers) at the caret line. */
@@ -628,12 +709,54 @@ public class SmartMarkdownEditor {
 
 	// ------------------------------------------------------------------ paste
 
-	/** A url pasted on a selected text makes the link [text](url). */
+	/** Pastes the image of the clipboard as images/image-....png and a link to it. */
+	public void pasteImage() {
+		File base = host.baseDirectory();
+		if(base == null) {
+			host.status("Save the file first: the image is saved in an images folder next to it");
+			return;
+		}
+		java.awt.image.BufferedImage image = ImagePaste.fromClipboard(ImagePaste.clipboard());
+		if(image == null) {
+			host.status("No image on the clipboard");
+			return;
+		}
+		try {
+			File saved = ImagePaste.save(image, base);
+			area.replaceSelection(ImagePaste.link(base, saved));
+			host.status("Image saved as " + ImagePaste.FOLDER + "/" + saved.getName());
+		} catch (Exception e) {
+			logger.warn("Cannot save the pasted image", e);
+			host.status("Cannot save the image: " + e.getMessage());
+		}
+	}
+
+	/** Paste: an url on a selected text makes the link [text](url), spreadsheet cells make a table, only an image is saved and linked. */
 	private void smartPaste() {
+		try {
+			java.awt.datatransfer.Clipboard clipboard = ImagePaste.clipboard();
+			if(!clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor) && clipboard.isDataFlavorAvailable(DataFlavor.imageFlavor) && host.baseDirectory() != null) {
+				pasteImage();
+				return;
+			}
+			if(clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+				String table = MarkdownExtras.tabularToTable((String) clipboard.getData(DataFlavor.stringFlavor));
+				if(table != null && !MarkdownText.isInsideFence(allLines(), caretLine())) {
+					// a table cannot touch the paragraph above it: one blank line before
+					String before = area.getText(0, area.getSelectionStart());
+					String gap = before.isEmpty() || before.endsWith("\n\n") ? "" : before.endsWith("\n") ? "\n" : "\n\n";
+					area.replaceSelection(gap + table + "\n");
+					host.status("Table created from the pasted cells");
+					return;
+				}
+			}
+		} catch (Exception e) {
+			// not text / no clipboard access: normal paste below
+		}
 		String selected = area.getSelectedText();
 		if(selected != null && !selected.isEmpty() && selected.indexOf('\n') < 0) {
 			try {
-				Object data = Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+				Object data = ImagePaste.clipboard().getData(DataFlavor.stringFlavor);
 				String url = data == null ? "" : data.toString().trim();
 				if(URL.matcher(url).matches()) {
 					int s = area.getSelectionStart();
@@ -646,7 +769,10 @@ public class SmartMarkdownEditor {
 				// not text: normal paste
 			}
 		}
-		area.paste();
+		if(ImagePaste.testClipboard == null)
+			area.paste();
+		else
+			area.getTransferHandler().importData(area, ImagePaste.testClipboard.getContents(null)); // tests: their own clipboard
 	}
 
 	// ------------------------------------------------------------------ link completion

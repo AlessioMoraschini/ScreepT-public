@@ -208,6 +208,56 @@ public class UpdatesManagerTest {
 		assertNull(manager("0.9.99").lookForUpdates(true));
 	}
 
+	/** The check started from the menu (not silent) shows a progress window: it must come back with the answer, and the window must be gone */
+	@Test
+	public void checkWithProgressWindowReturnsAndClosesTheWindow() throws Exception {
+		org.junit.Assume.assumeFalse("needs a display server", java.awt.GraphicsEnvironment.isHeadless());
+		for (final String server : new String[] {"0.9.95", "0.9.91"}) {
+			publish(server);
+			final UpdatesManager m = manager("0.9.91");
+			final Object[] result = new Object[2];
+			Thread worker = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						result[0] = m.lookForUpdates(false);
+						result[1] = Boolean.TRUE;
+					} catch (Throwable t) {
+						result[1] = t;
+					}
+				}
+			}, "update-check-worker");
+			worker.start();
+			worker.join(20000);
+			if (worker.isAlive()) {
+				StringBuilder dump = new StringBuilder("the check did not come back in 20 s:\n");
+				for (java.util.Map.Entry<Thread, StackTraceElement[]> e : Thread.getAllStackTraces().entrySet()) {
+					String n = e.getKey().getName();
+					if (!n.startsWith("Reference") && !n.startsWith("Finalizer") && !n.startsWith("Signal") && !n.startsWith("Attach") && !n.startsWith("main")) {
+						dump.append(n).append('\n');
+						for (StackTraceElement el : e.getValue())
+							dump.append("    ").append(el).append('\n');
+					}
+				}
+				fail(dump.toString());
+			}
+			assertEquals(Boolean.TRUE, result[1]);
+			assertEquals("0.9.95".equals(server) ? "0.9.95" : null, result[0]);
+			// the progress window closes by itself, a moment after
+			for (int i = 0; i < 50 && anyProgressWindowShowing(); i++)
+				Thread.sleep(100);
+			assertFalse("the progress window is still on screen", anyProgressWindowShowing());
+		}
+	}
+
+	private static boolean anyProgressWindowShowing() {
+		for (java.awt.Window w : java.awt.Window.getWindows()) {
+			if (w.isShowing())
+				return true;
+		}
+		return false;
+	}
+
 	@Test
 	public void unreachableUpdatesAreReportedAsSuchNotAsNoNews() throws Exception {
 		UpdatesManager m = manager("0.9.91");

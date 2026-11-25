@@ -51,6 +51,19 @@ public class MarkdownViewerFrameTest {
 	@Rule
 	public TemporaryFolder tmp = new TemporaryFolder();
 
+	/** The tests write the settings (zoom, view mode...) in their own node, never in the one of the user */
+	@org.junit.BeforeClass
+	public static void isolatePreferences() {
+		MarkdownViewerFrame.prefNode = "am-design-development/screept/markdownviewer-test";
+	}
+
+	@org.junit.AfterClass
+	public static void removeTestPreferences() throws Exception {
+		java.util.prefs.Preferences.userRoot().node(MarkdownViewerFrame.prefNode).removeNode();
+		MarkdownViewerFrame.prefNode = "am-design-development/screept/markdownviewer";
+	}
+
+
 	private MarkdownViewerFrame frame;
 	private File mdFile;
 

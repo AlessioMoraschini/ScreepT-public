@@ -52,16 +52,22 @@ public class OptionSection extends JPanel {
 
 	private static final int CHECK_MIN_COLUMN_WIDTH = 280;
 	private static final int CHECK_MAX_COLUMNS = 4;
+	private static final int CHECK_COLUMN_GAP = 20;
+	/** A combo box or a text field never grows beyond this (they filled the whole width of a wide window) */
+	private static final int COMBO_MAX_WIDTH = 480;
+	private static final int TEXT_MAX_WIDTH = 640;
 
 	private final String searchableTitle;
 	private final int level;
 	private final JLabel arrowLabel = new JLabel(EXPANDED_ICON);
 	private final JPanel contentPanel = new JPanel(new MigLayout("wrap 1, fillx, insets 0, gapy 12, hidemode 3", "[grow,fill]"));
 	private final JPanel rowsPanel = new JPanel(new MigLayout("wrap 2, fillx, insets 0, gap 20 10, hidemode 3", "[right][grow,fill]"));
-	private final JPanel checksPanel = new JPanel(new MigLayout(checksLayout(3), checksColumns(3)));
+	// one column to start with: the preferred width of the section is that of the longest check box (with long texts, e.g. in Italian,
+	// three columns made the whole window wider than the screen); more columns come when the window gives the space
+	private final JPanel checksPanel = new JPanel(new MigLayout(checksLayout(1), checksColumns(1)));
 	private final List<Item> items = new ArrayList<>();
 	private final List<OptionSection> subsections = new ArrayList<>();
-	private int checkColumns = 3;
+	private int checkColumns = 1;
 	private boolean collapsed;
 
 	OptionSection(String title, String description, int level) {
@@ -200,7 +206,11 @@ public class OptionSection extends JPanel {
 	}
 
 	private void updateCheckColumns() {
-		int columns = Math.max(1, Math.min(CHECK_MAX_COLUMNS, checksPanel.getWidth() / CHECK_MIN_COLUMN_WIDTH));
+		int widest = CHECK_MIN_COLUMN_WIDTH;
+		for (Component c : checksPanel.getComponents()) {
+			widest = Math.max(widest, c.getPreferredSize().width + CHECK_COLUMN_GAP);
+		}
+		int columns = Math.max(1, Math.min(CHECK_MAX_COLUMNS, checksPanel.getWidth() / widest));
 		if (columns != checkColumns) {
 			checkColumns = columns;
 			MigLayout layout = (MigLayout) checksPanel.getLayout();
@@ -235,7 +245,13 @@ public class OptionSection extends JPanel {
 		if (control instanceof JSpinner) {
 			return "w 100!";
 		}
-		if (control instanceof JComboBox || control instanceof JSlider || control instanceof JTextField) {
+		if (control instanceof JComboBox) {
+			return "growx, wmin 180, wmax " + COMBO_MAX_WIDTH;
+		}
+		if (control instanceof JTextField) {
+			return "growx, pushx, wmin 180, wmax " + TEXT_MAX_WIDTH;
+		}
+		if (control instanceof JSlider) {
 			return "growx, pushx, wmin 180";
 		}
 		return "";

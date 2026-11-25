@@ -31,7 +31,7 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 
 	@Override
 	public String getVersion() {
-		return "1.5.0";
+		return "1.6.0";
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class MarkdownViewerPlugin extends PluginAbstractParent implements IPlugi
 
 	@Override
 	public String getDescription() {
-		return "A markdown editor with live preview, smart lists, table formatter, table of contents, link completion, math and standalone html export (also converts from/to html)";
+		return "A markdown editor with live preview, find and replace, heading level combo, emoji picker, document check (broken links and anchors), colored code, GitHub alerts, clickable tasks, table sort and paste, image paste, smart lists, table of contents, math and standalone html export (also converts from/to html)";
 	}
 
 	@Override

@@ -123,13 +123,33 @@ public class UpdatesManager {
 			}
 		} finally {
 			if(updateManagerProgbar != null) {
-				updateManagerProgbar.getDialog().dispose();
+				// dispose() from this worker thread waits for the screen thread: when that is busy the check never came back
+				// (no answer dialog, menu item disabled for ever)
+				updateManagerProgbar.closeWithoutWaiting();
+				waitScreenThread();
 			}
 		}
 		
 		return newVersionAvailable;
 	}
 	
+	/**
+	 * The progress window is closed by the screen thread: the next dialog (the answer of the check) must be created only after
+	 * that, otherwise it can get the closing window as its owner and disappear with it.
+	 */
+	private static void waitScreenThread() {
+		if(javax.swing.SwingUtilities.isEventDispatchThread())
+			return;
+		final java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
+		javax.swing.SwingUtilities.invokeLater(done::countDown);
+		try {
+			// bounded: the answer must not depend on a busy screen thread
+			done.await(2, java.util.concurrent.TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+	}
+
 	public boolean udpdatesReachable() throws MalformedURLException, IOException {
 		return !HttpHelper.is404(manifestRemoteUrl, HttpRequestMetod.GET);
 	}

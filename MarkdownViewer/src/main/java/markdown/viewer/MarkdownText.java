@@ -122,14 +122,29 @@ public final class MarkdownText {
 		return fence != null;
 	}
 
-	/** Index of the first line after a "---" front matter, 0 when there is none. */
-	private static int frontMatterEnd(String[] lines) {
+	private static final Pattern YAML_KEY = Pattern.compile("^[^\\s#:-][^:]*:(\\s.*)?$|^-[^\\s:][^:]*:(\\s.*)?$");
+	private static final Pattern YAML_OTHER = Pattern.compile("^\\s*#.*$|^\\s*-(\\s.*)?$|^\\s+\\S.*$|^\\s*$");
+
+	/**
+	 * Index of the first line after a "---" front matter, 0 when there is none. The block must look like YAML (key: value lines,
+	 * list items, indented lines, comments, at least one key): a text between two "---" rules is a normal document.
+	 */
+	static int frontMatterEnd(String[] lines) {
 		if(lines.length == 0 || !stripCr(lines[0]).equals("---"))
 			return 0;
 		for(int i = 1; i < lines.length; i++) {
 			String l = stripCr(lines[i]);
-			if(l.equals("---") || l.equals("..."))
-				return i + 1;
+			if(l.equals("---") || l.equals("...")) {
+				boolean key = false;
+				for(int k = 1; k < i; k++) {
+					String y = stripCr(lines[k]);
+					if(YAML_KEY.matcher(y).matches())
+						key = true;
+					else if(!YAML_OTHER.matcher(y).matches())
+						return 0;
+				}
+				return key ? i + 1 : 0;
+			}
 		}
 		return 0;
 	}
@@ -210,6 +225,12 @@ public final class MarkdownText {
 	}
 
 	// ------------------------------------------------------------------ heading level
+
+	/** Heading level of a line: 1-6, 0 for anything else. */
+	public static int headingLevel(String line) {
+		Matcher h = Pattern.compile("^ {0,3}(#{1,6})(?:[ \\t]+|$)").matcher(stripCr(line));
+		return h.find() ? h.group(1).length() : 0;
+	}
 
 	/** The line with its heading level changed by delta (0 = plain paragraph, max 6). */
 	public static String changeHeadingLevel(String line, int delta) {

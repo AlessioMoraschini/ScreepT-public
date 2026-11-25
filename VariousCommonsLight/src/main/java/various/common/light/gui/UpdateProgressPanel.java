@@ -427,6 +427,11 @@ public class UpdateProgressPanel {
 	 * Closes the window without waiting for the screen thread: dispose() from another thread waits for it, and when the user closes the
 	 * window while the work thread closes it too (stop of a search) the two waits froze the application.
 	 */
+	/** Closes the window from any thread, without waiting for the screen thread (a dispose() from a worker thread can freeze the caller for good) */
+	public void closeWithoutWaiting() {
+		disposeDialog();
+	}
+
 	private void disposeDialog() {
 		if (SwingUtilities.isEventDispatchThread()) {
 			dialog.dispose();
