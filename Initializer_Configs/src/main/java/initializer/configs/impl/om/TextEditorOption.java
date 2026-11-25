@@ -50,6 +50,8 @@ public class TextEditorOption {
 	public static final boolean DEF_footerVisible = true;
 	/** Tabs of the last session load their content when first shown (also for the installs that never had the option) */
 	public static final boolean DEF_lazyTabLoading = true;
+	/** Each file is read with the encoding it seems to have (BOM, valid UTF-8, else the legacy one); the fixed one when off or when unclear */
+	public static final boolean DEF_autoDetectEncoding = true;
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
 	public static final boolean DEF_bottomViewActive = false;
 	public static final boolean DEF_mapViewActive = false;
@@ -113,6 +115,9 @@ public class TextEditorOption {
 	public boolean subHeaderVisible;
 	public boolean footerVisible;
 	public boolean lazyTabLoading;
+	public boolean autoDetectEncoding;
+	/** Ids of the plugin viewers already seen ("|id|id|"; empty = the list was never started): a viewer that appears later is a new plugin */
+	public String pluginViewersSeen = "";
 	public int margin;
 	public int voiceRate;
 	public boolean inlinedTabs;
@@ -215,6 +220,7 @@ public class TextEditorOption {
 		subHeaderVisible = DEF_subHeaderVisible;
 		footerVisible = DEF_footerVisible;
 		lazyTabLoading = DEF_lazyTabLoading;
+		autoDetectEncoding = DEF_autoDetectEncoding;
 
 		openedFileList = new ArrayList<String>();
 		pinnedFileList = new ArrayList<String>();

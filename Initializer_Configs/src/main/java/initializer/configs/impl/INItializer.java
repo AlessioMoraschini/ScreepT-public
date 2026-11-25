@@ -418,6 +418,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// Components visibility
 		textEditorOpt.setFooterVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "footerVisible"), TextEditorOption.DEF_footerVisible));
 		textEditorOpt.lazyTabLoading = getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "lazyTabLoading"), TextEditorOption.DEF_lazyTabLoading);
+		textEditorOpt.autoDetectEncoding = getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "autoDetectEncoding"), TextEditorOption.DEF_autoDetectEncoding);
+		textEditorOpt.pluginViewersSeen = StringWorker.trimToEmpty(iniReadFile.get(TEXT_EDITOR_OPT, "pluginViewersSeen"));
 		textEditorOpt.setHeaderVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "headerVisible"), TextEditorOption.DEF_headerVisible));
 		textEditorOpt.setSubHeaderVisible(getBooleanFromString(iniReadFile.get(TEXT_EDITOR_OPT, "subHeaderVisible"), TextEditorOption.DEF_subHeaderVisible));
 
@@ -672,6 +674,8 @@ public class INItializer extends INItializerParent implements INItializerInterfa
 		// BLOCKS VISIBILITY
 		iniFile.put(TEXT_EDITOR_OPT, "footerVisible", textEditorOpt.footerVisible);
 		iniFile.put(TEXT_EDITOR_OPT, "lazyTabLoading", textEditorOpt.lazyTabLoading);
+		iniFile.put(TEXT_EDITOR_OPT, "autoDetectEncoding", textEditorOpt.autoDetectEncoding);
+		iniFile.put(TEXT_EDITOR_OPT, "pluginViewersSeen", textEditorOpt.pluginViewersSeen == null ? "" : textEditorOpt.pluginViewersSeen);
 		iniFile.put(TEXT_EDITOR_OPT, "headerVisible", textEditorOpt.headerVisible);
 		iniFile.put(TEXT_EDITOR_OPT, "subHeaderVisible", textEditorOpt.subHeaderVisible);
 

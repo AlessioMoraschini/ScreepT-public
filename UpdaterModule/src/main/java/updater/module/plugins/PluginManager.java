@@ -47,6 +47,7 @@ import various.common.light.utility.manipulation.ArrayHelper;
 import various.common.light.utility.manipulation.ConversionUtils;
 import various.common.light.utility.properties.PropertiesManager;
 import various.common.light.utility.string.StringWorker;
+import various.common.light.i18n.I18n;
 
 /**
  * This class contains the methods to manage plugins download, verification, and installation.
@@ -59,6 +60,10 @@ public class PluginManager {
 
 	public static final String DESCRIPTION_PROP_PREFIX = "DESCREEPTION_";
 	public static final String WARNING_MESSAGES_PROP_PREFIX = "WARNING_MESSAGES_";
+	/** Manifest key of the oldest ScreepT version a plugin works with: MIN_SCREEPT_VERSION_&lt;plugin zip&gt;=0.9.87 */
+	public static final String MIN_APP_VERSION_PROP_PREFIX = "MIN_SCREEPT_VERSION_";
+	/** Version of the running ScreepT, set when the application starts: empty = unknown, then nothing is checked */
+	public static volatile String currentAppVersion = "";
 	public static final String WARNING_MESSAGES_ITEM_SEPARATOR = "#_#";
 	public static final String PLUGIN_VERSION_PROP = "PLUGIN_VERSION_";
 	public static final String PLUGIN_INSTALLED_VERSION_PROP = "PLUGIN_VERSION_INSTALLED_";
@@ -383,6 +388,12 @@ public class PluginManager {
 					List<String> warnings = propsManager.getStringList(WARNING_MESSAGES_PROP_PREFIX + pluginName, WARNING_MESSAGES_ITEM_SEPARATOR);
 					String description = propsManager.getProperty(descrKey, "Description not available.");
 					PluginDTO toAdd = new PluginDTO(version, completeUrl, pluginName, checkSum);
+					toAdd.setMinAppVersion(propsManager.getProperty(MIN_APP_VERSION_PROP_PREFIX + pluginName, ""));
+					warnings = new ArrayList<>(warnings);
+					String incompatible = compatibilityProblem(toAdd);
+					if (incompatible != null) {
+						warnings.add(0, incompatible);
+					}
 					toAdd.setWarnings(warnings);
 					toAdd.setDescription(description);
 					toAdd.enrichWithInstalledVersion(installedPluginPropsFileName);
@@ -401,6 +412,36 @@ public class PluginManager {
 		updateAlreadyInstalledIntoList(plugins);
 
 		return plugins;
+	}
+
+	/**
+	 * The sentence that tells the plugin asks for a newer ScreepT than the running one (and where to get it), null when it is
+	 * fine, when it declares no minimum, or when a version cannot be read: an unclear case never blocks anything.
+	 */
+	public static String compatibilityProblem(PluginDTO plugin) {
+		String min = plugin == null ? "" : plugin.getMinAppVersion();
+		if (StringWorker.isEmpty(min) || StringWorker.isEmpty(currentAppVersion)) {
+			return null;
+		}
+		try {
+			if (StringWorker.compareVersions(currentAppVersion, min) >= 0) {
+				return null;
+			}
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+		return I18n.fmt("plug.needs_newer_screept", displayName(plugin), plugin.getLastVersion(), min, currentAppVersion,
+				I18n.t("app.help"), updateMenuName());
+	}
+
+	/** "Check for software updates" as the menu shows it, without the dots */
+	public static String updateMenuName() {
+		return I18n.t("app.check_for_software_updates").replace("...", "").replace("\u2026", "").trim();
+	}
+
+	/** Name of the plugin as the user knows it: the zip name without the extension */
+	public static String displayName(PluginDTO plugin) {
+		return plugin.getName() == null ? "" : plugin.getName().replaceFirst("\\.[^.]+$", "");
 	}
 
 	/**

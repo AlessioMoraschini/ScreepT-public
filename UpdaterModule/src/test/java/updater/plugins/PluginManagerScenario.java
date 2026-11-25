@@ -84,7 +84,8 @@ public class PluginManagerScenario {
 		String m = "AvailablePluginsList=Alpha.zip,Beta.zip\n" + "Alpha.zip=" + alphaHash + "\n" + "Beta.zip=" + betaHash + "\n"
 				+ "PLUGIN_VERSION_Alpha.zip=" + alphaVersion + "\n" + "PLUGIN_VERSION_Beta.zip=1.0.0\n"
 				+ "DESCREEPTION_Alpha.zip=The first test plugin\n"
-				+ "WARNING_MESSAGES_Alpha.zip=careful#_#really careful\n";
+				+ "WARNING_MESSAGES_Alpha.zip=careful#_#really careful\n"
+				+ "MIN_SCREEPT_VERSION_Beta.zip=9.9.9\nMIN_SCREEPT_VERSION_Alpha.zip=0.9.1\n";
 		web.put("/Plugins/manifest.properties", m.getBytes(StandardCharsets.UTF_8));
 	}
 
@@ -144,6 +145,7 @@ public class PluginManagerScenario {
 		check(PluginManager.getInstalledPluginsList().isEmpty(), "nothing installed at the start");
 
 		// --- discovery
+		PluginManager.currentAppVersion = "0.9.93";
 		ArrayList<PluginDTO> found = pm.discoverLatestPlugins(false);
 		check(found.size() == 2, "two plugins in the manifest: " + found);
 		PluginDTO alpha = found.get(0), beta = found.get(1);
@@ -151,6 +153,10 @@ public class PluginManagerScenario {
 		check("The first test plugin".equals(alpha.getDescription()), "description");
 		check(alpha.getWarnings().size() == 2 && alpha.getWarnings().get(1).equals("really careful"), "warnings split by the separator " + alpha.getWarnings());
 		check("Description not available.".equals(beta.getDescription()), "default description");
+		check("0.9.1".equals(alpha.getMinAppVersion()) && alpha.getCompatibilityProblem() == null, "alpha works with this ScreepT");
+		check("9.9.9".equals(beta.getMinAppVersion()) && beta.getCompatibilityProblem() != null, "beta needs a newer ScreepT");
+		check(beta.getWarnings().size() == 1 && beta.getWarnings().get(0).contains("9.9.9") && beta.getWarnings().get(0).contains("0.9.93"),
+				"the warning of an incompatible plugin names both versions: " + beta.getWarnings());
 		check((base + "Alpha.zip").equals(alpha.getCompleteURL()), "url " + alpha.getCompleteURL());
 		check(!alpha.isInstallationCompleted(), "not installed yet");
 		check(pm.retrieveFromCache("Alpha.zip") == alpha && pm.retrieveAllFromCache().size() == 2, "found plugins are cached");

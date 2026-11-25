@@ -31,6 +31,8 @@ public class PluginDTO implements Comparable<PluginDTO> {
 	public String checkSum;
 	public List<String> warnings;
 	public String lastVersion;
+	/** Oldest ScreepT this plugin works with (from the manifest), empty when it declares none */
+	public String minAppVersion = "";
 	public String installedVersion;
 	public boolean installationCompleted;
 
@@ -54,6 +56,19 @@ public class PluginDTO implements Comparable<PluginDTO> {
 	public void setWarnings(List<String> warnings) {
 		this.warnings = warnings;
 	}
+	public String getMinAppVersion() {
+		return minAppVersion == null ? "" : minAppVersion;
+	}
+
+	public void setMinAppVersion(String minAppVersion) {
+		this.minAppVersion = minAppVersion == null ? "" : minAppVersion.trim();
+	}
+
+	/** Why this plugin does not suit the running ScreepT (it asks for a newer one), null when it does or nothing is known */
+	public String getCompatibilityProblem() {
+		return PluginManager.compatibilityProblem(this);
+	}
+
 	public String getLastVersion() {
 		return lastVersion;
 	}

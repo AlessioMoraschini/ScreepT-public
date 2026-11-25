@@ -112,6 +112,16 @@ public class FileWorker {
 			JTextArea textArea_1,
 			boolean goToStart,
 			EOL eol) {
+		return appendFileTxtArea(txtFile, textArea_1, goToStart, eol, null);
+	}
+
+	/** Same, reading the file with the given encoding (null: the default one of the application) */
+	public static boolean appendFileTxtArea(
+			File txtFile,
+			JTextArea textArea_1,
+			boolean goToStart,
+			EOL eol,
+			String encoding) {
 
 		long startTime = System.currentTimeMillis();
 
@@ -125,7 +135,7 @@ public class FileWorker {
 			try {
 				FileInputStream readerStream = new FileInputStream(txtFile);
 				BufferedReader reader;
-				reader = new BufferedReader(new InputStreamReader(readerStream, System.getProperty("file.encoding")));
+				reader = new BufferedReader(new InputStreamReader(readerStream, encoding != null ? encoding : System.getProperty("file.encoding")));
 				try {
 					String line;
 
@@ -210,6 +220,11 @@ public class FileWorker {
 	 * @throws IOException
 	 */
 	public static boolean writeStringToFile(String source, File outFile, boolean overwrite) throws IOException {
+		return writeStringToFileEncoded(source, outFile, overwrite, null);
+	}
+
+	/** Same, writing with the given encoding (null: the default one of the application) */
+	public static boolean writeStringToFileEncoded(String source, File outFile, boolean overwrite, String encoding) throws IOException {
 
 		long startTime = System.currentTimeMillis();
 		logger.info("writeStringToFile -> Start (outFile : " + outFile + ")");
@@ -236,7 +251,7 @@ public class FileWorker {
 			}
 		}
 
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(outFile), System.getProperty("file.encoding"));
+		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(outFile), encoding != null ? encoding : System.getProperty("file.encoding"));
 		PrintWriter out = new PrintWriter(outputStreamWriter);
 		out.write(source);
 

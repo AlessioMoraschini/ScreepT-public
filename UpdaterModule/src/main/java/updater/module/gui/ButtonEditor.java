@@ -34,6 +34,7 @@ import various.common.light.gui.dialogs.msg.JOptionHelper;
 import various.common.light.om.exception.ProgressBarInterruptedException;
 import various.common.light.utility.log.SafeLogger;
 import various.common.light.utility.string.StringWorker;
+import various.common.light.i18n.I18n;
 
 class ButtonEditor extends DefaultCellEditor {
 	private static final long serialVersionUID = 2322648608181904669L;
@@ -180,6 +181,14 @@ class ButtonEditor extends DefaultCellEditor {
 									0);
 							confirm = !StringWorker.isEmpty(option);
 							updateChoice = "Update".equals(option);
+						}
+
+						// a plugin that asks for a newer ScreepT than this one: the user is told, and where to get it
+						if (confirm && (!installed || updateChoice)) {
+							String problem = PluginManager.compatibilityProblem(refreshedPlugin);
+							if (problem != null) {
+								confirm = PluginManagerGUI.dialogHelper.yesOrNo(problem + " " + I18n.t("plug.continue_anyway"), I18n.t("plug.compatibility_title"));
+							}
 						}
 
 						if (confirm && installed) {
