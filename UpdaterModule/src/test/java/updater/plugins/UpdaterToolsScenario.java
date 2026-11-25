@@ -92,12 +92,20 @@ public class UpdaterToolsScenario {
 					n++;
 				if (n >= expectedSuccesses)
 					return;
-				if (s.contains("PROCESS FAILED"))
+				// the blocked System.exit of a finished tool is logged as a failure five seconds later: not a real one
+				if (count(s, "PROCESS FAILED") > count(s, "exit 0 blocked"))
 					throw new AssertionError("the tool failed:\n" + s);
 			}
 			Thread.sleep(50);
 		}
 		throw new AssertionError("the tool did not finish");
+	}
+
+	static int count(String text, String what) {
+		int n = 0, i = -1;
+		while ((i = text.indexOf(what, i + 1)) >= 0)
+			n++;
+		return n;
 	}
 
 	static Properties load(String path) throws Exception {
