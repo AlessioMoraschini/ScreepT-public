@@ -13,18 +13,22 @@ package various.common.light.gui;
 
 import java.awt.AWTEvent;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
+import java.util.Locale;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 import various.common.light.utility.log.SafeLogger;
 
@@ -41,6 +45,9 @@ public final class ScreenMemory {
 	private static final String KEY_LAST_SCREEN = "lastScreenBounds";
 
 	private static String lastSavedValue;
+
+	private static final int X11_CHECK_MILLIS = 300;
+	private static final int X11_CHECKS = 8;
 
 	private ScreenMemory() {
 	}
@@ -93,12 +100,55 @@ public final class ScreenMemory {
 	/** Moves the frame on the last used monitor and maximizes it there */
 	public static void maximizeOnLastScreen(JFrame frame) {
 		Rectangle screen = getLastScreenBounds();
+		if (System.getProperty("os.name", "").toLowerCase(Locale.ROOT).startsWith("linux")) {
+			maximizeOnX11(frame, screen);
+			return;
+		}
 		if (frame.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
 			// a maximized frame does not move: restore it first
 			frame.setExtendedState(JFrame.NORMAL);
 		}
 		frame.setLocation(screen.x, screen.y);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	}
+
+	/**
+	 * The X11 window manager applies the state changes later: restoring and maximizing in a row can leave the window restored.
+	 * So it is restored only to change monitor, and the result is checked for a couple of seconds.
+	 */
+	private static void maximizeOnX11(JFrame frame, Rectangle screen) {
+		Rectangle at = frame.getBounds();
+		if (!screen.contains(new Point((int) at.getCenterX(), (int) at.getCenterY()))) {
+			frame.setExtendedState(JFrame.NORMAL);
+			frame.setLocation(screen.x, screen.y);
+		}
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+		final int[] checks = { 0 };
+		Timer timer = new Timer(X11_CHECK_MILLIS, null);
+		timer.addActionListener(e -> {
+			int state = frame.getExtendedState();
+			if ((state & JFrame.ICONIFIED) != 0 || fills(state, frame.getSize(), screen)) {
+				timer.stop();
+			} else if (++checks[0] >= X11_CHECKS) {
+				// the window manager does not maximize: at least take all the space left free by the panels
+				Insets panels = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
+				frame.setBounds(screen.x + panels.left, screen.y + panels.top, screen.width - panels.left - panels.right,
+						screen.height - panels.top - panels.bottom);
+				timer.stop();
+			} else {
+				// a state believed already set is not sent again: restore now and maximize at the next check
+				boolean believed = (state & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH;
+				frame.setExtendedState(believed ? JFrame.NORMAL : JFrame.MAXIMIZED_BOTH);
+			}
+		});
+		timer.start();
+	}
+
+	/** Maximized for real: the state alone is not enough, and panels take only a small part of the screen */
+	static boolean fills(int state, Dimension size, Rectangle screen) {
+		return (state & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH && size.width >= screen.width * 0.85
+				&& size.height >= screen.height * 0.85;
 	}
 
 	private static boolean guardInstalled = false;
