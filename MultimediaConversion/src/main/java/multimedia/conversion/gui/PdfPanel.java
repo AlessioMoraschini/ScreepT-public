@@ -43,27 +43,52 @@ public class PdfPanel implements PluginPanel {
 
 	@Override
 	public String getTitle() {
-		return file != null ? file.getName() : "PDF";
+		return getFile() != null ? getFile().getName() : "PDF";
 	}
 
 	@Override
 	public File getFile() {
-		return file;
+		return frame.getCurrentFile() != null ? frame.getCurrentFile() : file;
 	}
 
 	@Override
 	public boolean isModified() {
-		return false;
+		return frame.isModified();
 	}
 
 	@Override
 	public boolean save() {
-		return true;
+		return frame.save();
 	}
 
 	@Override
 	public boolean confirmClose(Component parent) {
+		return frame.confirmDiscard(parent);
+	}
+
+	@Override
+	public void setChangeListener(Runnable listener) {
+		frame.setEditListener(listener);
+	}
+
+	@Override
+	public boolean saveAs() {
+		return frame.saveAs();
+	}
+
+	@Override
+	public boolean supportsEditHistory() {
 		return true;
+	}
+
+	@Override
+	public void undo() {
+		frame.undo();
+	}
+
+	@Override
+	public void redo() {
+		frame.redo();
 	}
 
 	@Override

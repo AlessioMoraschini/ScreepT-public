@@ -59,4 +59,20 @@ public interface PluginPanel {
 	default boolean supportsTextTools() {
 		return false;
 	}
+
+	/** Saves in another file chosen by the user, if the content can; by default it saves in place */
+	default boolean saveAs() {
+		return save();
+	}
+
+	/** True if the content has its own history: undo and redo of the toolbar and of the keyboard apply to it */
+	default boolean supportsEditHistory() {
+		return false;
+	}
+
+	default void undo() {
+	}
+
+	default void redo() {
+	}
 }

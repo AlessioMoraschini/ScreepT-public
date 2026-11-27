@@ -59,6 +59,22 @@ public interface TabContent {
 		return false;
 	}
 
+	/** Saves in another file chosen by the user, if the content can; by default it saves in place */
+	default boolean saveAs() {
+		return save();
+	}
+
+	/** True if the content has its own history: undo and redo of the toolbar and of the keyboard apply to it */
+	default boolean supportsEditHistory() {
+		return false;
+	}
+
+	default void undo() {
+	}
+
+	default void redo() {
+	}
+
 	/** Gives the content a way to ask the host to close its tab (for contents that hand the work over to a window) */
 	default void setCloseHandler(Runnable closeTab) {
 	}

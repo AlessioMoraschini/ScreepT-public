@@ -86,6 +86,15 @@ public class PdfSelector2TextFrame extends JFrame {
 	private File selectedImageSource;
 	public ImageToTextExtractor imageExtractor;
 	private SwingController controllerPdf;
+	private PageBufferPinner pageBufferPinner;
+
+	/** Editing of the loaded file, created when first needed */
+	private PdfEditing editing;
+	/** The file the viewer shows: the loaded one, or a version written by the editor */
+	private File shownFile;
+	/** The document was changed after the viewer opened it */
+	private boolean viewerStale;
+	private Runnable editListener = () -> {};
 
 	JOptionHelperExtended dialogHelper;
 	GenericFileChooserDialog fileDialogHelper;
@@ -187,13 +196,22 @@ public class PdfSelector2TextFrame extends JFrame {
 		btnFullScreen.addActionListener(e -> gui.commons.tabs.ViewerFullScreen.toggle(viewerRoot));
 		getContentPane().add(btnFullScreen, "cell 3 2,alignx right,growy");
 		gui.commons.tabs.ViewerFullScreen.installKey(viewerRoot);
+		getContentPane().add(editButtons(), "cell 2 2,alignx right,growy");
+		bindEditKey(getRootPane(), java.awt.event.KeyEvent.VK_S, this::save);
+		bindEditKey(getRootPane(), java.awt.event.KeyEvent.VK_Z, this::undo);
+		bindEditKey(getRootPane(), java.awt.event.KeyEvent.VK_Y, this::redo);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 
+				if (!confirmDiscard(viewerRoot)) {
+					return;
+				}
 				logger.debug("Closing "+getClass().getName());
 				active = false;
+	        	releaseResources();
 	        	dispose();
 		    }
 		});
@@ -252,6 +270,7 @@ public class PdfSelector2TextFrame extends JFrame {
 	/** Closes the open document (also when the content lives in a tab of the file editor, where the window is never closed) */
 	public void releaseResources() {
 		active = false;
+		releaseEditing();
 		try {
 			if (controllerPdf != null) {
 				controllerPdf.closeDocument();
@@ -271,8 +290,10 @@ public class PdfSelector2TextFrame extends JFrame {
 				@Override
 				public void run() {
 					try {
+						releaseEditing();
 						displayPdf(selected);
 						selectedImageSource = selected;
+						shownFile = selected;
 					} catch (IOException e1) {
 						dialogHelper.error(I18n.t("misc.an_error_occurred_cannot_load_pdf"),	"IO Error");
 						logger.error(e1);
@@ -293,7 +314,9 @@ public class PdfSelector2TextFrame extends JFrame {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				final File selected = fileDialogHelper.fileRead(thisFrame);
-				loadFile(selected);
+				if (selected != null && confirmDiscard(viewerRoot)) {
+					loadFile(selected);
+				}
 			}
 		});
 
@@ -368,6 +391,21 @@ public class PdfSelector2TextFrame extends JFrame {
 	 */
 	public void setPanelMode() {
 		panelMode = true;
+		// in a tab the file is opened and saved by the editor, not by the buttons of the viewer
+		for (String name : new String[] { "openFileButton", "saveAsFileButton" }) {
+			try {
+				java.lang.reflect.Field field = SwingController.class.getDeclaredField(name);
+				field.setAccessible(true);
+				javax.swing.AbstractButton button = (javax.swing.AbstractButton) field.get(controllerPdf);
+				if (button != null) {
+					button.setVisible(false);
+				}
+			} catch (ReflectiveOperationException e) {
+				logger.warn("Cannot hide the " + name + " of the viewer: " + e.getMessage());
+			}
+		}
+		// in a tab the editor gives save, undo and redo: the window bindings must not be carried into the panel
+		getRootPane().getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
 		// the window wrapped its content in a scroll pane to fit small screens: a tab has its own size, so the content goes in directly
 		setContentPane(viewerRoot);
 		java.awt.Container content = viewerRoot;
@@ -389,11 +427,211 @@ public class PdfSelector2TextFrame extends JFrame {
 		JPanel buttonHolder = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 6, 2));
 		buttonHolder.setOpaque(status == null || status.isOpaque());
 		buttonHolder.setBackground(bottom.getBackground());
+		buttonHolder.add(editButtons());
 		buttonHolder.add(btnFullScreen);
 		bottom.add(buttonHolder, java.awt.BorderLayout.EAST);
 		viewerComponentPanel.add(bottom, java.awt.BorderLayout.SOUTH);
 		content.revalidate();
 		content.repaint();
+	}
+
+////////////////////////////////// EDITING //////////////////////////////////
+
+	private JPanel editButtons() {
+		JPanel buttons = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 4, 0));
+		buttons.setOpaque(false);
+		addEditButton(buttons, "Edit", "Change texts, images and pages of this PDF", this::startEditing);
+		addEditButton(buttons, "Merge...", "Merge several PDF files in a new one", this::mergeFiles);
+		addEditButton(buttons, "Extract...", "Write some pages of this PDF in a new file", this::extractPages);
+		return buttons;
+	}
+
+	private void addEditButton(JPanel holder, String text, String tooltip, Runnable action) {
+		JButton button = new JButton(text);
+		button.setToolTipText(tooltip);
+		button.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 12));
+		button.setMargin(new Insets(1, 8, 1, 8));
+		button.addActionListener(e -> action.run());
+		holder.add(button);
+	}
+
+	private void bindEditKey(javax.swing.JComponent component, int code, Runnable action) {
+		javax.swing.KeyStroke key = javax.swing.KeyStroke.getKeyStroke(code, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+		String name = "pdf-edit-" + code;
+		component.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).put(key, name);
+		component.getActionMap().put(name, new javax.swing.AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				action.run();
+			}
+		});
+	}
+
+	private boolean editingAvailable() {
+		if (PdfEditing.isAvailable()) {
+			return true;
+		}
+		javax.swing.JOptionPane.showMessageDialog(viewerRoot, "PDF editing needs the new version of the PDF plugin: update it from the Plugins menu.",
+				"PDF", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+		return false;
+	}
+
+	/** Creates the editor of the file the viewer shows, if needed; false if it is not possible */
+	private boolean prepareEditing() {
+		if (!editingAvailable()) {
+			return false;
+		}
+		// a different file opened with the toolbar of the viewer replaces the loaded one
+		String location = controllerPdf.getDocument() != null ? controllerPdf.getDocument().getDocumentLocation() : null;
+		if (location != null && shownFile != null && !new File(location).getAbsoluteFile().equals(shownFile.getAbsoluteFile())) {
+			if (!confirmDiscard(viewerRoot)) {
+				return false;
+			}
+			releaseEditing();
+			selectedImageSource = new File(location);
+			shownFile = selectedImageSource;
+		}
+		if (selectedImageSource == null || !selectedImageSource.isFile()) {
+			javax.swing.JOptionPane.showMessageDialog(viewerRoot, "Load a PDF first.", "PDF", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+		if (editing == null) {
+			try {
+				editing = new multimedia.conversion.pdfedit.PdfEditPanel(selectedImageSource, controllerPdf.getCurrentPageNumber(),
+						this::onEditingChanged, this::leaveEditMode);
+			} catch (IOException e) {
+				logger.warn("Cannot edit " + selectedImageSource, e);
+				javax.swing.JOptionPane.showMessageDialog(viewerRoot, e.getMessage(), "PDF", javax.swing.JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void startEditing() {
+		boolean existing = editing != null;
+		if (prepareEditing()) {
+			if (existing) {
+				editing.showPage(controllerPdf.getCurrentPageNumber());
+			}
+			showInViewerArea(editing.getComponent());
+		}
+	}
+
+	private void leaveEditMode() {
+		showInViewerArea(viewerComponentPanel);
+		refreshViewer();
+	}
+
+	private void showInViewerArea(java.awt.Component component) {
+		imageContainerPanel.removeAll();
+		imageContainerPanel.add(component, java.awt.BorderLayout.CENTER);
+		imageContainerPanel.revalidate();
+		imageContainerPanel.repaint();
+	}
+
+	private void onEditingChanged() {
+		viewerStale = true;
+		selectedImageSource = editing.getTarget(); // another one after "Save as"
+		if (viewerComponentPanel.getParent() == imageContainerPanel) {
+			refreshViewer();
+		}
+		editListener.run();
+	}
+
+	/** Opens in the viewer the document with the changes made, keeping page and zoom */
+	private void refreshViewer() {
+		if (!viewerStale || editing == null) {
+			return;
+		}
+		viewerStale = false;
+		if (editing.getCurrentVersion().equals(shownFile)) {
+			return; // only saved
+		}
+		int page = controllerPdf.getCurrentPageNumber();
+		float zoom = controllerPdf.getUserZoom();
+		shownFile = editing.getCurrentVersion();
+		controllerPdf.openDocument(shownFile.getAbsolutePath());
+		if (controllerPdf.getDocument() != null) {
+			controllerPdf.setZoom(zoom);
+			controllerPdf.showPage(Math.max(0, Math.min(page, controllerPdf.getDocument().getNumberOfPages() - 1)));
+		}
+	}
+
+	private void mergeFiles() {
+		if (!editingAvailable()) {
+			return;
+		}
+		if (isModified() && javax.swing.JOptionPane.showConfirmDialog(viewerRoot, "Save the changes first? Otherwise the merge uses the saved file.",
+				"PDF", javax.swing.JOptionPane.YES_NO_OPTION) == javax.swing.JOptionPane.YES_OPTION && !save()) {
+			return;
+		}
+		multimedia.conversion.pdfedit.PdfDialogs.merge(viewerRoot, selectedImageSource);
+	}
+
+	private void extractPages() {
+		if (prepareEditing()) {
+			editing.extractPages(viewerRoot, controllerPdf.getCurrentPageNumber());
+		}
+	}
+
+	/** Called on the event thread when the document or its saved state change */
+	public void setEditListener(Runnable listener) {
+		editListener = listener != null ? listener : () -> {};
+	}
+
+	public boolean isModified() {
+		return editing != null && editing.isModified();
+	}
+
+	public boolean save() {
+		boolean done = editing == null || editing.save();
+		editListener.run();
+		return done;
+	}
+
+	public boolean saveAs() {
+		return prepareEditing() && editing.saveAs();
+	}
+
+	/** The file shown and saved over: null until one is loaded */
+	public File getCurrentFile() {
+		return selectedImageSource;
+	}
+
+	public void undo() {
+		if (editing != null) {
+			editing.undo();
+		}
+	}
+
+	public void redo() {
+		if (editing != null) {
+			editing.redo();
+		}
+	}
+
+	/** Asks what to do with changes not saved; false means: stay */
+	public boolean confirmDiscard(java.awt.Component parent) {
+		if (!isModified()) {
+			return true;
+		}
+		int answer = javax.swing.JOptionPane.showConfirmDialog(parent, "Save the changes to " + selectedImageSource.getName() + "?", "PDF",
+				javax.swing.JOptionPane.YES_NO_CANCEL_OPTION);
+		return answer == javax.swing.JOptionPane.NO_OPTION || answer == javax.swing.JOptionPane.YES_OPTION && save();
+	}
+
+	private void releaseEditing() {
+		if (editing != null) {
+			if (viewerComponentPanel.getParent() != imageContainerPanel) {
+				showInViewerArea(viewerComponentPanel);
+			}
+			editing.release();
+			editing = null;
+			viewerStale = false;
+		}
 	}
 
 	private void initDisplayPanel(JPanel father) {
@@ -405,12 +643,31 @@ public class PdfSelector2TextFrame extends JFrame {
 		viewerComponentPanel = factory.buildViewerPanel();
 		// We add keyboard command
 		ComponentKeyBinding.install(controllerPdf, viewerComponentPanel);
+		// save, undo, open and close belong to ScreepT (the file editor toolbar or this window), not to the viewer
+		for (int condition : new int[] { javax.swing.JComponent.WHEN_FOCUSED, javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW,
+				javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT }) {
+			for (int code : new int[] { java.awt.event.KeyEvent.VK_S, java.awt.event.KeyEvent.VK_O, java.awt.event.KeyEvent.VK_W }) {
+				viewerComponentPanel.getInputMap(condition)
+						.remove(javax.swing.KeyStroke.getKeyStroke(code, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			}
+		}
 		// add interactive mouse link annotation support via callback
 		controllerPdf.getDocumentViewController().setAnnotationCallback(
 		              new org.icepdf.ri.common.MyAnnotationCallback(controllerPdf.getDocumentViewController()));
 
 		// the viewer has its own scroll pane: it must not be nested in another one (scroll glitches)
 		father.add(viewerComponentPanel, java.awt.BorderLayout.CENTER);
+
+		pageBufferPinner = new PageBufferPinner(viewerComponentPanel);
+		pageBufferPinner.start();
+	}
+
+	@Override
+	public void dispose() {
+		if (pageBufferPinner != null) {
+			pageBufferPinner.stop();
+		}
+		super.dispose();
 	}
 
 	private void displayPdf(File sourceFile) throws IOException {

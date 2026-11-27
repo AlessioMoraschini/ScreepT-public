@@ -115,6 +115,18 @@
 			<version>${icepdf.version}</version>
 		</dependency>
 
+		<!-- PDF editing: shipped with the PDF plugin (Tesseract.zip), not with the application -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>${pdfbox.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>fontbox</artifactId>
+			<version>${pdfbox.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>ExternalPluginInterface</groupId>
 			<artifactId>external.plugin.interface</artifactId>
