@@ -3,11 +3,18 @@
  * =========================================================================================
  *  Copyright (C) 2019-2026
  *
- *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ *  AM-Design-Development - (Alessio Moraschini)
  * =========================================================================================
  *
- * You should have received a copy of the license with this file.
- * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package gui.commons.frameutils.frame.terminal;
 
@@ -178,7 +185,19 @@ public class TerminalPanel extends JPanel {
 		return session != null && session.isAlive();
 	}
 
-	/** Starts the default shell of this system in a new terminal (the previous one, if any, is closed) */
+	/** Command run instead of the shell (null = the default shell of this system) */
+	private String[] command;
+
+	/**
+	 * Runs a program in this terminal instead of the shell, with its colours and its live output (the previous one, if any, is closed).
+	 * Enter, after it ended, calls the restart action.
+	 */
+	public void startCommand(String directory, String[] command) throws IOException {
+		this.command = command == null ? null : command.clone();
+		start(directory);
+	}
+
+	/** Starts the default shell of this system (or the command given to {@link #startCommand}) in a new terminal (the previous one, if any, is closed) */
 	public void start(String directory) throws IOException {
 		stop();
 		synchronized (screen) {
@@ -195,7 +214,7 @@ public class TerminalPanel extends JPanel {
 	}
 
 	private void launch(String directory, boolean useConPty) throws IOException {
-		final PtySession pty = new PtySession(ShellLauncher.command(), directory, ShellLauncher.environment(), screen.cols, screen.rows, useConPty);
+		final PtySession pty = new PtySession(command != null ? command : ShellLauncher.command(), directory, ShellLauncher.environment(), screen.cols, screen.rows, useConPty);
 		session = pty;
 		gotOutput = false;
 
@@ -235,7 +254,9 @@ public class TerminalPanel extends JPanel {
 			SwingUtilities.invokeLater(() -> {
 				if (session == pty && (gotOutput || !useConPty)) {
 					synchronized (screen) {
-						screen.feed("\r\n\u001b[90m[process ended - press Enter or Play to start a new one]\u001b[0m\r\n");
+						screen.feed(command != null
+								? "\r\n\u001b[90m[finished - press Enter to run it again]\u001b[0m\r\n"
+								: "\r\n\u001b[90m[process ended - press Enter or Play to start a new one]\u001b[0m\r\n");
 					}
 					dirty = true;
 					if (onExit != null) {

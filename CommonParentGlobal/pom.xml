@@ -10,12 +10,12 @@
 	<name>common.parent.global</name>
 	<url>http://maven.apache.org</url>
 	
-	<!-- MIT LICENSE -->
+	<!-- APACHE LICENSE 2.0 -->
 	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>
-			<name>${mit.license.name}</name>
-			<url>${mit.license.url}</url>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
 		</license>
 	</licenses>
 	<developers>
@@ -112,14 +112,11 @@
 		<developer.name>AM-Design-Development - (Alessio Moraschini)</developer.name>
 		<developer.mail>info@am-design-development.com</developer.mail>
 		
-		<!-- LICENSE PROPERTIES - ScreepT_License -->
-		<screept.license.name>SceepT EULA - Copyright</screept.license.name>
+		<!-- LICENSE PROPERTIES - Apache License 2.0 (whole project) -->
+		<screept.license.name>Apache License, Version 2.0</screept.license.name>
 		<screept.main.url>https://www.am-design-development.com</screept.main.url>
-		<screept.license.url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html</screept.license.url>
+		<screept.license.url>https://www.apache.org/licenses/LICENSE-2.0.txt</screept.license.url>
 		
-		<!-- LICENSE PROPERTIES - MIT License -->
-		<mit.license.name>MIT</mit.license.name>
-		<mit.license.url>license/License-MIT.txt</mit.license.url>
 
 		<!-- LICENSE PROPERTIES - MIT License -->
 		<lgpl.license.name>LGPL</lgpl.license.name>

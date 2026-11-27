@@ -3,11 +3,13 @@
  * =========================================================================================
  *  Copyright (C) 2019-2020
  *
- *  AM-Design-Development - (Alessio Moraschini) - All Rights Reserved
+ *  AM-Design-Development - (Alessio Moraschini)
  * =========================================================================================
  *
- * You should have received a copy of the license with this file.
- * If not, please write to: info@am-design-development.com, or visit : https://www.am-design-development.com
+ * Ultimate Calculator - Copyright (c) 2016 Minhas Kamal (original project)
+ * Modifications Copyright (C) 2019-2026 AM-Design-Development - (Alessio Moraschini)
+ *
+ * Licensed under the MIT License: see the file license/LICENSE.txt of this module.
  */
 package com.minhasKamal.ultimateCalculator.calculators.matrixCalculator;
 

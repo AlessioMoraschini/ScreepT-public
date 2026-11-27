@@ -23,7 +23,7 @@
 		</repository>
 	</repositories>
 
-	<!-- MIT LICENSE -->
+	<!-- APACHE LICENSE 2.0 -->
 	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>

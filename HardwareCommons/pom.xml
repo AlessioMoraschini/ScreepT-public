@@ -18,12 +18,12 @@
 	<description>This module is made to gather informations about the underlying hardware, mainly with the use of Oshi project. Cointaning a standalone buidable GUI too.</description>
 	<url>${project.main.url}</url>
 
-	<!-- MIT LICENSE -->
+	<!-- APACHE LICENSE 2.0 -->
 	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>
-			<name>${mit.license.name}</name>
-			<url>${mit.license.url}</url>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
 		</license>
 	</licenses>
 	<developers>

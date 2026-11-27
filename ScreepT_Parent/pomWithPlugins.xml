@@ -135,10 +135,10 @@
 		<export.directory.multijar.resources>${export.directory.multijar.main}/Resources_ScreepT</export.directory.multijar.resources>
 		<export.directory.multijar.libs>${export.directory.multijar.resources}/lib</export.directory.multijar.libs>
 
-		<!-- LICENSE PROPERTIES - ScreepT_License -->
-		<screept.license.name>SceepT EULA - Copyright</screept.license.name>
+		<!-- LICENSE PROPERTIES - Apache License 2.0 (whole project) -->
+		<screept.license.name>Apache License, Version 2.0</screept.license.name>
 		<screept.main.url>https://www.am-design-development.com</screept.main.url>
-		<screept.license.url>https://www.am-design-development.com/ScreepT/Updates/License_ScreepT.html</screept.license.url>
+		<screept.license.url>https://www.apache.org/licenses/LICENSE-2.0.txt</screept.license.url>
 	</properties>
 
 	<!-- COMMON PLUGINS -->

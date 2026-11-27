@@ -135,7 +135,7 @@ public class LightLicenseViewer extends JDialog {
 		loadedLicense = sourceLicense;
 
 		String correctHeader = !StringWorker.isEmpty(header) ? header : "Accept licence to continue using this software";
-		String correctTitle = !StringWorker.isEmpty(title) ? title : "EULA - acceptance";
+		String correctTitle = !StringWorker.isEmpty(title) ? title : "Terms of use - acceptance";
 
 		this.licenseLoadedCorrectly = false;
 		this.sourceLicense = sourceLicense;

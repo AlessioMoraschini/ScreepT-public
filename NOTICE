@@ -1,0 +1,20 @@
+ScreepT
+Copyright 2019-2026 Alessio Moraschini - AM-Design-Development
+https://www.am-design-development.com
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It includes software developed by third parties, each distributed under its own
+license (Apache, MIT, BSD, LGPL, MPL, EPL, CDDL...): the list and the license texts
+are in the folder "Libraries_licenses" of the release package.
+
+"ScreepT" and its logo identify the original project of the author: the Apache
+License does not grant permission to use them (section 6). A modified version
+must be distributed under a different name.
+
+Parts of the source code come from other projects and keep their own license:
+- Ultimate Calculator (module UltimateCalculator), Copyright (c) 2016 Minhas Kamal,
+  MIT License;
+- the find, replace and search in files dialogs derived from RSyntaxTextArea /
+  RSTA UI by Robert Futrell, modified BSD License;
+- FileDrop by Robert Harder, public domain.

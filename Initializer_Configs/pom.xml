@@ -18,12 +18,12 @@
 	<description>Common classes used to define and use configuration with custom POJO, Interface, Parent, and specific ScreepT's implementation.</description>
 	<url>${project.main.url}</url>
 	
-	<!-- MIT LICENSE -->
+	<!-- APACHE LICENSE 2.0 -->
 	<inceptionYear>${screept.start.year}</inceptionYear>
 	<licenses>
 		<license>
-			<name>${mit.license.name}</name>
-			<url>${mit.license.url}</url>
+			<name>${screept.license.name}</name>
+			<url>${screept.license.url}</url>
 		</license>
 	</licenses>
 	<developers>
