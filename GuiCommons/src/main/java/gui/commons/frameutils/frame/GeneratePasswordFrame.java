@@ -179,13 +179,13 @@ public class GeneratePasswordFrame extends ParentFrame {
 		JPanel options = ToolStyle.card(new MigLayout("insets 0, fillx, gap 10 8", "[][grow,fill]", "[][][]"));
 
 		spinnerLength = ToolStyle.hand(new JSpinner());
-		spinnerLength.setToolTipText("Best match to use in ScreepT is 16 characters");
+		spinnerLength.setToolTipText("The Crypter uses the whole password: longer is safer. Only the Legacy modes stop at 16 characters.");
 		spinnerLength.setModel(new SpinnerNumberModel(DEFAULT_LENGTH, 1, 64, 1));
 
 		JPanel lengthRow = new JPanel(new MigLayout("insets 0, gap 10", "[]10[]", "[]"));
 		lengthRow.setOpaque(false);
 		lengthRow.add(spinnerLength);
-		lengthRow.add(ToolStyle.mutedLabel("Best match in ScreepT: 16 characters"));
+		lengthRow.add(ToolStyle.mutedLabel("Recommended: 20 characters or more (Legacy crypter modes: 16)"));
 
 		rdbtnUseNumbers = ToolStyle.hand(new JCheckBox("Use numbers [" + ConversionUtils.numberString + "]"));
 		rdbtnUseNumbers.setSelected(numbersFlag);
