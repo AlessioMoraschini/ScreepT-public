@@ -11,20 +11,18 @@
  */
 package various.common.light.easteregg.cats;
 
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsDevice.WindowTranslucency;
-import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.HierarchyEvent;
 import java.util.Random;
 
 import javax.swing.JComponent;
-import javax.swing.JWindow;
+import javax.swing.JLayeredPane;
+import javax.swing.JRootPane;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -34,7 +32,8 @@ import various.common.light.utility.log.SafeLogger;
  * Easter egg: stay on a page for a while and Feo and Nano come to play on the window: they chase a ball of yarn, steal it
  * from each other, and after a while Nano follows Feo and both walk out of the screen. Happens once each time the page
  * is shown and stays for the given time; leaving the page, minimizing or closing the window sends the cats away at once.
- * The overlay is a transparent window: the mouse goes through the empty parts.
+ * The cats are drawn on a layer of the window above the page, in the same drawing buffer of the page (no transparent window above it,
+ * which flickers on some systems); the mouse goes through it.
  */
 public final class CatsVisit {
 
@@ -42,6 +41,8 @@ public final class CatsVisit {
 	private static final int TICK_MS = 33;
 	private static final int FLOOR_DEPTH = 110;
 	private static final int FLOOR_MARGIN = 34;
+	/** Height, from the bottom, of the band that is painted again at each step: floor, highest jump, cat and its balloon */
+	private static final int BAND_HEIGHT = FLOOR_DEPTH + FLOOR_MARGIN + 190;
 
 	private final JComponent page;
 	private final int secondsBefore;
@@ -49,7 +50,8 @@ public final class CatsVisit {
 	private final Random random = new Random();
 	private Timer waiting;
 	private Timer animation;
-	private JWindow overlay;
+	private JComponent overlay;
+	private JRootPane host;
 	private CatsPlayground playground;
 
 	private CatsVisit(JComponent page, int secondsBefore, java.util.function.Supplier<Rectangle> avoidSupplier) {
@@ -60,7 +62,6 @@ public final class CatsVisit {
 
 	/**
 	 * Starts watching the page: when it has been visible for {@code secondsBefore} seconds the cats arrive.
-	 * Nothing happens if the system has no transparent windows.
 	 */
 	public static void attach(final JComponent page, int secondsBefore) {
 		attach(page, secondsBefore, null);
@@ -104,35 +105,34 @@ public final class CatsVisit {
 
 	private void startVisit() {
 		Window owner = SwingUtilities.getWindowAncestor(page);
-		if (overlay != null || owner == null || !owner.isShowing() || !owner.isActive() || (owner instanceof java.awt.Frame && ((java.awt.Frame) owner).getState() == java.awt.Frame.ICONIFIED)) {
-			return;
-		}
-		GraphicsConfiguration configuration = owner.getGraphicsConfiguration();
-		GraphicsDevice device = configuration != null ? configuration.getDevice() : GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		if (!device.isWindowTranslucencySupported(WindowTranslucency.PERPIXEL_TRANSLUCENT)) {
-			logger.info("Cats visit skipped: transparent windows not supported");
+		if (overlay != null || !(owner instanceof RootPaneContainer) || !owner.isShowing() || !owner.isActive() || isIconified(owner)) {
 			return;
 		}
 		try {
-			final Rectangle area = owner.getBounds();
+			host = ((RootPaneContainer) owner).getRootPane();
 			playground = new CatsPlayground(3);
-			playground.setArea(0, area.width, FLOOR_DEPTH);
+			playground.setArea(0, host.getWidth(), FLOOR_DEPTH);
 			playground.leaveAfter(900 + random.nextInt(450)); // 30 to 45 seconds of play
-			// owned by the ScreepT window and not "always on top": it stays over ScreepT only, never over other applications
-			overlay = new JWindow(owner);
-			overlay.setBounds(area);
-			overlay.setBackground(new Color(0, 0, 0, 0));
-			overlay.setFocusableWindowState(false);
-			overlay.setAlwaysOnTop(false);
-			overlay.setContentPane(new JComponent() {
+			overlay = new JComponent() {
 				private static final long serialVersionUID = 1L;
 
 				@Override
 				protected void paintComponent(Graphics g) {
-					playground.paint((Graphics2D) g, getHeight() - FLOOR_MARGIN);
+					if (playground != null) {
+						playground.paint((Graphics2D) g, getHeight() - FLOOR_MARGIN);
+					}
 				}
-			});
-			overlay.setVisible(true);
+
+				/** Never under the mouse: clicks and cursor belong to what is below */
+				@Override
+				public boolean contains(int x, int y) {
+					return false;
+				}
+			};
+			overlay.setOpaque(false);
+			overlay.setBounds(0, 0, host.getLayeredPane().getWidth(), host.getLayeredPane().getHeight());
+			// below menus and popups; the glass pane is left to the wait cursor and the drag of the tabs
+			host.getLayeredPane().add(overlay, JLayeredPane.PALETTE_LAYER);
 			animation = new Timer(TICK_MS, e -> step());
 			animation.start();
 		} catch (RuntimeException e) {
@@ -141,10 +141,13 @@ public final class CatsVisit {
 		}
 	}
 
+	private static boolean isIconified(Window window) {
+		return window instanceof java.awt.Frame && (((java.awt.Frame) window).getExtendedState() & java.awt.Frame.ICONIFIED) != 0;
+	}
+
 	private void step() {
 		Window owner = SwingUtilities.getWindowAncestor(page);
-		if (overlay == null || owner == null || !page.isShowing() || !owner.isShowing()
-				|| (owner instanceof java.awt.Frame && ((java.awt.Frame) owner).getState() == java.awt.Frame.ICONIFIED)) {
+		if (overlay == null || owner == null || !page.isShowing() || !owner.isShowing() || isIconified(owner) || overlay.getParent() == null) {
 			endVisit();
 			return;
 		}
@@ -153,14 +156,14 @@ public final class CatsVisit {
 		if (inFront != overlay.isVisible()) {
 			overlay.setVisible(inFront);
 		}
-		Rectangle bounds = owner.getBounds();
-		if (!bounds.equals(overlay.getBounds())) { // the window was moved or resized: the floor follows it
-			overlay.setBounds(bounds);
-			playground.setArea(0, bounds.width, FLOOR_DEPTH);
+		Component layers = overlay.getParent();
+		if (overlay.getWidth() != layers.getWidth() || overlay.getHeight() != layers.getHeight()) {
+			overlay.setBounds(0, 0, layers.getWidth(), layers.getHeight());
 		}
+		playground.setArea(0, overlay.getWidth(), FLOOR_DEPTH); // the floor follows the size of the window
 		updateForbiddenZone();
 		playground.tick();
-		overlay.repaint();
+		overlay.repaint(0, overlay.getHeight() - BAND_HEIGHT, overlay.getWidth(), BAND_HEIGHT);
 		if (playground.isFinished()) {
 			endVisit();
 		}
@@ -177,10 +180,7 @@ public final class CatsVisit {
 				playground.setAvoid(null, overlay.getHeight() - FLOOR_MARGIN);
 				return;
 			}
-			java.awt.Point pageOrigin = page.getLocationOnScreen();
-			java.awt.Point overlayOrigin = overlay.getLocationOnScreen();
-			playground.setAvoid(new Rectangle(pageOrigin.x - overlayOrigin.x + zone.x, pageOrigin.y - overlayOrigin.y + zone.y, zone.width, zone.height),
-					overlay.getHeight() - FLOOR_MARGIN);
+			playground.setAvoid(SwingUtilities.convertRectangle(page, zone, overlay), overlay.getHeight() - FLOOR_MARGIN);
 		} catch (RuntimeException e) {
 			playground.setAvoid(null, overlay.getHeight() - FLOOR_MARGIN);
 		}
@@ -192,8 +192,13 @@ public final class CatsVisit {
 			animation = null;
 		}
 		if (overlay != null) {
-			overlay.dispose();
+			overlay.setVisible(false);
+			if (host != null) {
+				host.getLayeredPane().remove(overlay);
+				host.repaint();
+			}
 			overlay = null;
+			host = null;
 		}
 		playground = null;
 	}

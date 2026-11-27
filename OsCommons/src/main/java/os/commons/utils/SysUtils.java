@@ -204,7 +204,7 @@ public class SysUtils {
 		StringBuilder builder = new StringBuilder();
 
 		for(File file : filteredArgsFiles) {
-			builder.append(" \"").append(file.getAbsolutePath()).append("\"");
+			builder.append(" ").append(quoteFileArgument(file.getAbsolutePath(), getOsInfoLazy().isWindows()));
 		}
 		filesParams = builder.toString();
 
@@ -242,7 +242,7 @@ public class SysUtils {
 		StringBuilder builder = new StringBuilder();
 
 		for(File file : filteredArgsFiles) {
-			builder.append(" \"").append(file.getAbsolutePath()).append("\"");
+			builder.append(" ").append(quoteFileArgument(file.getAbsolutePath(), getOsInfoLazy().isWindows()));
 		}
 		filesParams = builder.toString();
 
@@ -253,6 +253,14 @@ public class SysUtils {
 			   .append(filesParams);
 		String command = builder.toString();
 		return command;
+	}
+
+	/**
+	 * A file name as an argument of the generated start script. In a Unix shell double quotes still run "$(...)" and backticks, so
+	 * a file with a crafted name could execute commands: single quotes take everything as it is.
+	 */
+	public static String quoteFileArgument(String path, boolean windows) {
+		return windows ? "\"" + path + "\"" : "'" + path.replace("'", "'\\''") + "'";
 	}
 
 	public static String getJavaCommand(boolean viewShell, String shellTitle) {

@@ -47,6 +47,10 @@
 
 	<repositories>
 		<repository>
+			<id>jetbrains-intellij-dependencies</id>
+			<url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies</url>
+		</repository>
+		<repository>
 			<id>spring.io</id>
 			<name>spring.io_REPO</name>
 			<url>http://repo.spring.io/plugins-release/</url>
@@ -90,6 +94,12 @@
 			<groupId>org.jetbrains.pty4j</groupId>
 			<artifactId>pty4j</artifactId>
 			<version>0.12.10-jdk8</version>
+		</dependency>
+		<!-- jtermios, used by pty4j only on Linux and macOS (BSD license); published in the JetBrains repository -->
+		<dependency>
+			<groupId>org.jetbrains.pty4j</groupId>
+			<artifactId>purejavacomm</artifactId>
+			<version>0.0.11.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains</groupId>

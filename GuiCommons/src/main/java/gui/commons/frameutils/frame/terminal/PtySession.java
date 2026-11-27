@@ -47,6 +47,9 @@ final class PtySession {
 			Class.forName("com.pty4j.PtyProcess");
 			String os = System.getProperty("os.name", "").toLowerCase();
 			String arch = System.getProperty("os.arch", "").toLowerCase();
+			if (!os.contains("win")) {
+				Class.forName("jtermios.JTermios", false, PtySession.class.getClassLoader()); // used by pty4j outside Windows
+			}
 			if (os.contains("win")) {
 				return arch.contains("64") || arch.equals("x86") || arch.contains("aarch");
 			}
@@ -69,7 +72,12 @@ final class PtySession {
 		if (isWindows()) {
 			builder.setUseWinConPty(useConPty);
 		}
-		process = builder.start();
+		try {
+			process = builder.start();
+		} catch (LinkageError e) {
+			// a class or a native library of the terminal cannot be loaded on this system
+			throw new IOException("the terminal library cannot be loaded (" + e + ")", e);
+		}
 		output = process.getOutputStream();
 		ALIVE.add(this);
 	}
