@@ -52,6 +52,8 @@ public class TextEditorOption {
 	public static final boolean DEF_lazyTabLoading = true;
 	/** Each file is read with the encoding it seems to have (BOM, valid UTF-8, else the legacy one); the fixed one when off or when unclear */
 	public static final boolean DEF_autoDetectEncoding = true;
+	/** Files are saved with the line endings they have; the default EOL is for new files (and for every file when off) */
+	public static final boolean DEF_keepOriginalEol = true;
 	public static final boolean DEFAULT_FTREE_ACTIVE = true;
 	public static final boolean DEF_bottomViewActive = false;
 	public static final boolean DEF_mapViewActive = false;
@@ -116,6 +118,7 @@ public class TextEditorOption {
 	public boolean footerVisible;
 	public boolean lazyTabLoading;
 	public boolean autoDetectEncoding;
+	public boolean keepOriginalEol;
 	/** Ids of the plugin viewers already seen ("|id|id|"; empty = the list was never started): a viewer that appears later is a new plugin */
 	public String pluginViewersSeen = "";
 	public int margin;
@@ -221,6 +224,7 @@ public class TextEditorOption {
 		footerVisible = DEF_footerVisible;
 		lazyTabLoading = DEF_lazyTabLoading;
 		autoDetectEncoding = DEF_autoDetectEncoding;
+		keepOriginalEol = DEF_keepOriginalEol;
 
 		openedFileList = new ArrayList<String>();
 		pinnedFileList = new ArrayList<String>();

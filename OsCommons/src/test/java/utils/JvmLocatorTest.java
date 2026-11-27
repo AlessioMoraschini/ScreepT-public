@@ -66,4 +66,20 @@ public class JvmLocatorTest {
 			assertTrue(h, JvmLocator.isJavaHome(new File(h)));
 		}
 	}
+
+	@Test
+	public void linuxPackageFoldersTellTheVersionWithoutReleaseFile() throws Exception {
+		assertEquals("17", JvmLocator.versionOfHome(fakeHome("java-17-openjdk-amd64", null)));
+		assertEquals("1.8", JvmLocator.versionOfHome(fakeHome("java-1.8.0-openjdk-1.8.0.392.x86_64", null)));
+		File jre = new File(fakeHome("java-8-openjdk-amd64", null), "jre");
+		assertEquals("1.8", JvmLocator.versionOfHome(jre));
+	}
+
+	@Test
+	public void alternativesListGivesTheHomes() {
+		assertEquals(java.util.Arrays.asList("/usr/lib/jvm/java-17-openjdk-amd64", "/usr/lib/jvm/java-8-openjdk-amd64/jre"),
+				os.commons.utils.linux.LinuxFindJvmVersions.homesFromList(java.util.Arrays.asList(
+						"/usr/lib/jvm/java-17-openjdk-amd64/bin/java", "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+						"update-alternatives: error: no alternatives for java", "")));
+	}
 }

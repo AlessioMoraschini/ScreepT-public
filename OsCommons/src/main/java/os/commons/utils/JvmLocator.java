@@ -21,6 +21,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import os.commons.om.OSinfo;
 
@@ -37,6 +39,8 @@ public final class JvmLocator {
 
 	private static final List<String> VENDOR_WORDS = Arrays.asList("java", "jdk", "jre", "openjdk", "adoptium", "adoptopenjdk",
 			"temurin", "corretto", "zulu", "microsoft", "bellsoft", "liberica", "semeru", "graal", "redhat", "sapmachine", "dragonwell");
+
+	private static final Pattern PACKAGE_FOLDER = Pattern.compile("^java-(1\\.\\d+|\\d{1,2})(?:\\.\\d+)*-");
 
 	private JvmLocator() {
 	}
@@ -105,6 +109,26 @@ public final class JvmLocator {
 		if (home == null) {
 			return "";
 		}
+		// Debian family Java 8: the home can be the "jre" folder, with the release file or the version in the name one level up
+		File parent = "jre".equals(home.getName()) ? home.getParentFile() : null;
+		String version = releaseVersion(home);
+		if (version.isEmpty() && parent != null) {
+			version = releaseVersion(parent);
+		}
+		return version.isEmpty() ? packageFolderVersion((parent != null ? parent : home).getName()) : version;
+	}
+
+	/** Version from the folder name of the Linux packages (java-17-openjdk-amd64, java-1.8.0-openjdk-...), or an empty string */
+	private static String packageFolderVersion(String folderName) {
+		Matcher matcher = PACKAGE_FOLDER.matcher(folderName);
+		if (!matcher.find()) {
+			return "";
+		}
+		String version = matcher.group(1);
+		return version.indexOf('.') < 0 && Integer.parseInt(version) <= 8 ? "1." + version : version;
+	}
+
+	private static String releaseVersion(File home) {
 		File release = new File(home, "release");
 		if (!release.isFile()) {
 			return "";
@@ -149,6 +173,10 @@ public final class JvmLocator {
 		}
 		for (File child : children) {
 			addHome(homes, child);
+			if (!isJavaHome(child)) {
+				// Debian family Java 8 runtime: only jre/bin/java
+				addHome(homes, new File(child, "jre"));
+			}
 			// archives of macOS builds keep the home one level deeper
 			addHome(homes, new File(child, "Contents/Home"));
 		}

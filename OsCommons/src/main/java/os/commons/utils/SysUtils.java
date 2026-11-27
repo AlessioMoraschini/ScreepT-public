@@ -262,7 +262,7 @@ public class SysUtils {
 		if(OS_INFO_LAZY.isWindows()) {
 			javaLaunchKeyWord = viewShell ? "java " : "start \"" + shellTitle + "\" \"javaw\" ";
 		} else {
-			javaLaunchKeyWord = viewShell ? "java " : "javaw ";
+			javaLaunchKeyWord = "java "; // "javaw" exists only on Windows
 		}
 
 		return javaLaunchKeyWord;
@@ -614,15 +614,16 @@ public class SysUtils {
 			} else {
 
 				// TODO LINUX/MAC SHELL show on/off
-				logger.info("Executing process [pwd]");
-				execNlogProcessOutput(runtime.exec("pwd"));
-				logger.info("Executing process [chmod u+x" + batchOrBashPath + "]");
-				Process executableMaker = runtime.exec("chmod u+x " + batchOrBashPath);
-				execNlogProcessOutput(executableMaker);
-				executableMaker.waitFor();
-				logger.info("Commands launched without exceptions :)");
+				File script = new File(batchOrBashPath).getAbsoluteFile();
+				script.setExecutable(true);
+				// no pipe towards this process: it can exit before the application, and a full pipe would block it.
+				// No command line splitting either, so folders with spaces work. The output stays in a file.
+				ProcessBuilder builder = new ProcessBuilder(script.getPath());
+				builder.redirectErrorStream(true);
+				builder.redirectOutput(new File(script.getPath() + ".out"));
+				logger.info("Starting " + script + ", output in " + script.getName() + ".out");
 
-				return runtime.exec(batchOrBashPath);
+				return builder.start();
 			}
 		} catch (Exception e) {
 			logger.error(" !!! Error launching generated commands file !!!\n\n", e);

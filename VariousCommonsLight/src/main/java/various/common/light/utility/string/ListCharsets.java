@@ -12,9 +12,6 @@
 package various.common.light.utility.string;
 
 import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedMap;
 import java.util.Vector;
 
 /** this class is used to get charset names defined in current system
@@ -24,15 +21,8 @@ import java.util.Vector;
  */
 public class ListCharsets {
 	
-	private static SortedMap<?, ?> charsets = Charset.availableCharsets();
-    private static Set<?> names = charsets.keySet();
-    private static Vector<String> nameList= new Vector<>();
-    
-    public static Vector<String>  getCharsets() {
-    	for (Iterator<?> e = names.iterator(); e.hasNext();) {
-	      String name = (String) e.next();
-	      nameList.add(name);
-    	}
-    	return nameList;
-    }
+	/** @return a new list at every call, with each name once */
+	public static Vector<String> getCharsets() {
+		return new Vector<>(Charset.availableCharsets().keySet());
+	}
 }

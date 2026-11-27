@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
@@ -78,6 +79,18 @@ public final class EncodingDetector {
 		}
 		// not UTF-8: the legacy encoding, unless the user chose another single byte one on purpose
 		return chosen.toUpperCase(Locale.ROOT).startsWith("UTF") ? LEGACY : chosen;
+	}
+
+	/**
+	 * Tells whether a text saved with an encoding would be read wrong the next time the file is opened.
+	 *
+	 * @param fixed encoding of the preferences
+	 * @return null when it reads back the same, else the encoding it would be opened with
+	 */
+	public static String misreadAs(String text, String encoding, String fixed, boolean autoDetect) {
+		byte[] bytes = text.getBytes(Charset.forName(encoding));
+		String next = autoDetect ? detect(bytes, Math.min(bytes.length, SAMPLE), fixed, bytes.length <= SAMPLE) : fixed;
+		return new String(bytes, Charset.forName(next)).equals(new String(bytes, Charset.forName(encoding))) ? null : next;
 	}
 
 	static boolean isValidUtf8(byte[] bytes, int length, boolean complete) {

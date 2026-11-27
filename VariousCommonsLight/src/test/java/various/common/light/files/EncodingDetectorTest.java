@@ -112,4 +112,16 @@ public class EncodingDetectorTest {
 		assertTrue(FileWorker.writeStringToFileEncoded("﻿" + TEXT, utf16, true, "UTF-16LE"));
 		assertEquals("a byte order mark written as the first character comes back as it was", "UTF-16LE", EncodingDetector.detect(utf16, "UTF-8"));
 	}
+
+	@org.junit.Test
+	public void aSaveThatWouldBeReadWrongIsReported() {
+		String text = "caff\u00e8 \u20ac";
+		org.junit.Assert.assertNull(EncodingDetector.misreadAs(text, "windows-1252", "UTF-8", true));
+		org.junit.Assert.assertNull(EncodingDetector.misreadAs("plain", "ISO-8859-1", "UTF-8", false));
+		org.junit.Assert.assertEquals("with detection off the fixed one is used", "UTF-8",
+				EncodingDetector.misreadAs(text, "windows-1252", "UTF-8", false));
+		org.junit.Assert.assertEquals("UTF-16 without a byte order mark cannot be recognised", false,
+				EncodingDetector.misreadAs(text, "UTF-16LE", "UTF-8", true) == null);
+		org.junit.Assert.assertNull(EncodingDetector.misreadAs("\ufeff" + text, "UTF-16LE", "UTF-8", true));
+	}
 }
