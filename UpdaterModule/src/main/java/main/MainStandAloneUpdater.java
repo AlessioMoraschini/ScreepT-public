@@ -89,6 +89,8 @@ public class MainStandAloneUpdater {
 			logger.setLogFileEol(null);
 			logger.setLogFile(new File(UPDATER_LOG_FILE));
 			logger.setFlagWriteOnFile(true);
+			// every run starts with a header in updater_history.log: date, time and arguments (the log is written in DEBUG)
+			logger.debug("===== updater run " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()) + " args=" + java.util.Arrays.toString(args) + " =====");
 			FileWorker.logger = new SafeLogger(FileWorker.class, true, logger.getLogFile(), true);
 			ZipWorker.logger = new SafeLogger(ZipWorker.class, true, logger.getLogFile(), true);
 			DownloadUtils.logger = new SafeLogger(DownloadUtils.class, true, logger.getLogFile(), true);
